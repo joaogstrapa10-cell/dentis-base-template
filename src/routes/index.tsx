@@ -60,7 +60,7 @@ function Landing() {
         <DepoimentosSection data={clinica.depoimentos} />
         <ComparativoSection data={clinica.comparativo} />
         <TratamentosSection data={clinica.tratamentos} />
-        <BioSection data={clinica.bio} />
+        <BioSection data={clinica.bio} ghostWord={clinica.brand.ghostWord} />
         <FaqSection data={clinica.faq} />
       </main>
       <FooterSection
