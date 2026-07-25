@@ -1,3 +1,9 @@
+/* Tipografia real, não a fonte do sistema — `system-ui` entrega a fonte padrão
+   do SO, genérica por definição. Instrument Sans (display e corpo) e JetBrains
+   Mono (rótulos pequenos) são carregadas por <link> em src/routes/__root.tsx.
+   NÃO usar @import de URL remota aqui: o lightningcss do Tailwind v4 tenta
+   resolver a URL como arquivo local e quebra o build. */
+
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -83,7 +89,8 @@
   --color-positive: var(--positive);
   --color-warning: var(--warning);
 
-  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   /* Compatibilidade shadcn/ui */
   --color-primary: var(--ink);
@@ -110,12 +117,48 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-feature-settings: "ss01", "cv11";
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  /* Display: números tabulares e ligaduras desligadas no bold grande, para
+     não criar formas inesperadas em títulos curtos. */
+  h1, h2, h3 {
+    font-variant-ligatures: none;
+    font-feature-settings: "ss01";
+  }
   ::selection { background: var(--accent); color: var(--accent-foreground); }
+}
+
+/* ---------- Escala de display ----------
+   Definida como classe, não por utilitários. Motivo concreto: combinar
+   `text-[clamp(...)]` com `leading-[...]` no Tailwind v4 não funciona — o
+   utilitário de font-size arbitrário reimpõe line-height e o leading é
+   ignorado (medido: 84px em vez de 56px). Aqui font-size, line-height e
+   tracking andam juntos, que é como uma escala tipográfica deve viver.
+   O leading não desce abaixo de 1.05: em português os diacríticos em caixa
+   alta (Ê, Á, Ç) encostam na linha de cima. */
+
+.display-1 {
+  font-weight: 700;
+  font-size: clamp(2rem, 4.3vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.display-2 {
+  font-weight: 700;
+  font-size: clamp(1.875rem, 4vw, 3.25rem);
+  line-height: 1.06;
+  letter-spacing: -0.038em;
+  text-wrap: balance;
+}
+
+.display-3 {
+  font-weight: 600;
+  font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 /* ---------- Superfície escura ---------- */

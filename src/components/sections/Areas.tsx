@@ -20,7 +20,7 @@ export function AreasSection({ data }: { data: AreasContent }) {
                 {area.tags.map((tag) => (
                   <li
                     key={tag}
-                    className="font-mono rounded-full border border-border bg-surface-raised px-2.5 py-1 text-[11px] uppercase tracking-[0.08em] text-muted-foreground"
+                    className="rounded-full border border-border bg-surface-raised px-2.5 py-1 text-[11px] text-muted-foreground"
                   >
                     {tag}
                   </li>

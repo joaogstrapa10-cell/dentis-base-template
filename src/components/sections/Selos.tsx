@@ -18,7 +18,7 @@ export function SelosSection({ data }: { data: SelosContent }) {
             {loop.map((item, i) => (
               <span
                 key={`${item}-${i}`}
-                className="font-mono whitespace-nowrap text-sm text-muted-foreground"
+                className="whitespace-nowrap text-sm text-muted-foreground"
               >
                 {item}
               </span>

@@ -116,7 +116,7 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
           {/* Base layer: lado B (fundo) */}
           <div className="absolute inset-0">
             <SlotImage slot={ladoB} loading="lazy" showRotulo={false} />
-            <span className="font-mono absolute right-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-[11px] uppercase tracking-[0.08em] text-foreground backdrop-blur">
+            <span className="absolute right-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-[11px] text-foreground backdrop-blur">
               {data.comparadorLadoBLabel}
             </span>
           </div>
@@ -127,7 +127,7 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
             style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
           >
             <SlotImage slot={ladoA} loading="lazy" showRotulo={false} />
-            <span className="font-mono absolute left-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-[11px] uppercase tracking-[0.08em] text-foreground backdrop-blur">
+            <span className="absolute left-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-[11px] text-foreground backdrop-blur">
               {data.comparadorLadoALabel}
             </span>
           </div>

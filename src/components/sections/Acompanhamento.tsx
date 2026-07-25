@@ -47,7 +47,7 @@ export function AcompanhamentoSection({ data }: { data: AcompanhamentoContent })
                     </span>
                     <span
                       className={cn(
-                        "font-mono text-xs uppercase tracking-[0.08em]",
+                        "text-xs",
                         etapa.estado === "concluido" && "text-accent",
                         etapa.estado === "em-andamento" && "text-accent",
                         etapa.estado === "previsto" && "text-muted-foreground",
@@ -75,12 +75,12 @@ export function AcompanhamentoSection({ data }: { data: AcompanhamentoContent })
                 <span className="h-2.5 w-2.5 rounded-full bg-surface-raised" />
                 <span className="h-2.5 w-2.5 rounded-full bg-surface-raised" />
               </div>
-              <span className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+              <span className="text-[10px] text-muted-foreground">
                 {data.painelSubtitulo}
               </span>
             </div>
             <div className="pt-5">
-              <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {data.painelTitulo}
               </p>
 
@@ -101,14 +101,14 @@ export function AcompanhamentoSection({ data }: { data: AcompanhamentoContent })
                       <EstadoIcon estado={etapa.estado} />
                       <div>
                         <p className="text-sm font-medium text-foreground">{etapa.titulo}</p>
-                        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+                        <p className="text-[11px] text-muted-foreground">
                           {etapa.numero}
                         </p>
                       </div>
                     </div>
                     <span
                       className={cn(
-                        "font-mono rounded-full border px-2.5 py-0.5 text-[10px] uppercase tracking-[0.08em]",
+                        "rounded-full border px-2.5 py-0.5 text-[10px]",
                         etapa.estado === "concluido" &&
                           "border-accent/40 bg-accent/10 text-accent",
                         etapa.estado === "em-andamento" &&

@@ -164,7 +164,7 @@ export function SectionHead({
         {eyebrow ? (
           <p
             className={cn(
-              "font-mono mb-4 text-[11px] uppercase tracking-[0.12em]",
+              "mb-4 text-[11px]",
               light ? "text-ink-muted" : "text-muted",
             )}
           >
@@ -173,7 +173,7 @@ export function SectionHead({
         ) : null}
         <h2
           className={cn(
-            "text-balance font-bold leading-[1.05] tracking-[-0.03em] text-[clamp(1.875rem,3.9vw,3.25rem)]",
+            "display-2",
             light ? "text-ink-foreground" : "text-foreground",
           )}
         >

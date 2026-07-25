@@ -31,13 +31,13 @@ export function HeroSection({
 
         <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pb-40 pt-14 md:px-10 md:pb-56 md:pt-20">
           <Reveal>
-            <p className="font-mono inline-flex items-center rounded-full border border-ink-border bg-ink-elevated/70 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.12em] text-ink-muted backdrop-blur">
+            <p className="inline-flex items-center rounded-full border border-ink-border bg-ink-elevated/70 px-4 py-1.5 text-[13px] text-ink-muted backdrop-blur">
               {data.eyebrow}
             </p>
           </Reveal>
 
           <div className="mt-9 grid gap-10 md:mt-12 md:grid-cols-[1.35fr_1fr] md:gap-16">
-            <h1 className="font-bold leading-[1.02] tracking-[-0.035em] text-[clamp(1.875rem,4.1vw,3.25rem)] text-ink-foreground">
+            <h1 className="display-1 text-ink-foreground">
               {data.headline.map((linha, i) => (
                 <span key={i} className="line-mask">
                   <span
@@ -72,7 +72,7 @@ export function HeroSection({
                 </div>
               </Reveal>
               <Reveal delay={380}>
-                <p className="font-mono mt-8 text-[11px] uppercase tracking-[0.1em] text-ink-muted">
+                <p className="mt-8 text-[13px] text-ink-muted">
                   {data.responsavelLinha}
                 </p>
               </Reveal>

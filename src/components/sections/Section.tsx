@@ -51,19 +51,13 @@ export function SectionHeader({
       {/* Largura em rem, não em ch: `ch` resolveria contra a fonte de 16px deste
           wrapper e estrangularia o h2 de ~52px que vive dentro dele. */}
       <div className="max-w-[54rem]">
-        {eyebrow ? (
-          <p
-            className={cn(
-              "font-mono mb-4 text-[11px] uppercase tracking-[0.12em]",
-              light ? "text-ink-muted" : "text-muted",
-            )}
-          >
-            {eyebrow}
-          </p>
-        ) : null}
+        {/* Sem eyebrow. Na referência nenhum cabeçalho de seção tem rótulo
+            pequeno acima — mono maiúscula com tracking largo em toda seção era
+            invenção nossa, e é justamente o clichê de página gerada por IA.
+            O campo segue no conteúdo para as variantes que quiserem usar. */}
         <h2
           className={cn(
-            "text-balance font-bold leading-[1.04] tracking-[-0.035em] text-[clamp(1.875rem,4vw,3.25rem)]",
+            "display-2",
             light ? "text-ink-foreground" : "text-foreground",
           )}
         >

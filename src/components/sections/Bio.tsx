@@ -20,7 +20,7 @@ export function BioSection({ data }: { data: BioContent }) {
   return (
     <Section id="responsavel">
       <SectionHeader eyebrow={data.eyebrow} titulo={data.nome} />
-      <p className="font-mono mt-4 text-xs uppercase tracking-[0.08em] text-accent">{data.credencial}</p>
+      <p className="mt-4 text-xs text-accent">{data.credencial}</p>
 
       <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-16">
         <Reveal>
@@ -43,7 +43,7 @@ export function BioSection({ data }: { data: BioContent }) {
 
       <div className="mt-20">
         <Reveal>
-          <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {data.corpoClinicoLabel}
           </p>
         </Reveal>

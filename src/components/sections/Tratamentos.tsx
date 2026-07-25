@@ -20,7 +20,7 @@ export function TratamentosSection({ data }: { data: TratamentosContent }) {
               )}
             >
               {card.badge ? (
-                <span className="font-mono absolute -top-3 left-6 rounded-full border border-accent bg-background px-3 py-1 text-[10px] uppercase tracking-[0.08em] text-accent">
+                <span className="absolute -top-3 left-6 rounded-full border border-accent bg-background px-3 py-1 text-[10px] text-accent">
                   {card.badge}
                 </span>
               ) : null}
@@ -30,7 +30,7 @@ export function TratamentosSection({ data }: { data: TratamentosContent }) {
               </h3>
               <p className="mt-3 text-sm leading-[1.6] text-muted-foreground">{card.descricao}</p>
 
-              <p className="font-mono mt-6 text-xs uppercase tracking-[0.08em] text-accent">
+              <p className="mt-6 text-xs text-accent">
                 {card.valorLabel}
               </p>
 
