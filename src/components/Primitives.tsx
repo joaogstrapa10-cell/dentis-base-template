@@ -159,7 +159,8 @@ export function SectionHead({
         className,
       )}
     >
-      <div className="max-w-[46ch]">
+      {/* Largura em rem, não em ch — ver nota em Section.tsx */}
+      <div className="max-w-[54rem]">
         {eyebrow ? (
           <p
             className={cn(

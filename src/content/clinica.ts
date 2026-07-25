@@ -70,7 +70,7 @@ export const clinica: Clinica = {
   },
   diferenciais: {
     eyebrow: "Por que aqui",
-    titulo: "Experiência e credibilidade, aplicadas caso a caso.",
+    titulo: "Experiência aplicada caso a caso.",
     descricao:
       "Nosso corpo clínico é formado por mestres e especialistas em diversas áreas da Odontologia. A proposta é unir conhecimento, experiência, ética e alta tecnologia em benefício de cada paciente.",
     itens: [
@@ -102,7 +102,7 @@ export const clinica: Clinica = {
   },
   acompanhamento: {
     eyebrow: "Como conduzimos",
-    titulo: "Você acompanha cada etapa do seu tratamento.",
+    titulo: "Cada etapa, acompanhada.",
     descricao: "",
     painelTitulo: "Acompanhamento do tratamento",
     painelSubtitulo: "Paciente · Caso clínico #0000",
@@ -148,7 +148,7 @@ export const clinica: Clinica = {
   },
   estrutura: {
     eyebrow: "Nossa estrutura",
-    titulo: "O ambiente onde o tratamento acontece.",
+    titulo: "O ambiente do tratamento.",
     descricao:
       "Consultórios, equipamentos de diagnóstico por imagem e áreas de apoio. Arraste para comparar os ambientes.",
     ariaLabelComparador: "Comparar os dois ambientes",
@@ -171,7 +171,7 @@ export const clinica: Clinica = {
   },
   areas: {
     eyebrow: "Áreas de atuação",
-    titulo: "Oito especialidades, sob um mesmo critério.",
+    titulo: "Oito especialidades, um critério.",
     descricao: "",
     itens: [
       {
@@ -235,7 +235,7 @@ export const clinica: Clinica = {
   },
   comparativo: {
     eyebrow: "Diferença de método",
-    titulo: "Nosso processo, comparado ao atendimento odontológico convencional.",
+    titulo: "Nosso método vs. o convencional.",
     descricao: "",
     colunaCriterio: "Critério",
     colunaClinica: "Nossa clínica",
@@ -252,7 +252,7 @@ export const clinica: Clinica = {
   },
   tratamentos: {
     eyebrow: "Tratamentos",
-    titulo: "Cada caso é orçado após avaliação.",
+    titulo: "Orçamento após avaliação.",
     descricao:
       "Não trabalhamos com tabela fechada: o valor depende do diagnóstico, da extensão do caso e das etapas envolvidas. A avaliação inicial define o plano e o orçamento.",
     cards: [

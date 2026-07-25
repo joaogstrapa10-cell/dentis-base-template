@@ -48,7 +48,9 @@ export function SectionHeader({
         className,
       )}
     >
-      <div className="max-w-[42ch]">
+      {/* Largura em rem, não em ch: `ch` resolveria contra a fonte de 16px deste
+          wrapper e estrangularia o h2 de ~52px que vive dentro dele. */}
+      <div className="max-w-[54rem]">
         {eyebrow ? (
           <p
             className={cn(
