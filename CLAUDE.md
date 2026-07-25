@@ -173,8 +173,24 @@ Nunca contornar a policy (proxies de terceiros, mirrors). Reportar o host bloque
 correções visuais de 25/07. Foi remixado para o workspace do João porque o plano `member` não
 dá permissão de workspace Git — sem isso não havia como conectar o GitHub do João.
 
-**Entrega final para o Giulliano:** remixar o projeto do João de volta para o workspace dele
-(`remix_project` com `workspace_id: 9G3fAkdnuvQqWzEwcVjW`) e apagar o `9d05bd27`.
+**Entregue ao Giulliano em 25/07:**
+
+| Campo | Valor |
+|---|---|
+| Nome | `Dentis Base Template — base tech` |
+| `project_id` | `1896d5fd-49f6-447e-88a1-adfbe7293de4` |
+| Workspace | `Giulliano's Lovable` (`9G3fAkdnuvQqWzEwcVjW`) |
+| Editor | `https://lovable.dev/projects/1896d5fd-49f6-447e-88a1-adfbe7293de4` |
+| Preview | `https://id-preview--1896d5fd-49f6-447e-88a1-adfbe7293de4.lovable.app` |
+
+⚠️ **Essa cópia NÃO está ligada ao GitHub.** Remix copia arquivos, não a conexão de sync.
+Push neste repositório atualiza o projeto do João (`1f2b8513`), **não** o do Giulliano. Para o
+Giulliano receber mudança nova, remixar de novo — ou ele conecta o próprio GitHub e o repo
+passa a ser a fonte dos dois.
+
+🗑️ **Apagar `9d05bd27-0257-47ec-bd63-1901ee5d1c12`** do workspace do Giulliano: é a primeira
+tentativa, parou no commit `e8fa86b1`, sem tema tech, sem tipografia e sem a reformulação
+estrutural. Manter os dois convida a editar o errado.
 
 ### Estrutura de arquivos gerada
 
