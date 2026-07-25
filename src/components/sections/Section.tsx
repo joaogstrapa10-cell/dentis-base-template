@@ -14,33 +14,71 @@ export function Section({
 }) {
   return (
     <As id={id} className={cn(className)} style={{ paddingBlock: "var(--section-py)" }}>
-      <div className="mx-auto w-full max-w-[1200px] px-6 md:px-10">{children}</div>
+      <div className="mx-auto w-full max-w-[1200px] px-5 md:px-10">{children}</div>
     </As>
   );
 }
 
+/**
+ * Cabeçalho de seção no padrão da referência: título grande em BOLD à esquerda
+ * e, quando existe, a ação na MESMA linha à direita. Empilha no mobile.
+ *
+ * `tone="light"` para uso dentro de bloco escuro.
+ */
 export function SectionHeader({
   eyebrow,
   titulo,
   descricao,
+  acao,
+  tone = "ink",
   className,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   titulo: string;
   descricao?: string;
+  acao?: ReactNode;
+  tone?: "ink" | "light";
   className?: string;
 }) {
+  const light = tone === "light";
   return (
-    <div className={cn("max-w-[680px]", className)}>
-      <p className="font-mono text-xs uppercase tracking-[0.08em] text-accent">{eyebrow}</p>
-      <h2 className="mt-4 font-medium leading-[1.05] tracking-[-0.02em] text-[clamp(2rem,4vw,3.25rem)] text-foreground">
-        {titulo}
-      </h2>
-      {descricao ? (
-        <p className="mt-6 text-base md:text-[1.0625rem] leading-[1.6] text-muted-foreground">
-          {descricao}
-        </p>
-      ) : null}
+    <div
+      className={cn(
+        "flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-14",
+        className,
+      )}
+    >
+      <div className="max-w-[42ch]">
+        {eyebrow ? (
+          <p
+            className={cn(
+              "font-mono mb-4 text-[11px] uppercase tracking-[0.12em]",
+              light ? "text-ink-muted" : "text-muted",
+            )}
+          >
+            {eyebrow}
+          </p>
+        ) : null}
+        <h2
+          className={cn(
+            "text-balance font-bold leading-[1.04] tracking-[-0.035em] text-[clamp(1.875rem,4vw,3.25rem)]",
+            light ? "text-ink-foreground" : "text-foreground",
+          )}
+        >
+          {titulo}
+        </h2>
+        {descricao ? (
+          <p
+            className={cn(
+              "mt-5 text-base leading-[1.65]",
+              light ? "text-ink-muted" : "text-muted",
+            )}
+          >
+            {descricao}
+          </p>
+        ) : null}
+      </div>
+      {acao ? <div className="shrink-0">{acao}</div> : null}
     </div>
   );
 }

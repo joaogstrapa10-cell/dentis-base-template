@@ -37,7 +37,7 @@ function SlotImage({
       className={cn(
         // Slot vazio precisa parecer deliberado, não quebrado: textura de grid +
         // rótulo ancorado embaixo à esquerda, fora da rota do handle central.
-        "tech-grid-sm flex h-full w-full items-end bg-surface p-3",
+        "slot-grid flex h-full w-full items-end bg-surface p-3",
         className,
       )}
     >

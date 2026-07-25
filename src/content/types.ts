@@ -5,6 +5,9 @@ export type Cta = { label: string; href: string };
 export type BrandContent = {
   nome: string;
   wordmark: string;
+  /** Palavra única e curta, para o wordmark gigante translúcido do hero e do
+   *  footer. Precisa ser curta: é renderizada em ~17rem e cortada de propósito. */
+  ghostWord: string;
   responsavelTecnico: string;
   croResponsavel: string;
   cnpj: string;
@@ -50,7 +53,9 @@ export type EstruturaContent = {
 
 export type HeroContent = {
   eyebrow: string;
-  headline: string;
+  /** Uma entrada por linha renderizada. A quebra de linha é decisão editorial,
+   *  não do navegador — e cada linha entra revelada por máscara. */
+  headline: string[];
   subheadline: string;
   ctaPrimario: Cta;
   ctaSecundario: Cta;

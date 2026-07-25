@@ -3,59 +3,67 @@
 @import "tw-animate-css";
 
 /*
- * Tema semântico (Tailwind v4, CSS-first). Nenhum componente deve usar cor literal.
- * Tokens primitivos em :root, expostos como utilities via @theme inline.
- * Trocar de clínica = ajustar apenas estes tokens + src/content/clinica.ts.
+ * Tema semântico (Tailwind v4, CSS-first). Nenhum componente usa cor literal.
+ * Trocar de clínica = ajustar estes tokens + src/content/clinica.ts.
+ *
+ * Estrutura de cor: a página é CLARA (greige quente) e blocos escuros entram
+ * como peças pontuais — hero, depoimentos, bio, footer. Os tokens `--ink-*`
+ * existem para isso: são a superfície escura e seu texto, independentes do
+ * par background/foreground da página.
  */
 
 :root {
-  --radius: 0.625rem;
+  --radius: 1.375rem;
 
-  /* Azul no FUNDO, não só no botão: navy profunda de baixa saturação.
-     Escapa das duas armadilhas — azul-claro de consultório (genérico de
-     odontologia) e preto-com-accent-vivo (assinatura de site gerado por IA). */
-  --background: oklch(0.163 0.028 252);
-  --foreground: oklch(0.985 0.002 252);
+  /* Página: neutro CLARO e frio. A estrutura clara-com-blocos-escuros vem da
+     referência; a cor não — o greige quente dela foi trocado por um neutro
+     azulado, para a paleta ser azul de ponta a ponta. */
+  --background: oklch(0.957 0.008 250);
+  --foreground: oklch(0.248 0.022 258);
 
-  /* Superfícies elevadas por luminosidade, não por sombra */
-  --surface: oklch(0.206 0.031 252);
-  --surface-raised: oklch(0.252 0.034 252);
+  /* Cards sobre a página */
+  --surface: oklch(1 0 0);
+  --surface-raised: oklch(0.982 0.006 250);
 
-  /* Hairline branco a ~9% de opacidade */
-  --border: oklch(1 0 0 / 0.09);
+  --border: oklch(0.248 0.022 258 / 0.11);
+  --border-strong: oklch(0.248 0.022 258 / 0.21);
 
-  /* Borda com presença, para elemento interativo (botão ghost).
-     A 9% o contorno desaparece e o botão vira texto flutuando. */
-  --border-strong: oklch(1 0 0 / 0.2);
+  --muted: oklch(0.515 0.018 256);
 
-  /* Texto secundário */
-  --muted: oklch(0.685 0.014 252);
+  /* Superfície escura: navy profunda, não preto neutro */
+  --ink: oklch(0.178 0.032 256);
+  --ink-elevated: oklch(0.222 0.035 256);
+  --ink-foreground: oklch(0.99 0.002 250);
+  --ink-muted: oklch(0.725 0.014 252);
+  --ink-border: oklch(1 0 0 / 0.11);
 
-  /* Accent: azul limpo, mais claro que o fundo. A luminosidade de 0.72 é
-     requisito, não gosto — o mesmo token serve de texto de 12px sobre a navy
-     e de preenchimento de botão com texto escuro. Escurecer quebra o eyebrow. */
-  --accent: oklch(0.72 0.135 245);
-  --accent-foreground: oklch(0.163 0.028 252);
+  /* Accent azul. Na referência é amarelo; o usuário pediu azul.
+     Aparece em pouca área: tile de ícone dentro do botão preto, glow do hero,
+     ícone de check. Nunca como fundo de seção. */
+  --accent: oklch(0.62 0.19 250);
+  --accent-foreground: oklch(0.99 0 0);
 
-  --destructive: oklch(0.62 0.22 25);
+  /* Sinais da tabela comparativa */
+  --positive: oklch(0.63 0.17 145);
+  --warning: oklch(0.75 0.16 75);
 
-  /* Ritmo vertical: fonte de verdade única para o padding das seções */
-  --section-py: 6rem;
+  --destructive: oklch(0.58 0.22 25);
+
+  --section-py: 5rem;
 }
 
 @media (min-width: 768px) {
-  :root { --section-py: 10rem; }
+  :root { --section-py: 8rem; }
 }
 
-
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-sm: calc(var(--radius) - 12px);
+  --radius-md: calc(var(--radius) - 8px);
+  --radius-lg: calc(var(--radius) - 4px);
+  --radius-xl: var(--radius);
+  --radius-2xl: calc(var(--radius) + 6px);
+  --radius-3xl: calc(var(--radius) + 14px);
 
-  /* Semânticos do projeto */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
@@ -63,31 +71,42 @@
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-muted: var(--muted);
+
+  --color-ink: var(--ink);
+  --color-ink-elevated: var(--ink-elevated);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-border: var(--ink-border);
+
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-positive: var(--positive);
+  --color-warning: var(--warning);
 
-  /* Fontes */
   --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
 
-  /* Compatibilidade com shadcn/ui (mapeiam para os semânticos acima) */
-  --color-primary: var(--accent);
-  --color-primary-foreground: var(--accent-foreground);
+  /* Compatibilidade shadcn/ui */
+  --color-primary: var(--ink);
+  --color-primary-foreground: var(--ink-foreground);
   --color-secondary: var(--surface-raised);
   --color-secondary-foreground: var(--foreground);
   --color-muted-foreground: var(--muted);
   --color-card: var(--surface);
   --color-card-foreground: var(--foreground);
-  --color-popover: var(--surface-raised);
+  --color-popover: var(--surface);
   --color-popover-foreground: var(--foreground);
   --color-input: var(--border);
   --color-ring: var(--accent);
   --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--foreground);
+  --color-destructive-foreground: oklch(0.99 0 0);
 }
 
 @layer base {
   * { border-color: var(--color-border); }
-  html { color-scheme: dark; }
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -99,78 +118,128 @@
   ::selection { background: var(--accent); color: var(--accent-foreground); }
 }
 
-/* Marquee CSS puro para a barra de formações/certificações */
+/* ---------- Superfície escura ---------- */
+
+/* Grid muito discreto sobre bloco escuro. Só existe dentro do escuro —
+   sobre o claro viraria a textura de página gerada por IA. */
+.ink-grid {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Glow do hero: arco de luz na base, como na referência */
+.ink-arc {
+  background:
+    radial-gradient(120% 90% at 50% 108%, var(--accent) 0%, transparent 55%),
+    radial-gradient(60% 40% at 50% -10%, oklch(1 0 0 / 0.09) 0%, transparent 70%);
+}
+
+/* ---------- Wordmark fantasma ---------- */
+/* Palavra gigante translúcida, cortada pela borda do container. É a assinatura
+   visual da referência: aparece no hero e no footer. */
+.ghost-word {
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.78;
+  white-space: nowrap;
+  user-select: none;
+  font-size: clamp(6rem, 19vw, 17rem);
+  color: oklch(1 0 0 / 0.042);
+}
+
+/* ---------- Movimento ---------- */
+
+/* Hover de card: sobe e a sombra abre. Transform em vez de mudar layout. */
+.lift {
+  transition:
+    transform 380ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 380ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 380ms ease;
+  will-change: transform;
+}
+.lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 50px -28px oklch(0.248 0.022 258 / 0.3);
+}
+
+/* Seta que desliza no hover do grupo */
+.nudge {
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .nudge { transform: translateX(4px); }
+
+/* Tile de ícone do botão: gira de leve no hover */
+.tile-spin {
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .tile-spin { transform: rotate(-8deg) scale(1.06); }
+
+/* Revelação por linha, para a headline */
+@keyframes line-rise {
+  from { transform: translateY(105%); }
+  to   { transform: translateY(0); }
+}
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.06em;
+}
+.line-rise {
+  display: block;
+  animation: line-rise 950ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---------- Marquee da barra de formações ---------- */
 @keyframes marquee-x {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-
 @utility marquee-track {
-  animation: marquee-x 30s linear infinite;
+  animation: marquee-x 42s linear infinite;
 }
-
 .marquee-mask {
   -webkit-mask-image: linear-gradient(to right, transparent 0, black 8%, black 92%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0, black 8%, black 92%, transparent 100%);
 }
-
 .marquee-pause:hover .marquee-track,
 .marquee-pause:hover [data-marquee] {
   animation-play-state: paused;
 }
 
-/* Filtro para alinhar o embed do Google Maps ao tema escuro */
-.map-dark {
-  filter: invert(0.9) hue-rotate(180deg) saturate(0.7) brightness(0.95) contrast(0.95);
+/* ---------- Carrossel de depoimentos ---------- */
+.rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.rail::-webkit-scrollbar { display: none; }
 
-/* Réguas verticais alinhadas ao grid de 12 colunas. Lê como estrutura
-   arquitetônica, não como textura decorativa — o grid pontilhado/quadriculado
-   virou clichê de página gerada por IA. */
-.rules-x {
-  background-image: linear-gradient(to right, oklch(1 0 0 / 0.055) 1px, transparent 1px);
-  background-size: calc(100% / 6) 100%;
-}
-
-/* Fio horizontal de topo de seção */
-.hairline-top {
-  border-top: 1px solid var(--border);
-}
-
-/* Variante compacta, para caixas pequenas (placeholder de imagem) */
-.tech-grid-sm {
+/* ---------- Slot de imagem vazio ---------- */
+/* Textura fina para o slot parecer deliberado em vez de caixa quebrada */
+.slot-grid {
   background-image:
-    linear-gradient(to right, oklch(1 0 0 / 0.055) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(1 0 0 / 0.055) 1px, transparent 1px);
-  background-size: 24px 24px;
+    linear-gradient(to right, oklch(0.248 0.022 258 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.248 0.022 258 / 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.slot-grid-ink {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
-/* Fade vertical, para as réguas sumirem em vez de cortar seco */
-.rules-fade {
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 100%);
-}
-
-/* ---- Revelação por linha, para a headline do hero ----
-   Cada linha sobe de dentro de uma máscara. É movimento com intenção, não
-   fade-up genérico aplicado em tudo. */
-@keyframes line-rise {
-  from { transform: translateY(105%); }
-  to   { transform: translateY(0); }
-}
-
-.line-mask {
-  display: block;
-  overflow: hidden;
-  padding-block: 0.04em;
-}
-
-.line-rise {
-  display: block;
-  animation: line-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+/* Mapa: no tema claro o embed já combina, só suaviza a saturação */
+.map-tint {
+  filter: saturate(0.75) contrast(1.02);
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   .marquee-track, [data-marquee] { animation: none !important; }
   .line-rise { animation: none !important; transform: none !important; }
+  .lift:hover { transform: none; }
+  .group:hover .nudge,
+  .group:hover .tile-spin { transform: none; }
 }

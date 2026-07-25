@@ -7,7 +7,7 @@ function RetratoPlaceholder({ label, ratio = "aspect-[4/5]" }: { label: string; 
     <div
       role="img"
       aria-label={label}
-      className={`${ratio} tech-grid-sm flex items-end overflow-hidden rounded-2xl border border-border bg-surface p-3`}
+      className={`${ratio} slot-grid flex items-end overflow-hidden rounded-2xl border border-border bg-surface p-3`}
     >
       <span className="font-mono rounded-md border border-border bg-background/80 px-2 py-1 text-[10px] uppercase tracking-[0.08em] text-muted-foreground backdrop-blur">
         {label}

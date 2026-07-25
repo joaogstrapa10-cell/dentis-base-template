@@ -11,6 +11,7 @@ export const clinica: Clinica = {
   brand: {
     nome: "[NOME DA CLÍNICA]",
     wordmark: "Suzuki Odontologia",
+    ghostWord: "Suzuki",
     responsavelTecnico: "Dr. Dalton Suzuki",
     croResponsavel: "CRO-PR 9112",
     cnpj: "[CNPJ]",
@@ -44,7 +45,11 @@ export const clinica: Clinica = {
   },
   hero: {
     eyebrow: "Curitiba · Alto da XV",
-    headline: "Odontologia de alta complexidade, conduzida por mestres e especialistas.",
+    headline: [
+      "Odontologia de alta",
+      "complexidade, conduzida",
+      "por especialistas.",
+    ],
     subheadline:
       "Saúde, função mastigatória e estética em harmonização com a face. Um corpo clínico reunido para tratar o que exige critério técnico — não volume de atendimento.",
     ctaPrimario: { label: "Agendar avaliação", href: WHATSAPP_HREF },

@@ -45,9 +45,12 @@ export const Route = createFileRoute("/")({
 function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground scroll-smooth">
-      <Header data={clinica.header} />
       <main>
-        <HeroSection data={clinica.hero} />
+        <HeroSection
+          data={clinica.hero}
+          ghostWord={clinica.brand.ghostWord}
+          header={<Header data={clinica.header} />}
+        />
         <SelosSection data={clinica.selos} />
         <DiferenciaisSection data={clinica.diferenciais} />
         <AcompanhamentoSection data={clinica.acompanhamento} />

@@ -86,7 +86,7 @@ export function LocalizacaoSection({
               title={contato.mapaTitle}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="map-dark block h-[360px] w-full md:h-[460px]"
+              className="map-tint block h-[360px] w-full md:h-[460px]"
               style={{ border: 0 }}
             />
           </div>
