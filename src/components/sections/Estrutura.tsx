@@ -11,10 +11,14 @@ function SlotImage({
   slot,
   className,
   loading,
+  showRotulo = true,
 }: {
   slot: EstruturaSlot;
   className?: string;
   loading?: "lazy" | "eager";
+  /** No comparador os rótulos A/B já identificam cada lado — o rótulo do slot
+   *  ficaria empilhado no mesmo canto nas duas camadas. */
+  showRotulo?: boolean;
 }) {
   if (slot.src) {
     return (
@@ -31,11 +35,17 @@ function SlotImage({
       role="img"
       aria-label={slot.alt}
       className={cn(
-        "font-mono flex h-full w-full items-center justify-center bg-surface p-4 text-center text-xs uppercase tracking-[0.08em] text-muted-foreground",
+        // Slot vazio precisa parecer deliberado, não quebrado: textura de grid +
+        // rótulo ancorado embaixo à esquerda, fora da rota do handle central.
+        "tech-grid-sm flex h-full w-full items-end bg-surface p-3",
         className,
       )}
     >
-      {slot.rotulo}
+      {showRotulo ? (
+        <span className="font-mono rounded-md border border-border bg-background/80 px-2 py-1 text-[10px] uppercase tracking-[0.08em] text-muted-foreground backdrop-blur">
+          {slot.rotulo}
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -101,11 +111,11 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
           onPointerMove={onPointerMove}
           onPointerUp={stopDrag}
           onPointerCancel={stopDrag}
-          className="relative mt-14 aspect-[16/10] w-full select-none overflow-hidden rounded-2xl border border-border bg-surface touch-none"
+          className="relative mt-14 aspect-[16/9] w-full select-none overflow-hidden rounded-2xl border border-border bg-surface touch-none md:aspect-[21/9]"
         >
           {/* Base layer: lado B (fundo) */}
           <div className="absolute inset-0">
-            <SlotImage slot={ladoB} loading="lazy" />
+            <SlotImage slot={ladoB} loading="lazy" showRotulo={false} />
             <span className="font-mono absolute right-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-[11px] uppercase tracking-[0.08em] text-foreground backdrop-blur">
               {data.comparadorLadoBLabel}
             </span>
@@ -116,7 +126,7 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
             className="absolute inset-0 motion-reduce:transition-none"
             style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
           >
-            <SlotImage slot={ladoA} loading="lazy" />
+            <SlotImage slot={ladoA} loading="lazy" showRotulo={false} />
             <span className="font-mono absolute left-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-[11px] uppercase tracking-[0.08em] text-foreground backdrop-blur">
               {data.comparadorLadoALabel}
             </span>
@@ -145,9 +155,9 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
       </Reveal>
 
       {/* Grid de miniaturas */}
-      <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {data.imagens.map((slot, idx) => (
-          <Reveal key={idx} delay={(idx % 4) * 60}>
+          <Reveal key={idx} delay={(idx % 6) * 60}>
             <div className="aspect-[4/3] overflow-hidden rounded-xl border border-border bg-surface">
               <SlotImage slot={slot} loading="lazy" />
             </div>

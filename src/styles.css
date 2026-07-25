@@ -11,23 +11,31 @@
 :root {
   --radius: 0.625rem;
 
-  /* Base tech: preto mais fundo, neutro frio */
-  --background: oklch(0.13 0.008 265);
-  --foreground: oklch(0.97 0.002 265);
+  /* Azul no FUNDO, não só no botão: navy profunda de baixa saturação.
+     Escapa das duas armadilhas — azul-claro de consultório (genérico de
+     odontologia) e preto-com-accent-vivo (assinatura de site gerado por IA). */
+  --background: oklch(0.163 0.028 252);
+  --foreground: oklch(0.985 0.002 252);
 
   /* Superfícies elevadas por luminosidade, não por sombra */
-  --surface: oklch(0.17 0.009 265);
-  --surface-raised: oklch(0.215 0.011 265);
+  --surface: oklch(0.206 0.031 252);
+  --surface-raised: oklch(0.252 0.034 252);
 
   /* Hairline branco a ~9% de opacidade */
   --border: oklch(1 0 0 / 0.09);
 
-  /* Texto secundário (~68% branco) */
-  --muted: oklch(0.685 0.012 265);
+  /* Borda com presença, para elemento interativo (botão ghost).
+     A 9% o contorno desaparece e o botão vira texto flutuando. */
+  --border-strong: oklch(1 0 0 / 0.2);
 
-  /* Accent único: violeta vivo — produto de software, não clínico */
-  --accent: oklch(0.74 0.165 285);
-  --accent-foreground: oklch(0.145 0.02 285);
+  /* Texto secundário */
+  --muted: oklch(0.685 0.014 252);
+
+  /* Accent: azul limpo, mais claro que o fundo. A luminosidade de 0.72 é
+     requisito, não gosto — o mesmo token serve de texto de 12px sobre a navy
+     e de preenchimento de botão com texto escuro. Escurecer quebra o eyebrow. */
+  --accent: oklch(0.72 0.135 245);
+  --accent-foreground: oklch(0.163 0.028 252);
 
   --destructive: oklch(0.62 0.22 25);
 
@@ -53,6 +61,7 @@
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
@@ -115,20 +124,53 @@
   filter: invert(0.9) hue-rotate(180deg) saturate(0.7) brightness(0.95) contrast(0.95);
 }
 
-/* Grid de linhas finas, para o fundo do hero */
-.tech-grid {
-  background-image:
-    linear-gradient(to right, oklch(1 0 0 / 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(1 0 0 / 0.035) 1px, transparent 1px);
-  background-size: 64px 64px;
+/* Réguas verticais alinhadas ao grid de 12 colunas. Lê como estrutura
+   arquitetônica, não como textura decorativa — o grid pontilhado/quadriculado
+   virou clichê de página gerada por IA. */
+.rules-x {
+  background-image: linear-gradient(to right, oklch(1 0 0 / 0.055) 1px, transparent 1px);
+  background-size: calc(100% / 6) 100%;
 }
 
-/* Máscara radial para o grid sumir nas bordas em vez de cortar seco */
-.tech-grid-fade {
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+/* Fio horizontal de topo de seção */
+.hairline-top {
+  border-top: 1px solid var(--border);
+}
+
+/* Variante compacta, para caixas pequenas (placeholder de imagem) */
+.tech-grid-sm {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.055) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Fade vertical, para as réguas sumirem em vez de cortar seco */
+.rules-fade {
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 100%);
+}
+
+/* ---- Revelação por linha, para a headline do hero ----
+   Cada linha sobe de dentro de uma máscara. É movimento com intenção, não
+   fade-up genérico aplicado em tudo. */
+@keyframes line-rise {
+  from { transform: translateY(105%); }
+  to   { transform: translateY(0); }
+}
+
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.04em;
+}
+
+.line-rise {
+  display: block;
+  animation: line-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track, [data-marquee] { animation: none !important; }
+  .line-rise { animation: none !important; transform: none !important; }
 }

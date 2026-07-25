@@ -67,7 +67,7 @@ export function AcompanhamentoSection({ data }: { data: AcompanhamentoContent })
         </Reveal>
 
         <Reveal delay={120}>
-          <div className="rounded-2xl border border-border bg-surface p-4 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.6)] md:p-6">
+          <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xl md:p-6">
             {/* Faux window chrome */}
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-1.5">

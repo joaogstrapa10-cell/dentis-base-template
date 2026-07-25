@@ -9,23 +9,18 @@ export function HeroSection({ data }: { data: HeroContent }) {
       id="top"
       className="relative overflow-hidden pt-40 pb-24 md:pt-48 md:pb-40"
     >
-      {/* Grid técnico atrás do glow */}
+      {/* Réguas verticais alinhadas ao grid. Substituem o par grid-pontilhado +
+          glow radial, que juntos são o clichê visual de página gerada por IA. */}
       <div
-        className="pointer-events-none absolute inset-0 -z-10 tech-grid tech-grid-fade"
+        className="pointer-events-none absolute inset-0 rules-x rules-fade"
         aria-hidden="true"
-      />
-      {/* Glow radial em accent, bem sutil */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-24 mx-auto h-[520px] max-w-[900px] rounded-full opacity-[0.18] blur-[120px]"
-        style={{ background: "radial-gradient(closest-side, var(--accent), transparent)" }}
       />
       <div className="relative mx-auto w-full max-w-[1200px] px-6 md:px-10">
         <Reveal>
           <p className="font-mono text-xs uppercase tracking-[0.08em] text-accent">{data.eyebrow}</p>
         </Reveal>
         <Reveal delay={80}>
-          <h1 className="mt-6 max-w-[18ch] font-semibold leading-[1] tracking-[-0.03em] text-[clamp(3rem,7vw,5.5rem)] text-foreground">
+          <h1 className="mt-6 max-w-[20ch] font-medium leading-[1.02] tracking-[-0.035em] text-[clamp(2.25rem,6.4vw,5rem)] text-balance text-foreground">
             {data.headline}
           </h1>
         </Reveal>
@@ -50,7 +45,7 @@ export function HeroSection({ data }: { data: HeroContent }) {
               asChild
               size="lg"
               variant="outline"
-              className="h-12 border-border bg-transparent px-6 text-foreground hover:bg-surface hover:text-foreground"
+              className="h-12 border-border-strong bg-transparent px-6 text-foreground hover:bg-surface hover:text-foreground"
             >
               <a href={data.ctaSecundario.href}>{data.ctaSecundario.label}</a>
             </Button>
