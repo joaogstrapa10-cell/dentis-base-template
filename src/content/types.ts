@@ -170,7 +170,10 @@ export type TratamentosContent = {
 };
 
 export type BioMembro = {
-  nomePlaceholder: string;
+  nome: string;
+  /** CRO e especialidade. Enquanto não vierem da página /equipe/, fica o
+   *  placeholder nomeado — CRO é obrigatório em publicidade odontológica. */
+  credencial: string;
   /** Caminho em /public. `null` renderiza o slot rotulado. */
   retrato: string | null;
   retratoAlt: string;

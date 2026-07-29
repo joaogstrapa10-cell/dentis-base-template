@@ -96,9 +96,14 @@ export function BioSection({
                         alt={m.retratoAlt}
                         className="h-16 w-14 shrink-0 p-1.5"
                       />
-                      <p className="text-[0.8125rem] leading-[1.5] text-ink-muted">
-                        {m.nomePlaceholder}
-                      </p>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-ink-foreground">
+                          {m.nome}
+                        </p>
+                        <p className="mt-1 text-[0.75rem] leading-[1.4] text-ink-muted">
+                          {m.credencial}
+                        </p>
+                      </div>
                     </div>
                   </Reveal>
                 ))}

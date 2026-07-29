@@ -54,16 +54,19 @@ export function DepoimentosSection({ data }: { data: DepoimentosContent }) {
             key={item.autor}
             className="w-[86%] shrink-0 snap-start sm:w-[58%] lg:w-[38%]"
           >
-            <figure className="ink-grid flex h-full flex-col justify-between rounded-2xl bg-ink p-7 md:p-9">
+            {/* Sem justify-between: os depoimentos têm tamanhos muito diferentes,
+                e distribuir o espaço jogaria o texto curto para o meio do card.
+                A citação segue o ícone; só a assinatura é empurrada para baixo. */}
+            <figure className="ink-grid flex h-full flex-col rounded-2xl bg-ink p-7 md:p-9">
               <Quote
                 aria-hidden="true"
                 className="h-5 w-5 text-ink-muted"
                 strokeWidth={1.75}
               />
-              <blockquote className="mt-10 text-[1.0625rem] leading-[1.6] text-ink-foreground">
+              <blockquote className="mt-7 text-[0.9375rem] leading-[1.7] text-ink-foreground md:text-base">
                 {item.texto}
               </blockquote>
-              <figcaption className="mt-9 flex items-center gap-3.5 border-t border-ink-border pt-5">
+              <figcaption className="mt-auto flex items-center gap-3.5 border-t border-ink-border pt-5">
                 {item.foto ? (
                   <img
                     src={item.foto}
