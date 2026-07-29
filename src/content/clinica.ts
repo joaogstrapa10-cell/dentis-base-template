@@ -228,9 +228,24 @@ export const clinica: Clinica = {
     eyebrow: "Pacientes",
     titulo: "Quem já passou por aqui.",
     itens: [
-      { texto: "[DEPOIMENTO VERBATIM — Adriane Cardoso]", autor: "Adriane Cardoso" },
-      { texto: "[DEPOIMENTO VERBATIM — Josélia Bellegard]", autor: "Josélia Bellegard" },
-      { texto: "[DEPOIMENTO VERBATIM — Adília Miguel]", autor: "Adília Miguel" },
+      {
+        texto: "[DEPOIMENTO VERBATIM — Adriane Cardoso]",
+        autor: "Adriane Cardoso",
+        foto: null,
+        fotoAlt: "[RETRATO — Adriane Cardoso]",
+      },
+      {
+        texto: "[DEPOIMENTO VERBATIM — Josélia Bellegard]",
+        autor: "Josélia Bellegard",
+        foto: null,
+        fotoAlt: "[RETRATO — Josélia Bellegard]",
+      },
+      {
+        texto: "[DEPOIMENTO VERBATIM — Adília Miguel]",
+        autor: "Adília Miguel",
+        foto: null,
+        fotoAlt: "[RETRATO — Adília Miguel]",
+      },
     ],
   },
   comparativo: {
@@ -295,6 +310,7 @@ export const clinica: Clinica = {
     eyebrow: "Responsável técnico",
     nome: "Dr. Dalton Suzuki",
     credencial: "CRO-PR 9112",
+    retrato: null,
     retratoAlt: "[RETRATO — Dr. Dalton Suzuki]",
     corpo:
       "Graduado em Odontologia pela PUC-PR e mestre em Implantodontia pelo ILAPEO, com especialização em Periodontia pela APCD Bauru e em Implantodontia pela ABO-PR. Atua especialmente em pacientes de alta complexidade e coordena o corpo clínico da clínica, com foco em ética, compromisso e qualidade dos serviços. Em docência e pesquisa, tem trabalhos publicados, participação em livros didáticos e ministra aulas em cursos de pós-graduação em Implantodontia.",
@@ -306,9 +322,21 @@ export const clinica: Clinica = {
     ],
     corpoClinicoLabel: "Corpo clínico",
     corpoClinicoMembros: [
-      { nomePlaceholder: "[NOME COMPLETO — CRO — ESPECIALIDADE]", retratoAlt: "[RETRATO — profissional do corpo clínico]" },
-      { nomePlaceholder: "[NOME COMPLETO — CRO — ESPECIALIDADE]", retratoAlt: "[RETRATO — profissional do corpo clínico]" },
-      { nomePlaceholder: "[NOME COMPLETO — CRO — ESPECIALIDADE]", retratoAlt: "[RETRATO — profissional do corpo clínico]" },
+      {
+        nomePlaceholder: "[NOME COMPLETO — CRO — ESPECIALIDADE]",
+        retrato: null,
+        retratoAlt: "[RETRATO — profissional do corpo clínico]",
+      },
+      {
+        nomePlaceholder: "[NOME COMPLETO — CRO — ESPECIALIDADE]",
+        retrato: null,
+        retratoAlt: "[RETRATO — profissional do corpo clínico]",
+      },
+      {
+        nomePlaceholder: "[NOME COMPLETO — CRO — ESPECIALIDADE]",
+        retrato: null,
+        retratoAlt: "[RETRATO — profissional do corpo clínico]",
+      },
     ],
   },
   faq: {

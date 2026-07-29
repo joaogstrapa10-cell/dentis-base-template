@@ -11,21 +11,34 @@ import { GhostWord } from "@/components/Primitives";
  * uma faixa escura funciona como respiro e reancora a atenção. Não usa o
  * cabeçalho padrão das outras seções — aqui o nome do responsável É o título.
  */
-function RetratoPlaceholder({
-  label,
+/** Retrato real quando `src` existe; slot rotulado enquanto não existe. */
+function Retrato({
+  src,
+  alt,
   className,
 }: {
-  label: string;
+  src: string | null;
+  alt: string;
   className?: string;
 }) {
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        className={`overflow-hidden rounded-2xl border border-ink-border object-cover ${className ?? ""}`}
+      />
+    );
+  }
   return (
     <div
       role="img"
-      aria-label={label}
+      aria-label={alt}
       className={`slot-grid-ink flex items-end overflow-hidden rounded-2xl border border-ink-border bg-ink-elevated p-3 ${className ?? ""}`}
     >
       <span className="font-mono rounded-md border border-ink-border bg-ink/80 px-2 py-1 text-[10px] uppercase tracking-[0.08em] text-ink-muted backdrop-blur">
-        {label}
+        {alt}
       </span>
     </div>
   );
@@ -50,7 +63,7 @@ export function BioSection({
 
             <div className="mt-14 grid gap-10 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
               <Reveal>
-                <RetratoPlaceholder label={data.retratoAlt} className="aspect-[4/5]" />
+                <Retrato src={data.retrato} alt={data.retratoAlt} className="aspect-[4/5] w-full" />
               </Reveal>
 
               <Reveal delay={120}>
@@ -78,8 +91,9 @@ export function BioSection({
                 {data.corpoClinicoMembros.map((m, i) => (
                   <Reveal key={i} delay={i * 70}>
                     <div className="flex items-center gap-4 rounded-2xl border border-ink-border bg-ink-elevated/60 p-4">
-                      <RetratoPlaceholder
-                        label={m.retratoAlt}
+                      <Retrato
+                        src={m.retrato}
+                        alt={m.retratoAlt}
                         className="h-16 w-14 shrink-0 p-1.5"
                       />
                       <p className="text-[0.8125rem] leading-[1.5] text-ink-muted">

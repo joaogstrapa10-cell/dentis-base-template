@@ -63,8 +63,25 @@ export function DepoimentosSection({ data }: { data: DepoimentosContent }) {
               <blockquote className="mt-10 text-[1.0625rem] leading-[1.6] text-ink-foreground">
                 {item.texto}
               </blockquote>
-              <figcaption className="mt-9 border-t border-ink-border pt-5 text-sm text-ink-muted">
-                {item.autor}
+              <figcaption className="mt-9 flex items-center gap-3.5 border-t border-ink-border pt-5">
+                {item.foto ? (
+                  <img
+                    src={item.foto}
+                    alt={item.fotoAlt}
+                    loading="lazy"
+                    width={44}
+                    height={44}
+                    className="h-11 w-11 shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <span
+                    aria-hidden="true"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-ink-border bg-ink-elevated text-sm font-medium text-ink-muted"
+                  >
+                    {item.autor.trim().charAt(0)}
+                  </span>
+                )}
+                <span className="text-sm text-ink-muted">{item.autor}</span>
               </figcaption>
             </figure>
           </li>

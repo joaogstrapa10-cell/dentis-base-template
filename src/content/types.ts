@@ -123,6 +123,10 @@ export type AreasContent = {
 export type Depoimento = {
   texto: string;
   autor: string;
+  /** Retrato da paciente. Caminho em /public, ou `null` para cair no fallback
+   *  de inicial. Exige autorização de uso de imagem — ver docs/imagens.md. */
+  foto: string | null;
+  fotoAlt: string;
 };
 
 export type DepoimentosContent = {
@@ -167,6 +171,8 @@ export type TratamentosContent = {
 
 export type BioMembro = {
   nomePlaceholder: string;
+  /** Caminho em /public. `null` renderiza o slot rotulado. */
+  retrato: string | null;
   retratoAlt: string;
 };
 
@@ -174,6 +180,8 @@ export type BioContent = {
   eyebrow: string;
   nome: string;
   credencial: string;
+  /** Caminho em /public. `null` renderiza o slot rotulado. */
+  retrato: string | null;
   retratoAlt: string;
   corpo: string;
   titulacao: string[];
