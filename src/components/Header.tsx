@@ -8,17 +8,33 @@ import { PillButton } from "@/components/Primitives";
  * referência: wordmark à esquerda, navegação centralizada, CTA à direita.
  * Por isso todos os tokens aqui são da família `ink-*`.
  */
-export function Header({ data }: { data: HeaderContent }) {
+export function Header({
+  data,
+  logo,
+  logoAlt,
+}: {
+  data: HeaderContent;
+  /** Logo branco. `null` cai no wordmark em texto. */
+  logo?: string | null;
+  logoAlt?: string;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
     <header className="border-b border-ink-border">
-      <div className="mx-auto flex h-[72px] w-full max-w-[1200px] items-center justify-between gap-6 px-5 md:px-10">
-        <a
-          href="#top"
-          className="text-[0.9375rem] font-semibold tracking-[-0.01em] text-ink-foreground"
-        >
-          {data.wordmark}
+      <div className="mx-auto flex h-[76px] w-full max-w-[1200px] items-center justify-between gap-6 px-5 md:px-10">
+        <a href="#top" className="shrink-0">
+          {logo ? (
+            <img
+              src={logo}
+              alt={logoAlt ?? data.wordmark}
+              className="h-9 w-auto md:h-11"
+            />
+          ) : (
+            <span className="text-[0.9375rem] font-semibold tracking-[-0.01em] text-ink-foreground">
+              {data.wordmark}
+            </span>
+          )}
         </a>
 
         <nav className="hidden items-center gap-8 lg:flex">

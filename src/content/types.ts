@@ -5,6 +5,12 @@ export type Cta = { label: string; href: string };
 export type BrandContent = {
   nome: string;
   wordmark: string;
+  /** Logo em /public. `null` cai no wordmark em texto.
+   *  Atenção: o arquivo do site antigo é MONOCROMÁTICO BRANCO — só funciona
+   *  sobre superfície escura (header, dentro do cartão do hero, e footer).
+   *  Para uso sobre fundo claro é preciso a versão escura, que não existe. */
+  logo: string | null;
+  logoAlt: string;
   /** Palavra única e curta, para o wordmark gigante translúcido do hero e do
    *  footer. Precisa ser curta: é renderizada em ~17rem e cortada de propósito. */
   ghostWord: string;

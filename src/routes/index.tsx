@@ -49,7 +49,13 @@ function Landing() {
         <HeroSection
           data={clinica.hero}
           ghostWord={clinica.brand.ghostWord}
-          header={<Header data={clinica.header} />}
+          header={
+            <Header
+              data={clinica.header}
+              logo={clinica.brand.logo}
+              logoAlt={clinica.brand.logoAlt}
+            />
+          }
         />
         <SelosSection data={clinica.selos} />
         <DiferenciaisSection data={clinica.diferenciais} />

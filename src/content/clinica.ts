@@ -11,6 +11,8 @@ export const clinica: Clinica = {
   brand: {
     nome: "[NOME DA CLÍNICA]",
     wordmark: "Suzuki Odontologia",
+    logo: "/imagens/marca/logo-horizontal-branco.svg",
+    logoAlt: "Suzuki Odontologia",
     ghostWord: "Suzuki",
     responsavelTecnico: "Dr. Dalton Suzuki",
     croResponsavel: "CRO-PR 9112",

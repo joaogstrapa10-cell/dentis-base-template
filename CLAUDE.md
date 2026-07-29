@@ -184,9 +184,26 @@ dá permissão de workspace Git — sem isso não havia como conectar o GitHub d
 | Preview | `https://id-preview--1896d5fd-49f6-447e-88a1-adfbe7293de4.lovable.app` |
 
 ⚠️ **Essa cópia NÃO está ligada ao GitHub.** Remix copia arquivos, não a conexão de sync.
-Push neste repositório atualiza o projeto do João (`1f2b8513`), **não** o do Giulliano. Para o
-Giulliano receber mudança nova, remixar de novo — ou ele conecta o próprio GitHub e o repo
-passa a ser a fonte dos dois.
+Push neste repositório atualiza o projeto do João (`1f2b8513`), **não** o do Giulliano.
+
+### Fluxo decidido pelo usuário em 29/07
+
+**Trabalhar só no projeto do João. Recopiar para o Giulliano no momento da entrega.**
+
+Consequência prática, e a fonte de uma confusão real que já aconteceu: a cópia do Giulliano
+fica **congelada** entre entregas. O usuário abriu ela procurando as imagens novas e concluiu
+que nada tinha subido — quando na verdade estava tudo no projeto dele.
+
+- ✅ **Projeto de trabalho:** `1f2b8513-c555-4640-a43b-1b94dbd2734d` — `Dentis Base Template`,
+  workspace `João's Lovable`. É o único que recebe push. Toda verificação visual é aqui.
+- 🧊 **Cópia de entrega:** `1896d5fd-49f6-447e-88a1-adfbe7293de4` —
+  `Dentis Base Template — base tech`, workspace do Giulliano. **Não editar.** Está parada no
+  estado de 25/07: sem imagens, sem depoimentos reais, sem corpo clínico.
+- Na entrega: `remix_project` do `1f2b8513` para `workspace_id: 9G3fAkdnuvQqWzEwcVjW`, e apagar
+  as cópias antigas para não sobrar versão paralela editável.
+
+Os nomes dos dois projetos são quase iguais, o que agrava o risco de abrir o errado. Vale
+renomear a cópia de entrega com a data quando ela for gerada.
 
 🗑️ **Apagar `9d05bd27-0257-47ec-bd63-1901ee5d1c12`** do workspace do Giulliano: é a primeira
 tentativa, parou no commit `e8fa86b1`, sem tema tech, sem tipografia e sem a reformulação
