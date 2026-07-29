@@ -3,8 +3,8 @@ import { whatsappHref } from "@/lib/contato";
 
 // Fonte de verdade única para o número exibido. O href é derivado
 // via whatsappHref() — nunca escreva um wa.me literal aqui.
-const TELEFONE_NUMERO = "[TELEFONE-PRINCIPAL — a confirmar]";
-const WHATSAPP_NUMERO = "[WHATSAPP — a confirmar]";
+const TELEFONE_NUMERO = "[TELEFONE-PRINCIPAL: a confirmar]";
+const WHATSAPP_NUMERO = "[WHATSAPP: a confirmar]";
 const WHATSAPP_HREF = whatsappHref(WHATSAPP_NUMERO);
 
 export const clinica: Clinica = {
@@ -17,10 +17,10 @@ export const clinica: Clinica = {
     responsavelTecnico: "Dr. Dalton Suzuki",
     croResponsavel: "CRO-PR 9112",
     cnpj: "[CNPJ]",
-    copyright: "© 2026 [NOME DA CLÍNICA] · Responsável técnico: Dr. Dalton Suzuki — CRO-PR 9112 · [CNPJ]",
+    copyright: "© 2026 [NOME DA CLÍNICA] · Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112 · [CNPJ]",
   },
   contato: {
-    endereco: "Rua Atílio Bório, 547 — Alto da XV",
+    endereco: "Rua Atílio Bório, 547, Alto da XV",
     cep: "CEP 80045-120",
     cidadeUf: "Curitiba/PR",
     horario: "Segunda a sexta, 8h–12h e 13h30–18h",
@@ -28,17 +28,16 @@ export const clinica: Clinica = {
     whatsapp: WHATSAPP_NUMERO,
     mapaEmbedSrc:
       "https://www.google.com/maps?q=Rua+At%C3%ADlio+B%C3%B3rio+547+Alto+da+XV+Curitiba+PR&output=embed",
-    mapaTitle: "Mapa da localização da clínica na Rua Atílio Bório, 547 — Alto da XV, Curitiba/PR",
+    mapaTitle: "Mapa da localização da clínica na Rua Atílio Bório, 547, Alto da XV, Curitiba/PR",
   },
   header: {
     wordmark: "Suzuki Odontologia",
+    // Enxuta de propósito: o header é uma pílula flutuante e sete itens não
+    // cabem sem quebrar. A navegação completa fica no footer.
     nav: [
-      { label: "Diferenciais", href: "#diferenciais" },
-      { label: "Como conduzimos", href: "#acompanhamento" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "Áreas", href: "#areas" },
       { label: "Tratamentos", href: "#tratamentos" },
-      { label: "Responsável técnico", href: "#responsavel" },
       { label: "FAQ", href: "#faq" },
     ],
     cta: { label: "Agendar", href: WHATSAPP_HREF },
@@ -53,18 +52,18 @@ export const clinica: Clinica = {
       "por especialistas.",
     ],
     subheadline:
-      "Saúde, função mastigatória e estética em harmonização com a face. Um corpo clínico reunido para tratar o que exige critério técnico — não volume de atendimento.",
+      "Saúde, função mastigatória e estética em harmonização com a face. Um corpo clínico reunido para tratar o que exige critério técnico, não volume de atendimento.",
     ctaPrimario: { label: "Agendar avaliação", href: WHATSAPP_HREF },
     ctaSecundario: { label: "Conhecer a clínica", href: "#diferenciais" },
-    responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki — CRO-PR 9112",
+    responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112",
   },
   selos: {
     label: "Formação e titulação do corpo clínico",
     itens: [
-      "ILAPEO — Mestrado em Implantodontia",
-      "ABO-PR — Especialização em Implantodontia",
-      "APCD Bauru — Especialização em Periodontia",
-      "PUC-PR — Graduação",
+      "Mestrado em Implantodontia, ILAPEO",
+      "Especialização em Implantodontia, ABO-PR",
+      "Especialização em Periodontia, APCD Bauru",
+      "Graduação, PUC-PR",
       "CRO-PR",
       "[SELO ADICIONAL 1]",
       "[SELO ADICIONAL 2]",
@@ -98,7 +97,7 @@ export const clinica: Clinica = {
         icon: "scan-face",
         titulo: "Harmonização com a face",
         descricao:
-          "Função mastigatória e estética tratadas em conjunto, considerando a face como um todo — não o dente isolado.",
+          "Função mastigatória e estética tratadas em conjunto, considerando a face como um todo, não o dente isolado.",
       },
     ],
   },
@@ -263,7 +262,7 @@ export const clinica: Clinica = {
       {
         titulo: "Periodontia",
         descricao:
-          "Tratamento dos tecidos de suporte do dente — gengiva e osso — base de qualquer reabilitação duradoura.",
+          "Tratamento da gengiva e do osso que sustentam o dente, base de qualquer reabilitação duradoura.",
         tags: ["Gengiva", "Suporte"],
       },
       {
@@ -368,58 +367,58 @@ export const clinica: Clinica = {
     corpo:
       "Graduado em Odontologia pela PUC-PR e mestre em Implantodontia pelo ILAPEO, com especialização em Periodontia pela APCD Bauru e em Implantodontia pela ABO-PR. Atua especialmente em pacientes de alta complexidade e coordena o corpo clínico da clínica, com foco em ética, compromisso e qualidade dos serviços. Em docência e pesquisa, tem trabalhos publicados, participação em livros didáticos e ministra aulas em cursos de pós-graduação em Implantodontia.",
     titulacao: [
-      "Mestre em Implantodontia — ILAPEO",
-      "Especialista em Implantodontia — ABO-PR",
-      "Especialista em Periodontia — APCD Bauru",
-      "Graduação — PUC-PR",
+      "Mestre em Implantodontia, ILAPEO",
+      "Especialista em Implantodontia, ABO-PR",
+      "Especialista em Periodontia, APCD Bauru",
+      "Graduação, PUC-PR",
     ],
     corpoClinicoLabel: "Corpo clínico",
     corpoClinicoMembros: [
       {
         nome: "Ana Lúcia",
-        credencial: "[CRO — ESPECIALIDADE]",
+        credencial: "[CRO e ESPECIALIDADE]",
         retrato: "/imagens/equipe/ana-lucia.webp",
         retratoAlt: "Retrato de Ana Lúcia, do corpo clínico",
       },
       {
         nome: "Carolina Cabral",
-        credencial: "[CRO — ESPECIALIDADE]",
+        credencial: "[CRO e ESPECIALIDADE]",
         retrato: "/imagens/equipe/carolina-cabral.webp",
         retratoAlt: "Retrato de Carolina Cabral, do corpo clínico",
       },
       {
         nome: "Cláudio Kleinhans",
-        credencial: "[CRO — ESPECIALIDADE]",
+        credencial: "[CRO e ESPECIALIDADE]",
         retrato: "/imagens/equipe/claudio-kleinhans.webp",
         retratoAlt: "Retrato de Cláudio Kleinhans, do corpo clínico",
       },
       {
         nome: "Denise Karpen",
-        credencial: "[CRO — ESPECIALIDADE]",
+        credencial: "[CRO e ESPECIALIDADE]",
         retrato: "/imagens/equipe/denise-karpen.webp",
         retratoAlt: "Retrato de Denise Karpen, do corpo clínico",
       },
       {
         nome: "Fabrício Leite",
-        credencial: "[CRO — ESPECIALIDADE]",
+        credencial: "[CRO e ESPECIALIDADE]",
         retrato: "/imagens/equipe/fabricio-leite.webp",
         retratoAlt: "Retrato de Fabrício Leite, do corpo clínico",
       },
       {
         nome: "Michele",
-        credencial: "[CRO — ESPECIALIDADE]",
+        credencial: "[CRO e ESPECIALIDADE]",
         retrato: "/imagens/equipe/michele.webp",
         retratoAlt: "Retrato de Michele, do corpo clínico",
       },
       {
         nome: "Patrícia",
-        credencial: "[CRO — ESPECIALIDADE]",
+        credencial: "[CRO e ESPECIALIDADE]",
         retrato: "/imagens/equipe/patricia.webp",
         retratoAlt: "Retrato de Patrícia, do corpo clínico",
       },
       {
         nome: "Vitor Coró",
-        credencial: "[CRO — ESPECIALIDADE]",
+        credencial: "[CRO e ESPECIALIDADE]",
         retrato: "/imagens/equipe/vitor-coro.webp",
         retratoAlt: "Retrato de Vitor Coró, do corpo clínico",
       },
@@ -446,7 +445,7 @@ export const clinica: Clinica = {
       {
         pergunta: "Quanto tempo leva um tratamento com implantes?",
         resposta:
-          "Depende da condição óssea e da extensão do caso. O prazo estimado é definido no plano de tratamento, após a avaliação — não antes.",
+          "Depende da condição óssea e da extensão do caso. O prazo estimado é definido no plano de tratamento, após a avaliação, não antes.",
       },
       {
         pergunta: "Existe garantia sobre os procedimentos?",
@@ -455,7 +454,7 @@ export const clinica: Clinica = {
       {
         pergunta: "Sinto muito medo de dentista. Como vocês lidam com isso?",
         resposta:
-          "[CONFIRMAR: recursos disponíveis para pacientes ansiosos — sedação, anestesia, condução do atendimento]",
+          "[CONFIRMAR: recursos para pacientes ansiosos, como sedação, anestesia e condução do atendimento]",
       },
       {
         pergunta: "Preciso de encaminhamento de outro dentista?",
@@ -492,8 +491,8 @@ export const clinica: Clinica = {
     telefoneLabel: "Telefone",
     whatsappLabel: "WhatsApp",
     socials: [
-      { label: "Facebook — Suzuki Odontologia", href: "https://facebook.com/suzukiodontologia", icon: "facebook" },
-      { label: "Instagram — Suzuki Odontologia", href: "https://instagram.com/suzukiodontologiaoficial", icon: "instagram" },
+      { label: "Suzuki Odontologia no Facebook", href: "https://facebook.com/suzukiodontologia", icon: "facebook" },
+      { label: "Suzuki Odontologia no Instagram", href: "https://instagram.com/suzukiodontologiaoficial", icon: "instagram" },
     ],
   },
 };

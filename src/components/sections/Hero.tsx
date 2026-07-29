@@ -1,22 +1,22 @@
-import type { ReactNode } from "react";
 import type { HeroContent } from "@/content/types";
 import { PillButton, TextLink, GhostWord } from "@/components/Primitives";
 import { Reveal } from "@/components/Reveal";
 
 /**
  * Layout do hero segue a referência: um CARTÃO ESCURO arredondado encaixado
- * dentro da página clara, com o header dentro dele, headline à esquerda e
- * subheadline + CTA numa segunda coluna à direita. O wordmark gigante
- * translúcido é cortado pela borda inferior do cartão.
+ * dentro da página clara, headline à esquerda e subheadline + CTA numa segunda
+ * coluna à direita. O wordmark gigante translúcido é cortado pela borda
+ * inferior do cartão.
+ *
+ * O header não vive aqui: é uma pílula flutuante no nível da página. O
+ * padding-top generoso existe para o conteúdo não passar por baixo dela.
  */
 export function HeroSection({
   data,
   ghostWord,
-  header,
 }: {
   data: HeroContent;
   ghostWord: string;
-  header?: ReactNode;
 }) {
   return (
     <section id="top" className="px-3 pt-3 md:px-4 md:pt-4">
@@ -27,16 +27,8 @@ export function HeroSection({
           className="ink-arc pointer-events-none absolute inset-0 opacity-45"
         />
 
-        {header ? <div className="relative z-20">{header}</div> : null}
-
-        <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pb-40 pt-14 md:px-10 md:pb-56 md:pt-20">
-          <Reveal>
-            <p className="inline-flex items-center rounded-full border border-ink-border bg-ink-elevated/70 px-4 py-1.5 text-[13px] text-ink-muted backdrop-blur">
-              {data.eyebrow}
-            </p>
-          </Reveal>
-
-          <div className="mt-9 grid gap-10 md:mt-12 md:grid-cols-[1.35fr_1fr] md:gap-16">
+        <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pb-40 pt-28 md:px-10 md:pb-56 md:pt-36">
+          <div className="grid gap-10 md:grid-cols-[1.35fr_1fr] md:gap-16">
             <h1 className="display-1 text-ink-foreground">
               {data.headline.map((linha, i) => (
                 <span key={i} className="line-mask">
