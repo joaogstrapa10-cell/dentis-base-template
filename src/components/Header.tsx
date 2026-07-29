@@ -89,13 +89,13 @@ export function Header({
       <a
         href="#top"
         aria-label={data.wordmark}
-        className="fixed left-4 top-4 z-50 md:left-8 md:top-6"
+        className="fixed left-6 top-6 z-50 md:left-14 md:top-10"
       >
         {logo ? (
           <img
             src={logo}
             alt={logoAlt ?? data.wordmark}
-            className="h-11 w-auto md:h-14"
+            className="h-14 w-auto md:h-20"
           />
         ) : (
           <span className="text-base font-semibold tracking-[-0.01em] text-ink-foreground">
