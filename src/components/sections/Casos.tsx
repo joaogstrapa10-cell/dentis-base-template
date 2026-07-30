@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { CasoClinico, CasosContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
+import { TextLink } from "@/components/Primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -62,17 +63,23 @@ function Campo({ rotulo, children }: { rotulo: string; children: ReactNode }) {
   );
 }
 
-export function CasosSection({ data }: { data: CasosContent }) {
+/**
+ * Pilha de casos. A MESMA peça serve a home (recortada por `limite`) e a
+ * página /casos (inteira) — a alternativa era duplicar o layout em dois
+ * arquivos e ver os dois divergirem na primeira correção.
+ */
+export function PilhaDeCasos({
+  data,
+  limite,
+}: {
+  data: CasosContent;
+  /** Quantos casos mostrar. Omitido, mostra todos. */
+  limite?: number;
+}) {
+  const itens = limite ? data.itens.slice(0, limite) : data.itens;
   return (
-    <Section id="casos">
-      <SectionHeader
-        eyebrow={data.eyebrow}
-        titulo={data.titulo}
-        descricao={data.descricao}
-      />
-
-      <div className="mt-14 border-t border-border">
-        {data.itens.map((caso, i) => (
+    <div className="border-t border-border">
+      {itens.map((caso, i) => (
           <Reveal key={caso.numero} delay={i * 90}>
             <article className="grid gap-8 border-b border-border py-10 md:grid-cols-2 md:gap-12 md:py-14 lg:gap-16">
               {/* `md:order-2` nos ímpares: o registro troca de lado a cada caso.
@@ -116,16 +123,53 @@ export function CasosSection({ data }: { data: CasosContent }) {
                   </Campo>
                 </dl>
               </div>
-            </article>
-          </Reveal>
-        ))}
+          </article>
+        </Reveal>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Aviso de compliance. Componente próprio porque aparece em DOIS lugares — o
+ * teaser da home e a página /casos — e as duas cópias têm de dizer a mesma
+ * coisa. É exigência da CFO-196/2019, não rodapé de cortesia: não remover de
+ * nenhum dos dois.
+ */
+export function AvisoCasos({ texto }: { texto: string }) {
+  return (
+    <p className="mt-8 max-w-[80ch] text-[0.8125rem] leading-[1.6] text-muted">{texto}</p>
+  );
+}
+
+/**
+ * Seção da home: é CHAMADA, não a galeria completa. Mostra `limiteNaHome` casos
+ * e manda para /casos. Assim a home não cresce junto com o acervo de casos da
+ * clínica.
+ */
+export function CasosSection({ data }: { data: CasosContent }) {
+  const temMais = data.itens.length > data.limiteNaHome;
+  return (
+    <Section id="casos">
+      <SectionHeader
+        eyebrow={data.eyebrow}
+        titulo={data.titulo}
+        descricao={data.descricao}
+        // A ação entra na linha do título, que é o padrão do SectionHeader.
+        // Só aparece quando há caso além dos que a home mostra: um "ver todos"
+        // que leva à mesma lista já visível é ruído.
+        acao={
+          temMais ? (
+            <TextLink label={data.verTodos.label} href={data.verTodos.href} />
+          ) : undefined
+        }
+      />
+
+      <div className="mt-14">
+        <PilhaDeCasos data={data} limite={data.limiteNaHome} />
       </div>
 
-      {/* Aviso de compliance. Fica visível, no mesmo registro do rodapé do
-          comparativo. É exigência da CFO-196/2019, não rodapé de cortesia. */}
-      <p className="mt-8 max-w-[80ch] text-[0.8125rem] leading-[1.6] text-muted">
-        {data.aviso}
-      </p>
+      <AvisoCasos texto={data.aviso} />
     </Section>
   );
 }

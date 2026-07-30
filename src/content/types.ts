@@ -165,6 +165,19 @@ export type CasosContent = {
   condutaLabel: string;
   especialidadesLabel: string;
   duracaoLabel: string;
+  /** CTA da home para a página dedicada. `href` é rota interna, não link
+   *  externo — nunca marcar `external` nele. */
+  verTodos: Cta;
+  /** Quantos casos a home mostra antes do CTA. A página mostra todos, sempre.
+   *  Existe para a home continuar sendo chamada quando a clínica acumular
+   *  casos, em vez de crescer sem limite. */
+  limiteNaHome: number;
+  /** Textos exclusivos da página /casos. */
+  pagina: {
+    titulo: string;
+    descricao: string;
+    voltarLabel: string;
+  };
   /** Aviso de compliance, renderizado visível no fim da seção. Obrigatório: é
    *  a seção do site com maior exposição à CFO-196/2019. */
   aviso: string;

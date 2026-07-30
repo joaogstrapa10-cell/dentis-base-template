@@ -300,6 +300,14 @@ export const clinica: Clinica = {
     duracaoLabel: "Duração",
     aviso:
       "Descrição de processo clínico conduzido nesta clínica. Não constitui promessa de resultado. Cada caso é único e depende de diagnóstico individual. Em conformidade com a Resolução CFO-196/2019, esta seção não divulga imagens comparativas de antes e depois.",
+    verTodos: { label: "Ver todos os casos", href: "/casos" },
+    limiteNaHome: 2,
+    pagina: {
+      titulo: "Casos conduzidos.",
+      descricao:
+        "Cada caso documentado por etapa: a situação clínica de partida, a conduta, as especialidades envolvidas e o tempo de tratamento.",
+      voltarLabel: "Voltar para a home",
+    },
     itens: [
       {
         numero: "01",

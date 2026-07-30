@@ -62,15 +62,9 @@ export function TratamentosSection({ data }: { data: TratamentosContent }) {
 
                 <div className="mt-9">
                   {card.destaque ? (
-                    // `tone="light"`: é o CTA do card em destaque, e com o site
-                    // escuro a pílula clara é o que o faz sobressair. No padrão
-                    // (`ink`) ele ficaria escuro sobre cartão escuro.
-                    <PillButton
-                      label={card.cta.label}
-                      href={card.cta.href}
-                      tone="light"
-                      external
-                    />
+                    // Padrão (`ink`): pílula verde sobre o cartão branco. Ficou
+                    // `light` por uma rodada, quando os cartões eram escuros.
+                    <PillButton label={card.cta.label} href={card.cta.href} external />
                   ) : (
                     <TextLink label={card.cta.label} href={card.cta.href} external />
                   )}

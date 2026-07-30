@@ -75,13 +75,13 @@ export function IconeWhatsApp({ className }: { className?: string }) {
  * O ícone é a marca do WhatsApp, não um calendário: os CTAs não abrem agenda,
  * abrem conversa. Trocado em 30/07 por correção do usuário.
  *
- * `tone="light"` → PÍLULA CLARA, invertida: fundo `--foreground`, texto
- *   `--background`. É o CTA principal. Com o site inteiro escuro (30/07) ela
- *   deixou de ser "para bloco escuro" e passou a servir em qualquer seção.
- *   Antes era `bg-surface`, e isso quebrou na virada: `--surface` escureceu, e a
- *   pílula clara virou pílula escura sobre fundo escuro.
- * `tone="ink"` (padrão) → pílula ESCURA elevada com contorno, para ação
- *   secundária. Depende de `border-strong`: sem contorno ela se perde no fundo.
+ * `tone="ink"` (padrão) → pílula VERDE sobre superfície branca: página, cartões.
+ * `tone="light"` → pílula BRANCA sobre bloco verde: hero, footer.
+ *
+ * Os dois dependem da alternância verde/branco da paleta. Na rodada em que o
+ * site foi todo escuro os dois quebraram junto — `bg-surface` escureceu e a
+ * pílula branca virou escura sobre fundo escuro. Se a página voltar a
+ * escurecer, este par precisa ser revisto, não só os tokens.
  */
 export function PillButton({
   label,
@@ -105,8 +105,8 @@ export function PillButton({
         "group inline-flex items-center gap-2.5 rounded-xl p-1.5 pr-4 text-sm font-semibold",
         "transition-colors duration-300",
         isInk
-          ? "border border-border-strong bg-surface text-foreground hover:bg-surface-raised"
-          : "bg-foreground text-background hover:bg-accent hover:text-accent-foreground",
+          ? "bg-ink text-ink-foreground hover:bg-ink-elevated"
+          : "bg-surface text-foreground hover:bg-surface-raised",
         className,
       )}
     >

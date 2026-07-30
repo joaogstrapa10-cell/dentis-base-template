@@ -36,69 +36,70 @@
      Divisão de papéis: petróleo é estrutura e autoridade, dourado é ornamento e
      calor. O dourado nunca vira texto sobre fundo claro — não tem contraste. */
 
-  /* ---------- SITE INTEIRO ESCURO, no petróleo do hero ----------
-     Decisão do usuário em 30/07, pedida três vezes com clareza crescente e
-     fechada em "o site todo com a mesma paleta da sessão inicial".
+  /* ---------- VERDE + BRANCO ----------
+     Direção final do usuário em 30/07: "mesclar a identidade do site com o
+     verde + branco". Reverte o site-inteiro-escuro da rodada anterior.
 
-     As duas tentativas anteriores foram leituras minhas erradas do mesmo
-     pedido: primeiro tirei a moldura clara do hero, depois tingi o claro de
-     petróleo. Não era nenhuma das duas — era escurecer a página.
+     Histórico das quatro tentativas, para ninguém refazer o caminho: creme
+     morno → claro tingido de petróleo → tudo escuro → verde e branco
+     alternando. As três primeiras foram leituras erradas de "o site todo na
+     paleta da Suzuki".
 
-     Hierarquia por PROFUNDIDADE, e é ela que impede o site de virar uma parede
-     verde chapada. Quatro níveis, do mais fundo ao mais alto:
-       --background      página
-       --ink             blocos de destaque (hero, bio, footer)
-       --surface         cartões sobre a página
-       --surface-raised  peças dentro do cartão
-     A página é o nível MAIS FUNDO de propósito: assim todo cartão sobe, e a
-     sombra faz o trabalho que a borda fazia no tema claro. */
-  --background: oklch(0.178 0.034 197);
-  --foreground: oklch(0.972 0.006 190);
+     A regra agora é ALTERNÂNCIA, não predominância. Branco carrega o conteúdo
+     de leitura (texto corrido, cartões, tabelas); o verde-petróleo carrega os
+     blocos de presença (hero, bio, footer). Nenhum dos dois vence — é o
+     contraste entre eles que é a identidade.
 
-  /* Cartões sobre a página */
-  --surface: oklch(0.242 0.041 197);
-  --surface-raised: oklch(0.283 0.044 197);
+     O verde não fica só nos blocos: ele é a cor do TEXTO sobre o branco.
+     `--foreground` é petróleo escuro, não cinza neutro. É isso que faz a página
+     branca continuar sendo da Suzuki mesmo sem nenhum bloco verde na tela. */
 
-  /* Bordas em BRANCO com alfa, não em `--foreground` com alfa: sobre escuro a
-     borda tem de clarear, e alfa de cor clara sobre fundo escuro clareia. */
-  --border: oklch(1 0 0 / 0.11);
-  --border-strong: oklch(1 0 0 / 0.2);
+  /* Página: branco com um sussurro de verde. Não é branco puro porque
+     `--surface` é, e cartão branco precisa subir do fundo. */
+  --background: oklch(0.984 0.004 190);
+  --foreground: oklch(0.255 0.038 197);
 
-  --muted: oklch(0.742 0.020 190);
+  /* Cartões sobre a página: branco puro, o "branco" do pedido */
+  --surface: oklch(1 0 0);
+  --surface-raised: oklch(0.968 0.008 190);
 
-  /* Blocos de destaque. Continuam existindo mesmo com a página escura: são um
-     degrau acima dela, e é esse degrau que separa hero, bio e footer do resto.
-     `--ink-*` e a família da página convergiram, mas seguem separados porque os
-     componentes usam um ou outro por intenção — e porque uma variante clara
-     futura (Rogério, Décio) troca só a família da página. */
+  /* Bordas derivadas do texto, para acompanharem o matiz do verde */
+  --border: oklch(0.255 0.038 197 / 0.13);
+  --border-strong: oklch(0.255 0.038 197 / 0.24);
+
+  --muted: oklch(0.505 0.028 197);
+
+  /* Blocos de presença: o verde-petróleo da Suzuki. `--ink` é um tom mais fundo
+     que o #013435 do site, para aguentar área cheia; `--ink-elevated` é
+     praticamente ele, para as peças dentro do bloco. */
   --ink: oklch(0.213 0.040 197);
   --ink-elevated: oklch(0.268 0.046 197);
   --ink-foreground: oklch(0.985 0.004 85);
   --ink-muted: oklch(0.738 0.020 190);
   --ink-border: oklch(1 0 0 / 0.12);
 
-  /* Accent CLARO, e isso é contraste, não gosto: com a página escura, o
-     petróleo médio (L 0.44) que servia de ícone sobre claro fica invisível.
-     Este é o mesmo papel do `#004f50` do site antigo — ícones, fios, números —
-     mas invertido para o fundo escuro. Como ele também é fundo de peça pequena,
-     `--accent-foreground` é escuro. */
-  --accent: oklch(0.795 0.085 192);
-  --accent-foreground: oklch(0.19 0.035 197);
+  /* Accent: petróleo médio, o mesmo papel que ele tem no site antigo — títulos,
+     ícones, fios. `L 0.44` é o ponto que atende as DUAS exigências feitas dele:
+     escuro o bastante para ícone sobre branco, claro o bastante para texto
+     branco em cima. Com o site escuro ele precisou ser claro; voltando ao
+     branco, volta a ser médio. */
+  --accent: oklch(0.44 0.080 196);
+  --accent-foreground: oklch(0.99 0.003 85);
 
   /* Dourado: o amarelo do botão do site, puxado alguns graus para a madeira do
-     balcão. Com a página escura ele passou a servir em qualquer seção — antes
-     só valia dentro dos blocos. */
+     balcão. Só sobre escuro — tile do botão, arco do hero, estrelas. Sobre
+     branco não tem contraste. */
   --gold: oklch(0.80 0.150 84);
   --gold-foreground: oklch(0.24 0.035 80);
   /* Versão do arco do hero: mais funda e translúcida. O dourado cheio a 0.80
      de luminosidade lava o bloco inteiro. */
   --gold-glow: oklch(0.60 0.125 72 / 0.9);
 
-  /* Sinais da tabela comparativa, clareados para o fundo escuro */
-  --positive: oklch(0.78 0.135 168);
-  --warning: oklch(0.80 0.145 82);
+  /* Sinais da tabela comparativa, na faixa que serve fundo branco */
+  --positive: oklch(0.52 0.115 168);
+  --warning: oklch(0.72 0.145 78);
 
-  --destructive: oklch(0.70 0.17 25);
+  --destructive: oklch(0.55 0.20 25);
 
   --section-py: 5rem;
 }
@@ -158,10 +159,10 @@
 @layer base {
   * { border-color: var(--color-border); }
   html {
-    /* `dark` desde a virada de 30/07. Sem isso o navegador ainda pinta
-       scrollbar, autofill e controles de formulário no esquema claro, e eles
-       ficam sendo as únicas peças brancas do site. */
-    color-scheme: dark;
+    /* `light`: a página é branca. Ficou `dark` por uma rodada, quando o site
+       inteiro era escuro — se a página voltar a escurecer, isto volta junto,
+       senão scrollbar e autofill ficam sendo as únicas peças claras. */
+    color-scheme: light;
     scroll-behavior: smooth;
   }
   body {

@@ -56,19 +56,19 @@ function Landing() {
         <SelosSection data={clinica.selos} />
         <DiferenciaisSection data={clinica.diferenciais} />
         <AcompanhamentoSection data={clinica.acompanhamento} />
-        <LocalizacaoSection data={clinica.localizacao} contato={clinica.contato} />
         <EstruturaSection data={clinica.estrutura} />
         <AreasSection data={clinica.areas} />
         <CasosSection data={clinica.casos} />
         <DepoimentosSection
           data={clinica.depoimentos}
-          logo={clinica.brand.logo}
+          logo={clinica.brand.logoEscuro}
           logoAlt={clinica.brand.logoAlt}
         />
         <ComparativoSection data={clinica.comparativo} />
         <TratamentosSection data={clinica.tratamentos} />
         <BioSection data={clinica.bio} />
         <FaqSection data={clinica.faq} />
+        <LocalizacaoSection data={clinica.localizacao} contato={clinica.contato} />
       </main>
       <FooterSection
         data={clinica.footer}

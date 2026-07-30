@@ -137,10 +137,11 @@ export function DepoimentosSection({
   logoAlt,
 }: {
   data: DepoimentosContent;
-  /** Marca na versão que contrasta com a superfície do cartão. Era a ESCURA
-   *  enquanto a página era clara; com o site inteiro escuro (30/07) voltou a ser
-   *  a BRANCA. `brand.logoEscuro` continua existindo para uma variante clara
-   *  futura. `null` cai no nome em texto, senão a seção perde o cabeçalho. */
+  /** Marca na versão que contrasta com a superfície do cartão — ESCURA, porque
+   *  esta seção fica no branco. Ela virou branca por uma rodada, quando o site
+   *  todo era escuro. Ao trocar a paleta, conferir esta prop: logo monocromático
+   *  na cor errada não quebra o build, simplesmente desaparece.
+   *  `null` cai no nome em texto, senão a seção perde o cabeçalho. */
   logo: string | null;
   logoAlt: string;
 }) {
