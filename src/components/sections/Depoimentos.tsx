@@ -2,7 +2,7 @@ import { Star } from "lucide-react";
 import type { Depoimento, DepoimentosContent } from "@/content/types";
 import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
-import { PillButton } from "@/components/Primitives";
+import { cn } from "@/lib/utils";
 
 /**
  * Estrutura: cartão de resumo do perfil à esquerda e carrossel de avaliações
@@ -31,24 +31,33 @@ function paraNota(valor: string): number {
  * proporção exata da nota: 4,8 tem de mostrar quatro estrelas e um resto, não
  * cinco cheias. O arredondamento para cima seria propaganda, não layout.
  */
-function Estrelas({ nota, label }: { nota: number; label: string }) {
+function Estrelas({
+  nota,
+  label,
+  /** Tamanho da estrela. O cartão de resumo pede maior que o do carrossel. */
+  tamanho = "h-4 w-4",
+}: {
+  nota: number;
+  label: string;
+  tamanho?: string;
+}) {
   const preenchido = `${(Math.max(0, Math.min(5, nota)) / 5) * 100}%`;
   return (
     <div className="relative inline-flex" role="img" aria-label={label}>
-      <div aria-hidden="true" className="flex items-center gap-0.5">
+      <div aria-hidden="true" className="flex items-center gap-1">
         {Array.from({ length: 5 }, (_, i) => (
-          <Star key={i} className="h-4 w-4 fill-border text-border" strokeWidth={0} />
+          <Star key={i} className={cn(tamanho, "fill-border text-border")} strokeWidth={0} />
         ))}
       </div>
       <div
         aria-hidden="true"
-        className="absolute inset-y-0 left-0 flex items-center gap-0.5 overflow-hidden"
+        className="absolute inset-y-0 left-0 flex items-center gap-1 overflow-hidden"
         style={{ width: preenchido }}
       >
         {Array.from({ length: 5 }, (_, i) => (
           <Star
             key={i}
-            className="h-4 w-4 shrink-0 fill-warning text-warning"
+            className={cn(tamanho, "shrink-0 fill-warning text-warning")}
             strokeWidth={0}
           />
         ))}
@@ -118,7 +127,17 @@ function CartaoAvaliacao({
   );
 }
 
-export function DepoimentosSection({ data }: { data: DepoimentosContent }) {
+export function DepoimentosSection({
+  data,
+  logo,
+  logoAlt,
+}: {
+  data: DepoimentosContent;
+  /** Versão ESCURA da marca: o cartão fica sobre superfície clara. `null` cai no
+   *  nome em texto, senão a seção perde o cabeçalho. */
+  logo: string | null;
+  logoAlt: string;
+}) {
   const { resumo } = data;
   // Lista duplicada para a emenda do laço cair sobre conteúdo idêntico.
   const faixa = [...data.itens, ...data.itens];
@@ -126,19 +145,34 @@ export function DepoimentosSection({ data }: { data: DepoimentosContent }) {
   return (
     <Section id="depoimentos">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,17rem)_1fr] lg:items-center lg:gap-14">
-        {/* Resumo do perfil */}
+        {/* Resumo do perfil: marca, estrelas, nota. Nada mais — a contagem e o
+            botão de avaliar saíram em 30/07. O logo é o cabeçalho da seção: o
+            `alt` carrega o nome do negócio, então o h2 continua tendo texto
+            para leitor de tela. */}
         <Reveal>
           <div>
-            <h2 className="display-3 text-foreground">{resumo.nomeNegocio}</h2>
-            <div className="mt-4 flex items-center gap-2.5">
-              <Estrelas nota={paraNota(resumo.nota)} label={`${resumo.nota} de 5`} />
-              <span className="text-sm font-semibold text-foreground">{resumo.nota}</span>
-            </div>
-            {resumo.totalLabel ? (
-              <p className="mt-2 text-sm text-muted">{resumo.totalLabel}</p>
-            ) : null}
-            <div className="mt-6">
-              <PillButton label={resumo.cta.label} href={resumo.cta.href} external />
+            <h2>
+              {logo ? (
+                <img
+                  src={logo}
+                  alt={logoAlt}
+                  width={686}
+                  height={302}
+                  className="h-20 w-auto"
+                />
+              ) : (
+                <span className="display-3 text-foreground">{resumo.nomeNegocio}</span>
+              )}
+            </h2>
+            <div className="mt-6 flex items-baseline gap-3">
+              <Estrelas
+                nota={paraNota(resumo.nota)}
+                label={`${resumo.nota} de 5`}
+                tamanho="h-5 w-5"
+              />
+              <span className="text-lg font-semibold tabular-nums text-foreground">
+                {resumo.nota}
+              </span>
             </div>
           </div>
         </Reveal>

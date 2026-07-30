@@ -12,6 +12,10 @@ export const clinica: Clinica = {
     nome: "[NOME DA CLÍNICA]",
     wordmark: "Suzuki Odontologia",
     logo: "/imagens/marca/logo-horizontal-branco.svg",
+    // Mesma arte do logo branco, recolorida no traço para a cor de texto da
+    // página (`--foreground`, #1b222c). Gerada em 30/07 porque a clínica só
+    // tinha a versão branca, e o cartão de avaliações fica em fundo claro.
+    logoEscuro: "/imagens/marca/logo-horizontal-escuro.svg",
     logoAlt: "Suzuki Odontologia",
     ghostWord: "Suzuki",
     responsavelTecnico: "Dr. Dalton Suzuki",
@@ -276,27 +280,21 @@ export const clinica: Clinica = {
   depoimentos: {
     eyebrow: "Pacientes",
     titulo: "Quem já passou por aqui.",
-    // Números do perfil real da clínica no Google Business, extraídos em 30/07.
-    // Proveniência e o que não foi possível ler: public/imagens/originais/AVALIACOES-GOOGLE.json
-    // Nome literal do perfil: "Suzuki Odontologia | Dentista I Clínica Odontológica".
-    // Aqui fica a forma curta — o sufixo do perfil é palavra-chave de busca, não
-    // nome do negócio, e num h2 desse tamanho lê como spam.
+    // O cartão mostra logo + estrelas + nota, e nada mais. A contagem de
+    // avaliações e o botão "Escreva sua avaliação" saíram por decisão de layout
+    // em 30/07 — não por falta de dado. Se voltarem:
+    //   place_id  ChIJzSb5vkjk3JQREHbgq6qWPhA  (confirmado pelo Google: abre com
+    //             o nome e o endereço certos, que conferem com `localizacao`)
+    //   avaliar   https://search.google.com/local/writereview?placeid=<place_id>
+    // Proveniência e o que não deu para ler: public/imagens/originais/AVALIACOES-GOOGLE.json
     resumo: {
+      // Não aparece na tela: é o alt do logo. O nome literal do perfil é
+      // "Suzuki Odontologia | Dentista I Clínica Odontológica" — o sufixo é
+      // palavra-chave de busca, não nome do negócio.
       nomeNegocio: "Suzuki Odontologia, Curitiba",
-      // Verificado no perfil. Alimenta o texto e o preenchimento das estrelas.
+      // Verificado no perfil do Google. Alimenta o número e o preenchimento das
+      // estrelas. É o único dado que o cartão afirma; não estimar.
       nota: "5,0",
-      // O total não aparece na ficha: o Google serve a datacenter uma
-      // "visualização limitada", que mostra a nota e esconde a contagem.
-      // Só sai daqui com a Places API ou leitura manual do perfil.
-      totalLabel: "[TOTAL DE AVALIAÇÕES: pendente no Google]",
-      fonteLabel: "Google",
-      cta: {
-        label: "Escreva sua avaliação",
-        // Formato padrão writereview + o place_id do perfil
-        // (ChIJzSb5vkjk3JQREHbgq6qWPhA), confirmado pelo próprio Google: aberto,
-        // devolve o nome e o endereço corretos da clínica.
-        href: "https://search.google.com/local/writereview?placeid=ChIJzSb5vkjk3JQREHbgq6qWPhA",
-      },
     },
     // Ainda são os três depoimentos do site anterior, e por isso `fonte: "site"`
     // — renderizam sem estrela e sem a marca do Google. A decisão de 30/07 é que

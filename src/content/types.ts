@@ -5,11 +5,13 @@ export type Cta = { label: string; href: string };
 export type BrandContent = {
   nome: string;
   wordmark: string;
-  /** Logo em /public. `null` cai no wordmark em texto.
-   *  Atenção: o arquivo do site antigo é MONOCROMÁTICO BRANCO — só funciona
-   *  sobre superfície escura (header, dentro do cartão do hero, e footer).
-   *  Para uso sobre fundo claro é preciso a versão escura, que não existe. */
+  /** Logo em /public, monocromático CLARO — para superfície escura (header,
+   *  cartão do hero, footer). `null` cai no wordmark em texto. */
   logo: string | null;
+  /** Mesma arte, monocromática ESCURA — para superfície clara. `null` cai no
+   *  wordmark em texto. Ao trocar de clínica é preciso fornecer as duas
+   *  versões: recolorir uma no navegador desbota o traço fino. */
+  logoEscuro: string | null;
   logoAlt: string;
   /** Palavra única e curta, para o wordmark gigante translúcido do hero e do
    *  footer. Precisa ser curta: é renderizada em ~17rem e cortada de propósito. */
@@ -145,14 +147,13 @@ export type Depoimento = {
   fonte: AvaliacaoFonte;
 };
 
-/** Cartão de resumo do perfil, à esquerda do carrossel. Os números precisam vir
- *  do Google Business Profile da clínica; não podem ser estimados. */
+/** Cartão de resumo do perfil, à esquerda do carrossel: logo, estrelas e nota,
+ *  nada mais. A nota precisa vir do Google Business Profile da clínica; não pode
+ *  ser estimada, é o único número que o cartão afirma. */
 export type AvaliacoesResumo = {
+  /** Não é exibido: vira o texto alternativo do logo, para leitor de tela. */
   nomeNegocio: string;
   nota: string;
-  totalLabel: string;
-  fonteLabel: string;
-  cta: Cta;
 };
 
 export type DepoimentosContent = {
