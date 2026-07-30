@@ -13,9 +13,6 @@ export type BrandContent = {
    *  versões: recolorir uma no navegador desbota o traço fino. */
   logoEscuro: string | null;
   logoAlt: string;
-  /** Palavra única e curta, para o wordmark gigante translúcido do hero e do
-   *  footer. Precisa ser curta: é renderizada em ~17rem e cortada de propósito. */
-  ghostWord: string;
   responsavelTecnico: string;
   croResponsavel: string;
   cnpj: string;
@@ -68,6 +65,11 @@ export type HeroContent = {
   ctaPrimario: Cta;
   ctaSecundario: Cta;
   responsavelLinha: string;
+  /** Retrato do responsável técnico, em /public. `null` faz o hero voltar a
+   *  duas colunas de texto, sem buraco no layout. Exige autorização de uso de
+   *  imagem, ver docs/imagens.md. */
+  retrato: string | null;
+  retratoAlt: string;
 };
 
 export type SelosContent = {

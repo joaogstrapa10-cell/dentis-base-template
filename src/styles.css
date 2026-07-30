@@ -21,37 +21,59 @@
 :root {
   --radius: 1.375rem;
 
-  /* Página: neutro CLARO e frio. A estrutura clara-com-blocos-escuros vem da
-     referência; a cor não — o greige quente dela foi trocado por um neutro
-     azulado, para a paleta ser azul de ponta a ponta. */
-  --background: oklch(0.957 0.008 250);
-  --foreground: oklch(0.248 0.022 258);
+  /* ---------- Paleta: quatro materiais da clínica, nenhum inventado ----------
+     Origem de cada nota, com o valor medido:
+       parede branca      → base clara morna
+       granito do piso    → #23231d, oklch(0.254 0.011 107)   [foto 02/03]
+       verde-petróleo     → #013435, oklch(0.295 0.050 197)   [maior área do
+                            site antigo; #004f50 nos títulos dele]
+       madeira mel        → #d99a4a, oklch(0.732 0.122  70)   [balcão, foto 02]
+                            e #ffc501, o amarelo do botão principal do site
+     Medições em public/imagens/originais/PALETA-SUZUKI.json (site, via
+     getComputedStyle) e nas 12 fotos de estrutura (quantização das dominantes).
+     Divisão de papéis: petróleo é estrutura e autoridade, dourado é ornamento e
+     calor. O dourado nunca vira texto sobre fundo claro — não tem contraste. */
+
+  /* Página: off-white morno, a parede da clínica. Antes era um neutro azulado,
+     que é o que dava o ar frio de dashboard. */
+  --background: oklch(0.963 0.005 85);
+  --foreground: oklch(0.255 0.012 100);
 
   /* Cards sobre a página */
   --surface: oklch(1 0 0);
-  --surface-raised: oklch(0.982 0.006 250);
+  --surface-raised: oklch(0.982 0.004 85);
 
-  --border: oklch(0.248 0.022 258 / 0.11);
-  --border-strong: oklch(0.248 0.022 258 / 0.21);
+  --border: oklch(0.255 0.012 100 / 0.12);
+  --border-strong: oklch(0.255 0.012 100 / 0.22);
 
-  --muted: oklch(0.515 0.018 256);
+  --muted: oklch(0.508 0.012 100);
 
-  /* Superfície escura: navy profunda, não preto neutro */
-  --ink: oklch(0.178 0.032 256);
-  --ink-elevated: oklch(0.222 0.035 256);
-  --ink-foreground: oklch(0.99 0.002 250);
-  --ink-muted: oklch(0.725 0.014 252);
-  --ink-border: oklch(1 0 0 / 0.11);
+  /* Superfície escura: o verde-petróleo da Suzuki. `--ink` é um tom mais fundo
+     que o do site, para aguentar área cheia; `--ink-elevated` é praticamente o
+     #013435 dele, para os cartões dentro do bloco. */
+  --ink: oklch(0.213 0.040 197);
+  --ink-elevated: oklch(0.268 0.046 197);
+  --ink-foreground: oklch(0.985 0.004 85);
+  --ink-muted: oklch(0.738 0.020 190);
+  --ink-border: oklch(1 0 0 / 0.12);
 
-  /* Accent azul. Na referência é amarelo; o usuário pediu azul.
-     Aparece em pouca área: tile de ícone dentro do botão preto, glow do hero,
-     ícone de check. Nunca como fundo de seção. */
-  --accent: oklch(0.62 0.19 250);
-  --accent-foreground: oklch(0.99 0 0);
+  /* Accent: petróleo médio, o mesmo papel que ele tem no site antigo (títulos,
+     ícones, fios). Claro o bastante para texto branco em cima, escuro o
+     bastante para ícone sobre fundo claro — as duas coisas são exigidas dele. */
+  --accent: oklch(0.44 0.075 196);
+  --accent-foreground: oklch(0.99 0.003 85);
+
+  /* Dourado: o amarelo do botão do site, puxado alguns graus para a madeira do
+     balcão. Só aparece sobre escuro — tile do botão, arco do hero, estrelas. */
+  --gold: oklch(0.80 0.150 84);
+  --gold-foreground: oklch(0.24 0.035 80);
+  /* Versão do arco do hero: mais funda e translúcida. O dourado cheio a 0.80
+     de luminosidade lava o bloco inteiro. */
+  --gold-glow: oklch(0.60 0.125 72 / 0.9);
 
   /* Sinais da tabela comparativa */
-  --positive: oklch(0.63 0.17 145);
-  --warning: oklch(0.75 0.16 75);
+  --positive: oklch(0.55 0.115 168);
+  --warning: oklch(0.78 0.145 80);
 
   --destructive: oklch(0.58 0.22 25);
 
@@ -86,6 +108,8 @@
 
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
   --color-positive: var(--positive);
   --color-warning: var(--warning);
 
@@ -163,33 +187,45 @@
 
 /* ---------- Superfície escura ---------- */
 
-/* Grid muito discreto sobre bloco escuro. Só existe dentro do escuro —
-   sobre o claro viraria a textura de página gerada por IA. */
-.ink-grid {
-  background-image:
-    linear-gradient(to right, oklch(1 0 0 / 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(1 0 0 / 0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
-}
+/* O quadriculado sobre os blocos escuros (`.ink-grid`) foi REMOVIDO em 30/07 a
+   pedido do usuário. Não recriar: era a última peça do kit "página gerada por
+   IA" que sobrou da versão de 24/07, junto com o wordmark fantasma. */
 
-/* Glow do hero: arco de luz na base, como na referência */
+/* Glow do hero: arco de luz na base, como na referência. Em dourado, não em
+   petróleo — o arco é a nota quente que tira o bloco escuro do registro de
+   dashboard. Petróleo aqui desapareceria dentro do próprio `--ink`. */
 .ink-arc {
   background:
-    radial-gradient(120% 90% at 50% 108%, var(--accent) 0%, transparent 55%),
+    radial-gradient(120% 90% at 50% 108%, var(--gold-glow) 0%, transparent 55%),
     radial-gradient(60% 40% at 50% -10%, oklch(1 0 0 / 0.09) 0%, transparent 70%);
 }
 
-/* ---------- Wordmark fantasma ---------- */
-/* Palavra gigante translúcida, cortada pela borda do container. É a assinatura
-   visual da referência: aparece no hero e no footer. */
-.ghost-word {
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 0.78;
-  white-space: nowrap;
-  user-select: none;
-  font-size: clamp(6rem, 19vw, 17rem);
-  color: oklch(1 0 0 / 0.042);
+/* ---------- Wordmark fantasma: REMOVIDO ----------
+   A palavra gigante translúcida ("Suzuki" cortado pela borda) saiu do hero, da
+   bio e do footer em 30/07, por decisão do usuário. Era a assinatura visual da
+   referência, mas a referência é de agência: numa clínica a marca gigante de
+   fundo lê como marca d'água de template. Nada substituiu — o espaço virou
+   respiro. `BrandContent.ghostWord` foi removido junto, para não sobrar campo
+   morto no conteúdo. */
+
+/* ---------- Retrato flutuante ----------
+   O usuário pediu o retrato do hero "se mexendo, como se estivesse pulando".
+   Amplitude curta e curva suave de propósito: salto literal em retrato de
+   pessoa lê como desenho animado, não como clínica de alto padrão.
+   Usa a propriedade `translate`, não `transform` — é o que o Tailwind v4 usa,
+   e misturar as duas faz uma sobrescrever a outra silenciosamente. */
+@keyframes retrato-flutua {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -0.85rem; }
+}
+
+.retrato-flutua {
+  animation: retrato-flutua 4.2s ease-in-out infinite;
+  will-change: translate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retrato-flutua { animation: none; }
 }
 
 /* ---------- Movimento ---------- */

@@ -17,7 +17,6 @@ export const clinica: Clinica = {
     // tinha a versão branca, e o cartão de avaliações fica em fundo claro.
     logoEscuro: "/imagens/marca/logo-horizontal-escuro.svg",
     logoAlt: "Suzuki Odontologia",
-    ghostWord: "Suzuki",
     responsavelTecnico: "Dr. Dalton Suzuki",
     croResponsavel: "CRO-PR 9112",
     cnpj: "[CNPJ]",
@@ -60,6 +59,10 @@ export const clinica: Clinica = {
     ctaPrimario: { label: "Agendar avaliação", href: WHATSAPP_HREF },
     ctaSecundario: { label: "Conhecer a clínica", href: "#diferenciais" },
     responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112",
+    // Mesmo retrato que o site antigo usa na home e em "sobre nós". O fundo
+    // verde dele é do próprio consultório e encosta no petróleo do bloco.
+    retrato: "/imagens/hero/dalton-suzuki.webp",
+    retratoAlt: "Dr. Dalton Suzuki, responsável técnico da clínica, de braços cruzados",
   },
   selos: {
     label: "Formação e titulação do corpo clínico",

@@ -114,8 +114,12 @@ em 25/07, quando o usuário enviou screenshots da referência — que nunca foi 
 deste ambiente. Até então o layout era invenção de Claude, e era essa a causa do
 "cara de IA" que o usuário reprovou três vezes.
 
-Estado atual, em uma frase: **página clara com blocos escuros encaixados, paleta azul,
-Instrument Sans, e cada seção com uma estrutura própria.**
+Estado atual, em uma frase: **página clara morna com blocos escuros em verde-petróleo da
+Suzuki, dourado como ornamento, Instrument Sans, e cada seção com uma estrutura própria.**
+
+A paleta azul descrita abaixo **foi substituída em 30/07** pela paleta medida da Suzuki.
+Ver `docs/referencia-layout.md` §9 — é a primeira paleta do projeto que não é proposta de
+Claude, e sim medição do site e das fotos da clínica.
 
 O que a referência revelou e estava errado antes:
 
@@ -406,6 +410,15 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-07-30 — Bug de template achado no cartão de resumo: `<Estrelas nota={5} />` estava **fixo em 5**, ignorando `resumo.nota`. Coincidia com a Suzuki (5,0) e teria pintado 5 estrelas cheias para um 4,6 do Rogério ou do Décio. Trocado por preenchimento fracionário (fileira dourada recortada por `width` percentual), que também serve nota quebrada — arredondar para cima seria propaganda, não layout.
 - 2026-07-30 — `maps.googleapis.com` responde 200 daqui, então a Places API é caminho viável e oficial: `place_id` + chave devolvem `rating`, `userRatingCount` e até 5 avaliações completas. É a única pendência das avaliações.
 - 2026-07-30 — Telefone `+55 41 99206-1073` apareceu no perfil do Google (celular, serve de WhatsApp). **Não aplicado**: telefone é da coluna "só o usuário" e o site antigo já teve bug de número errado. Registrado para confirmação.
+- 2026-07-30 — Cartão de avaliações reduzido a **logo + estrelas + nota**, por pedido do usuário: saíram a contagem e o botão "Escreva sua avaliação". O `place_id` e a URL de avaliar ficaram em comentário no `clinica.ts` para não se perderem.
+- 2026-07-30 — **Logo em versão escura passou a existir**: os 21 traços do SVG branco recoloridos para `#1b222c`. Era pendência sem solução na lista de bloqueios de publicação; o cartão de avaliações fica em fundo claro e o logo branco simplesmente não aparecia. `brand.logoEscuro` é o par de `brand.logo`.
+- 2026-07-30 — **Paleta azul descartada. Primeira paleta medida do projeto**, não proposta: `getComputedStyle` em 4 páginas do site antigo (pelo agente do Lovable, host 403 aqui) + quantização das 12 fotos de estrutura. O site da Suzuki é **verde-petróleo** (`#013435`) com botão **amarelo** (`#ffc501`), e o consultório é madeira mel + granito preto + parede branca. A suposição de que a identidade era azul estava errada desde 24/07. Valores e contraste medido em `docs/referencia-layout.md` §9.
+- 2026-07-30 — Armadilha do Elementor: as variáveis `--e-global-color-*` do site são **defaults do tema** (`#6EC1E4`, `#61CE70`) e não pintam elemento nenhum. Ler o CSS sem conferir uso monta a paleta errada — o agente do Lovable acertou em separá-las.
+- 2026-07-30 — Dois tokens de accent em vez de um, e é requisito de contraste: **petróleo** (`--accent`, L 0.44) é estrutura e serve de ícone sobre fundo claro (7,48:1); **dourado** (`--gold`, L 0.80) é ornamento e só existe sobre escuro. Dourado como texto no claro não tem contraste — não unificar os dois.
+- 2026-07-30 — Retrato do Dr. Dalton no hero, o mesmo que o site antigo usa em "sobre nós". O hero deixou de ter duas colunas de texto. O fundo verde da foto casa com o petróleo por coincidência, não por montagem.
+- 2026-07-30 — **Wordmark fantasma e quadriculado removidos de todas as seções** por decisão do usuário, com o CSS, o componente `GhostWord` e o campo `brand.ghostWord` junto. Eram as duas últimas peças do kit "cara de IA" identificado em 25/07. O hero perdeu 7rem de padding inferior, que só existia para caber a palavra gigante.
+- 2026-07-30 — Hero passou a **sangrar até a borda** da janela, sem moldura clara e sem canto arredondado no topo. A moldura era `px-3 pt-3` na seção; num bloco que abre a página ela lia como janela dentro de janela.
+- 2026-07-30 — Pílula de navegação **centralizada de verdade** (`left-1/2`). O deslocamento de 8% à direita existia para não encostar no logo; resolvido descendo o logo, que também cresceu para `h-24`.
 
 ---
 

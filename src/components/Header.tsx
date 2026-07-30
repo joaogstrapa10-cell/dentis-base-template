@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 /**
  * Cabeçalho em duas peças fixas independentes, ambas acompanhando o scroll:
  *
- * 1. A MARCA, no canto superior esquerdo, fora da navegação.
+ * 1. A MARCA, no alto à esquerda, fora da navegação e maior que ela.
  * 2. A PÍLULA de navegação, centralizada no desktop e à direita no mobile.
  *    À direita no mobile porque, centralizada e com a marca fixa à esquerda,
  *    as duas se sobreporiam em tela estreita.
@@ -88,18 +88,22 @@ export function Header({
       {/* Marca: `absolute`, não `fixed` — fica no topo e sai de cena com o
           scroll. O arquivo do logo é monocromático BRANCO: se acompanhasse o
           scroll, flutuaria por cima das seções claras e ficaria invisível.
-          O `top` é 8px menor que o da pílula para os centros das duas peças
-          coincidirem, já que o logo é mais alto. */}
+
+          O logo NÃO alinha o centro com o da pílula. Alinhado, ele encostava no
+          topo da tela e o usuário reprovou a posição em 30/07 — e o hero agora
+          sangra até a borda, sem os 12px de respiro que a página dava antes.
+          Aqui ele desce e cresce, ultrapassando a pílula por baixo. É de
+          propósito: a marca é maior que a navegação. */}
       <a
         href="#top"
         aria-label={data.wordmark}
-        className="absolute left-6 top-5 z-50 md:left-14 md:top-6"
+        className="absolute left-6 top-6 z-50 md:left-14 md:top-10"
       >
         {logo ? (
           <img
             src={logo}
             alt={logoAlt ?? data.wordmark}
-            className="h-14 w-auto md:h-20"
+            className="h-16 w-auto md:h-24"
           />
         ) : (
           <span className="text-base font-semibold tracking-[-0.01em] text-ink-foreground">
@@ -111,9 +115,10 @@ export function Header({
       {/* Pílula de navegação */}
       <header
         className={cn(
-          // Deslocada 8% à direita do centro: centralizada de verdade ela fica
-          // perto demais do logo, que cresceu.
-          "fixed right-4 top-4 z-50 md:left-[58%] md:right-auto md:top-8 md:-translate-x-1/2",
+          // Centralizada de verdade (`left-1/2`). Estava deslocada 8% à direita
+          // para se afastar do logo; o usuário viu isso como "para a direita
+          // demais" em 30/07. Com o logo descido, o encosto não acontece mais.
+          "fixed right-4 top-4 z-50 md:left-1/2 md:right-auto md:top-8 md:-translate-x-1/2",
           "flex max-w-[calc(100%-7rem)] flex-col items-center md:max-w-none",
           "border border-ink-border bg-ink/75 px-5 py-3 backdrop-blur-md",
           redondo ? "rounded-full" : "rounded-2xl",

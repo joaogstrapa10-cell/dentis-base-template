@@ -1,7 +1,6 @@
 import type { BioContent } from "@/content/types";
 import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
-import { GhostWord } from "@/components/Primitives";
 
 /**
  * Estrutura: FAIXA ESCURA de largura cheia, retrato grande à esquerda e texto
@@ -44,16 +43,10 @@ function Retrato({
   );
 }
 
-export function BioSection({
-  data,
-  ghostWord,
-}: {
-  data: BioContent;
-  ghostWord: string;
-}) {
+export function BioSection({ data }: { data: BioContent }) {
   return (
     <div className="px-3 md:px-4">
-      <div className="ink-grid relative isolate overflow-hidden rounded-3xl bg-ink">
+      <div className="relative isolate overflow-hidden rounded-3xl bg-ink">
         <Section id="responsavel" as="div">
           <div className="relative z-10">
             <Reveal>
@@ -112,9 +105,6 @@ export function BioSection({
           </div>
         </Section>
 
-        <GhostWord className="bottom-0 right-0 translate-y-[28%] px-5 md:px-10">
-          {ghostWord}
-        </GhostWord>
       </div>
     </div>
   );

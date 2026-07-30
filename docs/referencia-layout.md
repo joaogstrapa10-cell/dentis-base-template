@@ -228,3 +228,67 @@ descrição verbal do usuário.
 
 O usuário vai enviar screenshots da referência. **Quando chegarem, tratar como ground truth e
 substituir esta especificação** — não conciliar com ela.
+
+---
+
+## 9. CORREÇÃO 30/07 — paleta puxada para a Suzuki `[USER]` `[MEDIDO]`
+
+O usuário reprovou o fundo do hero e pediu: **puxar para as cores da Suzuki, meio termo entre
+tech e tradicional, elegante.** A paleta azul da §8 saiu.
+
+Esta é a primeira paleta do projeto **medida, não proposta.** Duas fontes:
+
+| Fonte | Como foi lida | Arquivo |
+|---|---|---|
+| Site antigo | `getComputedStyle` em 4 páginas, pelo agente do Lovable (o host é 403 para Claude) | `public/imagens/originais/PALETA-SUZUKI.json` |
+| 12 fotos da estrutura | quantização das cores dominantes, em navegador | já no repo |
+
+**O que a medição revelou, e contrariava a suposição do projeto:** o site da Suzuki não é azul.
+É dominado por **verde-petróleo escuro** — `#013435` na maior área, `#004f50` nos títulos,
+`#072e30` na camada de parallax — com **amarelo `#ffc501`** no botão principal. E as fotos do
+consultório dão **madeira mel** (`#d99a4a` no balcão), **granito preto quente** (`#23231d` no
+piso) e parede branca.
+
+Armadilha registrada: as variáveis `--e-global-color-*` do Elementor no site são os **defaults
+do tema** (`#6EC1E4`, `#61CE70`) e **não são usadas em elemento nenhum**. Quem ler o CSS sem
+conferir uso monta a paleta errada.
+
+### Tokens em vigor
+
+| Token | Valor | De onde vem |
+|---|---|---|
+| `--background` | `oklch(0.963 0.005 85)` | parede branca, morna |
+| `--foreground` | `oklch(0.255 0.012 100)` | granito do piso |
+| `--muted` | `oklch(0.508 0.012 100)` | idem, mais claro |
+| `--ink` | `oklch(0.213 0.040 197)` | petróleo, um tom mais fundo que o do site |
+| `--ink-elevated` | `oklch(0.268 0.046 197)` | ≈ o `#013435` dele |
+| `--accent` | `oklch(0.44 0.075 196)` | petróleo médio, o papel que ele tem no site |
+| `--gold` | `oklch(0.80 0.150 84)` | o `#ffc501` do botão, puxado para a madeira |
+| `--gold-glow` | `oklch(0.60 0.125 72 / 0.9)` | arco do hero |
+
+**Divisão de papéis, e é o que sustenta a paleta:** petróleo é **estrutura e autoridade** —
+blocos escuros, ícones, fios, checks. Dourado é **ornamento e calor** — tile do botão, arco do
+hero, estrelas. O dourado **nunca** vira texto ou ícone sobre fundo claro: a `L 0.80` não tem
+contraste, e é por isso que existem dois tokens em vez de um.
+
+O "meio termo tech / tradicional" não está na cor sozinha: a estrutura continua tech (blocos
+escuros, grid discreto, monoespaçada nos metadados, cartões de raio grande) e a cor entrou pelo
+lado tradicional. Trocar a estrutura **junto** com a cor teria virado site institucional de novo.
+
+### Contraste medido no render, não estimado
+
+| Alvo | Razão |
+|---|---|
+| corpo 16px sobre a base clara | 5,2:1 |
+| ícone accent sobre a base clara | 7,48:1 |
+| headline do hero sobre petróleo | 16,69:1 |
+| subheadline do hero | 7,54:1 |
+| rótulos monoespaçados 12px | 5,2–5,8:1 |
+
+### Retrato no hero
+
+O hero deixou de ter duas colunas de texto: headline, subheadline e CTAs empilham numa coluna e
+o retrato do responsável técnico ocupa a direita (`hero.retrato`, `null` volta ao layout
+anterior sem buraco). O fundo verde da foto é do próprio consultório e encosta no petróleo do
+bloco — foi coincidência, não montagem. Sobre o retrato vai um **fio** dourado, não moldura: em
+área, dourado sobre verde fica turvo.

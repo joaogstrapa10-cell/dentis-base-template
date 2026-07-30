@@ -51,7 +51,7 @@ function Landing() {
         logoAlt={clinica.brand.logoAlt}
       />
       <main>
-        <HeroSection data={clinica.hero} ghostWord={clinica.brand.ghostWord} />
+        <HeroSection data={clinica.hero} />
         <SelosSection data={clinica.selos} />
         <DiferenciaisSection data={clinica.diferenciais} />
         <AcompanhamentoSection data={clinica.acompanhamento} />
@@ -65,7 +65,7 @@ function Landing() {
         />
         <ComparativoSection data={clinica.comparativo} />
         <TratamentosSection data={clinica.tratamentos} />
-        <BioSection data={clinica.bio} ghostWord={clinica.brand.ghostWord} />
+        <BioSection data={clinica.bio} />
         <FaqSection data={clinica.faq} />
       </main>
       <FooterSection

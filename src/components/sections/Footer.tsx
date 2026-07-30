@@ -7,7 +7,7 @@ import type {
   SocialLink,
 } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
-import { ArrowButton, GhostWord, PillButton } from "@/components/Primitives";
+import { ArrowButton, PillButton } from "@/components/Primitives";
 import { telHref, whatsappHref } from "@/lib/contato";
 
 function SocialIcon({ name, className }: { name: SocialLink["icon"]; className?: string }) {
@@ -55,7 +55,7 @@ export function FooterSection({
 }) {
   return (
     <footer className="px-3 pb-3 md:px-4 md:pb-4">
-      <div className="ink-grid relative isolate overflow-hidden rounded-3xl bg-ink">
+      <div className="relative isolate overflow-hidden rounded-3xl bg-ink">
         <div
           aria-hidden="true"
           className="ink-arc pointer-events-none absolute inset-0 opacity-25"
@@ -165,9 +165,6 @@ export function FooterSection({
           </div>
         </div>
 
-        <GhostWord className="bottom-0 left-0 translate-y-[24%] px-5 md:px-10">
-          {brand.ghostWord}
-        </GhostWord>
       </div>
     </footer>
   );

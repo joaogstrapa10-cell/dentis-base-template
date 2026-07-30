@@ -10,8 +10,9 @@ import { cn } from "@/lib/utils";
 /* ---------------------------------------------------------------- PillButton */
 /**
  * Botão-assinatura da referência: pill escura com um tile de ícone colorido
- * à esquerda e o rótulo em branco. O tile é o único lugar onde o accent
- * aparece em área cheia.
+ * à esquerda e o rótulo em branco. O tile é o único lugar onde o dourado
+ * aparece em área cheia — é ele que faz o papel do amarelo do botão principal
+ * do site antigo, sem pintar a pill inteira.
  *
  * `tone="ink"`  → sobre fundo claro (padrão)
  * `tone="light"`→ sobre bloco escuro
@@ -46,7 +47,7 @@ export function PillButton({
       <span
         className={cn(
           "tile-spin grid h-7 w-7 shrink-0 place-items-center rounded-lg",
-          "bg-accent text-accent-foreground",
+          "bg-gold text-gold-foreground",
         )}
         aria-hidden="true"
       >
@@ -109,27 +110,9 @@ export function TextLink({
   );
 }
 
-/* ----------------------------------------------------------------- GhostWord */
-/**
- * Palavra gigante translúcida, cortada pela borda do container — assinatura da
- * referência. O container precisa ser `relative overflow-hidden`.
- */
-export function GhostWord({
-  children,
-  className,
-}: {
-  children: string;
-  className?: string;
-}) {
-  return (
-    <span
-      aria-hidden="true"
-      className={cn("ghost-word pointer-events-none absolute", className)}
-    >
-      {children}
-    </span>
-  );
-}
+/* `GhostWord` — a palavra gigante translúcida cortada pela borda — foi REMOVIDA
+   em 30/07 por decisão do usuário, junto com o CSS `.ghost-word` e o campo
+   `brand.ghostWord`. Não recriar sem pedido: ver a nota em src/styles.css. */
 
 /* --------------------------------------------------------------- SectionHead */
 /**
