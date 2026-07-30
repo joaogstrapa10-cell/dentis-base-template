@@ -10,31 +10,110 @@
     "metodo": "getComputedStyle em todos os elementos visíveis (área > 2x2px) das 4 páginas, via Chromium headless; variáveis --e-global-* lidas das CSSOM styleSheets; cores do logo lidas do próprio SVG"
   },
   "cores": [
-    { "hex": "#013435", "onde": "verde-petróleo escuro do overlay das seções de destaque (hero, blocos institucionais) — maior área pintada do site", "seletor": "div.elementor-background-overlay", "frequencia": "alta" },
-    { "hex": "#113119", "onde": "verde muito escuro de fundo de seção (bloco 'Nossa Estrutura') e cor do título dessa seção", "seletor": "section.elementor-section.elementor-top-section", "frequencia": "alta" },
-    { "hex": "#f5f5f5", "onde": "cinza claro de fundo das colunas de conteúdo nas páginas de especialidade", "seletor": "div.elementor-widget-wrap.elementor-element-populated", "frequencia": "alta" },
-    { "hex": "#2c93f4", "onde": "azul de fundo da seção 'Áreas de Atuação'", "seletor": "section#atuacao.elementor-section", "frequencia": "alta" },
-    { "hex": "#072e30", "onde": "verde-petróleo da camada com efeito de movimento (parallax) e cor de ícones de seta", "seletor": "div.elementor-motion-effects-layer / i.icon.icon-right-arrow1", "frequencia": "alta" },
-    { "hex": "#09263e", "onde": "azul-marinho de fundo de seção institucional", "seletor": "section.elementor-section.elementor-top-section", "frequencia": "média" },
-    { "hex": "#333333", "onde": "cinza escuro do texto de corpo padrão (herdado do body e do header)", "seletor": "body / header.elementor-location-header", "frequencia": "alta" },
-    { "hex": "#004f50", "onde": "verde-petróleo dos títulos h2/h3 sobre fundo claro ('ÁREAS DE ATUAÇÃO' e nomes das especialidades)", "seletor": "h2.elementor-heading-title, h3.elementor-heading-title", "frequencia": "média" },
-    { "hex": "#ffc501", "onde": "amarelo do botão principal de ação", "seletor": "a.elementor-button.elementor-button-link.elementor-size-md", "frequencia": "média" },
-    { "hex": "#25d366", "onde": "verde do botão de WhatsApp", "seletor": "a.elementor-button.elementor-button-link.elementor-size-md", "frequencia": "média" },
-    { "hex": "#262626", "onde": "quase-preto de fundo de uma seção escura", "seletor": "section.elementor-section.elementor-top-section", "frequencia": "baixa" },
-    { "hex": "#039a74", "onde": "verde-esmeralda de borda de widget (fio divisor/destaque)", "seletor": "div.elementor-widget-container", "frequencia": "baixa" },
-    { "hex": "#69727d", "onde": "cinza-azulado de ícones (fundo do bloco de ícone e ícones sociais)", "seletor": "div.elementor-icon, a.elementor-social-icon", "frequencia": "baixa" }
+    {
+      "hex": "#013435",
+      "onde": "verde-petróleo escuro do overlay das seções de destaque (hero, blocos institucionais) — maior área pintada do site",
+      "seletor": "div.elementor-background-overlay",
+      "frequencia": "alta"
+    },
+    {
+      "hex": "#113119",
+      "onde": "verde muito escuro de fundo de seção (bloco 'Nossa Estrutura') e cor do título dessa seção",
+      "seletor": "section.elementor-section.elementor-top-section",
+      "frequencia": "alta"
+    },
+    {
+      "hex": "#f5f5f5",
+      "onde": "cinza claro de fundo das colunas de conteúdo nas páginas de especialidade",
+      "seletor": "div.elementor-widget-wrap.elementor-element-populated",
+      "frequencia": "alta"
+    },
+    {
+      "hex": "#2c93f4",
+      "onde": "azul de fundo da seção 'Áreas de Atuação'",
+      "seletor": "section#atuacao.elementor-section",
+      "frequencia": "alta"
+    },
+    {
+      "hex": "#072e30",
+      "onde": "verde-petróleo da camada com efeito de movimento (parallax) e cor de ícones de seta",
+      "seletor": "div.elementor-motion-effects-layer / i.icon.icon-right-arrow1",
+      "frequencia": "alta"
+    },
+    {
+      "hex": "#09263e",
+      "onde": "azul-marinho de fundo de seção institucional",
+      "seletor": "section.elementor-section.elementor-top-section",
+      "frequencia": "média"
+    },
+    {
+      "hex": "#333333",
+      "onde": "cinza escuro do texto de corpo padrão (herdado do body e do header)",
+      "seletor": "body / header.elementor-location-header",
+      "frequencia": "alta"
+    },
+    {
+      "hex": "#004f50",
+      "onde": "verde-petróleo dos títulos h2/h3 sobre fundo claro ('ÁREAS DE ATUAÇÃO' e nomes das especialidades)",
+      "seletor": "h2.elementor-heading-title, h3.elementor-heading-title",
+      "frequencia": "média"
+    },
+    {
+      "hex": "#ffc501",
+      "onde": "amarelo do botão principal de ação",
+      "seletor": "a.elementor-button.elementor-button-link.elementor-size-md",
+      "frequencia": "média"
+    },
+    {
+      "hex": "#25d366",
+      "onde": "verde do botão de WhatsApp",
+      "seletor": "a.elementor-button.elementor-button-link.elementor-size-md",
+      "frequencia": "média"
+    },
+    {
+      "hex": "#262626",
+      "onde": "quase-preto de fundo de uma seção escura",
+      "seletor": "section.elementor-section.elementor-top-section",
+      "frequencia": "baixa"
+    },
+    {
+      "hex": "#039a74",
+      "onde": "verde-esmeralda de borda de widget (fio divisor/destaque)",
+      "seletor": "div.elementor-widget-container",
+      "frequencia": "baixa"
+    }
   ],
   "tipografia": [
-    { "familia": "Montserrat, sans-serif", "onde": "títulos h1/h2/h3 (pesos 500–800) e a maior parte do texto de widget e links" },
-    { "familia": "\"Playfair Display\", sans-serif", "onde": "h2 da seção 'Áreas de Atuação' (peso 800) — único título com serifada" },
-    { "familia": "Lora, sans-serif", "onde": "textos e links secundários de alguns widgets" },
-    { "familia": "Poppins, sans-serif", "onde": "parágrafos de blocos pontuais" },
-    { "familia": "Roboto / Roboto Slab", "onde": "padrões globais do tema Elementor (--e-global-typography-*), pouco usados na prática" },
-    { "familia": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif", "onde": "font-family herdada do body (fallback do tema), sem webfont aplicada" }
+    {
+      "familia": "Montserrat, sans-serif",
+      "onde": "títulos h1/h2/h3 (pesos 500–800) e a maior parte do texto de widget e links"
+    },
+    {
+      "familia": "\"Playfair Display\", sans-serif",
+      "onde": "h2 da seção 'Áreas de Atuação' (peso 800) — único título com serifada"
+    },
+    {
+      "familia": "Lora, sans-serif",
+      "onde": "textos e links secundários de alguns widgets"
+    },
+    {
+      "familia": "Poppins, sans-serif",
+      "onde": "parágrafos de blocos pontuais"
+    },
+    {
+      "familia": "Roboto / Roboto Slab",
+      "onde": "padrões globais do tema Elementor (--e-global-typography-*), pouco usados na prática"
+    },
+    {
+      "familia": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
+      "onde": "font-family herdada do body (fallback do tema), sem webfont aplicada"
+    }
   ],
   "logo": {
     "urlArquivo": "https://suzukiodontologia.com.br/wp-content/uploads/2022/04/logo-horizontal-branco.1620766974.svg",
-    "coresDoLogo": ["#ffffff"],
+    "coresDoLogo": [
+      "#ffffff"
+    ],
     "observacao": "O SVG é monocromático: 21 atributos fill, todos #FFFFFF. É a versão branca, usada sobre os fundos escuros. Não foi encontrada nas páginas lidas nenhuma versão colorida ou escura do logo."
   },
   "variaveisGlobaisElementor": {
