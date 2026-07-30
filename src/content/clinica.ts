@@ -280,6 +280,62 @@ export const clinica: Clinica = {
       },
     ],
   },
+  // ⚠️ Seção com exposição direta à CFO-196/2019, que restringe divulgação de
+  // antes e depois em publicidade odontológica. Por isso ela documenta PROCESSO:
+  // situação de partida, conduta, especialidades envolvidas e duração. Nenhum
+  // caso tem par de imagens, e nenhuma linha de copy afirma resultado.
+  //
+  // Os títulos das categorias são reais — saem das especialidades da clínica,
+  // em `areas`. O que é específico de cada caso (situação, conduta, duração e o
+  // registro clínico) só a clínica tem, e fica como placeholder nomeado, visível
+  // na tela. Preencher inventando caso clínico é fabricar prontuário.
+  casos: {
+    eyebrow: "Casos conduzidos",
+    titulo: "Como um caso complexo é conduzido.",
+    descricao:
+      "Cada caso é documentado por etapa: a situação clínica de partida, o plano, quem conduziu cada fase e o tempo de tratamento. O que segue é descrição de processo.",
+    situacaoLabel: "Situação clínica",
+    condutaLabel: "Conduta",
+    especialidadesLabel: "Especialidades envolvidas",
+    duracaoLabel: "Duração",
+    aviso:
+      "Descrição de processo clínico conduzido nesta clínica. Não constitui promessa de resultado. Cada caso é único e depende de diagnóstico individual. Em conformidade com a Resolução CFO-196/2019, esta seção não divulga imagens comparativas de antes e depois.",
+    itens: [
+      {
+        numero: "01",
+        titulo: "Reabilitação total sobre implantes",
+        situacao: "[CASO 01 — SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 01 — CONDUTA, ETAPA POR ETAPA]",
+        especialidades: ["Implantodontia e Cirurgia", "Reabilitação Oral", "Periodontia"],
+        duracao: "[CASO 01 — DURAÇÃO]",
+        imagem: null,
+        imagemAlt: "Registro clínico do caso 01, ainda não fornecido pela clínica",
+        rotuloSlot: "Registro 01",
+      },
+      {
+        numero: "02",
+        titulo: "Reabilitação estética com harmonização facial",
+        situacao: "[CASO 02 — SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 02 — CONDUTA, ETAPA POR ETAPA]",
+        especialidades: ["Estética Dental", "Harmonização Facial"],
+        duracao: "[CASO 02 — DURAÇÃO]",
+        imagem: null,
+        imagemAlt: "Registro clínico do caso 02, ainda não fornecido pela clínica",
+        rotuloSlot: "Registro 02",
+      },
+      {
+        numero: "03",
+        titulo: "Tratamento ortodôntico em adulto",
+        situacao: "[CASO 03 — SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 03 — CONDUTA, ETAPA POR ETAPA]",
+        especialidades: ["Ortodontia", "Periodontia"],
+        duracao: "[CASO 03 — DURAÇÃO]",
+        imagem: null,
+        imagemAlt: "Registro clínico do caso 03, ainda não fornecido pela clínica",
+        rotuloSlot: "Registro 03",
+      },
+    ],
+  },
   depoimentos: {
     eyebrow: "Pacientes",
     titulo: "Quem já passou por aqui.",

@@ -23,8 +23,10 @@
 
   /* ---------- Paleta: quatro materiais da clínica, nenhum inventado ----------
      Origem de cada nota, com o valor medido:
-       parede branca      → base clara morna
+       parede branca      → base clara, tingida de petróleo (ver abaixo)
        granito do piso    → #23231d, oklch(0.254 0.011 107)   [foto 02/03]
+                            usado como referência de "preto quente"; o texto
+                            final ficou no matiz do petróleo, por unidade
        verde-petróleo     → #013435, oklch(0.295 0.050 197)   [maior área do
                             site antigo; #004f50 nos títulos dele]
        madeira mel        → #d99a4a, oklch(0.732 0.122  70)   [balcão, foto 02]
@@ -34,19 +36,30 @@
      Divisão de papéis: petróleo é estrutura e autoridade, dourado é ornamento e
      calor. O dourado nunca vira texto sobre fundo claro — não tem contraste. */
 
-  /* Página: off-white morno, a parede da clínica. Antes era um neutro azulado,
-     que é o que dava o ar frio de dashboard. */
-  --background: oklch(0.963 0.005 85);
-  --foreground: oklch(0.255 0.012 100);
+  /* Página clara, na MESMA família do petróleo — matiz 196, a do `--ink`, com
+     croma baixíssimo. Não é branco neutro nem creme: é o verde da Suzuki
+     diluído até virar quase-branco.
+
+     Por que assim, em 30/07: o creme morno da primeira versão desta paleta
+     deixava metade do site fora da identidade. O usuário pediu duas vezes "o
+     site todo na paleta da Suzuki" — e a leitura correta não era escurecer
+     tudo, era tingir o claro. Com background, surface e texto no mesmo matiz
+     dos blocos escuros, a página inteira lê como uma paleta só, e a estrutura
+     clara-com-blocos-escuros da referência continua de pé.
+
+     `--surface` não é branco puro de propósito: cartão branco sobre fundo
+     tingido salta como peça de outro projeto. */
+  --background: oklch(0.957 0.010 196);
+  --foreground: oklch(0.243 0.020 200);
 
   /* Cards sobre a página */
-  --surface: oklch(1 0 0);
-  --surface-raised: oklch(0.982 0.004 85);
+  --surface: oklch(0.993 0.004 196);
+  --surface-raised: oklch(0.975 0.008 196);
 
-  --border: oklch(0.255 0.012 100 / 0.12);
-  --border-strong: oklch(0.255 0.012 100 / 0.22);
+  --border: oklch(0.243 0.020 200 / 0.13);
+  --border-strong: oklch(0.243 0.020 200 / 0.23);
 
-  --muted: oklch(0.508 0.012 100);
+  --muted: oklch(0.496 0.020 200);
 
   /* Superfície escura: o verde-petróleo da Suzuki. `--ink` é um tom mais fundo
      que o do site, para aguentar área cheia; `--ink-elevated` é praticamente o
@@ -163,11 +176,14 @@
    O leading não desce abaixo de 1.05: em português os diacríticos em caixa
    alta (Ê, Á, Ç) encostam na linha de cima. */
 
+/* Só a headline do hero usa esta escala. Reduzida em 30/07 a pedido do
+   usuário: o teto era 3.5rem (56px em 1440), e a 56px a headline de três linhas
+   dominava o bloco e apertava o retrato ao lado. */
 .display-1 {
   font-weight: 700;
-  font-size: clamp(2rem, 4.3vw, 3.5rem);
-  line-height: 1.05;
-  letter-spacing: -0.04em;
+  font-size: clamp(1.875rem, 3.7vw, 3rem);
+  line-height: 1.07;
+  letter-spacing: -0.038em;
 }
 
 .display-2 {
@@ -318,10 +334,13 @@
 
 /* ---------- Slot de imagem vazio ---------- */
 /* Textura fina para o slot parecer deliberado em vez de caixa quebrada */
+/* Deriva de `--foreground` em vez de repetir um literal. A versão anterior tinha
+   `oklch(0.248 0.022 258)` cravado — o matiz 258 da paleta azul — e ficou fora
+   da paleta quando ela virou petróleo. Token amarrado não desalinha de novo. */
 .slot-grid {
   background-image:
-    linear-gradient(to right, oklch(0.248 0.022 258 / 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(0.248 0.022 258 / 0.06) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 .slot-grid-ink {

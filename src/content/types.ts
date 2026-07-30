@@ -130,6 +130,47 @@ export type AreasContent = {
   itens: AreaAtuacao[];
 };
 
+/**
+ * Caso clínico da galeria.
+ *
+ * ⚠️ COMPLIANCE, e é o que define a forma deste tipo: a CFO-196/2019 restringe
+ * divulgação de imagens de ANTES E DEPOIS em publicidade odontológica. Por isso
+ * o caso tem UMA imagem (`imagem`), e não um par — o tipo não permite montar
+ * comparação. E os campos são de PROCESSO (`situacao`, `conduta`, `duracao`,
+ * `especialidades`), não de resultado: não existe campo de "antes", de "depois"
+ * nem de ganho estético. Não acrescentar.
+ */
+export type CasoClinico = {
+  numero: string;
+  titulo: string;
+  /** Situação clínica de partida, em termos técnicos. Nunca promessa. */
+  situacao: string;
+  /** O que foi feito, por etapa. Descreve conduta, não desfecho. */
+  conduta: string;
+  especialidades: string[];
+  duracao: string;
+  /** Registro clínico em /public. `null` renderiza o slot rotulado, como na
+   *  seção de estrutura. Exige autorização do paciente, ver docs/imagens.md. */
+  imagem: string | null;
+  imagemAlt: string;
+  /** Rótulo do slot quando `imagem` é `null`. */
+  rotuloSlot: string;
+};
+
+export type CasosContent = {
+  eyebrow: string;
+  titulo: string;
+  descricao: string;
+  situacaoLabel: string;
+  condutaLabel: string;
+  especialidadesLabel: string;
+  duracaoLabel: string;
+  /** Aviso de compliance, renderizado visível no fim da seção. Obrigatório: é
+   *  a seção do site com maior exposição à CFO-196/2019. */
+  aviso: string;
+  itens: CasoClinico[];
+};
+
 /** De onde a avaliação veio. Determina se a marca do Google pode ser exibida
  *  junto dela: exibir a marca sobre texto que não veio do Google representa a
  *  origem de forma incorreta. */
@@ -257,6 +298,7 @@ export type Clinica = {
   localizacao: LocalizacaoContent;
   estrutura: EstruturaContent;
   areas: AreasContent;
+  casos: CasosContent;
   depoimentos: DepoimentosContent;
   comparativo: ComparativoContent;
   tratamentos: TratamentosContent;

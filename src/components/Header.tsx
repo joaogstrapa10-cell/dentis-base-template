@@ -69,7 +69,29 @@ export function Header({
 }) {
   const [open, setOpen] = useState(false);
   const [redondo, setRedondo] = useState(true);
+  const [opacidadeMarca, setOpacidadeMarca] = useState(1);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /* A marca se apaga ao longo dos primeiros 180px de scroll.
+     Começa em 1 no servidor: sem isso a marca piscaria de invisível para
+     visível na hidratação. Leitura dentro de requestAnimationFrame porque
+     `scrollY` num listener de scroll força layout a cada evento. */
+  useEffect(() => {
+    let raf = 0;
+    const aoRolar = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        setOpacidadeMarca(Math.max(0, Math.min(1, 1 - window.scrollY / 180)));
+      });
+    };
+    aoRolar();
+    window.addEventListener("scroll", aoRolar, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", aoRolar);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   useEffect(() => {
     if (timer.current) clearTimeout(timer.current);
@@ -85,25 +107,43 @@ export function Header({
 
   return (
     <>
-      {/* Marca: `absolute`, não `fixed` — fica no topo e sai de cena com o
-          scroll. O arquivo do logo é monocromático BRANCO: se acompanhasse o
-          scroll, flutuaria por cima das seções claras e ficaria invisível.
+      {/* Marca: `fixed`, e some ao rolar.
 
-          O logo NÃO alinha o centro com o da pílula. Alinhado, ele encostava no
-          topo da tela e o usuário reprovou a posição em 30/07 — e o hero agora
-          sangra até a borda, sem os 12px de respiro que a página dava antes.
-          Aqui ele desce e cresce, ultrapassando a pílula por baixo. É de
-          propósito: a marca é maior que a navegação. */}
+          Era `absolute` por um motivo real: o arquivo do logo é monocromático
+          BRANCO, e fixo ele flutuaria por cima das seções claras, invisível. O
+          desaparecimento resolve isso — a marca se apaga bem antes de a
+          primeira seção clara chegar ao topo, então a invisibilidade nunca
+          acontece. É o que destrava o pedido de 30/07 de a marca ser "livre" e
+          não pertencer ao bloco inicial.
+
+          `opacity` vem do scroll, sem `transition`: a transição brigaria com o
+          valor já contínuo e daria atraso na resposta. `pointer-events` cai
+          junto, senão sobra um link invisível capturando clique no topo. */}
       <a
         href="#top"
         aria-label={data.wordmark}
-        className="absolute left-6 top-6 z-50 md:left-14 md:top-10"
+        // `top` calculado para o CENTRO da marca cair no centro da pílula, não
+        // escolhido a olho: a pílula em `top-4`/`md:top-8` fecha 58px/66px de
+        // altura, com centro em 45px/65px; a marca tem 56px/80px, o que dá
+        // `top-4` e `top-6`. Sobra 1px de resíduo — os 2px a mais da pílula são
+        // a borda hairline, e corrigir isso custaria um `top-[25px]` para
+        // ganhar meio pixel. Mudar a altura da marca ou o padding da pílula
+        // exige refazer esta conta.
+        className="fixed left-6 top-4 z-50 md:left-14 md:top-6"
+        style={{
+          opacity: opacidadeMarca,
+          pointerEvents: opacidadeMarca < 0.05 ? "none" : undefined,
+        }}
+        aria-hidden={opacidadeMarca < 0.05 || undefined}
+        tabIndex={opacidadeMarca < 0.05 ? -1 : undefined}
       >
         {logo ? (
           <img
             src={logo}
             alt={logoAlt ?? data.wordmark}
-            className="h-16 w-auto md:h-24"
+            // Sombra suave: é o que faz a marca ler como peça solta sobre o
+            // bloco, e não como algo impresso nele.
+            className="h-14 w-auto drop-shadow-[0_2px_14px_oklch(0_0_0/0.45)] md:h-20"
           />
         ) : (
           <span className="text-base font-semibold tracking-[-0.01em] text-ink-foreground">
@@ -120,7 +160,14 @@ export function Header({
           // demais" em 30/07. Com o logo descido, o encosto não acontece mais.
           "fixed right-4 top-4 z-50 md:left-1/2 md:right-auto md:top-8 md:-translate-x-1/2",
           "flex max-w-[calc(100%-7rem)] flex-col items-center md:max-w-none",
-          "border border-ink-border bg-ink/75 px-5 py-3 backdrop-blur-md",
+          // Quase opaca, e isso é requisito de contraste, não gosto. A pílula é
+          // `fixed`: ela atravessa as seções claras, e a 75% de opacidade o
+          // fundo claro subia por baixo dela. Medido por amostragem do pixel do
+          // render ao lado do próprio rótulo, em três posições de scroll:
+          // sobre o hero escuro 7,54:1 nas duas opacidades, mas sobre seção
+          // clara 3,52:1 a 75% (reprova, o rótulo tem 14px) contra 6,58:1 a
+          // 95%. O `backdrop-blur` continua, pela borda de vidro.
+          "border border-ink-border bg-ink/95 px-5 py-3 backdrop-blur-md",
           redondo ? "rounded-full" : "rounded-2xl",
         )}
       >

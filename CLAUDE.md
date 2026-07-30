@@ -198,11 +198,19 @@ trocar `TELEFONE_NUMERO` em `src/content/clinica.ts:6`.
 | Telefone e WhatsApp | `[TELEFONE-PRINCIPAL: a confirmar]` na tela | só o usuário |
 | CRO e especialidade dos 8 profissionais | `[CRO e ESPECIALIDADE]` na tela | página `/equipe/`, via agente do Lovable |
 | 4 respostas do FAQ | `[CONFIRMAR: ...]` na tela | clínica |
-| Logo em versão escura | não existe | clínica |
+| ~~Logo em versão escura~~ | ✅ resolvido em 30/07: `brand.logoEscuro`, os 21 traços do SVG recoloridos | — |
 | CNPJ e nome jurídico | `[CNPJ]`, `[NOME DA CLÍNICA]` | usuário |
+| 3 casos da galeria: situação, conduta, duração e registro clínico | `[CASO 0N — ...]` na tela | clínica |
 
 **CRO é obrigatório em publicidade odontológica.** Enquanto os 8 estiverem com
 placeholder, o site não pode ir ao ar.
+
+**A galeria de casos é a seção mais exposta da CFO-196/2019.** Ela foi construída para
+documentar processo, não resultado: um registro por caso (não par), campos de situação /
+conduta / duração / especialidades, e aviso visível. O tipo `CasoClinico` tem `imagem` no
+singular de propósito — não dá para montar antes-e-depois com ele. Ao preencher, **não**
+acrescentar campo de "antes", nem copy que prometa desfecho. Registro clínico de paciente
+exige autorização de uso de imagem, por escrito.
 
 ### Achado que afeta a replicação
 
@@ -419,6 +427,15 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-07-30 — **Wordmark fantasma e quadriculado removidos de todas as seções** por decisão do usuário, com o CSS, o componente `GhostWord` e o campo `brand.ghostWord` junto. Eram as duas últimas peças do kit "cara de IA" identificado em 25/07. O hero perdeu 7rem de padding inferior, que só existia para caber a palavra gigante.
 - 2026-07-30 — Hero passou a **sangrar até a borda** da janela, sem moldura clara e sem canto arredondado no topo. A moldura era `px-3 pt-3` na seção; num bloco que abre a página ela lia como janela dentro de janela.
 - 2026-07-30 — Pílula de navegação **centralizada de verdade** (`left-1/2`). O deslocamento de 8% à direita existia para não encostar no logo; resolvido descendo o logo, que também cresceu para `h-24`.
+- 2026-07-30 — Paleta clara **tingida de petróleo** (matiz 196), não creme. O usuário pediu duas vezes "o site todo na paleta da Suzuki" e a leitura certa não era escurecer tudo: era tirar o claro do neutro. `background`, `surface` e texto passaram ao mesmo matiz dos blocos escuros, e a estrutura clara-com-blocos-escuros continua. `--surface` deixou de ser branco puro — cartão branco sobre fundo tingido salta como peça de outro projeto.
+- 2026-07-30 — `.slot-grid` tinha `oklch(0.248 0.022 258)` cravado, matiz da paleta azul, e ficou fora da paleta na virada. Reescrito com `color-mix` sobre `--foreground`. **Procurar literal de cor antes de declarar uma retematização completa** — token amarrado não desalinha.
+- 2026-07-30 — Marca passou a ser `fixed` e se apaga nos primeiros 180px de scroll, a pedido do usuário ("livre", não pertencendo ao bloco inicial). Era `absolute` por um motivo real — o logo é branco e fixo ficaria invisível sobre seção clara — e o desaparecimento é o que resolve isso: ela se apaga antes de a primeira seção clara chegar ao topo. Centro alinhado ao da pílula por conta, não a olho.
+- 2026-07-30 — Pílula de navegação subiu de `bg-ink/75` para `/95`, por contraste. Sendo `fixed`, ela atravessa as seções claras, e a 75% o fundo claro subia por baixo: 3,52:1 nos rótulos de 14px (reprova) contra 6,58:1 a 95%. Medido por amostragem do pixel do render.
+- 2026-07-30 — **Duas medições de contraste minhas deram falso positivo** e quase geraram correção desnecessária: (a) canvas transparente lê cor com alfa como quase-preto — usar canvas preenchido de branco antes; (b) amostrar perto do canto da bounding box de um elemento `rounded-full` cai fora da forma. Sempre amostrar ao lado do próprio texto.
+- 2026-07-30 — **"Elementos presos em opacidade 0" é falso positivo se a rolagem do script for rápida**: os `IntersectionObserver` do Reveal precisam de ~400ms por passo. Deu 13 e depois 46 elementos "presos", ambos 0 na remedição. Rolar devagar antes de reportar bug.
+- 2026-07-30 — Ícone dos CTAs: calendário por 20 minutos, depois **WhatsApp**, por correção do usuário. Todos os `PillButton` apontam para `WHATSAPP_HREF`, então a marca é a informação certa. O lucide-react não traz ícones de marca — glifo inline em `IconeWhatsApp`.
+- 2026-07-30 — `.display-1` (só a headline do hero) reduzida de 3.5rem para 3rem de teto, a pedido do usuário. A 56px a headline de três linhas dominava o bloco e apertava o retrato ao lado.
+- 2026-07-30 — **Galeria de casos** criada depois de Áreas, em pilha de dossiês com o registro alternando de lado — não em grade de cards, que é o molde que deu "cara de IA" em 25/07. Construída para a CFO-196/2019: um registro por caso, campos de processo (situação, conduta, duração, especialidades), aviso visível. Categorias reais, dado de caso em placeholder nomeado — inventar caso clínico é fabricar prontuário.
 
 ---
 

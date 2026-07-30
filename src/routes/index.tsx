@@ -8,6 +8,7 @@ import { AcompanhamentoSection } from "@/components/sections/Acompanhamento";
 import { LocalizacaoSection } from "@/components/sections/Localizacao";
 import { EstruturaSection } from "@/components/sections/Estrutura";
 import { AreasSection } from "@/components/sections/Areas";
+import { CasosSection } from "@/components/sections/Casos";
 import { DepoimentosSection } from "@/components/sections/Depoimentos";
 import { ComparativoSection } from "@/components/sections/Comparativo";
 import { TratamentosSection } from "@/components/sections/Tratamentos";
@@ -58,6 +59,7 @@ function Landing() {
         <LocalizacaoSection data={clinica.localizacao} contato={clinica.contato} />
         <EstruturaSection data={clinica.estrutura} />
         <AreasSection data={clinica.areas} />
+        <CasosSection data={clinica.casos} />
         <DepoimentosSection
           data={clinica.depoimentos}
           logo={clinica.brand.logoEscuro}
