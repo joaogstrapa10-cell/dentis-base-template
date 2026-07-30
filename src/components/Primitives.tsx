@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowRight, ArrowUpRight, Grid2x2 } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -51,7 +51,13 @@ export function PillButton({
         )}
         aria-hidden="true"
       >
-        <Grid2x2 className="h-3.5 w-3.5" strokeWidth={2.4} />
+        {/* Calendário, e não um ícone abstrato: todo PillButton do site é ação
+            de agendamento ("Agendar", "Agendar avaliação", "Agendar pelo
+            WhatsApp"), então o ícone pode dizer o que o botão faz.
+            Traço mais fino e 1px maior que o ícone anterior: o calendário tem
+            desenho interno, e a 14px com traço 2.4 as hastes de cima fechavam
+            contra a moldura. */}
+        <Calendar className="h-4 w-4" strokeWidth={2} />
       </span>
       {label}
     </a>
