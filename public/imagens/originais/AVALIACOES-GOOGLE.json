@@ -1,0 +1,29 @@
+{
+  "falhas": [
+    "As avaliacoes NAO puderam ser lidas. O Google serve a este ambiente uma 'visualizacao limitada do Google Maps' (mensagem literal no proprio painel): a ficha carrega nome, nota, endereco, telefone e site, mas NAO renderiza a aba 'Avaliacoes' nem qualquer no de avaliacao (0 elementos [data-review-id] apos rolagem completa e expansao de 'Mais').",
+    "Tentativa 2 - URL direta da lista de avaliacoes (parametro !9m1!1b1 no data= do place) com cookies de consentimento SOCS/CONSENT: mesma visualizacao limitada, 0 avaliacoes.",
+    "Tentativa 3 - endpoint interno /maps/preview/review/listentitiesreviews com o feature id do lugar: HTTP 404 (endpoint desativado pelo Google).",
+    "Tentativa 4 - search.google.com/local/reviews com o placeid derivado: o Google redirecionou para /sorry/index com reCAPTCHA ('Nossos sistemas detectaram trafego incomum na sua rede'). Bloqueio por IP de datacenter, tanto pelo navegador headless quanto pelo fetch de servidor (dois IPs distintos, ambos bloqueados).",
+    "Consequencia: 0 de 12 avaliacoes extraidas. Nenhum autor, texto, data ou foto foi obtido. Nada foi preenchido por inferencia. Nenhuma foto de autor foi baixada, portanto public/imagens/avaliacoes/ nao foi criada.",
+    "Campo totalAvaliacoes vazio: o numero total nao aparece em lugar nenhum da visualizacao limitada (so a nota 5,0 e as 5 estrelas).",
+    "Como destravar: (a) fornecer as avaliacoes por copia manual do perfil aberto em um navegador comum, ou (b) conectar o conector Google Maps Platform no Lovable - a Places API (New), endpoint places/v1/places/{placeId}, devolve rating, userRatingCount e ate 5 avaliacoes com autor, nota, texto e foto, de forma oficial e sem scraping."
+  ],
+  "resumo": {
+    "nomeNegocio": "Suzuki Odontologia | Dentista I Clínica Odontológica",
+    "nota": "5,0",
+    "totalAvaliacoes": "",
+    "urlAvaliar": "https://search.google.com/local/writereview?placeid=ChIJzSb5vkjk3JQREHbgq6qWPhA"
+  },
+  "referencia": {
+    "urlCurta": "https://maps.app.goo.gl/xuMdNzBAhSLkJ7cA8",
+    "urlFinal": "https://www.google.com/maps/place/Suzuki+Odontologia+%7C+Dentista+I+Cl%C3%ADnica+Odontol%C3%B3gica/@-25.4302608,-49.2530769,17z/data=!3m1!4b1!4m6!3m5!1s0x94dce448bef926cd:0x103e96aaabe07610!8m2!3d-25.4302608!4d-49.2530769!16s%2Fg%2F11cndb6y39",
+    "placeId": "ChIJzSb5vkjk3JQREHbgq6qWPhA",
+    "cid": "1170538612935128592",
+    "featureId": "0x94dce448bef926cd:0x103e96aaabe07610",
+    "endereco": "R. Atílio Bório, 547 - Alto da XV, Curitiba - PR, 80045-120, Brasil",
+    "telefone": "+55 41 99206-1073",
+    "site": "suzukiodontologia.com.br",
+    "observacaoPlaceId": "O placeId foi derivado do feature id da URL final e confirmado pelo proprio Google: ao abrir search.google.com/local/reviews com ele, o redirecionamento trouxe o nome e o endereco corretos do negocio. A urlAvaliar segue o formato padrao writereview do Google e nao foi capturada literalmente do painel (a visualizacao limitada expoe so o botao 'Avaliar', sem href legivel)."
+  },
+  "avaliacoes": []
+}
