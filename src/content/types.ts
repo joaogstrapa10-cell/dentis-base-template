@@ -126,18 +126,39 @@ export type AreasContent = {
   itens: AreaAtuacao[];
 };
 
+/** De onde a avaliação veio. Determina se a marca do Google pode ser exibida
+ *  junto dela: exibir a marca sobre texto que não veio do Google representa a
+ *  origem de forma incorreta. */
+export type AvaliacaoFonte = "google" | "site";
+
 export type Depoimento = {
   texto: string;
   autor: string;
-  /** Retrato da paciente. Caminho em /public, ou `null` para cair no fallback
-   *  de inicial. Exige autorização de uso de imagem — ver docs/imagens.md. */
+  /** Retrato. Caminho em /public, ou `null` para cair no fallback de inicial.
+   *  Exige autorização de uso de imagem, ver docs/imagens.md. */
   foto: string | null;
   fotoAlt: string;
+  /** 1 a 5. Só é renderizado quando `fonte` é "google". */
+  nota: number;
+  /** Texto livre de recência, como aparece no Google ("há 2 anos"). */
+  quando: string;
+  fonte: AvaliacaoFonte;
+};
+
+/** Cartão de resumo do perfil, à esquerda do carrossel. Os números precisam vir
+ *  do Google Business Profile da clínica; não podem ser estimados. */
+export type AvaliacoesResumo = {
+  nomeNegocio: string;
+  nota: string;
+  totalLabel: string;
+  fonteLabel: string;
+  cta: Cta;
 };
 
 export type DepoimentosContent = {
   eyebrow: string;
   titulo: string;
+  resumo: AvaliacoesResumo;
   itens: Depoimento[];
 };
 

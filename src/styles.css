@@ -258,6 +258,28 @@
 }
 .rail::-webkit-scrollbar { display: none; }
 
+/* Rolagem automática e contínua. A lista é renderizada duas vezes e a faixa
+   desliza exatamente 50%, então o ponto de retorno cai sobre uma cópia
+   idêntica e a emenda não aparece. */
+@keyframes rail-auto {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.rail-auto {
+  animation: rail-auto 46s linear infinite;
+  width: max-content;
+}
+.rail-pausa:hover .rail-auto,
+.rail-pausa:focus-within .rail-auto {
+  animation-play-state: paused;
+}
+
+/* Bordas esmaecidas: sem isso os cards são cortados a seco pelo overflow */
+.rail-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 4%, black 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, black 4%, black 94%, transparent 100%);
+}
+
 /* ---------- Slot de imagem vazio ---------- */
 /* Textura fina para o slot parecer deliberado em vez de caixa quebrada */
 .slot-grid {
@@ -281,6 +303,7 @@
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .marquee-track, [data-marquee] { animation: none !important; }
+  .rail-auto { animation: none !important; }
   .line-rise { animation: none !important; transform: none !important; }
   .lift:hover { transform: none; }
   .group:hover .nudge,

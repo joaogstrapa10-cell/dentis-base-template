@@ -276,6 +276,16 @@ export const clinica: Clinica = {
   depoimentos: {
     eyebrow: "Pacientes",
     titulo: "Quem já passou por aqui.",
+    resumo: {
+      nomeNegocio: "Suzuki Odontologia, Curitiba",
+      nota: "[NOTA: ex. 4,9]",
+      totalLabel: "[TOTAL: ex. 512 avaliações no Google]",
+      fonteLabel: "Google",
+      cta: {
+        label: "Escreva sua avaliação",
+        href: "[LINK: URL de avaliação do Google Business Profile]",
+      },
+    },
     itens: [
       {
         texto:
@@ -283,6 +293,11 @@ export const clinica: Clinica = {
         autor: "Adriane Cardoso",
         foto: "/imagens/depoimentos/adriane-cardoso.jpg",
         fotoAlt: "Retrato de Adriane Cardoso, paciente da clínica",
+        // Veio do site anterior da clínica, não do Google. Por isso a marca
+        // do Google não é exibida neste cartão.
+        fonte: "site",
+        nota: 5,
+        quando: "",
       },
       {
         texto:
@@ -290,6 +305,11 @@ export const clinica: Clinica = {
         autor: "Josélia Bellegard",
         foto: "/imagens/depoimentos/joselia-bellegard.jpg",
         fotoAlt: "Retrato de Josélia Bellegard, paciente da clínica",
+        // Veio do site anterior da clínica, não do Google. Por isso a marca
+        // do Google não é exibida neste cartão.
+        fonte: "site",
+        nota: 5,
+        quando: "",
       },
       {
         texto:
@@ -297,6 +317,11 @@ export const clinica: Clinica = {
         autor: "Adília Miguel",
         foto: "/imagens/depoimentos/adilia-miguel.jpg",
         fotoAlt: "Retrato de Adília Miguel, paciente da clínica",
+        // Veio do site anterior da clínica, não do Google. Por isso a marca
+        // do Google não é exibida neste cartão.
+        fonte: "site",
+        nota: 5,
+        quando: "",
       },
     ],
   },
