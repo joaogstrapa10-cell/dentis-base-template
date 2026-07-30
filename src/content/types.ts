@@ -197,6 +197,12 @@ export type AvaliacoesResumo = {
   /** Não é exibido: vira o texto alternativo do logo, para leitor de tela. */
   nomeNegocio: string;
   nota: string;
+  /** Rótulo ao lado da marca do Google. Descreve O QUE veio do Google, e a
+   *  precisão aqui importa: hoje só a NOTA veio de lá — os depoimentos do
+   *  carrossel são do site antigo, marcados `fonte: "site"`. Escrever
+   *  "avaliações do Google" enquanto isso for verdade atribui origem falsa.
+   *  Quando as avaliações do Google entrarem, este rótulo muda junto. */
+  fonteLabel: string;
 };
 
 export type DepoimentosContent = {

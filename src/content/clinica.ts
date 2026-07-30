@@ -354,6 +354,10 @@ export const clinica: Clinica = {
       // Verificado no perfil do Google. Alimenta o número e o preenchimento das
       // estrelas. É o único dado que o cartão afirma; não estimar.
       nota: "5,0",
+      // "Nota", não "avaliações": só a nota veio do Google. Os três depoimentos
+      // do carrossel são do site antigo. Trocar para "Avaliações no Google"
+      // quando `itens` receber avaliações com `fonte: "google"`.
+      fonteLabel: "Nota no Google",
     },
     // Ainda são os três depoimentos do site anterior, e por isso `fonte: "site"`
     // — renderizam sem estrela e sem a marca do Google. A decisão de 30/07 é que

@@ -7,6 +7,40 @@ import { cn } from "@/lib/utils";
  * Nenhum texto aqui — tudo vem por props, de src/content/clinica.ts.
  */
 
+/* ---------------------------------------------------------------- IconeGoogle */
+/**
+ * "G" do Google, nas quatro cores oficiais. Inline pelo mesmo motivo do
+ * WhatsApp: o lucide não traz marcas.
+ *
+ * Uso NOMINATIVO e só isso: identificar de onde vem um dado que de fato veio do
+ * Google. As cores são fixas de propósito — não recebem token nem herdam
+ * `currentColor`. Recolorir a marca de um terceiro para casar com a paleta é
+ * adulterá-la, e uma marca adulterada atribui origem de forma duvidosa, que é
+ * justamente o que esta seção existe para evitar.
+ */
+export function IconeGoogle({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false" className={className}>
+      <path
+        fill="#EA4335"
+        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5Z"
+      />
+      <path
+        fill="#4285F4"
+        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19Z"
+      />
+      <path
+        fill="#34A853"
+        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48Z"
+      />
+    </svg>
+  );
+}
+
 /* -------------------------------------------------------------- IconeWhatsApp */
 /**
  * Glifo do WhatsApp, inline. O lucide-react não traz ícones de marca — foram
@@ -41,8 +75,13 @@ export function IconeWhatsApp({ className }: { className?: string }) {
  * O ícone é a marca do WhatsApp, não um calendário: os CTAs não abrem agenda,
  * abrem conversa. Trocado em 30/07 por correção do usuário.
  *
- * `tone="ink"`  → sobre fundo claro (padrão)
- * `tone="light"`→ sobre bloco escuro
+ * `tone="light"` → PÍLULA CLARA, invertida: fundo `--foreground`, texto
+ *   `--background`. É o CTA principal. Com o site inteiro escuro (30/07) ela
+ *   deixou de ser "para bloco escuro" e passou a servir em qualquer seção.
+ *   Antes era `bg-surface`, e isso quebrou na virada: `--surface` escureceu, e a
+ *   pílula clara virou pílula escura sobre fundo escuro.
+ * `tone="ink"` (padrão) → pílula ESCURA elevada com contorno, para ação
+ *   secundária. Depende de `border-strong`: sem contorno ela se perde no fundo.
  */
 export function PillButton({
   label,
@@ -66,8 +105,8 @@ export function PillButton({
         "group inline-flex items-center gap-2.5 rounded-xl p-1.5 pr-4 text-sm font-semibold",
         "transition-colors duration-300",
         isInk
-          ? "bg-ink text-ink-foreground hover:bg-ink-elevated"
-          : "bg-surface text-foreground hover:bg-surface-raised",
+          ? "border border-border-strong bg-surface text-foreground hover:bg-surface-raised"
+          : "bg-foreground text-background hover:bg-accent hover:text-accent-foreground",
         className,
       )}
     >

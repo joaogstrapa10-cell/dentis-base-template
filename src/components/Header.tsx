@@ -107,14 +107,23 @@ export function Header({
 
   return (
     <>
-      {/* Marca: `fixed`, e some ao rolar.
+      {/* Marca: `absolute` e se apagando ao rolar.
 
-          Era `absolute` por um motivo real: o arquivo do logo é monocromático
-          BRANCO, e fixo ele flutuaria por cima das seções claras, invisível. O
-          desaparecimento resolve isso — a marca se apaga bem antes de a
-          primeira seção clara chegar ao topo, então a invisibilidade nunca
-          acontece. É o que destrava o pedido de 30/07 de a marca ser "livre" e
-          não pertencer ao bloco inicial.
+          Ela ficou `fixed` por uma rodada e foi um erro visível: parada no topo
+          enquanto a página sobe, a marca semitransparente passava POR CIMA da
+          headline do hero. Aos 135px de scroll o fantasma cinza do logo ficava
+          escrito sobre "Odontologia de alta complexidade" — foi isso que o
+          usuário viu como "efeito de sombra". Verificado por recorte da mesma
+          região da tela em seis posições de scroll.
+
+          Com `absolute` a marca viaja junto com o conteúdo, então não há como
+          sobrepor texto: ela sai de cena pelo topo e o fade só dissolve o que já
+          está saindo. Continua "livre" no sentido pedido — vive no nível da
+          página, fora da pílula e fora do cartão do hero.
+
+          O fade tem função além do efeito: o logo é monocromático BRANCO, e
+          garantir que ele desapareça impede que sobre visível sobre as seções
+          claras.
 
           `opacity` vem do scroll, sem `transition`: a transição brigaria com o
           valor já contínuo e daria atraso na resposta. `pointer-events` cai

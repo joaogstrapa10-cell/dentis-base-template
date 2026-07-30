@@ -2,6 +2,7 @@ import { Star } from "lucide-react";
 import type { Depoimento, DepoimentosContent } from "@/content/types";
 import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
+import { IconeGoogle } from "@/components/Primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -105,9 +106,12 @@ function CartaoAvaliacao({
             </div>
           </div>
 
-          {doGoogle ? (
-            <span className="shrink-0 text-xs font-semibold text-muted">Google</span>
-          ) : null}
+          {/* Marca do Google no cartão, e SÓ quando `fonte` é "google". É a
+              trava que impede depoimento do site antigo de aparecer como se
+              fosse avaliação do Google. Virou o glifo em vez da palavra
+              "Google": some um texto cravado em componente e fica idêntico à
+              atribuição do cartão de resumo. */}
+          {doGoogle ? <IconeGoogle className="mt-0.5 h-4 w-4 shrink-0" /> : null}
         </div>
 
         {doGoogle ? (
@@ -133,8 +137,10 @@ export function DepoimentosSection({
   logoAlt,
 }: {
   data: DepoimentosContent;
-  /** Versão ESCURA da marca: o cartão fica sobre superfície clara. `null` cai no
-   *  nome em texto, senão a seção perde o cabeçalho. */
+  /** Marca na versão que contrasta com a superfície do cartão. Era a ESCURA
+   *  enquanto a página era clara; com o site inteiro escuro (30/07) voltou a ser
+   *  a BRANCA. `brand.logoEscuro` continua existindo para uma variante clara
+   *  futura. `null` cai no nome em texto, senão a seção perde o cabeçalho. */
   logo: string | null;
   logoAlt: string;
 }) {
@@ -174,6 +180,16 @@ export function DepoimentosSection({
                 {resumo.nota}
               </span>
             </div>
+
+            {/* Atribuição da origem. A marca do Google fica aqui, junto da nota,
+                porque é a nota que veio do Google — e não nos cartões do
+                carrossel, que hoje são depoimentos do site antigo. O rótulo vem
+                do conteúdo justamente para poder mudar de "Nota" para
+                "Avaliações" quando as do Google entrarem. */}
+            <p className="mt-4 flex items-center gap-2 text-[0.8125rem] text-muted">
+              <IconeGoogle className="h-4 w-4 shrink-0" />
+              {resumo.fonteLabel}
+            </p>
           </div>
         </Reveal>
 

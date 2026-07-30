@@ -62,7 +62,7 @@ function Landing() {
         <CasosSection data={clinica.casos} />
         <DepoimentosSection
           data={clinica.depoimentos}
-          logo={clinica.brand.logoEscuro}
+          logo={clinica.brand.logo}
           logoAlt={clinica.brand.logoAlt}
         />
         <ComparativoSection data={clinica.comparativo} />
