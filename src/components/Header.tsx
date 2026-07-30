@@ -85,11 +85,15 @@ export function Header({
 
   return (
     <>
-      {/* Marca: peça própria, fixa no canto superior esquerdo */}
+      {/* Marca: `absolute`, não `fixed` — fica no topo e sai de cena com o
+          scroll. O arquivo do logo é monocromático BRANCO: se acompanhasse o
+          scroll, flutuaria por cima das seções claras e ficaria invisível.
+          O `top` é 8px menor que o da pílula para os centros das duas peças
+          coincidirem, já que o logo é mais alto. */}
       <a
         href="#top"
         aria-label={data.wordmark}
-        className="fixed left-6 top-6 z-50 md:left-14 md:top-10"
+        className="absolute left-6 top-5 z-50 md:left-14 md:top-6"
       >
         {logo ? (
           <img
@@ -107,7 +111,9 @@ export function Header({
       {/* Pílula de navegação */}
       <header
         className={cn(
-          "fixed right-4 top-4 z-50 md:left-1/2 md:right-auto md:top-6 md:-translate-x-1/2",
+          // Deslocada 8% à direita do centro: centralizada de verdade ela fica
+          // perto demais do logo, que cresceu.
+          "fixed right-4 top-4 z-50 md:left-[58%] md:right-auto md:top-8 md:-translate-x-1/2",
           "flex max-w-[calc(100%-7rem)] flex-col items-center md:max-w-none",
           "border border-ink-border bg-ink/75 px-5 py-3 backdrop-blur-md",
           redondo ? "rounded-full" : "rounded-2xl",
