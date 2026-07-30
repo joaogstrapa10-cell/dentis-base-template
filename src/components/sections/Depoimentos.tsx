@@ -3,7 +3,6 @@ import type { Depoimento, DepoimentosContent } from "@/content/types";
 import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 import { PillButton } from "@/components/Primitives";
-import { cn } from "@/lib/utils";
 
 /**
  * Estrutura: cartão de resumo do perfil à esquerda e carrossel de avaliações
@@ -20,20 +19,40 @@ import { cn } from "@/lib/utils";
  * detalhe de layout.
  */
 
+/** Nota do Google chega como texto pt-BR ("5,0", "4,8"). Devolve 0 se não for
+ *  número — nota inválida não deve pintar estrela nenhuma. */
+function paraNota(valor: string): number {
+  const n = Number(valor.replace(",", "."));
+  return Number.isFinite(n) ? Math.max(0, Math.min(5, n)) : 0;
+}
+
+/**
+ * Preenchimento fracionário. A fileira dourada é uma cópia recortada na
+ * proporção exata da nota: 4,8 tem de mostrar quatro estrelas e um resto, não
+ * cinco cheias. O arredondamento para cima seria propaganda, não layout.
+ */
 function Estrelas({ nota, label }: { nota: number; label: string }) {
+  const preenchido = `${(Math.max(0, Math.min(5, nota)) / 5) * 100}%`;
   return (
-    <div className="flex items-center gap-0.5" role="img" aria-label={label}>
-      {Array.from({ length: 5 }, (_, i) => (
-        <Star
-          key={i}
-          aria-hidden="true"
-          className={cn(
-            "h-4 w-4",
-            i < nota ? "fill-warning text-warning" : "fill-border text-border",
-          )}
-          strokeWidth={0}
-        />
-      ))}
+    <div className="relative inline-flex" role="img" aria-label={label}>
+      <div aria-hidden="true" className="flex items-center gap-0.5">
+        {Array.from({ length: 5 }, (_, i) => (
+          <Star key={i} className="h-4 w-4 fill-border text-border" strokeWidth={0} />
+        ))}
+      </div>
+      <div
+        aria-hidden="true"
+        className="absolute inset-y-0 left-0 flex items-center gap-0.5 overflow-hidden"
+        style={{ width: preenchido }}
+      >
+        {Array.from({ length: 5 }, (_, i) => (
+          <Star
+            key={i}
+            className="h-4 w-4 shrink-0 fill-warning text-warning"
+            strokeWidth={0}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -112,10 +131,12 @@ export function DepoimentosSection({ data }: { data: DepoimentosContent }) {
           <div>
             <h2 className="display-3 text-foreground">{resumo.nomeNegocio}</h2>
             <div className="mt-4 flex items-center gap-2.5">
-              <Estrelas nota={5} label={`${resumo.nota} de 5`} />
+              <Estrelas nota={paraNota(resumo.nota)} label={`${resumo.nota} de 5`} />
               <span className="text-sm font-semibold text-foreground">{resumo.nota}</span>
             </div>
-            <p className="mt-2 text-sm text-muted">{resumo.totalLabel}</p>
+            {resumo.totalLabel ? (
+              <p className="mt-2 text-sm text-muted">{resumo.totalLabel}</p>
+            ) : null}
             <div className="mt-6">
               <PillButton label={resumo.cta.label} href={resumo.cta.href} external />
             </div>

@@ -276,16 +276,34 @@ export const clinica: Clinica = {
   depoimentos: {
     eyebrow: "Pacientes",
     titulo: "Quem já passou por aqui.",
+    // Números do perfil real da clínica no Google Business, extraídos em 30/07.
+    // Proveniência e o que não foi possível ler: public/imagens/originais/AVALIACOES-GOOGLE.json
+    // Nome literal do perfil: "Suzuki Odontologia | Dentista I Clínica Odontológica".
+    // Aqui fica a forma curta — o sufixo do perfil é palavra-chave de busca, não
+    // nome do negócio, e num h2 desse tamanho lê como spam.
     resumo: {
       nomeNegocio: "Suzuki Odontologia, Curitiba",
-      nota: "[NOTA: ex. 4,9]",
-      totalLabel: "[TOTAL: ex. 512 avaliações no Google]",
+      // Verificado no perfil. Alimenta o texto e o preenchimento das estrelas.
+      nota: "5,0",
+      // O total não aparece na ficha: o Google serve a datacenter uma
+      // "visualização limitada", que mostra a nota e esconde a contagem.
+      // Só sai daqui com a Places API ou leitura manual do perfil.
+      totalLabel: "[TOTAL DE AVALIAÇÕES: pendente no Google]",
       fonteLabel: "Google",
       cta: {
         label: "Escreva sua avaliação",
-        href: "[LINK: URL de avaliação do Google Business Profile]",
+        // Formato padrão writereview + o place_id do perfil
+        // (ChIJzSb5vkjk3JQREHbgq6qWPhA), confirmado pelo próprio Google: aberto,
+        // devolve o nome e o endereço corretos da clínica.
+        href: "https://search.google.com/local/writereview?placeid=ChIJzSb5vkjk3JQREHbgq6qWPhA",
       },
     },
+    // Ainda são os três depoimentos do site anterior, e por isso `fonte: "site"`
+    // — renderizam sem estrela e sem a marca do Google. A decisão de 30/07 é que
+    // eles saem quando as avaliações do Google entrarem; nenhuma entrou (0 de 12
+    // extraídas, ver `falhas` no JSON), então continuam aqui. Trocar por texto
+    // inventado com `fonte: "google"` seria atribuir a pacientes reais uma
+    // avaliação que eles não escreveram.
     itens: [
       {
         texto:

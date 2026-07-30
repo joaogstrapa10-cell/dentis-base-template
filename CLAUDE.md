@@ -142,36 +142,50 @@ Tratamentos é um card largo dividido por fios. **Não reintroduzir grid de card
 
 ## 5.2 Ponto de retomada
 
-**Tarefa em voo:** foi enviada ao agente do Lovable (projeto `1f2b8513`) a extração das
-avaliações do Google Business da clínica, a partir de `https://maps.app.goo.gl/xuMdNzBAhSLkJ7cA8`.
-O agente deve escrever `public/imagens/originais/AVALIACOES-GOOGLE.json` com o resumo do
-perfil (nome, nota, total, link de avaliar) e até 12 avaliações (autor, nota, quando,
-texto integral, foto).
+**A extração do Google terminou, e voltou pela metade.** O agente do Lovable escreveu
+`public/imagens/originais/AVALIACOES-GOOGLE.json`, já no repo. Ler o array `falhas` dele antes
+de tentar qualquer coisa: **0 de 12 avaliações**. O Google entrega a IP de datacenter uma
+"visualização limitada do Google Maps" — nome, nota, endereço e telefone carregam, a aba de
+avaliações não renderiza (0 nós `[data-review-id]` após rolagem e expansão). O agente tentou
+quatro caminhos: o endpoint interno devolveu 404 e `search.google.com/local/reviews` caiu em
+reCAPTCHA por dois IPs distintos. **Não repetir a raspagem — é crédito gasto para o mesmo 403.**
 
-**Status em 30/07: ainda `running` após sete minutos, e o arquivo não foi escrito.**
-Isso é sinal de dificuldade, não de lentidão: o Google Maps monta a página por JavaScript
-e resiste a leitura automatizada. Antes de reenviar a tarefa, **verificar se o arquivo
-apareceu** — pode ter terminado depois. Se não apareceu, não insistir na mesma abordagem
-mais de uma vez: cada tentativa consome crédito do usuário.
+**O que entrou no site em 30/07** (`depoimentos.resumo`, tudo verificado no perfil):
 
-**Plano B, sem crédito e sem depender do Google:** o usuário abre o perfil, copia as
-avaliações e cola no chat. Para cada uma são necessários apenas quatro campos — autor,
-nota, quando e texto. Mais os três números do resumo: nota média, total de avaliações e o
-link de "escrever avaliação".
+| Campo | Valor |
+|---|---|
+| `nota` | `5,0` — real; alimenta o texto e o preenchimento das estrelas |
+| `cta.href` | `search.google.com/local/writereview?placeid=ChIJzSb5vkjk3JQREHbgq6qWPhA` |
+| `place_id` | `ChIJzSb5vkjk3JQREHbgq6qWPhA` — confirmado: abre com nome e endereço certos |
+| `totalLabel` | segue placeholder; a contagem não aparece na visualização limitada |
 
-**Quando o JSON chegar, fazer numa operação só:**
+O endereço do perfil confere com o do `clinica.ts` (Atílio Bório, 547, CEP 80045-120), o que
+confirma que o `place_id` é **desta** clínica e não de outra Suzuki de Curitiba.
 
-1. `git pull` para trazer o arquivo.
-2. Preencher `depoimentos.resumo` com os números reais. Hoje estão como
-   `[NOTA: ex. 4,9]` e `[TOTAL: ex. 512 avaliações no Google]`, visíveis na tela.
-3. Substituir `depoimentos.itens` pelas avaliações do Google, com `fonte: "google"` —
-   é o que liga as estrelas e a marca no cartão.
-4. **Remover os três depoimentos antigos** (Adriane Cardoso, Josélia Bellegard,
-   Adília Miguel). Decisão do usuário em 30/07: eles saem quando o Google entrar.
-   Não foram removidos antes porque deixariam a seção vazia no preview.
+**O caminho limpo para as avaliações, e é o único que falta:** `maps.googleapis.com` **está
+liberado** nesta sessão (testado, HTTP 200 — é a exceção à §7). Com uma chave da Places API dá
+para puxar oficialmente `rating`, `userRatingCount` e até 5 avaliações com autor, nota, texto,
+data e foto, sem raspagem:
+
+```bash
+curl -s "https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJzSb5vkjk3JQREHbgq6qWPhA&fields=name,rating,user_ratings_total,reviews&language=pt-BR&key=$CHAVE"
+```
+
+Alternativa sem chave: o usuário abre o perfil no navegador dele e cola as avaliações. Por
+avaliação bastam quatro campos — autor, nota, quando, texto — mais o total do resumo.
+
+Até uma das duas acontecer, `depoimentos.itens` **continua com os três depoimentos do site
+anterior**, marcados `fonte: "site"`. A decisão de 30/07 de removê-los vale **quando as do
+Google entrarem**; antes disso, removê-los esvazia a seção, e não se inventa avaliação
+atribuída a paciente real.
 
 O campo `fonte` existe para não atribuir origem falsa: `"site"` renderiza sem marca e sem
 estrelas, porque depoimento de site não tem nota e não veio do Google.
+
+**Achado colateral, que destrava uma pendência de publicação:** o perfil expõe o telefone
+**`+55 41 99206-1073`**. É celular, então serve de WhatsApp. **Não foi aplicado** — telefone
+está na coluna "só o usuário" abaixo, e número errado em site de clínica é caro. Ao confirmar,
+trocar `TELEFONE_NUMERO` em `src/content/clinica.ts:6`.
 
 ### Pendências que bloqueiam publicação
 
@@ -386,6 +400,12 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-07-25 — Slot de imagem vazio precisa **parecer deliberado**: 12 caixas cinzas lisas leem como site quebrado. Resolvido com textura `.tech-grid-sm` + rótulo em pill monoespaçada ancorado embaixo à esquerda. Seção Estrutura caiu de 1969px para 1393px (comparador 21/9 + miniaturas em 6 colunas).
 - 2026-07-25 — Build usa preset **Cloudflare Workers** (gera `wrangler.json`), então `node .output/server/index.mjs` sai na hora — não é servidor. Para renderizar local, usar `bunx vite dev --host 127.0.0.1`. `vite preview` também não serve: procura `dist/server/`, que este build não gera.
 - 2026-07-25 — Ambiente **não tem IPv6**: qualquer servidor precisa de `--host 127.0.0.1` explícito, senão falha com `EAFNOSUPPORT` ao tentar bind em `::`.
+- 2026-07-30 — Avaliações do Google **não são obtíveis por raspagem**, nem por Claude nem pelo agente do Lovable: os dois saem de IP de datacenter e o Google devolve "visualização limitada" (sem a aba de avaliações) ou reCAPTCHA. Quatro caminhos testados, 0 de 12 extraídas. Encerrado esse vetor; próxima tentativa só via Places API com chave.
+- 2026-07-30 — Entrou no site só o que o perfil confirmou: `nota: "5,0"` e o `writereview` com o `place_id` `ChIJzSb5vkjk3JQREHbgq6qWPhA`. `totalLabel` segue placeholder porque a contagem não aparece na visualização limitada — **preencher número de avaliações por estimativa é fabricar prova social**, e a seção inteira existe para ser verificável.
+- 2026-07-30 — Os três depoimentos do site antigo **ficam** até as avaliações do Google entrarem, contra o plano de 30/07 de removê-los junto. Removê-los agora esvazia a seção sem nada para pôr no lugar; o `fonte: "site"` já garante que renderizam sem estrela e sem a marca do Google, então não há atribuição falsa enquanto esperam.
+- 2026-07-30 — Bug de template achado no cartão de resumo: `<Estrelas nota={5} />` estava **fixo em 5**, ignorando `resumo.nota`. Coincidia com a Suzuki (5,0) e teria pintado 5 estrelas cheias para um 4,6 do Rogério ou do Décio. Trocado por preenchimento fracionário (fileira dourada recortada por `width` percentual), que também serve nota quebrada — arredondar para cima seria propaganda, não layout.
+- 2026-07-30 — `maps.googleapis.com` responde 200 daqui, então a Places API é caminho viável e oficial: `place_id` + chave devolvem `rating`, `userRatingCount` e até 5 avaliações completas. É a única pendência das avaliações.
+- 2026-07-30 — Telefone `+55 41 99206-1073` apareceu no perfil do Google (celular, serve de WhatsApp). **Não aplicado**: telefone é da coluna "só o usuário" e o site antigo já teve bug de número errado. Registrado para confirmação.
 
 ---
 
@@ -427,6 +447,18 @@ descreve um site escuro que não existe mais. Só a seção final, de correçõe
 - **O agente do Lovable ignora itens** de mensagem multi-tarefa. Uma tarefa por mensagem,
   e sempre conferir com `list_files`/`read_file` — o commit message dele não descreve o
   que foi feito.
-- **Egress policy:** Claude alcança apenas `github.com` e `registry.npmjs.org`. Fontes
-  externas (site antigo, referência, Google Maps, 21st.dev) são 403. Quando precisar de
-  algo da web aberta, delegar ao agente do Lovable, que tem rede própria.
+- **Egress policy:** Claude alcança `github.com`, `registry.npmjs.org` e — descoberto em
+  30/07 — **`maps.googleapis.com`**. O resto (site antigo, referência, `google.com/maps`,
+  `search.google.com`, 21st.dev) é 403. Quando precisar da web aberta, delegar ao agente do
+  Lovable, que tem rede própria — mas ele tem IP de datacenter, então o Google o trata como
+  bot (ver §5.2). Rede própria não é o mesmo que rede confiável.
+- **`bun install` quebra depois de sync do Lovable.** O `bun.lock` que ele escreve resolve
+  os pacotes `@lovable.dev/*` por `europe-west1-npm.pkg.dev` (cache interno deles), host
+  **bloqueado** aqui — e `bun install --registry` não sobrepõe URL já gravada no lockfile.
+  As mesmas versões existem em `registry.npmjs.org`. Contorno, sem sujar o commit:
+  `sed -i 's#https://europe-west1-npm\.pkg\.dev/lovable-core-prod/sandbox-npm-cache/#https://registry.npmjs.org/#g' bun.lock`,
+  instalar (os hashes sha512 continuam conferindo, é o mesmo tarball), e **restaurar o
+  `bun.lock` antes de comitar**.
+- **`bunx vite dev` reescreve `src/routeTree.gen.ts`** com um bloco `declare module` que a
+  versão do plugin no Lovable não gera. É arquivo gerado: `git checkout --` nele antes de
+  comitar, senão o diff briga com o sync a cada rodada.
