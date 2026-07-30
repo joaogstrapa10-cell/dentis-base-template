@@ -101,6 +101,92 @@ na UI do Lovable, pede explicitamente e **para**.
 | 4 | Componente de galeria de comparação | **Construído do zero** — `21st.dev` bloqueado por egress policy, ver §7 |
 | 5 | Preparar a replicação (`docs/replicacao.md`) | **Concluída** |
 | — | QA visual por screenshot | **Concluída em 25/07** — 4 bugs corrigidos, ver log §9 |
+| — | Redesign a partir da referência real | **Concluída em 25/07** — ver §5.1 |
+| — | Imagens reais do site antigo | **Concluída em 29/07** — ver §5.1 |
+| — | Avaliações do Google | **EM ANDAMENTO** — ver §5.2, é o ponto de retomada |
+
+---
+
+## 5.1 O que mudou depois da Fase 5
+
+**As fases 0–5 descrevem um site que não existe mais.** O layout foi refeito do zero
+em 25/07, quando o usuário enviou screenshots da referência — que nunca foi acessível
+deste ambiente. Até então o layout era invenção de Claude, e era essa a causa do
+"cara de IA" que o usuário reprovou três vezes.
+
+Estado atual, em uma frase: **página clara com blocos escuros encaixados, paleta azul,
+Instrument Sans, e cada seção com uma estrutura própria.**
+
+O que a referência revelou e estava errado antes:
+
+| | Estava | Ficou |
+|---|---|---|
+| Base | página toda escura | clara, com blocos escuros pontuais |
+| Hero | tudo empilhado numa coluna | cartão escuro arredondado, 2 colunas |
+| Botão | pill sólido | pill escura com tile de ícone colorido |
+| Cards | borda 1px, raio 10px | brancos, raio 22px, sombra suave |
+| Headings | peso médio | bold |
+| Assinatura | — | wordmark gigante translúcido cortado pela borda |
+
+**Monotonia estrutural era o problema mais fundo.** Seis das treze seções eram o mesmo
+componente: cabeçalho, parágrafo, fileira de cards iguais. Hoje cada uma tem uma ideia
+própria: Diferenciais é lista editorial numerada sem card; Áreas é índice interativo com
+revelação por hover; Depoimentos é carrossel; Bio é faixa escura de largura cheia;
+Tratamentos é um card largo dividido por fios. **Não reintroduzir grid de cards uniforme.**
+
+**Imagens reais estão no site** desde 29/07: 12 fotos de estrutura, 9 retratos de equipe,
+3 fotos de depoentes e o logo. Baixadas pelo agente do Lovable, que tem rede própria —
+`suzukiodontologia.com.br` é bloqueado para Claude. Ver `public/imagens/originais/MANIFESTO.md`.
+
+---
+
+## 5.2 Ponto de retomada
+
+**Tarefa em voo:** foi enviada ao agente do Lovable (projeto `1f2b8513`) a extração das
+avaliações do Google Business da clínica, a partir de `https://maps.app.goo.gl/xuMdNzBAhSLkJ7cA8`.
+O agente deve escrever `public/imagens/originais/AVALIACOES-GOOGLE.json` com o resumo do
+perfil (nome, nota, total, link de avaliar) e até 12 avaliações (autor, nota, quando,
+texto integral, foto). Estava `running` em 30/07.
+
+**Quando o JSON chegar, fazer numa operação só:**
+
+1. `git pull` para trazer o arquivo.
+2. Preencher `depoimentos.resumo` com os números reais. Hoje estão como
+   `[NOTA: ex. 4,9]` e `[TOTAL: ex. 512 avaliações no Google]`, visíveis na tela.
+3. Substituir `depoimentos.itens` pelas avaliações do Google, com `fonte: "google"` —
+   é o que liga as estrelas e a marca no cartão.
+4. **Remover os três depoimentos antigos** (Adriane Cardoso, Josélia Bellegard,
+   Adília Miguel). Decisão do usuário em 30/07: eles saem quando o Google entrar.
+   Não foram removidos antes porque deixariam a seção vazia no preview.
+
+O campo `fonte` existe para não atribuir origem falsa: `"site"` renderiza sem marca e sem
+estrelas, porque depoimento de site não tem nota e não veio do Google.
+
+### Pendências que bloqueiam publicação
+
+| O quê | Onde aparece | Quem resolve |
+|---|---|---|
+| Telefone e WhatsApp | `[TELEFONE-PRINCIPAL: a confirmar]` na tela | só o usuário |
+| CRO e especialidade dos 8 profissionais | `[CRO e ESPECIALIDADE]` na tela | página `/equipe/`, via agente do Lovable |
+| 4 respostas do FAQ | `[CONFIRMAR: ...]` na tela | clínica |
+| Logo em versão escura | não existe | clínica |
+| CNPJ e nome jurídico | `[CNPJ]`, `[NOME DA CLÍNICA]` | usuário |
+
+**CRO é obrigatório em publicidade odontológica.** Enquanto os 8 estiverem com
+placeholder, o site não pode ir ao ar.
+
+### Achado que afeta a replicação
+
+Nos retratos do site antigo há Dalton e mais oito nomes, e **nem Rogério nem Décio
+aparecem**. A premissa de três sócios com uma base comum precisa ser confirmada antes de
+gerar as variantes.
+
+### Seções que ainda repetem o molde antigo
+
+Acompanhamento, Localização e Estrutura seguem no formato cabeçalho + conteúdo. O FAQ
+continua accordion de largura cheia, quando na referência é de duas colunas.
+
+---
 
 ### Como validar e renderizar
 
@@ -289,3 +375,47 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-07-25 — Slot de imagem vazio precisa **parecer deliberado**: 12 caixas cinzas lisas leem como site quebrado. Resolvido com textura `.tech-grid-sm` + rótulo em pill monoespaçada ancorado embaixo à esquerda. Seção Estrutura caiu de 1969px para 1393px (comparador 21/9 + miniaturas em 6 colunas).
 - 2026-07-25 — Build usa preset **Cloudflare Workers** (gera `wrangler.json`), então `node .output/server/index.mjs` sai na hora — não é servidor. Para renderizar local, usar `bunx vite dev --host 127.0.0.1`. `vite preview` também não serve: procura `dist/server/`, que este build não gera.
 - 2026-07-25 — Ambiente **não tem IPv6**: qualquer servidor precisa de `--host 127.0.0.1` explícito, senão falha com `EAFNOSUPPORT` ao tentar bind em `::`.
+
+---
+
+## 10. Como retomar num chat novo
+
+O contexto vive neste repositório, não na conversa. Uma sessão nova com este repo
+anexado carrega este arquivo automaticamente.
+
+**Ao abrir o chat novo, anexar:** `joaogstrapa10-cell/dentis-base-template`
+
+Não é preciso anexar `joaogstrapa10-cell/ippouniverso`. Ele guarda o histórico das
+fases 0 e 1, já espelhado aqui, e o ambiente não permite misturar owners.
+
+**Primeira mensagem sugerida:**
+
+> Leia o CLAUDE.md e os docs/. Retome de onde parou: §5.2 tem o ponto exato.
+
+**Ordem de leitura para entrar no assunto:**
+
+1. `CLAUDE.md` §5.1 (o que o site é hoje) e §5.2 (o que fazer agora)
+2. `docs/referencia-layout.md` §8 (tokens em vigor e por que são esses)
+3. `docs/imagens.md` (o que já veio e o que falta)
+4. `docs/replicacao.md` (Fase 5, gerar as variantes)
+
+**Não ler** `docs/prompt-lovable.md` como especificação: é o prompt da geração inicial,
+descreve um site escuro que não existe mais. Só a seção final, de correções, segue válida.
+
+### Armadilhas já pagas, não repetir
+
+- **`ch` em `max-width`** resolve contra a fonte do elemento onde está, não do filho.
+  `max-w-[42ch]` num wrapper de 16px estrangula um `h2` de 52px. Aconteceu três vezes.
+- **`leading-[...]` com `text-[clamp(...)]`** não funciona no Tailwind v4: o utilitário de
+  font-size arbitrário reimpõe o line-height. Por isso existe a escala `.display-1/2/3`.
+- **Translate no Tailwind v4** usa a propriedade CSS `translate`, não `transform`.
+  Inspecionar `getComputedStyle().transform` devolve `none` e engana.
+- **`@import` de fonte remota no CSS** derruba o build: o lightningcss tenta resolver a URL
+  como arquivo local. Fontes entram por `<link>` em `src/routes/__root.tsx`.
+- **Ambiente sem IPv6:** todo servidor precisa de `--host 127.0.0.1` explícito.
+- **O agente do Lovable ignora itens** de mensagem multi-tarefa. Uma tarefa por mensagem,
+  e sempre conferir com `list_files`/`read_file` — o commit message dele não descreve o
+  que foi feito.
+- **Egress policy:** Claude alcança apenas `github.com` e `registry.npmjs.org`. Fontes
+  externas (site antigo, referência, Google Maps, 21st.dev) são 403. Quando precisar de
+  algo da web aberta, delegar ao agente do Lovable, que tem rede própria.
