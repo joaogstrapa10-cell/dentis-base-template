@@ -146,7 +146,18 @@ Tratamentos é um card largo dividido por fios. **Não reintroduzir grid de card
 avaliações do Google Business da clínica, a partir de `https://maps.app.goo.gl/xuMdNzBAhSLkJ7cA8`.
 O agente deve escrever `public/imagens/originais/AVALIACOES-GOOGLE.json` com o resumo do
 perfil (nome, nota, total, link de avaliar) e até 12 avaliações (autor, nota, quando,
-texto integral, foto). Estava `running` em 30/07.
+texto integral, foto).
+
+**Status em 30/07: ainda `running` após sete minutos, e o arquivo não foi escrito.**
+Isso é sinal de dificuldade, não de lentidão: o Google Maps monta a página por JavaScript
+e resiste a leitura automatizada. Antes de reenviar a tarefa, **verificar se o arquivo
+apareceu** — pode ter terminado depois. Se não apareceu, não insistir na mesma abordagem
+mais de uma vez: cada tentativa consome crédito do usuário.
+
+**Plano B, sem crédito e sem depender do Google:** o usuário abre o perfil, copia as
+avaliações e cola no chat. Para cada uma são necessários apenas quatro campos — autor,
+nota, quando e texto. Mais os três números do resumo: nota média, total de avaliações e o
+link de "escrever avaliação".
 
 **Quando o JSON chegar, fazer numa operação só:**
 
