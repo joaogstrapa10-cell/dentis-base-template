@@ -158,9 +158,12 @@ export function FooterSection({
             </div>
           </div>
 
-          {/* Barra inferior. O padding-bottom generoso abre espaço para o
-              wordmark gigante, que é cortado pela borda do cartão. */}
-          <div className="mt-20 border-t border-ink-border pb-40 pt-7 md:pb-56">
+          {/* Barra inferior. O padding-bottom era `pb-40 md:pb-56` — 10rem e
+              14rem — e existia só para caber o wordmark gigante que era cortado
+              pela borda do bloco. A palavra saiu em 30/07 e o padding ficou:
+              sobravam 14rem de verde vazio depois do copyright, com o arco
+              dourado brilhando no meio do nada. Encolhido junto. */}
+          <div className="mt-20 border-t border-ink-border pb-10 pt-7 md:pb-12">
             <p className="text-small leading-[1.7] text-ink-muted">{brand.copyright}</p>
           </div>
         </div>
