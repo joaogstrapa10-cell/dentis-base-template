@@ -87,7 +87,10 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
         </ul>
       </div>
 
-      <div className="mx-auto mt-12 w-full max-w-[1200px] px-5 md:px-10">
+      {/* Botão centralizado. `justify-center` no flex, e não `mx-auto` no botão:
+          `PillButton` é um `<a>` inline-flex, e margem automática não centraliza
+          elemento inline. */}
+      <div className="mx-auto mt-12 flex w-full max-w-[1200px] justify-center px-5 md:px-10">
         <Reveal>
           {/* `icone="seta"`: leva a uma página interna. Com o padrão, o botão
               sairia com a marca do WhatsApp e prometeria uma conversa. */}
