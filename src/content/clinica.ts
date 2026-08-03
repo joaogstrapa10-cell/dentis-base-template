@@ -136,11 +136,6 @@ export const clinica: Clinica = {
     telefoneLabel: "Telefone",
     whatsappLabel: "WhatsApp",
   },
-  // Três fotos em largura total, uma por ideia: o ambiente de recepção, o
-  // consultório com equipamento digital e a área externa. Antes eram 12
-  // miniaturas mais um comparador arrastável — e 28 das 32 fotos do site
-  // apareciam abaixo de 15% da largura da tela. Os outros nove arquivos
-  // continuam em public/imagens/estrutura/, inventariados no MANIFESTO.md.
   // Os 12 ambientes reais da clínica. O carrossel da home passa por todos; a
   // página /estrutura mostra todos de uma vez, com o rótulo de cada ambiente.
   //
@@ -352,18 +347,84 @@ export const clinica: Clinica = {
       // Verificado no perfil do Google. Alimenta o número e o preenchimento das
       // estrelas. É o único dado que o cartão afirma; não estimar.
       nota: "5,0",
-      // "Nota", não "avaliações": só a nota veio do Google. Os três depoimentos
-      // do carrossel são do site antigo. Trocar para "Avaliações no Google"
-      // quando `itens` receber avaliações com `fonte: "google"`.
+      // "Nota", não "Avaliações", e é decisão de precisão: a faixa tem
+      // procedência MISTA — 4 avaliações do Google e 3 depoimentos do site
+      // anterior. Um rótulo no plural, colado na nota e no logo do Google,
+      // sugeriria que os sete cartões vieram de lá. Este rótulo descreve o
+      // 5,0, que é sempre do Google; a procedência de cada cartão fica no
+      // próprio cartão, pela presença ou ausência do "G".
+      // Se um dia a faixa tiver SÓ avaliações do Google, aí sim vira
+      // "Avaliações no Google".
       fonteLabel: "Nota no Google",
     },
-    // Ainda são os três depoimentos do site anterior, e por isso `fonte: "site"`
-    // — renderizam sem estrela e sem a marca do Google. A decisão de 30/07 é que
-    // eles saem quando as avaliações do Google entrarem; nenhuma entrou (0 de 12
-    // extraídas, ver `falhas` no JSON), então continuam aqui. Trocar por texto
-    // inventado com `fonte: "google"` seria atribuir a pacientes reais uma
-    // avaliação que eles não escreveram.
+    // AVALIAÇÕES REAIS DO GOOGLE, transcritas em 03/08 de prints do perfil
+    // enviados pelo usuário. Foi o caminho que funcionou depois de quatro
+    // tentativas de raspagem falharem (ver AVALIACOES-GOOGLE.json): o Google não
+    // entrega a aba de avaliações para IP de datacenter, e os hosts do Maps são
+    // bloqueados neste ambiente — mas print é imagem, e imagem se lê.
+    //
+    // Os três depoimentos do site anterior SAÍRAM aqui, cumprindo a decisão de
+    // 30/07: eles existiam só enquanto não havia avaliação do Google, e agora há.
+    //
+    // Texto VERBATIM, com os desvios de digitação dos autores preservados
+    // ("A clinica" sem acento, "desejada.Parabéns!" sem espaço, vírgulas
+    // espaçadas, o emoji). São palavras de pacientes reais; normalizar quote é
+    // reescrever o que a pessoa disse.
+    //
+    // `quando: ""` em todas, por pedido do usuário — as quatro são de "8 meses
+    // atrás" e ele não quis exibir a recência. O componente omite a linha quando
+    // o campo é vazio.
+    //
+    // `foto: null` porque as fotos de perfil não podem ser baixadas (host
+    // bloqueado, e o print não tem resolução para recorte). Cai no avatar de
+    // inicial, que é o comportamento correto — melhor inicial que foto errada.
     itens: [
+      {
+        texto:
+          "A clinica oferece ambiente agradável e acolhedor, por intermédio de todos os funcionários e dos profissionais que possuem grande capacitação técnica que inspiram confiança e segurança nos serviços prestados.",
+        autor: "Lucia Feitoza Caversan",
+        foto: null,
+        fotoAlt: "Foto de perfil de Lucia Feitoza Caversan",
+        fonte: "google",
+        nota: 5,
+        quando: "",
+      },
+      {
+        texto:
+          "A clínica é excelente. Atendimento personalizado. Equipe muito atenciosa e comprometida em entregar o melhor aos seus pacientes. Desde a recepção, doutores, protético e financeiro, todos são eficientes e respeitam os pacientes trabalhando em sintonia para entregar a qualidade de vida tão desejada.Parabéns!",
+        autor: "EDI STEIN",
+        foto: null,
+        fotoAlt: "Foto de perfil de EDI STEIN",
+        fonte: "google",
+        nota: 5,
+        quando: "",
+      },
+      {
+        texto:
+          "Experiência muito boa , ótima localização, atendimento muito bom , desde a secretária jéssica que é muito atenciosa e competente , e a dra Ana que faz um excelente atendimento 👏🏻👏🏻",
+        autor: "Mauricio Roberto",
+        foto: null,
+        fotoAlt: "Foto de perfil de Mauricio Roberto",
+        fonte: "google",
+        nota: 5,
+        quando: "",
+      },
+      {
+        texto:
+          "Atendimento excelente, desde a recepção aos exames e a Dra Ana Carolina sempre muito atenciosa e competente. Recomendo!",
+        autor: "Guilherme Rocha",
+        foto: null,
+        fotoAlt: "Foto de perfil de Guilherme Rocha",
+        fonte: "google",
+        nota: 5,
+        quando: "",
+      },
+      // --- Depoimentos do SITE ANTERIOR, mantidos a pedido do usuário ---
+      // `fonte: "site"` faz o cartão renderizar SEM estrela e SEM o "G" do
+      // Google. É a diferença visível entre os dois grupos, e é o que impede
+      // que um depoimento colhido pela clínica passe por avaliação pública.
+      // São bem mais longos que avaliação de Google, então puxam a altura da
+      // faixa para cima — `items-stretch` iguala todos os cartões.
       {
         texto:
           "Querido Dr. Dalton, nesta semana encerrei meu tratamento em sua clínica e gostaria de agradecer imensamente por toda atenção, carinho, dedicação e trabalho de toda a equipe de profissionais que me acompanharam durante este período. Na sua clínica descobri que o dentista não é um bicho-de-sete-cabeças e que a anestesia nem é assim tão ruim… Fui acolhida como parte da família que compõe sua equipe e não apenas como um paciente qualquer. Acredito que este é o diferencial que torna esse ambiente tão especial e acolhedor. Agradeço especialmente a você, que certamente foi abençoado com o dom da humildade, do respeito pelo próximo, e é claro, com a excelência do seu trabalho perfeito! Graças a tudo isso, consegui realizar um sonho: um sorriso incrível. Muito obrigada!",

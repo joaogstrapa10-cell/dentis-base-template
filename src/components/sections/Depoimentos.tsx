@@ -93,9 +93,14 @@ function CartaoAvaliacao({
   const doGoogle = item.fonte === "google";
   return (
     <li aria-hidden={duplicado || undefined} className="w-[21rem] shrink-0 sm:w-[25rem]">
-      {/* `h-full` aqui + `items-stretch` na faixa: todos os cartões assumem a
-          altura do mais alto, e é isso que permite não truncar texto nenhum. */}
-      <figure className="flex h-full flex-col rounded-2xl border border-border bg-surface p-6 md:p-7">
+      {/* Altura pelo PRÓPRIO texto, não pela do cartão mais alto.
+          Tentei `items-stretch` primeiro e ficou pior: as avaliações do Google
+          têm 20–45 palavras e os depoimentos do site têm 70–126, então os curtos
+          esticavam para 672px e sobravam ~400px de branco dentro deles. Com
+          procedência mista numa faixa só, uniformizar altura sem truncar é
+          impossível — e truncar é o erro que derrubou a versão de 30/07.
+          Base alinhada no topo, borda de baixo irregular. */}
+      <figure className="flex flex-col rounded-2xl border border-border bg-surface p-6 md:p-7">
         <div className="flex items-start justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
             {item.foto ? (
@@ -193,7 +198,7 @@ export function DepoimentosSection({
         {/* Esteira. O `-mx` cancela o padding do container para a faixa sangrar
             até a borda no mobile, onde o container é estreito. */}
         <div className="esteira-pausa esteira-mask -mx-5 overflow-hidden md:-mx-10 lg:mx-0">
-          <ul className="esteira flex items-stretch gap-4 px-5 md:px-10 lg:px-0">
+          <ul className="esteira flex items-start gap-4 px-5 md:px-10 lg:px-0">
             {faixa.map((item, i) => (
               <CartaoAvaliacao
                 key={`${item.autor}-${i}`}
