@@ -136,74 +136,31 @@ export const clinica: Clinica = {
     telefoneLabel: "Telefone",
     whatsappLabel: "WhatsApp",
   },
+  // Três fotos em largura total, uma por ideia: o ambiente de recepção, o
+  // consultório com equipamento digital e a área externa. Antes eram 12
+  // miniaturas mais um comparador arrastável — e 28 das 32 fotos do site
+  // apareciam abaixo de 15% da largura da tela. Os outros nove arquivos
+  // continuam em public/imagens/estrutura/, inventariados no MANIFESTO.md.
   estrutura: {
     eyebrow: "Nossa estrutura",
     titulo: "O ambiente do tratamento.",
     descricao:
-      "Recepção, consultórios, equipamentos de diagnóstico por imagem e áreas de apoio. Arraste o divisor para comparar os ambientes.",
-    ariaLabelComparador: "Comparar os dois ambientes",
-    comparadorLadoALabel: "Área externa",
-    comparadorLadoBLabel: "Recepção",
+      "Recepção, consultórios e áreas de apoio na unidade do Alto da XV, em Curitiba.",
     imagens: [
       {
-        src: "/imagens/estrutura/01-area-externa.webp",
-        rotulo: "01",
-        alt: "Caminho externo de pedra entre canteiro aparado e a fachada lateral da clínica",
-      },
-      {
         src: "/imagens/estrutura/02-recepcao.webp",
-        rotulo: "02",
+        rotulo: "Recepção",
         alt: "Recepção da clínica, com balcão curvo de madeira, orquídeas e piso escuro polido",
       },
       {
-        src: "/imagens/estrutura/03-sala-espera.webp",
-        rotulo: "03",
-        alt: "Sala de espera com sofá escuro, mesa de centro de vidro e televisão na parede",
-      },
-      {
-        src: "/imagens/estrutura/04-sala-espera-angulo.webp",
-        rotulo: "04",
-        alt: "Sala de espera vista de outro ângulo, com sanca iluminada e recepção ao fundo",
-      },
-      {
-        src: "/imagens/estrutura/05-consultorio-vermelho.webp",
-        rotulo: "05",
-        alt: "Consultório com cadeira odontológica vermelha, bancada de apoio e monitor na parede",
-      },
-      {
-        src: "/imagens/estrutura/06-consultorio-corredor.webp",
-        rotulo: "06",
-        alt: "Consultório com cadeira vermelha visto a partir do corredor, pelo vão da porta",
-      },
-      {
-        src: "/imagens/estrutura/07-consultorio-claro.webp",
-        rotulo: "07",
-        alt: "Consultório claro com cadeira marrom, refletor de teto e armários brancos",
-      },
-      {
-        src: "/imagens/estrutura/08-atendimento.webp",
-        rotulo: "08",
-        alt: "Atendimento em andamento: dentista e auxiliar com máscara e touca junto à cadeira",
-      },
-      {
         src: "/imagens/estrutura/09-consultorio-digital.webp",
-        rotulo: "09",
+        rotulo: "Consultório digital",
         alt: "Consultório com equipamento digital: monitor exibindo modelo 3D da arcada e impressora 3D na bancada",
       },
       {
-        src: "/imagens/estrutura/10-consultorio-verde.jpg",
-        rotulo: "10",
-        alt: "Consultório claro com cadeira odontológica verde-água, armários brancos e janela de vidro",
-      },
-      {
-        src: "/imagens/estrutura/11-area-administrativa.webp",
-        rotulo: "11",
-        alt: "Área administrativa com mesas de atendimento em madeira, computadores e plantas nas prateleiras",
-      },
-      {
-        src: "/imagens/estrutura/12-jardim.webp",
-        rotulo: "12",
-        alt: "Jardim externo com arbustos aparados, pedras e lanterna japonesa, com a fachada térrea ao fundo",
+        src: "/imagens/estrutura/01-area-externa.webp",
+        rotulo: "Área externa",
+        alt: "Caminho externo de pedra entre canteiro aparado e a fachada lateral da clínica",
       },
     ],
   },
@@ -216,49 +173,41 @@ export const clinica: Clinica = {
         titulo: "Implantodontia e Cirurgia",
         descricao:
           "Reposição de dentes ausentes com implantes e procedimentos cirúrgicos, do caso unitário à reabilitação total.",
-        tags: ["Implantes", "Cirurgia", "Alta complexidade"],
       },
       {
         titulo: "Estética Dental",
         descricao:
           "Facetas, coroas em cerâmica e clareamento, planejados a partir da proporção da face.",
-        tags: ["Facetas", "Cerâmica", "Clareamento"],
       },
       {
         titulo: "Endodontia",
         descricao:
           "Tratamento de canal com foco em preservar o dente natural sempre que houver condição para isso.",
-        tags: ["Canal", "Preservação"],
       },
       {
         titulo: "Harmonização Facial",
         descricao:
           "Procedimentos faciais conduzidos em conjunto com o plano odontológico, respeitando as proporções individuais.",
-        tags: ["Face", "Proporção"],
       },
       {
         titulo: "Ortodontia",
         descricao:
           "Correção de posicionamento dentário e de mordida, com aparelhos fixos e alinhadores.",
-        tags: ["Aparelho", "Alinhadores", "Mordida"],
       },
       {
         titulo: "Odontopediatria",
         descricao:
           "Atendimento infantil com condução adequada à idade e acompanhamento do desenvolvimento.",
-        tags: ["Infantil", "Prevenção"],
       },
       {
         titulo: "Periodontia",
         descricao:
           "Tratamento da gengiva e do osso que sustentam o dente, base de qualquer reabilitação duradoura.",
-        tags: ["Gengiva", "Suporte"],
       },
       {
         titulo: "Reabilitação Oral",
         descricao:
           "Reconstrução da função mastigatória em casos extensos, integrando as demais especialidades.",
-        tags: ["Função", "Multidisciplinar"],
       },
     ],
   },

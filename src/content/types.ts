@@ -50,9 +50,10 @@ export type EstruturaContent = {
   eyebrow: string;
   titulo: string;
   descricao: string;
-  ariaLabelComparador: string;
-  comparadorLadoALabel: string;
-  comparadorLadoBLabel: string;
+  /** TRÊS fotos, exibidas em largura total. Os campos do comparador arrastável
+   *  (`ariaLabelComparador`, `comparadorLadoALabel`, `comparadorLadoBLabel`)
+   *  saíram em 30/07 junto com ele. Os outros nove arquivos da clínica seguem em
+   *  `public/imagens/estrutura/`. */
   imagens: EstruturaSlot[];
 };
 
@@ -111,8 +112,12 @@ export type LocalizacaoContent = {
 
 export type AreaAtuacao = {
   titulo: string;
+  /** NÃO é renderizada na home desde 30/07: a seção virou índice tipográfico, só
+   *  com o nome da especialidade. O texto fica aqui de propósito — é copy real,
+   *  e é o conteúdo da futura página de cada especialidade. Não apagar; e não
+   *  devolver para a home como texto revelado por hover, que era o formato
+   *  anterior e não é lido por quem rola a página. */
   descricao: string;
-  tags: string[];
 };
 
 export type AreasContent = {

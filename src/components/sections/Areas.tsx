@@ -3,15 +3,26 @@ import { Section, SectionHeader } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 
 /**
- * Estrutura: ÍNDICE INTERATIVO, não grid de cards.
+ * Estrutura: ÍNDICE TIPOGRÁFICO. Só o nome da especialidade, grande, um por
+ * linha, separado por fio.
  *
- * Oito cards iguais é o layout mais previsível possível — e era o terceiro grid
- * idêntico da página. Aqui as especialidades viram um índice de revista: o
- * título grande carrega a linha, e a descrição só aparece quando a linha é
- * apontada (hover) ou recebe foco de teclado. A revelação usa
- * `grid-template-rows: 0fr → 1fr`, que anima altura sem `max-height` chutado.
+ * Esta era a seção mais densa do site depois dos cortes de 30/07: 50 elementos
+ * por tela, 44 blocos de texto e 19 pills. Três coisas saíram, e cada uma tinha
+ * um motivo próprio:
  *
- * No mobile não existe hover, então a descrição fica sempre visível.
+ * 1. As 19 PILLS de tag. Pill é dispositivo de filtro de catálogo e de
+ *    dashboard. Além do vocabulário errado, as tags repetiam palavras do próprio
+ *    título ao lado ("Função", "Multidisciplinar" ao lado de "Reabilitação
+ *    Oral") — ruído, não informação.
+ * 2. As 8 DESCRIÇÕES reveladas por hover. Texto que só existe se o mouse passar
+ *    em cima não é lido por quem rola a página, mas ocupa o DOM, o peso e a
+ *    atenção. Se a descrição importa, ela vive na página da especialidade; se não
+ *    importa, não vive.
+ * 3. A MECÂNICA de revelação. Era uma das cinco interações diferentes competindo
+ *    na página.
+ *
+ * O que sobrou é o que a seção precisa dizer: quais especialidades existem
+ * aqui. O nome grande faz isso sozinho.
  */
 export function AreasSection({ data }: { data: AreasContent }) {
   return (
@@ -21,45 +32,14 @@ export function AreasSection({ data }: { data: AreasContent }) {
       <ul className="mt-16 border-t border-border">
         {data.itens.map((area, i) => (
           <Reveal key={area.titulo} delay={Math.min(i, 5) * 55}>
-            <li className="group border-b border-border">
-              {/* tabIndex para a revelação também funcionar por teclado */}
-              <div
-                tabIndex={0}
-                className="cursor-default outline-none transition-colors duration-500 focus-visible:bg-surface md:hover:bg-surface"
+            <li className="flex items-baseline gap-6 border-b border-border py-6 md:gap-12 md:py-7">
+              <span
+                aria-hidden="true"
+                className="w-8 shrink-0 text-small tabular-nums text-muted"
               >
-                <div className="flex items-baseline gap-5 py-7 md:gap-10 md:py-8">
-                  <span
-                    aria-hidden="true"
-                    className="w-8 shrink-0 text-small tabular-nums text-muted transition-colors duration-500 group-focus-within:text-accent md:group-hover:text-accent"
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-
-                  <h3 className="flex-1 font-semibold leading-[1.15] tracking-[-0.03em] display-3 text-foreground transition-transform duration-500 md:group-hover:translate-x-1.5">
-                    {area.titulo}
-                  </h3>
-
-                  <ul className="hidden shrink-0 gap-2 lg:flex">
-                    {area.tags.map((tag) => (
-                      <li
-                        key={tag}
-                        className="rounded-full border border-border px-2.5 py-1 text-small text-muted"
-                      >
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Descrição: sempre visível no mobile, revelada no desktop */}
-                <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:grid-rows-[0fr] md:group-focus-within:grid-rows-[1fr] md:group-hover:grid-rows-[1fr]">
-                  <div className="overflow-hidden">
-                    <p className="max-w-[62ch] pb-7 pl-13 text-base leading-[1.7] text-muted md:pb-9 md:pl-[4.5rem]">
-                      {area.descricao}
-                    </p>
-                  </div>
-                </div>
-              </div>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="display-3 flex-1 text-foreground">{area.titulo}</h3>
             </li>
           </Reveal>
         ))}
