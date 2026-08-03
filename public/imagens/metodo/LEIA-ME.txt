@@ -1,0 +1,22 @@
+Imagens do MÉTODO — o que a clínica faz, não onde ela fica.
+
+As fotos de ambiente ficam em ../estrutura/. Esta pasta é para imagens de
+instrumento, tecnologia e procedimento, que é o registro que a direção visual
+pede: "uma imagem relacionada ao que o doutor faz", sutil e não grande.
+
+scanner-intraoral.jpeg
+  Origem: public/imagens/originais/asset-13-1.jpeg, baixada do site antigo em
+  29/07 (página implantodontia-e-cirurgia). 595x321, 28 KB.
+  Conteúdo: scanner intraoral prateado em suporte, ligado a um notebook que
+  exibe o modelo digital 3D de uma arcada. Fundo branco liso, luz de estúdio.
+  Por que esta: registro "instrumento como objeto", que é o vocabulário da
+  referência visual pedida. Diz odontologia digital sem cair em nenhum dos
+  clichês proibidos (dente branco, sorriso de estoque, azul de consultório).
+
+DESCARTADAS de propósito, não reaproveitar:
+  asset-14.jpeg  — modelo de dentes azul translúcido em mão enluvada. É
+                   exatamente o clichê "azul-claro de consultório" que a
+                   restrição de conteúdo proíbe.
+  asset-8.jpeg   — close de sorriso adulto com reabilitação total. Clichê de
+                   sorriso, e close de resultado encosta na CFO-196/2019.
+  202205-asset-4.jpeg — close clínico de dentes anteriores. Mesmo motivo.
