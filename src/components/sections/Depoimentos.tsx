@@ -1,21 +1,39 @@
 import { Star } from "lucide-react";
-import type { DepoimentosContent } from "@/content/types";
+import type { Depoimento, DepoimentosContent } from "@/content/types";
 import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 import { IconeGoogle } from "@/components/Primitives";
 import { cn } from "@/lib/utils";
 
 /**
- * Estrutura: cartão de resumo do perfil à esquerda, UMA citação grande à direita.
+ * Estrutura: cartão de resumo do perfil à esquerda, ESTEIRA de avaliações
+ * passando à direita. Mesma mecânica da esteira de fotos, a pedido do usuário —
+ * e sem botão para outra página, também por pedido: aqui a esteira É o conteúdo.
  *
- * O carrossel contínuo foi removido em 30/07 — ver a nota em
- * `DepoimentosSection`. Com ele saíram `CartaoAvaliacao` e as classes
- * `rail-auto` / `rail-pausa` / `rail-mask`.
+ * Esta seção já foi e voltou, e o histórico importa para não repetir o erro:
+ * - Até 30/07 era um carrossel que truncava cada depoimento em SEIS LINHAS com
+ *   "…". Removido porque truncar depoimento é o pior dos dois mundos: ocupa o
+ *   espaço de um texto inteiro e não entrega nenhum.
+ * - Em 03/08 virou uma citação única em corpo grande.
+ * - E agora esteira outra vez. Duas diferenças impedem repetir o erro: **nada é
+ *   truncado** (os cartões esticam até a altura do mais alto via
+ *   `items-stretch`, então o texto sai inteiro e a faixa fica alinhada), e a
+ *   faixa **pausa no hover e no foco**, então quem quer ler consegue parar.
  *
- * Sobre a marca do Google: só é exibida onde a `fonte` é "google". Os
- * depoimentos herdados do site anterior têm `fonte: "site"` e aparecem sem ela —
- * atribuir a origem errada a um depoimento de paciente real não é detalhe de
- * layout.
+ * ⚠️ PROCEDÊNCIA — a parte mais importante deste arquivo.
+ *
+ * A esteira mostra o que estiver em `data.itens`. Hoje são TRÊS depoimentos do
+ * SITE ANTERIOR, com `fonte: "site"`. As avaliações do Google **não foram
+ * obtidas**: 0 de 12, e os quatro caminhos tentados estão registrados em
+ * `public/imagens/originais/AVALIACOES-GOOGLE.json`. Do Google veio só a NOTA.
+ *
+ * Por isso a marca do Google aparece em exatamente dois lugares:
+ *   1. no cartão de resumo, ao lado da nota — o único dado que veio de lá;
+ *   2. no cartão individual, e SÓ quando `item.fonte === "google"`.
+ *
+ * Marcar um depoimento do site como se fosse do Google atribui a um paciente
+ * real uma avaliação que ele não escreveu, num canal que ele não usou. Não
+ * fazer — nem para completar cinco cartões.
  */
 
 /** Nota do Google chega como texto pt-BR ("5,0", "4,8"). Devolve 0 se não for
@@ -33,7 +51,6 @@ function paraNota(valor: string): number {
 function Estrelas({
   nota,
   label,
-  /** Tamanho da estrela. */
   tamanho = "h-4 w-4",
 }: {
   nota: number;
@@ -65,42 +82,82 @@ function Estrelas({
   );
 }
 
-/**
- * UMA citação, grande, com retrato — não carrossel.
- *
- * A auditoria de 30/07 mediu 619 palavras e 54,6 elementos por tela nesta seção:
- * três depoimentos longos rodando em laço contínuo, cada um truncado em seis
- * linhas com "…". Truncar depoimento é o pior dos dois mundos — ocupa o espaço
- * de um texto inteiro e não entrega nenhum.
- *
- * Agora um só, inteiro, em corpo grande. Os outros continuam em `data.itens`
- * porque é de lá que as avaliações do Google vão entrar; a seção mostra o
- * primeiro. Quem quiser mais de um, aumenta o corte — não devolve o carrossel.
- */
+function CartaoAvaliacao({
+  item,
+  duplicado,
+}: {
+  item: Depoimento;
+  /** A segunda metade da faixa é cópia visual do laço: some para leitores de tela. */
+  duplicado?: boolean;
+}) {
+  const doGoogle = item.fonte === "google";
+  return (
+    <li aria-hidden={duplicado || undefined} className="w-[21rem] shrink-0 sm:w-[25rem]">
+      {/* `h-full` aqui + `items-stretch` na faixa: todos os cartões assumem a
+          altura do mais alto, e é isso que permite não truncar texto nenhum. */}
+      <figure className="flex h-full flex-col rounded-2xl border border-border bg-surface p-6 md:p-7">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            {item.foto ? (
+              <img
+                src={item.foto}
+                alt={item.fotoAlt}
+                loading="lazy"
+                width={44}
+                height={44}
+                className="h-11 w-11 shrink-0 rounded-full object-cover"
+              />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-surface-raised text-base font-semibold text-muted"
+              >
+                {item.autor.trim().charAt(0)}
+              </span>
+            )}
+            <div className="min-w-0">
+              <p className="truncate text-base font-semibold text-foreground">{item.autor}</p>
+              {item.quando ? <p className="text-small text-muted">{item.quando}</p> : null}
+            </div>
+          </div>
+
+          {/* Trava contra atribuição falsa — ver a nota no topo do arquivo. */}
+          {doGoogle ? <IconeGoogle className="mt-0.5 h-4 w-4 shrink-0" /> : null}
+        </div>
+
+        {doGoogle ? (
+          <div className="mt-4">
+            <Estrelas nota={item.nota} label={`${item.nota} de 5`} />
+          </div>
+        ) : null}
+
+        <blockquote className="mt-4 text-base text-foreground">{item.texto}</blockquote>
+      </figure>
+    </li>
+  );
+}
+
 export function DepoimentosSection({
   data,
   logo,
   logoAlt,
 }: {
   data: DepoimentosContent;
-  /** Marca na versão que contrasta com a superfície do cartão — ESCURA, porque
-   *  esta seção fica no branco. Ela virou branca por uma rodada, quando o site
-   *  todo era escuro. Ao trocar a paleta, conferir esta prop: logo monocromático
+  /** Marca na versão que contrasta com a superfície — ESCURA, porque esta seção
+   *  fica no branco. Ao trocar a paleta, conferir esta prop: logo monocromático
    *  na cor errada não quebra o build, simplesmente desaparece.
    *  `null` cai no nome em texto, senão a seção perde o cabeçalho. */
   logo: string | null;
   logoAlt: string;
 }) {
   const { resumo } = data;
-  const citacao = data.itens[0];
+  // Renderizada duas vezes: a faixa desliza 50% e a emenda cai sobre uma cópia
+  // idêntica, então o laço não tem costura visível.
+  const faixa = [...data.itens, ...data.itens];
 
   return (
     <Section id="depoimentos">
-      <div className="grid gap-14 lg:grid-cols-[minmax(0,17rem)_1fr] lg:items-start lg:gap-20">
-        {/* Resumo do perfil: marca, estrelas, nota. Nada mais — a contagem e o
-            botão de avaliar saíram em 30/07. O logo é o cabeçalho da seção: o
-            `alt` carrega o nome do negócio, então o h2 continua tendo texto
-            para leitor de tela. */}
+      <div className="grid gap-12 lg:grid-cols-[minmax(0,16rem)_1fr] lg:items-center lg:gap-14">
         <Reveal>
           <div>
             <h2>
@@ -126,12 +183,6 @@ export function DepoimentosSection({
                 {resumo.nota}
               </span>
             </div>
-
-            {/* Atribuição da origem. A marca do Google fica aqui, junto da nota,
-                porque é a nota que veio do Google — e não nos cartões do
-                carrossel, que hoje são depoimentos do site antigo. O rótulo vem
-                do conteúdo justamente para poder mudar de "Nota" para
-                "Avaliações" quando as do Google entrarem. */}
             <p className="mt-4 flex items-center gap-2 text-small text-muted">
               <IconeGoogle className="h-4 w-4 shrink-0" />
               {resumo.fonteLabel}
@@ -139,40 +190,19 @@ export function DepoimentosSection({
           </div>
         </Reveal>
 
-        {/* A citação. Sem cartão, sem borda, sem sombra: o texto é a peça. */}
-        {citacao ? (
-          <Reveal delay={120}>
-            <figure>
-              <blockquote className="display-3 max-w-[46ch] text-balance font-normal leading-[1.45] text-foreground">
-                {citacao.texto}
-              </blockquote>
-
-              <figcaption className="mt-8 flex items-center gap-4">
-                {citacao.foto ? (
-                  <img
-                    src={citacao.foto}
-                    alt={citacao.fotoAlt}
-                    loading="lazy"
-                    width={48}
-                    height={48}
-                    className="h-12 w-12 shrink-0 rounded-full object-cover"
-                  />
-                ) : null}
-                <div>
-                  <p className="text-base font-semibold text-foreground">{citacao.autor}</p>
-                  {/* A marca do Google só aparece se a citação VEIO do Google.
-                      Hoje é depoimento do site antigo, então não aparece. */}
-                  {citacao.fonte === "google" ? (
-                    <p className="mt-0.5 flex items-center gap-2 text-small text-muted">
-                      <IconeGoogle className="h-3.5 w-3.5 shrink-0" />
-                      {citacao.quando}
-                    </p>
-                  ) : null}
-                </div>
-              </figcaption>
-            </figure>
-          </Reveal>
-        ) : null}
+        {/* Esteira. O `-mx` cancela o padding do container para a faixa sangrar
+            até a borda no mobile, onde o container é estreito. */}
+        <div className="esteira-pausa esteira-mask -mx-5 overflow-hidden md:-mx-10 lg:mx-0">
+          <ul className="esteira flex items-stretch gap-4 px-5 md:px-10 lg:px-0">
+            {faixa.map((item, i) => (
+              <CartaoAvaliacao
+                key={`${item.autor}-${i}`}
+                item={item}
+                duplicado={i >= data.itens.length}
+              />
+            ))}
+          </ul>
+        </div>
       </div>
     </Section>
   );
