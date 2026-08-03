@@ -42,6 +42,8 @@ export type HeaderContent = {
 
 export type EstruturaSlot = {
   src: string | null;
+  /** NOME DO AMBIENTE, não um número. É a legenda exibida na página /estrutura,
+   *  e é o que responde "o que é cada ambiente". Era "01".."12" até 03/08. */
   rotulo: string;
   alt: string;
 };
@@ -50,10 +52,18 @@ export type EstruturaContent = {
   eyebrow: string;
   titulo: string;
   descricao: string;
-  /** TRÊS fotos, exibidas em largura total. Os campos do comparador arrastável
-   *  (`ariaLabelComparador`, `comparadorLadoALabel`, `comparadorLadoBLabel`)
-   *  saíram em 30/07 junto com ele. Os outros nove arquivos da clínica seguem em
-   *  `public/imagens/estrutura/`. */
+  /** CTA da home para a página com todas as fotos. Rota interna — nunca marcar
+   *  `external`. */
+  verTodas: Cta;
+  /** Textos exclusivos da página /estrutura. */
+  pagina: {
+    titulo: string;
+    descricao: string;
+    voltarLabel: string;
+  };
+  /** Todos os ambientes. O carrossel da home passa por todos em laço; a página
+   *  /estrutura mostra todos de uma vez, com legenda. Os campos do comparador
+   *  arrastável saíram em 30/07 junto com ele. */
   imagens: EstruturaSlot[];
 };
 

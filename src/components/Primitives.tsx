@@ -87,12 +87,20 @@ export function PillButton({
   label,
   href,
   tone = "ink",
+  icone = "whatsapp",
   external,
   className,
 }: {
   label: string;
   href: string;
   tone?: "ink" | "light";
+  /**
+   * O que vai no tile. `"whatsapp"` é o padrão porque quase todo CTA do site
+   * abre conversa — mas usar a marca do WhatsApp num botão que leva a uma
+   * PÁGINA INTERNA promete uma coisa e entrega outra. Por isso `"seta"` existe:
+   * é o caso do "ver todas as fotos". Regra: o ícone diz para onde o botão vai.
+   */
+  icone?: "whatsapp" | "seta";
   external?: boolean;
   className?: string;
 }) {
@@ -117,8 +125,11 @@ export function PillButton({
         )}
         aria-hidden="true"
       >
-        {/* Marca do WhatsApp: é para lá que todo CTAs do site aponta. */}
-        <IconeWhatsApp className="h-4 w-4" />
+        {icone === "whatsapp" ? (
+          <IconeWhatsApp className="h-4 w-4" />
+        ) : (
+          <ArrowRight className="h-4 w-4" strokeWidth={2.4} />
+        )}
       </span>
       {label}
     </a>

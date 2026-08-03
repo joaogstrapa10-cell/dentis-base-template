@@ -1,41 +1,45 @@
 import type { EstruturaContent, EstruturaSlot } from "@/content/types";
 import { SectionHeader } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
+import { PillButton } from "@/components/Primitives";
 
 /**
- * Estrutura: TRÊS FOTOS GRANDES, uma por bloco, sangrando até a borda da janela.
+ * Estrutura: ESTEIRA de fotos passando em laço, mais um botão para a página com
+ * todas elas paradas e identificadas.
  *
- * Antes daqui havia um comparador arrastável (com divisor navegável por teclado)
- * mais uma grade de 12 miniaturas. A auditoria de 30/07 mostrou por que isso era
- * o maior desperdício da página: **28 das 32 fotos do site apareciam abaixo de
- * 15% da largura da tela**, e 8 de 13 seções não tinham foto nenhuma. As fotos do
- * consultório são boas — madeira mel, granito preto polido, luz natural — e
- * estavam sendo usadas como prova em miniatura em vez de argumento em tamanho
- * cheio.
+ * O histórico desta seção importa para não voltar atrás:
  *
- * Trocado por três fotos de largura total, sem legenda visível, sem moldura, sem
- * mecânica de interação. A informação está na imagem; o texto alternativo carrega
- * a descrição para quem não a vê.
+ * - Até 30/07 era um comparador arrastável + grade de 12 miniaturas. A auditoria
+ *   mediu que 28 das 32 fotos do site apareciam abaixo de 15% da largura da tela:
+ *   as fotos do consultório são boas e estavam sendo usadas como prova em
+ *   miniatura em vez de argumento em tamanho cheio.
+ * - Em 03/08 virou três fotos estáticas de largura total.
+ * - E então esteira, a pedido do usuário: "o carrossel é mais para deixar
+ *   estético e deixar passando as imagens".
  *
- * Por que só três: uma por ideia — o ambiente de recepção, o consultório com
- * equipamento digital, e a área externa. Os outros nove arquivos continuam em
- * `public/imagens/estrutura/`, com o inventário em
- * `public/imagens/originais/MANIFESTO.md`, prontos se uma página de estrutura
- * for criada.
+ * O par esteira + página é o que faz isso funcionar. O movimento é decoração; a
+ * página `/estrutura` é o acesso de verdade, "caso a pessoa queira ver todas as
+ * fotos de uma vez sem precisar ficar esperando". Sem a página, uma esteira
+ * esconde conteúdo atrás de tempo de espera — que é exatamente a crítica que
+ * derrubou o carrossel dos depoimentos.
  *
- * NÃO reintroduzir grade de miniaturas aqui, nem o comparador.
+ * Por isso: se a esteira sair, a página FICA. Se a página sair, a esteira sai
+ * junto.
+ *
+ * Acessibilidade: a faixa pausa no hover e no foco de teclado, e para de vez sob
+ * `prefers-reduced-motion` (WCAG 2.2.2). A lista duplicada é marcada
+ * `aria-hidden` para o leitor de tela não anunciar cada ambiente duas vezes.
  */
 
-/** Foto de largura total, ou o slot rotulado quando ela não existe. */
-function Foto({ slot, prioridade }: { slot: EstruturaSlot; prioridade?: boolean }) {
+function Foto({ slot }: { slot: EstruturaSlot }) {
   if (!slot.src) {
     return (
       <div
         role="img"
         aria-label={slot.alt}
-        className="slot-grid flex aspect-[16/10] w-full items-end bg-surface p-5 md:aspect-[21/9]"
+        className="slot-grid flex h-full w-full items-end bg-surface p-4"
       >
-        <span className="rounded-md border border-border bg-background/80 px-2 py-1 text-small uppercase tracking-[0.08em] text-muted backdrop-blur">
+        <span className="rounded-md border border-border bg-background/80 px-2 py-1 text-small text-muted backdrop-blur">
           {slot.rotulo}
         </span>
       </div>
@@ -45,16 +49,19 @@ function Foto({ slot, prioridade }: { slot: EstruturaSlot; prioridade?: boolean 
     <img
       src={slot.src}
       alt={slot.alt}
-      loading={prioridade ? "eager" : "lazy"}
-      className="aspect-[16/10] w-full object-cover md:aspect-[21/9]"
+      loading="lazy"
+      className="h-full w-full object-cover"
     />
   );
 }
 
 export function EstruturaSection({ data }: { data: EstruturaContent }) {
+  // Renderizada duas vezes: a faixa desliza 50% e a emenda cai sobre uma cópia
+  // idêntica, então o laço não tem costura visível.
+  const faixa = [...data.imagens, ...data.imagens];
+
   return (
     <section id="estrutura" style={{ paddingBlock: "var(--section-py)" }}>
-      {/* O cabeçalho respeita o container; as fotos, não. */}
       <div className="mx-auto w-full max-w-[1200px] px-5 md:px-10">
         <SectionHeader
           eyebrow={data.eyebrow}
@@ -63,12 +70,33 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
         />
       </div>
 
-      <div className="mt-14 space-y-3 md:mt-20 md:space-y-4">
-        {data.imagens.map((slot, i) => (
-          <Reveal key={slot.rotulo}>
-            <Foto slot={slot} prioridade={i === 0} />
-          </Reveal>
-        ))}
+      <div className="esteira-pausa esteira-mask mt-14 overflow-hidden md:mt-20">
+        <ul className="esteira flex gap-3 md:gap-4">
+          {faixa.map((slot, i) => {
+            const duplicado = i >= data.imagens.length;
+            return (
+              <li
+                key={`${slot.src ?? slot.rotulo}-${i}`}
+                aria-hidden={duplicado || undefined}
+                className="h-[15rem] w-[22rem] shrink-0 overflow-hidden rounded-2xl md:h-[24rem] md:w-[36rem]"
+              >
+                <Foto slot={slot} />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      <div className="mx-auto mt-12 w-full max-w-[1200px] px-5 md:px-10">
+        <Reveal>
+          {/* `icone="seta"`: leva a uma página interna. Com o padrão, o botão
+              sairia com a marca do WhatsApp e prometeria uma conversa. */}
+          <PillButton
+            label={data.verTodas.label}
+            href={data.verTodas.href}
+            icone="seta"
+          />
+        </Reveal>
       </div>
     </section>
   );

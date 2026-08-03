@@ -350,10 +350,40 @@
 }
 .rail::-webkit-scrollbar { display: none; }
 
-/* O carrossel contínuo dos depoimentos (`rail-auto`, `rail-pausa`, `rail-mask`)
-   foi REMOVIDO em 30/07, junto com o carrossel: a seção passou a mostrar uma
-   citação só, em corpo grande. Não recriar — movimento automático era uma das
-   cinco mecânicas de interação que competiam na página. */
+/* O carrossel contínuo dos DEPOIMENTOS foi removido em 30/07: a seção passou a
+   mostrar uma citação só. Não recriar lá — texto em movimento não é lido, e
+   truncar depoimento para caber no cartão entrega o pior dos dois mundos.
+
+   ---------- Esteira de FOTOS ----------
+   Voltou em 03/08, a pedido do usuário, e só para imagem. A diferença que
+   justifica: foto é legível em movimento, texto não. E o pedido veio com a
+   saída de emergência embutida — um botão para a página com todas as fotos
+   paradas, "caso a pessoa queira ver todas de uma vez sem precisar ficar
+   esperando". É essa página que faz o movimento ser estética e não obstáculo.
+
+   A lista é renderizada duas vezes e a faixa desliza exatamente 50%: o ponto de
+   retorno cai sobre uma cópia idêntica e a emenda não aparece.
+
+   Pausa no hover e no foco de teclado, e para de vez sob
+   `prefers-reduced-motion` — exigência da WCAG 2.2.2 para conteúdo em
+   movimento. */
+@keyframes esteira {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.esteira {
+  animation: esteira 60s linear infinite;
+  width: max-content;
+}
+.esteira-pausa:hover .esteira,
+.esteira-pausa:focus-within .esteira {
+  animation-play-state: paused;
+}
+/* Bordas esmaecidas: sem isso as fotos são cortadas a seco pelo overflow. */
+.esteira-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 3%, black 97%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, black 3%, black 97%, transparent 100%);
+}
 
 /* ---------- Slot de imagem vazio ---------- */
 /* Textura fina para o slot parecer deliberado em vez de caixa quebrada */
@@ -381,6 +411,7 @@
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .marquee-track, [data-marquee] { animation: none !important; }
+  .esteira { animation: none !important; }
   .line-rise { animation: none !important; transform: none !important; }
   .lift:hover { transform: none; }
   .group:hover .nudge,

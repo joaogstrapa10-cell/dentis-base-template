@@ -141,11 +141,25 @@ export const clinica: Clinica = {
   // miniaturas mais um comparador arrastável — e 28 das 32 fotos do site
   // apareciam abaixo de 15% da largura da tela. Os outros nove arquivos
   // continuam em public/imagens/estrutura/, inventariados no MANIFESTO.md.
+  // Os 12 ambientes reais da clínica. O carrossel da home passa por todos; a
+  // página /estrutura mostra todos de uma vez, com o rótulo de cada ambiente.
+  //
+  // `rotulo` deixou de ser "01".."12" e passou a dizer O QUE é o ambiente: é ele
+  // que aparece na legenda da página. Os textos de `alt` são descrições reais
+  // das fotos, escritas quando elas foram baixadas do site antigo em 29/07 —
+  // não reescrever de cabeça.
   estrutura: {
     eyebrow: "Nossa estrutura",
     titulo: "O ambiente do tratamento.",
     descricao:
       "Recepção, consultórios e áreas de apoio na unidade do Alto da XV, em Curitiba.",
+    verTodas: { label: "Ver todas as fotos da clínica", href: "/estrutura" },
+    pagina: {
+      titulo: "A clínica, ambiente por ambiente.",
+      descricao:
+        "Todas as fotos da unidade do Alto da XV, com a identificação de cada ambiente.",
+      voltarLabel: "Voltar para a home",
+    },
     imagens: [
       {
         src: "/imagens/estrutura/02-recepcao.webp",
@@ -153,14 +167,59 @@ export const clinica: Clinica = {
         alt: "Recepção da clínica, com balcão curvo de madeira, orquídeas e piso escuro polido",
       },
       {
+        src: "/imagens/estrutura/03-sala-espera.webp",
+        rotulo: "Sala de espera",
+        alt: "Sala de espera com sofá escuro, mesa de centro de vidro e televisão na parede",
+      },
+      {
+        src: "/imagens/estrutura/04-sala-espera-angulo.webp",
+        rotulo: "Sala de espera, outro ângulo",
+        alt: "Sala de espera vista de outro ângulo, com sanca iluminada e recepção ao fundo",
+      },
+      {
         src: "/imagens/estrutura/09-consultorio-digital.webp",
         rotulo: "Consultório digital",
         alt: "Consultório com equipamento digital: monitor exibindo modelo 3D da arcada e impressora 3D na bancada",
       },
       {
+        src: "/imagens/estrutura/05-consultorio-vermelho.webp",
+        rotulo: "Consultório",
+        alt: "Consultório com cadeira odontológica vermelha, bancada de apoio e monitor na parede",
+      },
+      {
+        src: "/imagens/estrutura/06-consultorio-corredor.webp",
+        rotulo: "Consultório, vista do corredor",
+        alt: "Consultório com cadeira vermelha visto a partir do corredor, pelo vão da porta",
+      },
+      {
+        src: "/imagens/estrutura/07-consultorio-claro.webp",
+        rotulo: "Consultório claro",
+        alt: "Consultório claro com cadeira marrom, refletor de teto e armários brancos",
+      },
+      {
+        src: "/imagens/estrutura/10-consultorio-verde.jpg",
+        rotulo: "Consultório",
+        alt: "Consultório claro com cadeira odontológica verde-água, armários brancos e janela de vidro",
+      },
+      {
+        src: "/imagens/estrutura/08-atendimento.webp",
+        rotulo: "Atendimento",
+        alt: "Atendimento em andamento: dentista e auxiliar com máscara e touca junto à cadeira",
+      },
+      {
+        src: "/imagens/estrutura/11-area-administrativa.webp",
+        rotulo: "Área administrativa",
+        alt: "Área administrativa com mesas de atendimento em madeira, computadores e plantas nas prateleiras",
+      },
+      {
         src: "/imagens/estrutura/01-area-externa.webp",
         rotulo: "Área externa",
         alt: "Caminho externo de pedra entre canteiro aparado e a fachada lateral da clínica",
+      },
+      {
+        src: "/imagens/estrutura/12-jardim.webp",
+        rotulo: "Jardim",
+        alt: "Jardim externo com arbustos aparados, pedras e lanterna japonesa, com a fachada térrea ao fundo",
       },
     ],
   },
