@@ -347,15 +347,12 @@ export const clinica: Clinica = {
       // Verificado no perfil do Google. Alimenta o número e o preenchimento das
       // estrelas. É o único dado que o cartão afirma; não estimar.
       nota: "5,0",
-      // "Nota", não "Avaliações", e é decisão de precisão: a faixa tem
-      // procedência MISTA — 4 avaliações do Google e 3 depoimentos do site
-      // anterior. Um rótulo no plural, colado na nota e no logo do Google,
-      // sugeriria que os sete cartões vieram de lá. Este rótulo descreve o
-      // 5,0, que é sempre do Google; a procedência de cada cartão fica no
-      // próprio cartão, pela presença ou ausência do "G".
-      // Se um dia a faixa tiver SÓ avaliações do Google, aí sim vira
-      // "Avaliações no Google".
-      fonteLabel: "Nota no Google",
+      // "Avaliações" no plural, e agora está correto: desde 03/08 TODOS os
+      // itens têm `fonte: "google"` — os 3 depoimentos do site antigo saíram.
+      // Se algum item com `fonte: "site"` voltar para a faixa, este rótulo
+      // volta para "Nota no Google": plural colado no logo do Google
+      // sugeriria que todo cartão veio de lá.
+      fonteLabel: "Avaliações no Google",
     },
     // AVALIAÇÕES REAIS DO GOOGLE, transcritas em 03/08 de prints do perfil
     // enviados pelo usuário. Foi o caminho que funcionou depois de quatro
@@ -416,48 +413,6 @@ export const clinica: Clinica = {
         foto: null,
         fotoAlt: "Foto de perfil de Guilherme Rocha",
         fonte: "google",
-        nota: 5,
-        quando: "",
-      },
-      // --- Depoimentos do SITE ANTERIOR, mantidos a pedido do usuário ---
-      // `fonte: "site"` faz o cartão renderizar SEM estrela e SEM o "G" do
-      // Google. É a diferença visível entre os dois grupos, e é o que impede
-      // que um depoimento colhido pela clínica passe por avaliação pública.
-      // São bem mais longos que avaliação de Google, então puxam a altura da
-      // faixa para cima — `items-stretch` iguala todos os cartões.
-      {
-        texto:
-          "Querido Dr. Dalton, nesta semana encerrei meu tratamento em sua clínica e gostaria de agradecer imensamente por toda atenção, carinho, dedicação e trabalho de toda a equipe de profissionais que me acompanharam durante este período. Na sua clínica descobri que o dentista não é um bicho-de-sete-cabeças e que a anestesia nem é assim tão ruim… Fui acolhida como parte da família que compõe sua equipe e não apenas como um paciente qualquer. Acredito que este é o diferencial que torna esse ambiente tão especial e acolhedor. Agradeço especialmente a você, que certamente foi abençoado com o dom da humildade, do respeito pelo próximo, e é claro, com a excelência do seu trabalho perfeito! Graças a tudo isso, consegui realizar um sonho: um sorriso incrível. Muito obrigada!",
-        autor: "Adriane Cardoso",
-        foto: "/imagens/depoimentos/adriane-cardoso.jpg",
-        fotoAlt: "Retrato de Adriane Cardoso, paciente da clínica",
-        // Veio do site anterior da clínica, não do Google. Por isso a marca
-        // do Google não é exibida neste cartão.
-        fonte: "site",
-        nota: 5,
-        quando: "",
-      },
-      {
-        texto:
-          "Recomendo a Suzuki Odontologia a todos que necessitam de atendimento dentário. Há muitos anos sou paciente da clínica, não somente do Dr. Dalton, mas de todos os profissionais que me atenderam. A clínica conta com excelente atendimento, profissionalismo e eficiência, além de transmitir muita confiança, credibilidade, respeito e o principal: muita paciência, pois ninguém pode negar que não tenha o famoso medo quando se tem que ir ao dentista.",
-        autor: "Josélia Bellegard",
-        foto: "/imagens/depoimentos/joselia-bellegard.jpg",
-        fotoAlt: "Retrato de Josélia Bellegard, paciente da clínica",
-        // Veio do site anterior da clínica, não do Google. Por isso a marca
-        // do Google não é exibida neste cartão.
-        fonte: "site",
-        nota: 5,
-        quando: "",
-      },
-      {
-        texto:
-          "Fui indicada por familiares para conhecer o trabalho do Dr. Dalton, isso faz mais ou menos uns 20 anos. A partir daí nunca mais mudei de dentista. Fiz todo o meu tratamento com o Dr. e hoje estou muito satisfeita com os meus dentes. Hoje posso comer, beber, sorrir sem problema algum. E sem contar que a minha saúde é totalmente outra depois que fiz meus implantes. No dia que finalizei meu tratamento, saí da clínica muito feliz e muito satisfeita. Meus dentes novos foram a maior alegria que o Dr. Dalton poderia ter feito pra mim. Sou muito grata por tudo o que ele fez por mim.",
-        autor: "Adília Miguel",
-        foto: "/imagens/depoimentos/adilia-miguel.jpg",
-        fotoAlt: "Retrato de Adília Miguel, paciente da clínica",
-        // Veio do site anterior da clínica, não do Google. Por isso a marca
-        // do Google não é exibida neste cartão.
-        fonte: "site",
         nota: 5,
         quando: "",
       },

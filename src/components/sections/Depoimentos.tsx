@@ -22,18 +22,21 @@ import { cn } from "@/lib/utils";
  *
  * ⚠️ PROCEDÊNCIA — a parte mais importante deste arquivo.
  *
- * A esteira mostra o que estiver em `data.itens`. Hoje são TRÊS depoimentos do
- * SITE ANTERIOR, com `fonte: "site"`. As avaliações do Google **não foram
- * obtidas**: 0 de 12, e os quatro caminhos tentados estão registrados em
- * `public/imagens/originais/AVALIACOES-GOOGLE.json`. Do Google veio só a NOTA.
+ * Desde 03/08 a faixa tem QUATRO avaliações reais do Google, todas com
+ * `fonte: "google"`, transcritas de prints do perfil da clínica. Os três
+ * depoimentos do site antigo saíram: existiam só enquanto não havia avaliação
+ * pública, e agora há.
  *
- * Por isso a marca do Google aparece em exatamente dois lugares:
- *   1. no cartão de resumo, ao lado da nota — o único dado que veio de lá;
+ * A marca do Google aparece em dois lugares, e a regra vale para sempre:
+ *   1. no cartão de resumo, ao lado da nota — a nota é sempre do Google;
  *   2. no cartão individual, e SÓ quando `item.fonte === "google"`.
  *
- * Marcar um depoimento do site como se fosse do Google atribui a um paciente
- * real uma avaliação que ele não escreveu, num canal que ele não usou. Não
- * fazer — nem para completar cinco cartões.
+ * `fonte: "site"` continua existindo no tipo e nenhum item usa. É a trava para
+ * quando voltar a haver depoimento colhido pela clínica: marcar depoimento de
+ * site como se fosse do Google atribui a um paciente real uma avaliação que ele
+ * não escreveu, num canal que ele não usou. E se algum item com `fonte: "site"`
+ * voltar para a faixa, `resumo.fonteLabel` tem de voltar de "Avaliações no
+ * Google" para "Nota no Google".
  */
 
 /** Nota do Google chega como texto pt-BR ("5,0", "4,8"). Devolve 0 se não for
@@ -93,14 +96,14 @@ function CartaoAvaliacao({
   const doGoogle = item.fonte === "google";
   return (
     <li aria-hidden={duplicado || undefined} className="w-[21rem] shrink-0 sm:w-[25rem]">
-      {/* Altura pelo PRÓPRIO texto, não pela do cartão mais alto.
-          Tentei `items-stretch` primeiro e ficou pior: as avaliações do Google
-          têm 20–45 palavras e os depoimentos do site têm 70–126, então os curtos
-          esticavam para 672px e sobravam ~400px de branco dentro deles. Com
-          procedência mista numa faixa só, uniformizar altura sem truncar é
-          impossível — e truncar é o erro que derrubou a versão de 30/07.
-          Base alinhada no topo, borda de baixo irregular. */}
-      <figure className="flex flex-col rounded-2xl border border-border bg-surface p-6 md:p-7">
+      {/* `h-full` + `items-stretch` na faixa: todos os cartões com a altura do
+          mais alto, e nada truncado.
+          Isso só funciona porque a faixa tem SÓ avaliações do Google, de 20 a 45
+          palavras. Enquanto os depoimentos do site (70–126 palavras) conviviam
+          aqui, uniformizar deixava ~400px de branco dentro dos curtos, e a faixa
+          precisou de `items-start`. Se voltar a haver texto longo na faixa,
+          voltar para `items-start` — e nunca truncar, que foi o erro de 30/07. */}
+      <figure className="flex h-full flex-col rounded-2xl border border-border bg-surface p-6 md:p-7">
         <div className="flex items-start justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
             {item.foto ? (
@@ -163,8 +166,12 @@ export function DepoimentosSection({
   return (
     <Section id="depoimentos">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,16rem)_1fr] lg:items-center lg:gap-14">
+        {/* Resumo centralizado: logo, estrelas, nota e atribuição, um sob o
+            outro no eixo do bloco. Cada linha precisa do seu próprio
+            centramento — `items-center` nas fileiras flex e `mx-auto` no logo,
+            que é imagem e não herda alinhamento de texto. */}
         <Reveal>
-          <div>
+          <div className="flex flex-col items-center text-center">
             <h2>
               {logo ? (
                 <img
@@ -172,13 +179,13 @@ export function DepoimentosSection({
                   alt={logoAlt}
                   width={686}
                   height={302}
-                  className="h-20 w-auto"
+                  className="mx-auto h-20 w-auto"
                 />
               ) : (
                 <span className="display-3 text-foreground">{resumo.nomeNegocio}</span>
               )}
             </h2>
-            <div className="mt-6 flex items-baseline gap-3">
+            <div className="mt-6 flex items-center justify-center gap-3">
               <Estrelas
                 nota={paraNota(resumo.nota)}
                 label={`${resumo.nota} de 5`}
@@ -188,7 +195,7 @@ export function DepoimentosSection({
                 {resumo.nota}
               </span>
             </div>
-            <p className="mt-4 flex items-center gap-2 text-small text-muted">
+            <p className="mt-4 flex items-center justify-center gap-2 text-small text-muted">
               <IconeGoogle className="h-4 w-4 shrink-0" />
               {resumo.fonteLabel}
             </p>
@@ -198,7 +205,7 @@ export function DepoimentosSection({
         {/* Esteira. O `-mx` cancela o padding do container para a faixa sangrar
             até a borda no mobile, onde o container é estreito. */}
         <div className="esteira-pausa esteira-mask -mx-5 overflow-hidden md:-mx-10 lg:mx-0">
-          <ul className="esteira flex items-start gap-4 px-5 md:px-10 lg:px-0">
+          <ul className="esteira flex items-stretch gap-4 px-5 md:px-10 lg:px-0">
             {faixa.map((item, i) => (
               <CartaoAvaliacao
                 key={`${item.autor}-${i}`}
