@@ -102,7 +102,7 @@ export function PillButton({
       href={href}
       {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
       className={cn(
-        "group inline-flex items-center gap-2.5 rounded-xl p-1.5 pr-4 text-sm font-semibold",
+        "group inline-flex items-center gap-2.5 rounded-xl p-1.5 pr-4 text-base font-semibold",
         "transition-colors duration-300",
         isInk
           ? "bg-ink text-ink-foreground hover:bg-ink-elevated"
@@ -165,7 +165,7 @@ export function TextLink({
       href={href}
       {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
       className={cn(
-        "group inline-flex items-center gap-1 text-sm font-medium underline decoration-1 underline-offset-4 transition-colors",
+        "group inline-flex items-center gap-1 text-base font-medium underline decoration-1 underline-offset-4 transition-colors",
         tone === "ink"
           ? "text-foreground decoration-border-strong hover:decoration-foreground"
           : "text-ink-foreground decoration-ink-border hover:decoration-ink-foreground",
@@ -214,7 +214,7 @@ export function SectionHead({
         {eyebrow ? (
           <p
             className={cn(
-              "mb-4 text-[11px]",
+              "mb-4 text-small",
               light ? "text-ink-muted" : "text-muted",
             )}
           >

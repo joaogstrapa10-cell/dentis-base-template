@@ -72,13 +72,7 @@ export type HeroContent = {
   retratoAlt: string;
 };
 
-export type SelosContent = {
-  label: string;
-  itens: string[];
-};
-
 export type DiferencialItem = {
-  icon: "stethoscope" | "layers" | "clipboard-check" | "scan-face";
   titulo: string;
   descricao: string;
 };
@@ -103,8 +97,6 @@ export type AcompanhamentoContent = {
   titulo: string;
   descricao: string;
   etapas: EtapaAcompanhamento[];
-  painelTitulo: string;
-  painelSubtitulo: string;
 };
 
 export type LocalizacaoContent = {
@@ -225,23 +217,6 @@ export type DepoimentosContent = {
   itens: Depoimento[];
 };
 
-export type ComparativoLinha = {
-  criterio: string;
-  clinica: boolean;
-  convencional: boolean;
-};
-
-export type ComparativoContent = {
-  eyebrow: string;
-  titulo: string;
-  descricao: string;
-  colunaCriterio: string;
-  colunaClinica: string;
-  colunaConvencional: string;
-  linhas: ComparativoLinha[];
-  rodape: string;
-};
-
 export type TratamentoCard = {
   titulo: string;
   descricao: string;
@@ -311,7 +286,6 @@ export type Clinica = {
   contato: ContatoContent;
   header: HeaderContent;
   hero: HeroContent;
-  selos: SelosContent;
   diferenciais: DiferenciaisContent;
   acompanhamento: AcompanhamentoContent;
   localizacao: LocalizacaoContent;
@@ -319,7 +293,6 @@ export type Clinica = {
   areas: AreasContent;
   casos: CasosContent;
   depoimentos: DepoimentosContent;
-  comparativo: ComparativoContent;
   tratamentos: TratamentosContent;
   bio: BioContent;
   faq: FaqContent;

@@ -36,7 +36,7 @@ function Retrato({
       aria-label={alt}
       className={`slot-grid-ink flex items-end overflow-hidden rounded-2xl border border-ink-border bg-ink-elevated p-3 ${className ?? ""}`}
     >
-      <span className="font-mono rounded-md border border-ink-border bg-ink/80 px-2 py-1 text-[10px] uppercase tracking-[0.08em] text-ink-muted backdrop-blur">
+      <span className="rounded-md border border-ink-border bg-ink/80 px-2 py-1 text-small uppercase tracking-[0.08em] text-ink-muted backdrop-blur">
         {alt}
       </span>
     </div>
@@ -51,7 +51,7 @@ export function BioSection({ data }: { data: BioContent }) {
           <div className="relative z-10">
             <Reveal>
               <h2 className="display-2 text-ink-foreground">{data.nome}</h2>
-              <p className="mt-4 text-sm text-ink-muted">{data.credencial}</p>
+              <p className="mt-4 text-base text-ink-muted">{data.credencial}</p>
             </Reveal>
 
             <div className="mt-14 grid gap-10 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
@@ -60,7 +60,7 @@ export function BioSection({ data }: { data: BioContent }) {
               </Reveal>
 
               <Reveal delay={120}>
-                <p className="max-w-[64ch] text-[1.0625rem] leading-[1.75] text-ink-foreground/90">
+                <p className="max-w-[64ch] text-base leading-[1.75] text-ink-foreground/90">
                   {data.corpo}
                 </p>
 
@@ -68,7 +68,7 @@ export function BioSection({ data }: { data: BioContent }) {
                   {data.titulacao.map((t) => (
                     <li
                       key={t}
-                      className="border-t border-ink-border pt-3 text-sm text-ink-muted"
+                      className="border-t border-ink-border pt-3 text-base text-ink-muted"
                     >
                       {t}
                     </li>
@@ -79,7 +79,7 @@ export function BioSection({ data }: { data: BioContent }) {
 
             {/* Corpo clínico: fileira compacta, não cards grandes */}
             <div className="mt-20">
-              <p className="text-sm text-ink-muted">{data.corpoClinicoLabel}</p>
+              <p className="text-base text-ink-muted">{data.corpoClinicoLabel}</p>
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
                 {data.corpoClinicoMembros.map((m, i) => (
                   <Reveal key={i} delay={i * 70}>
@@ -90,10 +90,10 @@ export function BioSection({ data }: { data: BioContent }) {
                         className="h-16 w-14 shrink-0 p-1.5"
                       />
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-medium text-ink-foreground">
+                        <p className="truncate text-base font-medium text-ink-foreground">
                           {m.nome}
                         </p>
-                        <p className="mt-1 text-[0.75rem] leading-[1.4] text-ink-muted">
+                        <p className="mt-1 text-small leading-[1.4] text-ink-muted">
                           {m.credencial}
                         </p>
                       </div>

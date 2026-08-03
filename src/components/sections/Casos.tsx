@@ -45,7 +45,7 @@ function Registro({ caso }: { caso: CasoClinico }) {
       aria-label={caso.imagemAlt}
       className="slot-grid flex h-full w-full items-end bg-surface p-3"
     >
-      <span className="font-mono rounded-md border border-border bg-background/80 px-2 py-1 text-[10px] uppercase tracking-[0.08em] text-muted backdrop-blur">
+      <span className="rounded-md border border-border bg-background/80 px-2 py-1 text-small uppercase tracking-[0.08em] text-muted backdrop-blur">
         {caso.rotuloSlot}
       </span>
     </div>
@@ -55,10 +55,10 @@ function Registro({ caso }: { caso: CasoClinico }) {
 function Campo({ rotulo, children }: { rotulo: string; children: ReactNode }) {
   return (
     <div>
-      <dt className="font-mono text-[11px] uppercase tracking-[0.09em] text-muted">
+      <dt className="text-small uppercase tracking-[0.09em] text-muted">
         {rotulo}
       </dt>
-      <dd className="mt-1.5 text-[0.9375rem] leading-[1.65] text-foreground">{children}</dd>
+      <dd className="mt-1.5 text-base leading-[1.65] text-foreground">{children}</dd>
     </div>
   );
 }
@@ -98,10 +98,10 @@ export function PilhaDeCasos({
               </div>
 
               <div className={cn("flex flex-col", i % 2 === 1 && "md:order-1")}>
-                <span className="font-mono text-[0.8125rem] tabular-nums text-accent">
+                <span className="text-small tabular-nums text-accent">
                   {caso.numero}
                 </span>
-                <h3 className="mt-3 text-[clamp(1.25rem,2.2vw,1.75rem)] font-semibold leading-[1.15] tracking-[-0.03em] text-foreground">
+                <h3 className="mt-3 display-3 font-semibold leading-[1.15] tracking-[-0.03em] text-foreground">
                   {caso.titulo}
                 </h3>
 
@@ -114,7 +114,7 @@ export function PilhaDeCasos({
                       {caso.especialidades.map((especialidade) => (
                         <li
                           key={especialidade}
-                          className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted"
+                          className="rounded-full border border-border px-2.5 py-1 text-small text-muted"
                         >
                           {especialidade}
                         </li>
@@ -138,7 +138,7 @@ export function PilhaDeCasos({
  */
 export function AvisoCasos({ texto }: { texto: string }) {
   return (
-    <p className="mt-8 max-w-[80ch] text-[0.8125rem] leading-[1.6] text-muted">{texto}</p>
+    <p className="mt-8 max-w-[80ch] text-small leading-[1.6] text-muted">{texto}</p>
   );
 }
 

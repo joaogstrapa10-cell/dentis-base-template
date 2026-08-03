@@ -64,18 +64,6 @@ export const clinica: Clinica = {
     retrato: "/imagens/hero/dalton-suzuki.webp",
     retratoAlt: "Dr. Dalton Suzuki, responsável técnico da clínica, de braços cruzados",
   },
-  selos: {
-    label: "Formação e titulação do corpo clínico",
-    itens: [
-      "Mestrado em Implantodontia, ILAPEO",
-      "Especialização em Implantodontia, ABO-PR",
-      "Especialização em Periodontia, APCD Bauru",
-      "Graduação, PUC-PR",
-      "CRO-PR",
-      "[SELO ADICIONAL 1]",
-      "[SELO ADICIONAL 2]",
-    ],
-  },
   diferenciais: {
     eyebrow: "Por que aqui",
     titulo: "Experiência aplicada caso a caso.",
@@ -83,25 +71,21 @@ export const clinica: Clinica = {
       "Nosso corpo clínico é formado por mestres e especialistas em diversas áreas da Odontologia. A proposta é unir conhecimento, experiência, ética e alta tecnologia em benefício de cada paciente.",
     itens: [
       {
-        icon: "stethoscope",
         titulo: "Corpo clínico de especialistas",
         descricao:
           "Cada área conduzida por quem se especializou nela. O caso não muda de mãos por conveniência de agenda.",
       },
       {
-        icon: "layers",
         titulo: "Casos de alta complexidade",
         descricao:
           "Reabilitações extensas e situações que exigem planejamento multidisciplinar são o centro da nossa rotina, não a exceção.",
       },
       {
-        icon: "clipboard-check",
         titulo: "Planejamento antes de execução",
         descricao:
           "Nenhum procedimento começa sem diagnóstico fechado e plano apresentado ao paciente, com etapas e critérios definidos.",
       },
       {
-        icon: "scan-face",
         titulo: "Harmonização com a face",
         descricao:
           "Função mastigatória e estética tratadas em conjunto, considerando a face como um todo, não o dente isolado.",
@@ -112,8 +96,6 @@ export const clinica: Clinica = {
     eyebrow: "Como conduzimos",
     titulo: "Cada etapa, acompanhada.",
     descricao: "",
-    painelTitulo: "Acompanhamento do tratamento",
-    painelSubtitulo: "Paciente · Caso clínico #0000",
     etapas: [
       {
         numero: "01",
@@ -411,23 +393,6 @@ export const clinica: Clinica = {
         quando: "",
       },
     ],
-  },
-  comparativo: {
-    eyebrow: "Diferença de método",
-    titulo: "Nosso método vs. o convencional.",
-    descricao: "",
-    colunaCriterio: "Critério",
-    colunaClinica: "Nossa clínica",
-    colunaConvencional: "Atendimento convencional",
-    linhas: [
-      { criterio: "Diagnóstico antes da proposta comercial", clinica: true, convencional: false },
-      { criterio: "Especialista dedicado por área", clinica: true, convencional: false },
-      { criterio: "Plano de tratamento entregue por escrito", clinica: true, convencional: false },
-      { criterio: "Casos de alta complexidade conduzidos internamente", clinica: true, convencional: false },
-      { criterio: "Função e estética planejadas em conjunto", clinica: true, convencional: false },
-      { criterio: "Acompanhamento de manutenção após a alta", clinica: true, convencional: false },
-    ],
-    rodape: "Comparativo de processo de atendimento. Não constitui promessa de resultado clínico.",
   },
   tratamentos: {
     eyebrow: "Tratamentos",

@@ -23,14 +23,14 @@ export function DiferenciaisSection({ data }: { data: DiferenciaisContent }) {
             <li className="group grid grid-cols-[2.5rem_1fr] items-baseline gap-x-5 gap-y-3 border-b border-border py-9 transition-colors duration-500 hover:bg-surface/70 md:grid-cols-[4rem_minmax(0,20rem)_1fr] md:gap-x-12 md:py-11">
               <span
                 aria-hidden="true"
-                className="font-mono text-[0.8125rem] tabular-nums text-muted transition-colors duration-500 group-hover:text-accent"
+                className="text-small tabular-nums text-muted transition-colors duration-500 group-hover:text-accent"
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
 
               <h3 className="display-3 col-start-2 text-foreground">{item.titulo}</h3>
 
-              <p className="col-start-2 max-w-[54ch] text-[0.9375rem] leading-[1.7] text-muted md:col-start-3">
+              <p className="col-start-2 max-w-[54ch] text-base leading-[1.7] text-muted md:col-start-3">
                 {item.descricao}
               </p>
             </li>

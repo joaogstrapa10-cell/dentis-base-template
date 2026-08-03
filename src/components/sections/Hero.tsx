@@ -57,7 +57,7 @@ export function HeroSection({ data }: { data: HeroContent }) {
               </h1>
 
               <Reveal delay={220}>
-                <p className="mt-7 max-w-[52ch] text-base leading-[1.65] text-ink-muted md:text-[1.0625rem]">
+                <p className="mt-7 max-w-[52ch] text-base leading-[1.65] text-ink-muted">
                   {data.subheadline}
                 </p>
               </Reveal>
@@ -77,7 +77,7 @@ export function HeroSection({ data }: { data: HeroContent }) {
                 </div>
               </Reveal>
               <Reveal delay={380}>
-                <p className="mt-8 text-[13px] text-ink-muted">
+                <p className="mt-8 text-small text-ink-muted">
                   {data.responsavelLinha}
                 </p>
               </Reveal>

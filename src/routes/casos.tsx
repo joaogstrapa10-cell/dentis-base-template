@@ -61,7 +61,7 @@ function PaginaCasos() {
               <Reveal>
                 <a
                   href="/"
-                  className="font-mono inline-flex items-center gap-2 text-[0.8125rem] text-ink-muted transition-colors hover:text-ink-foreground"
+                  className="inline-flex items-center gap-2 text-small text-ink-muted transition-colors hover:text-ink-foreground"
                 >
                   <ArrowLeft className="h-4 w-4" strokeWidth={2} />
                   {casos.pagina.voltarLabel}

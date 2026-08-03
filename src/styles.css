@@ -138,7 +138,18 @@
   --color-warning: var(--warning);
 
   --font-sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* A monoespaçada saiu do site em 30/07. Ela era o sinal mais forte de
+     "ferramenta de desenvolvedor" no layout — nenhuma referência do segmento de
+     saúde de alto padrão usa mono em marketing. O token fica porque o shadcn o
+     referencia em `ui/chart.tsx`; NÃO usar `font-mono` em componente de seção. */
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Os dois únicos degraus de texto corrido. Ver a nota da escala mais abaixo:
+     `text-xs`, `text-sm`, `text-lg` e `text-xl` estão fora de uso por decisão. */
+  --text-base: 1rem;
+  --text-base--line-height: 1.65;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.5;
 
   /* Compatibilidade shadcn/ui */
   --color-primary: var(--ink);
@@ -181,38 +192,53 @@
   ::selection { background: var(--accent); color: var(--accent-foreground); }
 }
 
-/* ---------- Escala de display ----------
-   Definida como classe, não por utilitários. Motivo concreto: combinar
-   `text-[clamp(...)]` com `leading-[...]` no Tailwind v4 não funciona — o
-   utilitário de font-size arbitrário reimpõe line-height e o leading é
-   ignorado (medido: 84px em vez de 56px). Aqui font-size, line-height e
-   tracking andam juntos, que é como uma escala tipográfica deve viver.
-   O leading não desce abaixo de 1.05: em português os diacríticos em caixa
-   alta (Ê, Á, Ç) encostam na linha de cima. */
+/* ---------- ESCALA TIPOGRÁFICA FECHADA: CINCO TAMANHOS ----------
+   Auditoria de 30/07 contou **14 tamanhos distintos** renderizados numa página
+   (52, 48, 30, 28, 21.6, 18, 17, 16, 15, 14, 13, 12, 11, 10). Catorze tamanhos
+   não são hierarquia, são gradiente: nada se destaca porque tudo é levemente
+   diferente de tudo. Referências do porte da Apple trabalham com 4 a 6.
 
-/* Só a headline do hero usa esta escala. Reduzida em 30/07 a pedido do
-   usuário: o teto era 3.5rem (56px em 1440), e a 56px a headline de três linhas
-   dominava o bloco e apertava o retrato ao lado. */
+   A escala agora é FECHADA. Cinco degraus, e só eles:
+
+     display-1   48px   headline do hero — uma por página
+     display-2   36px   título de seção
+     display-3   22px   título de card, subtítulo
+     text-base   16px   TODO texto de leitura, rótulo de botão, navegação
+     text-small  13px   legenda, aviso legal, tag, metadado
+
+   Regras de uso, para não voltar a catorze:
+   - Proibido `text-[...]` com tamanho arbitrário em componente de seção.
+   - Proibido `text-xs`, `text-sm`, `text-lg`, `text-xl`. Só `base` e `small`.
+   - Precisa de um degrau novo? Não precisa. Escolha o vizinho.
+
+   As três primeiras são CLASSE, não utilitário, por um motivo medido: combinar
+   `text-[clamp(...)]` com `leading-[...]` no Tailwind v4 não funciona — o
+   utilitário de font-size arbitrário reimpõe o line-height e o leading é
+   ignorado (84px em vez de 56px, na medição de 25/07). Aqui font-size,
+   line-height e tracking andam juntos, que é como escala tipográfica deve viver.
+   O leading não desce abaixo de 1.05: em português os diacríticos em caixa alta
+   (Ê, Á, Ç) encostam na linha de cima. */
+
 .display-1 {
   font-weight: 700;
-  font-size: clamp(1.875rem, 3.7vw, 3rem);
+  font-size: clamp(2rem, 3.7vw, 3rem);
   line-height: 1.07;
   letter-spacing: -0.038em;
 }
 
 .display-2 {
   font-weight: 700;
-  font-size: clamp(1.875rem, 4vw, 3.25rem);
-  line-height: 1.06;
-  letter-spacing: -0.038em;
+  font-size: clamp(1.75rem, 2.8vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.032em;
   text-wrap: balance;
 }
 
 .display-3 {
   font-weight: 600;
-  font-size: clamp(1.125rem, 1.5vw, 1.375rem);
-  line-height: 1.25;
-  letter-spacing: -0.02em;
+  font-size: 1.375rem;
+  line-height: 1.3;
+  letter-spacing: -0.018em;
 }
 
 /* ---------- Superfície escura ---------- */
@@ -324,27 +350,10 @@
 }
 .rail::-webkit-scrollbar { display: none; }
 
-/* Rolagem automática e contínua. A lista é renderizada duas vezes e a faixa
-   desliza exatamente 50%, então o ponto de retorno cai sobre uma cópia
-   idêntica e a emenda não aparece. */
-@keyframes rail-auto {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.rail-auto {
-  animation: rail-auto 46s linear infinite;
-  width: max-content;
-}
-.rail-pausa:hover .rail-auto,
-.rail-pausa:focus-within .rail-auto {
-  animation-play-state: paused;
-}
-
-/* Bordas esmaecidas: sem isso os cards são cortados a seco pelo overflow */
-.rail-mask {
-  -webkit-mask-image: linear-gradient(to right, transparent 0, black 4%, black 94%, transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0, black 4%, black 94%, transparent 100%);
-}
+/* O carrossel contínuo dos depoimentos (`rail-auto`, `rail-pausa`, `rail-mask`)
+   foi REMOVIDO em 30/07, junto com o carrossel: a seção passou a mostrar uma
+   citação só, em corpo grande. Não recriar — movimento automático era uma das
+   cinco mecânicas de interação que competiam na página. */
 
 /* ---------- Slot de imagem vazio ---------- */
 /* Textura fina para o slot parecer deliberado em vez de caixa quebrada */
@@ -372,7 +381,6 @@
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .marquee-track, [data-marquee] { animation: none !important; }
-  .rail-auto { animation: none !important; }
   .line-rise { animation: none !important; transform: none !important; }
   .lift:hover { transform: none; }
   .group:hover .nudge,

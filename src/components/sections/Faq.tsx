@@ -23,7 +23,7 @@ export function FaqSection({ data }: { data: FaqContent }) {
               <AccordionTrigger className="py-6 text-left text-base font-medium text-foreground hover:no-underline">
                 {item.pergunta}
               </AccordionTrigger>
-              <AccordionContent className="pb-6 text-sm leading-[1.65] text-muted-foreground">
+              <AccordionContent className="pb-6 text-base leading-[1.65] text-muted-foreground">
                 {item.resposta}
               </AccordionContent>
             </AccordionItem>

@@ -1,23 +1,21 @@
 import { Star } from "lucide-react";
-import type { Depoimento, DepoimentosContent } from "@/content/types";
+import type { DepoimentosContent } from "@/content/types";
 import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 import { IconeGoogle } from "@/components/Primitives";
 import { cn } from "@/lib/utils";
 
 /**
- * Estrutura: cartão de resumo do perfil à esquerda e carrossel de avaliações
- * rolando continuamente à direita, no formato de widget de avaliações.
+ * Estrutura: cartão de resumo do perfil à esquerda, UMA citação grande à direita.
  *
- * A rolagem é CSS puro: a lista é renderizada duas vezes e a faixa desliza
- * exatamente 50%, então o retorno cai sobre uma cópia idêntica e não existe
- * emenda visível. Pausa no hover e no foco de teclado, e é desligada sob
- * `prefers-reduced-motion`.
+ * O carrossel contínuo foi removido em 30/07 — ver a nota em
+ * `DepoimentosSection`. Com ele saíram `CartaoAvaliacao` e as classes
+ * `rail-auto` / `rail-pausa` / `rail-mask`.
  *
- * Sobre a marca do Google: ela só é exibida no cartão cuja `fonte` é "google".
- * Os depoimentos herdados do site anterior têm `fonte: "site"` e aparecem sem
- * ela — atribuir a origem errada a um depoimento de paciente real não é
- * detalhe de layout.
+ * Sobre a marca do Google: só é exibida onde a `fonte` é "google". Os
+ * depoimentos herdados do site anterior têm `fonte: "site"` e aparecem sem ela —
+ * atribuir a origem errada a um depoimento de paciente real não é detalhe de
+ * layout.
  */
 
 /** Nota do Google chega como texto pt-BR ("5,0", "4,8"). Devolve 0 se não for
@@ -35,7 +33,7 @@ function paraNota(valor: string): number {
 function Estrelas({
   nota,
   label,
-  /** Tamanho da estrela. O cartão de resumo pede maior que o do carrossel. */
+  /** Tamanho da estrela. */
   tamanho = "h-4 w-4",
 }: {
   nota: number;
@@ -67,70 +65,18 @@ function Estrelas({
   );
 }
 
-function CartaoAvaliacao({
-  item,
-  duplicado,
-}: {
-  item: Depoimento;
-  /** A segunda metade da faixa é cópia visual do laço: some para leitores de tela. */
-  duplicado?: boolean;
-}) {
-  const doGoogle = item.fonte === "google";
-  return (
-    <li className="w-[19rem] shrink-0 self-start sm:w-[23rem]" aria-hidden={duplicado || undefined}>
-      <figure className="flex flex-col rounded-2xl border border-border bg-surface p-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-3">
-            {item.foto ? (
-              <img
-                src={item.foto}
-                alt={item.fotoAlt}
-                loading="lazy"
-                width={40}
-                height={40}
-                className="h-10 w-10 shrink-0 rounded-full object-cover"
-              />
-            ) : (
-              <span
-                aria-hidden="true"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-surface-raised text-sm font-semibold text-muted"
-              >
-                {item.autor.trim().charAt(0)}
-              </span>
-            )}
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-foreground">{item.autor}</p>
-              {item.quando ? (
-                <p className="text-xs text-muted">{item.quando}</p>
-              ) : null}
-            </div>
-          </div>
-
-          {/* Marca do Google no cartão, e SÓ quando `fonte` é "google". É a
-              trava que impede depoimento do site antigo de aparecer como se
-              fosse avaliação do Google. Virou o glifo em vez da palavra
-              "Google": some um texto cravado em componente e fica idêntico à
-              atribuição do cartão de resumo. */}
-          {doGoogle ? <IconeGoogle className="mt-0.5 h-4 w-4 shrink-0" /> : null}
-        </div>
-
-        {doGoogle ? (
-          <div className="mt-4">
-            <Estrelas nota={item.nota} label={`${item.nota} de 5`} />
-          </div>
-        ) : null}
-
-        {/* Truncado para os cards ficarem comparáveis entre si. Os depoimentos
-            herdados do site são muito mais longos que uma avaliação típica, e
-            sem limite um card fica três vezes mais alto que o vizinho. */}
-        <blockquote className="mt-4 line-clamp-6 text-[0.9375rem] leading-[1.65] text-foreground">
-          {item.texto}
-        </blockquote>
-      </figure>
-    </li>
-  );
-}
-
+/**
+ * UMA citação, grande, com retrato — não carrossel.
+ *
+ * A auditoria de 30/07 mediu 619 palavras e 54,6 elementos por tela nesta seção:
+ * três depoimentos longos rodando em laço contínuo, cada um truncado em seis
+ * linhas com "…". Truncar depoimento é o pior dos dois mundos — ocupa o espaço
+ * de um texto inteiro e não entrega nenhum.
+ *
+ * Agora um só, inteiro, em corpo grande. Os outros continuam em `data.itens`
+ * porque é de lá que as avaliações do Google vão entrar; a seção mostra o
+ * primeiro. Quem quiser mais de um, aumenta o corte — não devolve o carrossel.
+ */
 export function DepoimentosSection({
   data,
   logo,
@@ -146,12 +92,11 @@ export function DepoimentosSection({
   logoAlt: string;
 }) {
   const { resumo } = data;
-  // Lista duplicada para a emenda do laço cair sobre conteúdo idêntico.
-  const faixa = [...data.itens, ...data.itens];
+  const citacao = data.itens[0];
 
   return (
     <Section id="depoimentos">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,17rem)_1fr] lg:items-center lg:gap-14">
+      <div className="grid gap-14 lg:grid-cols-[minmax(0,17rem)_1fr] lg:items-start lg:gap-20">
         {/* Resumo do perfil: marca, estrelas, nota. Nada mais — a contagem e o
             botão de avaliar saíram em 30/07. O logo é o cabeçalho da seção: o
             `alt` carrega o nome do negócio, então o h2 continua tendo texto
@@ -177,7 +122,7 @@ export function DepoimentosSection({
                 label={`${resumo.nota} de 5`}
                 tamanho="h-5 w-5"
               />
-              <span className="text-lg font-semibold tabular-nums text-foreground">
+              <span className="display-3 font-semibold tabular-nums text-foreground">
                 {resumo.nota}
               </span>
             </div>
@@ -187,25 +132,47 @@ export function DepoimentosSection({
                 carrossel, que hoje são depoimentos do site antigo. O rótulo vem
                 do conteúdo justamente para poder mudar de "Nota" para
                 "Avaliações" quando as do Google entrarem. */}
-            <p className="mt-4 flex items-center gap-2 text-[0.8125rem] text-muted">
+            <p className="mt-4 flex items-center gap-2 text-small text-muted">
               <IconeGoogle className="h-4 w-4 shrink-0" />
               {resumo.fonteLabel}
             </p>
           </div>
         </Reveal>
 
-        {/* Carrossel */}
-        <div className="rail-pausa rail-mask relative -mx-5 overflow-hidden md:-mx-10 lg:mx-0">
-          <ul className="rail-auto flex items-start gap-4 px-5 md:px-10 lg:px-0">
-            {faixa.map((item, i) => (
-              <CartaoAvaliacao
-                key={`${item.autor}-${i}`}
-                item={item}
-                duplicado={i >= data.itens.length}
-              />
-            ))}
-          </ul>
-        </div>
+        {/* A citação. Sem cartão, sem borda, sem sombra: o texto é a peça. */}
+        {citacao ? (
+          <Reveal delay={120}>
+            <figure>
+              <blockquote className="display-3 max-w-[46ch] text-balance font-normal leading-[1.45] text-foreground">
+                {citacao.texto}
+              </blockquote>
+
+              <figcaption className="mt-8 flex items-center gap-4">
+                {citacao.foto ? (
+                  <img
+                    src={citacao.foto}
+                    alt={citacao.fotoAlt}
+                    loading="lazy"
+                    width={48}
+                    height={48}
+                    className="h-12 w-12 shrink-0 rounded-full object-cover"
+                  />
+                ) : null}
+                <div>
+                  <p className="text-base font-semibold text-foreground">{citacao.autor}</p>
+                  {/* A marca do Google só aparece se a citação VEIO do Google.
+                      Hoje é depoimento do site antigo, então não aparece. */}
+                  {citacao.fonte === "google" ? (
+                    <p className="mt-0.5 flex items-center gap-2 text-small text-muted">
+                      <IconeGoogle className="h-3.5 w-3.5 shrink-0" />
+                      {citacao.quando}
+                    </p>
+                  ) : null}
+                </div>
+              </figcaption>
+            </figure>
+          </Reveal>
+        ) : null}
       </div>
     </Section>
   );

@@ -1,4 +1,3 @@
-import { MapPin, Clock, Phone, MessageCircle } from "lucide-react";
 import type { ContatoContent, LocalizacaoContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
@@ -19,35 +18,32 @@ export function LocalizacaoSection({
         <Reveal className="lg:col-span-2">
           <div className="h-full rounded-2xl border border-border bg-surface p-6 md:p-8">
             <dl className="space-y-6">
-              <div className="flex gap-4">
-                <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-accent" strokeWidth={1.75} />
+              <div>
                 <div>
-                  <dt className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+                  <dt className="text-small uppercase tracking-[0.08em] text-muted-foreground">
                     {data.enderecoLabel}
                   </dt>
-                  <dd className="mt-1 text-sm text-foreground">
+                  <dd className="mt-1 text-base text-foreground">
                     {contato.endereco}
                     <br />
                     {contato.cidadeUf} · {contato.cep}
                   </dd>
                 </div>
               </div>
-              <div className="flex gap-4">
-                <Clock className="mt-0.5 h-5 w-5 shrink-0 text-accent" strokeWidth={1.75} />
+              <div>
                 <div>
-                  <dt className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+                  <dt className="text-small uppercase tracking-[0.08em] text-muted-foreground">
                     {data.horarioLabel}
                   </dt>
-                  <dd className="mt-1 text-sm text-foreground">{contato.horario}</dd>
+                  <dd className="mt-1 text-base text-foreground">{contato.horario}</dd>
                 </div>
               </div>
-              <div className="flex gap-4">
-                <Phone className="mt-0.5 h-5 w-5 shrink-0 text-accent" strokeWidth={1.75} />
+              <div>
                 <div>
-                  <dt className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+                  <dt className="text-small uppercase tracking-[0.08em] text-muted-foreground">
                     {data.telefoneLabel}
                   </dt>
-                  <dd className="mt-1 text-sm text-foreground">
+                  <dd className="mt-1 text-base text-foreground">
                     <a
                       href={telHref(contato.telefone)}
                       className="transition-colors hover:text-accent"
@@ -57,13 +53,12 @@ export function LocalizacaoSection({
                   </dd>
                 </div>
               </div>
-              <div className="flex gap-4">
-                <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-accent" strokeWidth={1.75} />
+              <div>
                 <div>
-                  <dt className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+                  <dt className="text-small uppercase tracking-[0.08em] text-muted-foreground">
                     {data.whatsappLabel}
                   </dt>
-                  <dd className="mt-1 text-sm text-foreground">
+                  <dd className="mt-1 text-base text-foreground">
                     <a
                       href={whatsappHref(contato.whatsapp)}
                       target="_blank"

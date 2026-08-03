@@ -1,131 +1,87 @@
-import { Check, Loader2, Circle } from "lucide-react";
 import type { AcompanhamentoContent, EtapaAcompanhamento } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 import { cn } from "@/lib/utils";
 
-function EstadoIcon({ estado }: { estado: EtapaAcompanhamento["estado"] }) {
-  if (estado === "concluido")
-    return (
-      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-accent text-accent-foreground">
-        <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
-      </span>
-    );
-  if (estado === "em-andamento")
-    return (
-      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-accent text-accent">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-      </span>
-    );
+/**
+ * Marcador de estado da etapa: um DISCO, sem ícone dentro.
+ *
+ * Eram três ícones diferentes (check, spinner girando, círculo) em oito
+ * instâncias. Vocabulário de painel de build de software — e o spinner girando
+ * ainda sugeria "processando agora", que numa etapa de tratamento é
+ * simplesmente falso. O estado já está escrito ao lado, em `estadoLabel`; o
+ * disco só marca a posição na régua.
+ */
+function EstadoMarca({ estado }: { estado: EtapaAcompanhamento["estado"] }) {
   return (
-    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-border text-muted-foreground">
-      <Circle className="h-2.5 w-2.5" />
-    </span>
+    <span
+      aria-hidden="true"
+      className={cn(
+        "inline-block h-2.5 w-2.5 shrink-0 rounded-full",
+        estado === "concluido" && "bg-accent",
+        estado === "em-andamento" && "bg-accent/35 ring-2 ring-accent",
+        estado === "previsto" && "bg-border-strong",
+      )}
+    />
   );
 }
 
+/**
+ * Estrutura: régua vertical de etapas, uma coluna.
+ *
+ * A versão anterior tinha DUAS colunas: a lista à esquerda e, à direita, uma
+ * JANELA DE APLICATIVO FALSA — com os três pontinhos de macOS no topo —
+ * repetindo as mesmas quatro etapas em cartões com pills de status. Removida em
+ * 30/07 por três motivos somados, e o terceiro é o pior:
+ *
+ * 1. Era o elemento mais "empresa de software" do site. Mockup de interface numa
+ *    clínica odontológica comunica a categoria errada.
+ * 2. Era conteúdo DUPLICADO: as mesmas quatro etapas renderizadas duas vezes na
+ *    mesma tela, o que sozinho respondia pela densidade de 45,9 elementos por
+ *    tela medida nesta seção.
+ * 3. Insinuava um produto que não existe. Não há painel de acompanhamento para o
+ *    paciente acessar, e "Paciente · Caso clínico #0000" numa moldura de app lê
+ *    como print de um sistema real.
+ */
 export function AcompanhamentoSection({ data }: { data: AcompanhamentoContent }) {
   return (
     <Section id="acompanhamento">
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
-        <Reveal>
-          <SectionHeader
-            eyebrow={data.eyebrow}
-            titulo={data.titulo}
-            descricao={data.descricao}
-          />
-          <ol className="mt-10 space-y-6">
-            {data.etapas.map((etapa) => (
-              <li key={etapa.numero} className="flex gap-4">
-                <div className="pt-0.5">
-                  <EstadoIcon estado={etapa.estado} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
-                      {etapa.numero}
-                    </span>
-                    <span
-                      className={cn(
-                        "text-xs",
-                        etapa.estado === "concluido" && "text-accent",
-                        etapa.estado === "em-andamento" && "text-accent",
-                        etapa.estado === "previsto" && "text-muted-foreground",
-                      )}
-                    >
-                      {etapa.estadoLabel}
-                    </span>
-                  </div>
-                  <h3 className="mt-1 text-base font-medium text-foreground">{etapa.titulo}</h3>
-                  <p className="mt-2 max-w-[52ch] text-sm leading-[1.6] text-muted-foreground">
-                    {etapa.descricao}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
+      <SectionHeader
+        eyebrow={data.eyebrow}
+        titulo={data.titulo}
+        descricao={data.descricao}
+      />
 
-        <Reveal delay={120}>
-          <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xl md:p-6">
-            {/* Faux window chrome */}
-            <div className="flex items-center justify-between border-b border-border pb-3">
-              <div className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-surface-raised" />
-                <span className="h-2.5 w-2.5 rounded-full bg-surface-raised" />
-                <span className="h-2.5 w-2.5 rounded-full bg-surface-raised" />
+      <ol className="mt-14 border-t border-border">
+        {data.etapas.map((etapa, i) => (
+          <Reveal key={etapa.numero} delay={i * 80}>
+            <li className="grid gap-x-6 gap-y-3 border-b border-border py-9 md:grid-cols-[4rem_minmax(0,18rem)_1fr] md:gap-x-12 md:py-11">
+              <div className="flex items-center gap-3 md:block">
+                <EstadoMarca estado={etapa.estado} />
+                <span className="text-small tabular-nums text-muted md:ml-3">
+                  {etapa.numero}
+                </span>
               </div>
-              <span className="text-[10px] text-muted-foreground">
-                {data.painelSubtitulo}
-              </span>
-            </div>
-            <div className="pt-5">
-              <p className="text-xs text-muted-foreground">
-                {data.painelTitulo}
-              </p>
 
-              <ol className="mt-5 space-y-3">
-                {data.etapas.map((etapa, i) => (
-                  <li
-                    key={etapa.numero}
-                    className={cn(
-                      "flex items-center justify-between rounded-lg border border-border bg-surface-raised px-4 py-3",
-                      etapa.estado === "em-andamento" && "border-accent/60",
-                    )}
-                    style={{
-                      opacity: 1,
-                      transitionDelay: `${i * 60}ms`,
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <EstadoIcon estado={etapa.estado} />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{etapa.titulo}</p>
-                        <p className="text-[11px] text-muted-foreground">
-                          {etapa.numero}
-                        </p>
-                      </div>
-                    </div>
-                    <span
-                      className={cn(
-                        "rounded-full border px-2.5 py-0.5 text-[10px]",
-                        etapa.estado === "concluido" &&
-                          "border-accent/40 bg-accent/10 text-accent",
-                        etapa.estado === "em-andamento" &&
-                          "border-accent/60 bg-accent/15 text-accent",
-                        etapa.estado === "previsto" &&
-                          "border-border text-muted-foreground",
-                      )}
-                    >
-                      {etapa.estadoLabel}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-        </Reveal>
-      </div>
+              <div>
+                <h3 className="display-3 text-foreground">{etapa.titulo}</h3>
+                <span
+                  className={cn(
+                    "mt-1 block text-small",
+                    etapa.estado === "previsto" ? "text-muted" : "text-accent",
+                  )}
+                >
+                  {etapa.estadoLabel}
+                </span>
+              </div>
+
+              <p className="max-w-[54ch] text-base leading-[1.7] text-muted">
+                {etapa.descricao}
+              </p>
+            </li>
+          </Reveal>
+        ))}
+      </ol>
     </Section>
   );
 }

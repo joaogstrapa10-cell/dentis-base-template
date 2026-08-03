@@ -36,7 +36,7 @@ function AnimatedNavLink({ href, children }: { href: string; children: string })
   return (
     <a
       href={href}
-      className="group inline-flex h-5 shrink-0 items-start overflow-hidden text-sm"
+      className="group inline-flex h-5 shrink-0 items-start overflow-hidden text-base"
     >
       <span
         className={cn(
@@ -223,7 +223,7 @@ export function Header({
                 key={item.href + item.label}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="whitespace-nowrap rounded-lg px-2 py-2.5 text-sm text-ink-muted transition-colors hover:bg-ink-elevated hover:text-ink-foreground"
+                className="whitespace-nowrap rounded-lg px-2 py-2.5 text-base text-ink-muted transition-colors hover:bg-ink-elevated hover:text-ink-foreground"
               >
                 {item.label}
               </a>

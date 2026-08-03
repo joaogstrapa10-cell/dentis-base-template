@@ -30,12 +30,12 @@ export function AreasSection({ data }: { data: AreasContent }) {
                 <div className="flex items-baseline gap-5 py-7 md:gap-10 md:py-8">
                   <span
                     aria-hidden="true"
-                    className="font-mono w-8 shrink-0 text-[0.8125rem] tabular-nums text-muted transition-colors duration-500 group-focus-within:text-accent md:group-hover:text-accent"
+                    className="w-8 shrink-0 text-small tabular-nums text-muted transition-colors duration-500 group-focus-within:text-accent md:group-hover:text-accent"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
 
-                  <h3 className="flex-1 font-semibold leading-[1.15] tracking-[-0.03em] text-[clamp(1.25rem,2.4vw,1.875rem)] text-foreground transition-transform duration-500 md:group-hover:translate-x-1.5">
+                  <h3 className="flex-1 font-semibold leading-[1.15] tracking-[-0.03em] display-3 text-foreground transition-transform duration-500 md:group-hover:translate-x-1.5">
                     {area.titulo}
                   </h3>
 
@@ -43,7 +43,7 @@ export function AreasSection({ data }: { data: AreasContent }) {
                     {area.tags.map((tag) => (
                       <li
                         key={tag}
-                        className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted"
+                        className="rounded-full border border-border px-2.5 py-1 text-small text-muted"
                       >
                         {tag}
                       </li>
@@ -54,7 +54,7 @@ export function AreasSection({ data }: { data: AreasContent }) {
                 {/* Descrição: sempre visível no mobile, revelada no desktop */}
                 <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:grid-rows-[0fr] md:group-focus-within:grid-rows-[1fr] md:group-hover:grid-rows-[1fr]">
                   <div className="overflow-hidden">
-                    <p className="max-w-[62ch] pb-7 pl-13 text-[0.9375rem] leading-[1.7] text-muted md:pb-9 md:pl-[4.5rem]">
+                    <p className="max-w-[62ch] pb-7 pl-13 text-base leading-[1.7] text-muted md:pb-9 md:pl-[4.5rem]">
                       {area.descricao}
                     </p>
                   </div>

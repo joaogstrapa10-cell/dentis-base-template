@@ -1,4 +1,3 @@
-import { Check } from "lucide-react";
 import type { TratamentosContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
@@ -34,28 +33,28 @@ export function TratamentosSection({ data }: { data: TratamentosContent }) {
                 <div className="flex items-center gap-3">
                   <h3 className="display-3 text-foreground">{card.titulo}</h3>
                   {card.badge ? (
-                    <span className="shrink-0 rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-medium text-accent-foreground">
+                    <span className="shrink-0 rounded-full bg-accent px-2.5 py-0.5 text-small font-medium text-accent-foreground">
                       {card.badge}
                     </span>
                   ) : null}
                 </div>
 
-                <p className="mt-4 text-[0.9375rem] leading-[1.65] text-muted">
+                <p className="mt-4 text-base leading-[1.65] text-muted">
                   {card.descricao}
                 </p>
 
-                <p className="mt-7 border-t border-border pt-5 text-sm text-foreground">
+                <p className="mt-7 border-t border-border pt-5 text-base text-foreground">
                   {card.valorLabel}
                 </p>
 
-                <ul className="mt-6 flex-1 space-y-3">
+                {/* Lista sem ícone. Eram 14 checks só nesta seção, e check por
+                    item é vocabulário de tabela de planos de software: numa
+                    clínica ele não acrescenta informação nenhuma ao texto.
+                    A separação por fio dá a mesma leitura, sem enfeite. */}
+                <ul className="mt-6 flex-1 divide-y divide-border border-t border-border">
                   {card.inclui.map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-[0.9375rem] text-foreground">
-                      <Check
-                        className="mt-1 h-3.5 w-3.5 shrink-0 text-accent"
-                        strokeWidth={3}
-                      />
-                      <span>{item}</span>
+                    <li key={item} className="py-3 text-base text-foreground">
+                      {item}
                     </li>
                   ))}
                 </ul>
