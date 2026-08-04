@@ -92,6 +92,12 @@ export type DiferenciaisContent = {
   eyebrow: string;
   titulo: string;
   descricao: string;
+  /** Imagem do MÉTODO, ao lado do texto de abertura. Instrumento/tecnologia, não
+   *  ambiente — as fotos de ambiente têm a seção de estrutura. Renderizada
+   *  pequena de propósito: o cliente pediu "sutil e não grande". `null` colapsa
+   *  a coluna e o texto ocupa a largura toda, sem buraco. */
+  imagem: string | null;
+  imagemAlt: string;
   itens: DiferencialItem[];
 };
 
@@ -107,6 +113,12 @@ export type AcompanhamentoContent = {
   eyebrow: string;
   titulo: string;
   descricao: string;
+  /** Faixa larga e BAIXA fechando a seção — proporção de friso, não de hero.
+   *  Formato diferente do da imagem de Diferenciais de propósito: as duas seções
+   *  ficam próximas na página e não podem repetir o mesmo enquadramento.
+   *  `null` remove a faixa. */
+  imagem: string | null;
+  imagemAlt: string;
   etapas: EtapaAcompanhamento[];
 };
 

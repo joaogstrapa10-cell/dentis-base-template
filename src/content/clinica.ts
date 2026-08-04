@@ -69,6 +69,14 @@ export const clinica: Clinica = {
     titulo: "Experiência aplicada caso a caso.",
     descricao:
       "Nosso corpo clínico é formado por mestres e especialistas em diversas áreas da Odontologia. A proposta é unir conhecimento, experiência, ética e alta tecnologia em benefício de cada paciente.",
+    // Scanner intraoral ligado ao notebook com o modelo 3D da arcada. Entra aqui
+    // porque "alta tecnologia" está escrito na própria descrição da seção, e
+    // porque é equipamento da clínica — veio da página de implantodontia do site
+    // antigo. Proveniência e as candidatas descartadas em
+    // public/imagens/metodo/LEIA-ME.txt.
+    imagem: "/imagens/metodo/scanner-intraoral.jpeg",
+    imagemAlt:
+      "Scanner intraoral em seu suporte, ligado a um notebook que exibe o modelo digital em três dimensões de uma arcada",
     itens: [
       {
         titulo: "Corpo clínico de especialistas",
@@ -96,6 +104,12 @@ export const clinica: Clinica = {
     eyebrow: "Como conduzimos",
     titulo: "Cada etapa, acompanhada.",
     descricao: "",
+    // Atendimento real da clínica, em friso largo e baixo fechando a seção.
+    // A mesma foto aparece na galeria de /estrutura, com outro propósito: lá é
+    // ambiente, aqui é o trabalho em curso.
+    imagem: "/imagens/estrutura/08-atendimento.webp",
+    imagemAlt:
+      "Dentista e auxiliar, de máscara e touca, durante um atendimento, com o monitor de imagens ao fundo",
     etapas: [
       {
         numero: "01",
