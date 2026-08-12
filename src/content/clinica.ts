@@ -65,7 +65,11 @@ export const clinica: Clinica = {
     responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112",
     // Mesmo retrato que o site antigo usa na home e em "sobre nós". O fundo
     // verde dele é do próprio consultório e encosta no petróleo do bloco.
-    retrato: "/imagens/hero/dalton-suzuki.webp",
+    // Versão AMPLA: 2560×703 contra os 500×482 do arquivo anterior. Foi trocada
+    // em 12/08 porque o retrato passou a sangrar na borda do bloco em desktop, e
+    // ampliar o arquivo pequeno o deixaria mole. O antigo segue em
+    // public/imagens/hero/dalton-suzuki.webp e em originais/.
+    retrato: "/imagens/hero/dalton-suzuki-amplo.webp",
     retratoAlt: "Dr. Dalton Suzuki, responsável técnico da clínica, de braços cruzados",
   },
   diferenciais: {
