@@ -3,7 +3,6 @@ import { clinica } from "@/content/clinica";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/sections/Hero";
 import { DiferenciaisSection } from "@/components/sections/Diferenciais";
-import { AcompanhamentoSection } from "@/components/sections/Acompanhamento";
 import { LocalizacaoSection } from "@/components/sections/Localizacao";
 import { EstruturaSection } from "@/components/sections/Estrutura";
 import { AreasSection } from "@/components/sections/Areas";
@@ -52,7 +51,6 @@ function Landing() {
       <main>
         <HeroSection data={clinica.hero} />
         <DiferenciaisSection data={clinica.diferenciais} />
-        <AcompanhamentoSection data={clinica.acompanhamento} />
         <EstruturaSection data={clinica.estrutura} />
         <AreasSection data={clinica.areas} />
         <CasosSection data={clinica.casos} />

@@ -1,5 +1,4 @@
 import type { BioContent } from "@/content/types";
-import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 
 /**
@@ -71,9 +70,19 @@ function Retrato({
 
 export function BioSection({ data }: { data: BioContent }) {
   return (
-    <div className="px-3 md:px-4">
+    <section id="responsavel" className="px-3 md:px-4">
       <div className="relative isolate overflow-hidden rounded-3xl bg-ink">
-        <Section id="responsavel" as="div">
+        {/* Padding PRÓPRIO, menor que o `--section-py` da página (160px em
+            desktop), e a diferença é conceitual: `--section-py` é o espaço ENTRE
+            seções que dividem o mesmo fundo, onde o vão é a própria separação.
+            Dentro de uma faixa escura a separação já é a borda do bloco, e os
+            160px viravam ~200px de verde vazio acima do nome — foi o "espaço
+            sobrando" que o usuário apontou em 12/08. Os 96px daqui leem como
+            respiro do bloco, não como falha de alinhamento.
+
+            O container repete a largura e o `px` do `Section` de propósito: o
+            conteúdo do bloco tem de alinhar com o das seções claras vizinhas. */}
+        <div className="mx-auto w-full max-w-[1200px] px-5 py-14 md:px-10 md:py-24">
           <div className="relative z-10">
             <Reveal>
               <h2 className="display-2 text-ink-foreground">{data.nome}</h2>
@@ -137,8 +146,8 @@ export function BioSection({ data }: { data: BioContent }) {
               </ul>
             </div>
           </div>
-        </Section>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

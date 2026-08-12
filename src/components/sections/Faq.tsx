@@ -1,54 +1,68 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { useId, useState } from "react";
 import type { FaqContent } from "@/content/types";
 import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 import { TextLink } from "@/components/Primitives";
+import { cn } from "@/lib/utils";
 
 /**
- * Estrutura: DUAS COLUNAS — título à esquerda, acompanhando a rolagem, e as
- * perguntas à direita. É o arranjo da referência, e resolve dois defeitos que a
- * versão de largura cheia tinha:
+ * Estrutura: DUAS COLUNAS — foto da clínica à esquerda, perguntas à direita.
+ * Adaptada de um componente trazido pelo cliente em 12/08.
  *
- * 1. A régua de cada pergunta media 1120px para uma pergunta de ~300px, e o
- *    chevron ficava a mais de 1000px do rótulo a que pertence. Affordance
- *    separada do texto por um vão vazio do tamanho da tela não é affordance.
- *    Na coluna estreita os dois ficam vizinhos.
- * 2. Sete réguas idênticas de ponta a ponta empilhadas eram a repetição mais
- *    literal da página — e nenhuma resposta aparecia, então a seção gastava uma
- *    tela inteira mostrando sete linhas de texto.
+ * O que veio do template: a foto ao lado das perguntas, o accordion próprio (não
+ * o do shadcn), o chevron girando 180° e a resposta abrindo por opacidade e
+ * altura ao mesmo tempo, com curva longa.
  *
- * O título fica `sticky` a partir de `lg`: enquanto as perguntas passam, ele
- * segura o assunto no campo de visão. É o gesto da referência, e é o motivo de
- * esta seção NÃO usar o `SectionHeader` — ele empilha título e conteúdo, e aqui
- * os dois são lado a lado.
+ * O que foi trocado, e não é só paleta:
  *
- * As perguntas continuam em accordion, uma aberta por vez. O padrão se sustenta
- * aqui: são sete respostas de ~30 palavras, e abrir todas jogaria 210 palavras de
- * texto secundário na página inteira só para nunca serem lidas em sequência.
- * Diferente do caso das Áreas, onde o texto escondido era revelado por HOVER —
- * ali não havia como saber que existia, aqui a pergunta é o próprio convite.
+ * - **A fonte Poppins do template NÃO entrou**, e não é preferência: o
+ *   `@import url()` de fonte remota dentro do CSS derruba o build deste projeto
+ *   (o lightningcss tenta resolver a URL como arquivo local), e a tipografia da
+ *   Suzuki é Instrument Sans. Fonte é identidade — trocá-la era o oposto do
+ *   pedido.
+ * - `text-3xl`/`text-base`/`text-sm` do template são proibidos pela escala
+ *   fechada de cinco degraus. Título virou `display-2`, pergunta `text-base`,
+ *   resposta `text-base`.
+ * - `text-indigo-600`, `text-slate-500`, `border-slate-200` e o `#1D293D`
+ *   cravado no chevron viraram `--accent`, `--muted`, `--border` e
+ *   `currentColor`.
+ * - O rótulo "FAQ's" acima do título não entrou: nenhuma seção desta página tem
+ *   rótulo pequeno acima do título, e recolocar um só aqui quebraria o padrão.
+ * - **O `<div onClick>` do template virou `<button>` com `aria-expanded` e
+ *   `aria-controls`.** No original a pergunta não é alcançável por teclado nem
+ *   anunciada como controle — quem navega por Tab não abre nenhuma resposta.
+ *   O visual é idêntico; o que muda é que funciona sem mouse.
+ *
+ * A foto é o atendimento real da clínica, que ficou órfão quando a seção de
+ * Acompanhamento foi removida nesta mesma rodada. Ela responde ao assunto da
+ * seção: as perguntas são sobre como o tratamento acontece.
+ *
+ * A nota e o link ficam SOB a foto, não antes das perguntas. Uma lista de
+ * perguntas frequentes precisa de saída para a pergunta que não é frequente, e
+ * essa saída faz sentido depois de a pessoa olhar a lista — não antes.
  */
 export function FaqSection({ data }: { data: FaqContent }) {
+  /* Índice aberto, ou `null`. Um por vez, como era no accordion anterior: são
+     sete perguntas e abrir várias transforma a coluna numa parede de texto. */
+  const [aberta, setAberta] = useState<number | null>(null);
+  const idBase = useId();
+
   return (
     <Section id="faq">
-      <div className="grid gap-10 lg:grid-cols-[1fr_1.45fr] lg:gap-16">
-        <div>
-          {/* `top-32` deixa o título abaixo da pílula de navegação, que é fixa e
-              tem ~66px de altura no topo da janela. */}
+      <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-16">
+        <Reveal>
           <div className="lg:sticky lg:top-32">
-            <h2 className="display-2 text-foreground">{data.titulo}</h2>
+            {data.imagem ? (
+              <img
+                src={data.imagem}
+                alt={data.imagemAlt}
+                loading="lazy"
+                width={1000}
+                height={667}
+                className="aspect-[4/5] w-full rounded-2xl border border-border object-cover object-[50%_30%] sm:aspect-[4/3] lg:aspect-[4/5]"
+              />
+            ) : null}
 
-            {/* A nota existe por duas razões, e a segunda é a que importa: a
-                coluna do título ficava com ~400px de vazio ao lado da lista, e
-                uma lista de perguntas frequentes precisa de saída para a
-                pergunta que não é frequente. Link de texto, não pílula — a
-                página já carrega a chamada de agendamento no header fixo, no
-                hero, em Tratamentos e no rodapé. */}
             <p className="mt-8 max-w-[34ch] text-base leading-[1.65] text-muted">
               {data.nota}
             </p>
@@ -60,25 +74,82 @@ export function FaqSection({ data }: { data: FaqContent }) {
               />
             </div>
           </div>
-        </div>
+        </Reveal>
 
-        <Reveal delay={100}>
-          <Accordion type="single" collapsible className="w-full border-t border-border">
-            {data.itens.map((item, idx) => (
-              <AccordionItem
-                key={item.pergunta}
-                value={`item-${idx}`}
-                className="border-b border-border"
-              >
-                <AccordionTrigger className="py-5 text-left text-base font-medium text-foreground hover:no-underline">
-                  {item.pergunta}
-                </AccordionTrigger>
-                <AccordionContent className="pb-5 text-base leading-[1.65] text-muted">
-                  {item.resposta}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+        <Reveal delay={120}>
+          <h2 className="display-2 text-foreground">{data.titulo}</h2>
+
+          <div className="mt-10 border-t border-border">
+            {data.itens.map((item, i) => {
+              const estaAberta = aberta === i;
+              const idResposta = `${idBase}-resposta-${i}`;
+
+              return (
+                <div key={item.pergunta} className="border-b border-border">
+                  <button
+                    type="button"
+                    onClick={() => setAberta(estaAberta ? null : i)}
+                    aria-expanded={estaAberta}
+                    aria-controls={idResposta}
+                    className="flex w-full items-center justify-between gap-6 py-5 text-left"
+                  >
+                    <span
+                      className={cn(
+                        "text-base font-medium transition-colors duration-200",
+                        estaAberta ? "text-accent" : "text-foreground",
+                      )}
+                    >
+                      {item.pergunta}
+                    </span>
+
+                    {/* Chevron desenhado inline, como no template. Gira 180° ao
+                        abrir; `shrink-0` para não ser comprimido por pergunta
+                        longa. */}
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 18 18"
+                      fill="none"
+                      aria-hidden="true"
+                      className={cn(
+                        "shrink-0 transition-transform duration-500 ease-in-out",
+                        estaAberta ? "rotate-180 text-accent" : "text-muted",
+                      )}
+                    >
+                      <path
+                        d="m4.5 7.2 3.793 3.793a1 1 0 0 0 1.414 0L13.5 7.2"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* `max-height` + opacidade, como no template, e não
+                      `grid-template-rows`: o teto de 24rem cobre com folga a
+                      resposta mais longa (as quatro em `[CONFIRMAR: ...]` são as
+                      maiores), e `max-height` anima igual em qualquer navegador.
+                      `aria-hidden` acompanha o estado para o leitor de tela não
+                      anunciar resposta fechada. */}
+                  <div
+                    id={idResposta}
+                    aria-hidden={!estaAberta}
+                    className={cn(
+                      "overflow-hidden transition-all duration-500 ease-in-out",
+                      estaAberta
+                        ? "max-h-[24rem] translate-y-0 pb-6 opacity-100"
+                        : "max-h-0 -translate-y-1 opacity-0",
+                    )}
+                  >
+                    <p className="max-w-[62ch] text-base leading-[1.65] text-muted">
+                      {item.resposta}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </Reveal>
       </div>
     </Section>

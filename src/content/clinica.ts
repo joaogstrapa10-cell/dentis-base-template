@@ -108,47 +108,6 @@ export const clinica: Clinica = {
       },
     ],
   },
-  acompanhamento: {
-    eyebrow: "Como conduzimos",
-    titulo: "Cada etapa, acompanhada.",
-    descricao: "",
-    // Atendimento real da clínica, em friso largo e baixo fechando a seção.
-    // A mesma foto aparece na galeria de /estrutura, com outro propósito: lá é
-    // ambiente, aqui é o trabalho em curso.
-    imagem: "/imagens/estrutura/08-atendimento.webp",
-    imagemAlt:
-      "Dentista e auxiliar, de máscara e touca, durante um atendimento, com o monitor de imagens ao fundo",
-    etapas: [
-      {
-        numero: "01",
-        titulo: "Avaliação e diagnóstico",
-        descricao: "Exame clínico, imagens e histórico. O caso é fechado antes de qualquer proposta.",
-        estado: "concluido",
-        estadoLabel: "Concluído",
-      },
-      {
-        numero: "02",
-        titulo: "Plano de tratamento",
-        descricao: "Etapas, prazos e critérios técnicos apresentados a você por escrito.",
-        estado: "concluido",
-        estadoLabel: "Concluído",
-      },
-      {
-        numero: "03",
-        titulo: "Execução",
-        descricao: "Cada fase conduzida pelo especialista da área, com registro do que foi feito.",
-        estado: "em-andamento",
-        estadoLabel: "Em andamento",
-      },
-      {
-        numero: "04",
-        titulo: "Manutenção",
-        descricao: "Acompanhamento periódico para preservar o que foi reabilitado.",
-        estado: "previsto",
-        estadoLabel: "Previsto",
-      },
-    ],
-  },
   localizacao: {
     eyebrow: "Onde estamos",
     titulo: "Alto da XV, Curitiba.",
@@ -249,41 +208,49 @@ export const clinica: Clinica = {
     itens: [
       {
         titulo: "Implantodontia e Cirurgia",
+        icone: "implante",
         descricao:
           "Reposição de dentes ausentes com implantes e procedimentos cirúrgicos, do caso unitário à reabilitação total.",
       },
       {
         titulo: "Estética Dental",
+        icone: "faceta",
         descricao:
           "Facetas, coroas em cerâmica e clareamento, planejados a partir da proporção da face.",
       },
       {
         titulo: "Endodontia",
+        icone: "canal",
         descricao:
           "Tratamento de canal com foco em preservar o dente natural sempre que houver condição para isso.",
       },
       {
         titulo: "Harmonização Facial",
+        icone: "face",
         descricao:
           "Procedimentos faciais conduzidos em conjunto com o plano odontológico, respeitando as proporções individuais.",
       },
       {
         titulo: "Ortodontia",
+        icone: "aparelho",
         descricao:
           "Correção de posicionamento dentário e de mordida, com aparelhos fixos e alinhadores.",
       },
       {
         titulo: "Odontopediatria",
+        icone: "infantil",
         descricao:
           "Atendimento infantil com condução adequada à idade e acompanhamento do desenvolvimento.",
       },
       {
         titulo: "Periodontia",
+        icone: "gengiva",
         descricao:
           "Tratamento da gengiva e do osso que sustentam o dente, base de qualquer reabilitação duradoura.",
       },
       {
         titulo: "Reabilitação Oral",
+        icone: "arcada",
         descricao:
           "Reconstrução da função mastigatória em casos extensos, integrando as demais especialidades.",
       },
@@ -584,8 +551,15 @@ export const clinica: Clinica = {
           "Não. Você pode agendar diretamente, tanto para avaliação inicial quanto para uma segunda opinião sobre um plano já existente.",
       },
     ],
-    // Fecha a coluna do título, que de outro modo é 400px de vazio ao lado das
-    // perguntas. É link de texto, não pílula: a seção não precisa de mais um
+    // Atendimento real da clínica. Esta foto era da seção de Acompanhamento, e
+    // ficou órfã quando ela foi removida em 12/08 — é a única do acervo que
+    // mostra o trabalho em curso, e as perguntas desta seção são sobre
+    // justamente isso. A mesma imagem aparece na galeria de /estrutura, lá como
+    // ambiente.
+    imagem: "/imagens/estrutura/08-atendimento.webp",
+    imagemAlt:
+      "Dentista e auxiliar, de máscara e touca, durante um atendimento, com o monitor de imagens ao fundo",
+    // Sob a foto. É link de texto, não pílula: a seção não precisa de mais um
     // botão alto, precisa de uma saída para a dúvida que a lista não cobre.
     nota: "Sua dúvida não está aqui? A recepção responde diretamente.",
     notaCta: { label: "Falar com a recepção", href: WHATSAPP_HREF },
@@ -610,7 +584,9 @@ export const clinica: Clinica = {
     ],
     colunaClinica: [
       { label: "Diferenciais", href: "#diferenciais" },
-      { label: "Como conduzimos", href: "#acompanhamento" },
+      // "Como conduzimos" saiu junto com a seção de Acompanhamento em 12/08.
+      // Link de rodapé para âncora que não existe mais rola para o topo sem
+      // avisar, e não há como o visitante saber que o destino sumiu.
       { label: "Estrutura", href: "#estrutura" },
       { label: "Responsável técnico", href: "#responsavel" },
       { label: "Perguntas frequentes", href: "#faq" },

@@ -101,27 +101,6 @@ export type DiferenciaisContent = {
   itens: DiferencialItem[];
 };
 
-export type EtapaAcompanhamento = {
-  numero: string;
-  titulo: string;
-  descricao: string;
-  estado: "concluido" | "em-andamento" | "previsto";
-  estadoLabel: string;
-};
-
-export type AcompanhamentoContent = {
-  eyebrow: string;
-  titulo: string;
-  descricao: string;
-  /** Faixa larga e BAIXA fechando a seção — proporção de friso, não de hero.
-   *  Formato diferente do da imagem de Diferenciais de propósito: as duas seções
-   *  ficam próximas na página e não podem repetir o mesmo enquadramento.
-   *  `null` remove a faixa. */
-  imagem: string | null;
-  imagemAlt: string;
-  etapas: EtapaAcompanhamento[];
-};
-
 export type LocalizacaoContent = {
   eyebrow: string;
   titulo: string;
@@ -142,14 +121,31 @@ export type LocalizacaoContent = {
   telefoneWhatsappLabel: string;
 };
 
+/**
+ * Qual dos oito ícones desenhados em `IconesEspecialidade.tsx` a especialidade
+ * usa. É uma união fechada, não `string`: ícone é desenho, não conteúdo, e um
+ * nome errado aqui renderizaria vazio em silêncio.
+ */
+export type AreaIcone =
+  | "implante"
+  | "faceta"
+  | "canal"
+  | "face"
+  | "aparelho"
+  | "infantil"
+  | "gengiva"
+  | "arcada";
+
 export type AreaAtuacao = {
   titulo: string;
-  /** NÃO é renderizada na home desde 30/07: a seção virou índice tipográfico, só
-   *  com o nome da especialidade. O texto fica aqui de propósito — é copy real,
-   *  e é o conteúdo da futura página de cada especialidade. Não apagar; e não
-   *  devolver para a home como texto revelado por hover, que era o formato
-   *  anterior e não é lido por quem rola a página. */
+  /**
+   * VOLTOU a ser renderizada na home em 12/08, e a distinção com o formato
+   * reprovado importa: até 30/07 ela só aparecia com o mouse em cima, e texto
+   * que só existe no hover não é lido por quem rola a página. Agora é texto
+   * permanente na célula — o hover só acende o fundo e a barra lateral.
+   */
   descricao: string;
+  icone: AreaIcone;
 };
 
 export type AreasContent = {
@@ -315,7 +311,13 @@ export type FaqContent = {
   eyebrow: string;
   titulo: string;
   itens: FaqItem[];
-  /** Fecho da coluna do título: a saída para quem não achou a dúvida. */
+  /**
+   * Foto na coluna da esquerda, ao lado das perguntas. `null` faz a seção voltar
+   * a duas colunas de texto, sem buraco no layout.
+   */
+  imagem: string | null;
+  imagemAlt: string;
+  /** Sob a foto: a saída para a dúvida que a lista não cobre. */
   nota: string;
   notaCta: Cta;
 };
@@ -342,7 +344,6 @@ export type Clinica = {
   header: HeaderContent;
   hero: HeroContent;
   diferenciais: DiferenciaisContent;
-  acompanhamento: AcompanhamentoContent;
   localizacao: LocalizacaoContent;
   estrutura: EstruturaContent;
   areas: AreasContent;
