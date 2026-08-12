@@ -195,7 +195,7 @@ trocar `TELEFONE_NUMERO` em `src/content/clinica.ts:6`.
 
 | O quê | Onde aparece | Quem resolve |
 |---|---|---|
-| Telefone e WhatsApp | `[TELEFONE-PRINCIPAL: a confirmar]` na tela | só o usuário |
+| ~~Telefone e WhatsApp~~ | ✅ resolvido em 12/08: `(41) 99206-1073` confirmado pelo usuário e aplicado | — |
 | CRO e especialidade dos 8 profissionais | `[CRO e ESPECIALIDADE]` na tela | página `/equipe/`, via agente do Lovable |
 | 4 respostas do FAQ | `[CONFIRMAR: ...]` na tela | clínica |
 | ~~Logo em versão escura~~ | ✅ resolvido em 30/07: `brand.logoEscuro`, os 21 traços do SVG recoloridos | — |
@@ -220,8 +220,25 @@ gerar as variantes.
 
 ### Seções que ainda repetem o molde antigo
 
-Acompanhamento, Localização e Estrutura seguem no formato cabeçalho + conteúdo. O FAQ
-continua accordion de largura cheia, quando na referência é de duas colunas.
+**Nenhuma.** A lista fechou em 12/08. As treze seções têm anatomia própria, e são estas —
+usar como referência antes de criar seção nova, para não repetir gesto:
+
+| Anatomia | Seções |
+|---|---|
+| Bloco escuro sangrando, foto na borda | Hero |
+| Colunas separadas por fio **vertical** | Diferenciais |
+| Fio horizontal que **atravessa** e ordena | Acompanhamento |
+| Esteira contínua | Estrutura, Depoimentos |
+| Índice tipográfico de duas colunas com numeral | Áreas |
+| Pilha de dossiês alternando de lado | Casos |
+| Faixas horizontais, nome à esquerda e conteúdo à direita | Tratamentos |
+| Grade de retratos sobre bloco escuro | Bio |
+| Título à esquerda, conteúdo à direita | FAQ |
+| Fileira de dados + faixa larga de mídia | Localização |
+
+O que **não** existe mais em nenhuma seção, e não deve voltar: grade de cartões uniforme,
+rótulo em maiúscula com tracking largo, ícone por item de lista, e mais de uma chamada de
+agendamento por seção.
 
 ---
 
@@ -462,6 +479,17 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-03 — Esteira de depoimentos com `items-start`, não `items-stretch`. Avaliação do Google tem 20–45 palavras e depoimento do site tem 70–126: uniformizando altura, os curtos esticavam para 672px e sobravam ~400px de branco dentro deles. **Com procedência mista numa faixa só, altura uniforme sem truncar é impossível** — e truncar é o erro que derrubou o carrossel de 30/07.
 - 2026-08-03 — Duas avaliações citam "dra Ana" e "Dra Ana Carolina", e a lista de equipe do repo (vinda do site antigo) tem Ana Lúcia e Carolina Cabral, não uma Ana Carolina. Provavelmente a lista está desatualizada. **Conferir com a clínica antes de publicar a página de equipe.**
 - 2026-08-03 — Sobras de padding do wordmark removido: o rodapé ficou com `pb-40 md:pb-56` (14rem) depois que a palavra gigante saiu, e sobravam 224px de verde vazio abaixo do copyright, com o arco dourado brilhando no nada. **Ao remover um elemento, procurar o espaçamento que existia só para ele.**
+- 2026-08-12 — Telefone `(41) 99206-1073` confirmado pelo usuário e aplicado. Encerra a pendência aberta em 30/07 e tira a primeira linha da tabela de bloqueios de publicação. Exibido em 4 lugares, `tel:+5541992061073` e `wa.me/5541992061073` derivados do mesmo campo.
+- 2026-08-12 — **Retrato do hero passou a SANGRAR na borda direita do bloco**, na altura inteira. Era cartão de 30% da largura dentro da grade, e ampliá-lo ali roubava largura da headline (a linha "complexidade, conduzida" quebrava). Sangrando, ganha presença por altura e por corte sem disputar espaço com o texto. Arquivo trocado para 2560×703 — o de 500×482 ficaria mole nesse tamanho. Fio dourado e flutuação ficaram só na versão mobile: em imagem que sangra não há borda para o fio contornar.
+- 2026-08-12 — **A costura vertical na borda da foto não era o degradê**, e eu ia mexer no lugar errado. O arco de luz era a primeira camada e a faixa da foto o COBRIA, então o brilho parava morto na borda da imagem — desenhando exatamente a aresta que o degradê existe para dissolver. Amostragem de luminância em 1440, coluna x=864: 40 à esquerda contra 24 à direita, 16 pontos de salto em um pixel. Corrigido pela ORDEM das camadas, não por gradiente novo. **Antes de suavizar uma borda, checar se alguma camada de atmosfera está sendo recortada por ela.**
+- 2026-08-12 — Marca sobrepunha a navegação entre 1024 e 1090px: pílula centralizada na janela começando em 230px e marca de 80px terminando em 238px, com o "SUZUKI" coberto. Só aparecia nessa faixa porque a navegação surge em `lg`. Marca cai para 64px em `lg` (com o `top` recalculado, centro em 65px) e os vãos da pílula apertam um degrau. **Toda vez que a marca ou o padding da pílula mudar, remedir a folga em 1024** — é o pior caso, não o desktop largo.
+- 2026-08-12 — **Tratamentos era uma tabela de preços de software, e a anatomia era inteira:** três colunas iguais, a do meio destacada, selo "Mais procurado", uma linha de valor por coluna, e um botão por coluna — num bloco cuja copy diz que a clínica NÃO trabalha com tabela fechada. A seção contradizia o próprio texto. Virou ficha técnica em faixas horizontais. `TratamentoCard` virou `TratamentoEixo` e perdeu `valorLabel`, `cta`, `destaque` e `badge`: **campo morto no tipo é convite a reintroduzir o padrão.**
+- 2026-08-12 — Os três botões de Tratamentos apontavam para o MESMO link de WhatsApp. **Chamada repetida com destino idêntico não é escolha**, e o header fixo já carrega "Agendar" em toda a página. Ficou uma. O selo "Mais procurado" saiu por ser pressão de demanda aplicada a decisão de saúde — o destaque de fundo na coluna do meio existia só para sustentá-lo.
+- 2026-08-12 — FAQ em duas colunas, título à esquerda acompanhando a rolagem. O defeito era a largura: 1120px de régua para uma pergunta de ~300px, com o chevron a mais de 1000px do rótulo. **Affordance separada do próprio texto por um vão do tamanho da tela não funciona como affordance.** O accordion FICA — é diferente do texto revelado por hover que saiu das Áreas, porque ali não havia como saber que o texto existia e aqui a pergunta é o próprio convite.
+- 2026-08-12 — "Telefone" e "WhatsApp" eram duas linhas com o MESMO número embaixo das duas, desde que o celular passou a servir para os dois: lê como erro de conteúdo. Agora viram uma linha quando coincidem e voltam a ser duas sozinhas quando não coincidirem. Os três rótulos coexistem no tipo **por causa das variantes** — Rogério e Décio podem ter fixo e celular separados.
+- 2026-08-12 — **Corpo clínico era a última grade de cartões uniforme da página**: oito caixas com borda e um retrato circular de 48px dentro. Virou grade de retratos sem cartão nenhum. Os nove retratos são do mesmo ensaio de estúdio (mesmo fundo creme, mesmo uniforme, mesma proporção), e é isso que faz a grade funcionar sobre o bloco escuro — nove campos claros de tom idêntico leem como série, não como remendo.
+- 2026-08-12 — Recorte quadrado no corpo clínico por RITMO, não por gosto: em 3:4 as duas fileiras levavam a seção a 2,13 telas contra ~1,15 de média das outras. O quadrado devolveu ~180px sem tirar retrato da grade. Fechou em 1,94 tela, ainda a mais alta da página, e **isso é aceitável**: o diagnóstico de 03/08 concluiu que o problema é densidade, não comprimento, e a densidade dela caiu de 23 para 17.
+- 2026-08-12 — **Duas métricas minhas dão falso positivo e quase geraram trabalho inútil.** (a) O contador de átomos acusa 191,5/tela em Depoimentos por causa de 99 `<svg>`: fileira de 5 estrelas com preenchimento fracionário são 10 nós, a esteira duplica os cartões, e **uma fileira de estrelas é percebida como UM objeto**. (b) O check de overflow acusou 201 elementos "fora da direita" com `scrollWidth == innerWidth`, ou seja zero rolagem horizontal — são os itens duplicados das esteiras e a foto sangrada do hero, todos recortados de propósito. Conferir `scrollWidth` antes de acreditar em contagem de overflow.
 
 ---
 
