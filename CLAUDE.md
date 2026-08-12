@@ -225,18 +225,23 @@ usar como referência antes de criar seção nova, para não repetir gesto:
 
 | Anatomia | Seções |
 |---|---|
-| Bloco escuro sangrando, foto na borda | Hero |
-| Colunas separadas por fio **vertical** | Diferenciais |
+| Bloco escuro sangrando, texto e retrato contido | Hero |
+| Título largo + fileira separada por fio **vertical** | Diferenciais |
 | Esteira contínua | Estrutura, Depoimentos |
 | Grade 4×2 de células com fio, ícone e realce no hover | Áreas |
 | Pilha de dossiês alternando de lado | Casos |
 | Faixas horizontais, nome à esquerda e conteúdo à direita | Tratamentos |
 | Grade de retratos sobre bloco escuro | Bio |
-| Foto à esquerda, accordion à direita | FAQ |
+| Título à esquerda, accordion à direita | FAQ |
 | Fileira de dados + faixa larga de mídia | Localização |
+| Faixa escura curta, texto à esquerda e chamada à direita | Chamada final |
 
-São **doze** seções: "Cada etapa, acompanhada." foi removida em 12/08, a pedido
-do usuário.
+São **doze** seções: "Cada etapa, acompanhada." foi removida em 12/08 e a chamada
+final saiu do rodapé e virou seção na mesma data.
+
+**Só três seções têm foto**: o hero (retrato do responsável), Estrutura (esteira
+de 12 ambientes) e Bio (nove retratos). As de Diferenciais e do FAQ entraram e
+saíram em 12/08.
 
 O que **não** existe mais em nenhuma seção, e não deve voltar: cartão com fundo e sombra
 próprios, rótulo em maiúscula com tracking largo, pill de tag, e mais de uma chamada de
@@ -507,6 +512,14 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-12 — A foto do atendimento sobreviveu à remoção da seção dela e foi para o FAQ: é a única do acervo que mostra trabalho em curso, e as perguntas da seção são sobre isso. **Ao apagar seção, checar se algum asset dela é único** antes de deixá-lo órfão.
 - 2026-08-12 — **Bloco escuro não usa `--section-py` por dentro.** A Bio usava, e os 160px viravam ~200px de verde vazio acima do nome — o "espaço sobrando" que o usuário apontou. `--section-py` é o espaço ENTRE seções que dividem o mesmo fundo, onde o vão é a própria separação; dentro de uma faixa a separação já é a borda do bloco. Ficou em 96px, e o container repete a largura e o `px` do `Section` para o conteúdo alinhar com as seções claras vizinhas.
 - 2026-08-12 — `git add -p` é **interativo e não roda neste ambiente**: a chamada imprime o hunk e segue sem estagiar. Tentar dividir um commit por hunk em arquivo compartilhado terminou num `--amend` que engoliu tudo. Quando várias mudanças da mesma rodada compartilham `types.ts`/`clinica.ts` e dependem uma da outra, **um commit só é mais honesto que uma divisão que produz commit que não compila**.
+- 2026-08-12 — **A faixa sangrada do retrato do hero foi reprovada e desfeita no mesmo dia:** "muito pra direita, não centralizada, cortada". A causa era GEOMÉTRICA — arquivo 2560×703 (3,6:1) numa faixa 576×693 (0,83:1) faz `object-cover` mostrar 22% da largura, ou seja um talho vertical. Nenhum `object-position` resolve. Voltou o arquivo original de 500×482 num cartão `aspect-square`, recorte de 3,6%. **Não encaixar arquivo panorâmico em caixa vertical.**
+- 2026-08-12 — Manter DUAS versões da mesma foto (faixa sangrada em `lg`, cartão no mobile) foi o que deixou o recorte extremo passar no desenvolvimento: em tela estreita ele não aparecia, e eu conferia as duas como se fossem casos independentes. Agora é uma figura só para todos os tamanhos.
+- 2026-08-12 — **`--section-py` vale para os DOIS lados**, então o vão entre seções é o dobro dele. Estava em 5rem/8rem, o que dava 256px no desktop e vãos medidos de até 344px — o usuário apontou como "espaços em branco entre as seções". Foi para 3,5rem/4,5rem e os vãos ficaram entre 137 e 180px; a página caiu de 12,2 para 10,8 telas sem perder uma palavra. **Ao mexer nesse token, medir o vão resultante, não o valor.**
+- 2026-08-12 — Meu medidor de vãos usa o texto-FOLHA, não a caixa do elemento, então superestima onde a última peça é um botão com padding (acusou 232px entre Estrutura e Áreas, sendo ~144px reais) e subestima onde a primeira é um título com leading (96px entre FAQ e Localização, sendo ~150px). **Conferir vão suspeito por screenshot antes de corrigir.**
+- 2026-08-12 — **"Comece pela avaliação." saiu do rodapé e virou seção** depois da Localização. A moldura do cartão não veio junto: no rodapé ela existia para o CTA se destacar das colunas de navegação logo abaixo, e virando seção o bloco escuro já é a superfície — manter a borda seria caixa dentro de caixa. Os três campos saíram de `FooterContent` para `ChamadaFinalContent`, porque seção própria tem conteúdo próprio.
+- 2026-08-12 — Fotos de Diferenciais e do FAQ removidas a pedido, as duas com `imagem: null`. Nos dois casos o componente precisou deixar de RESERVAR a coluna, não só de renderizar a imagem: em Diferenciais a coluna de 17rem vazia comprimia o texto de abertura a 70% da largura, e no FAQ a coluna da esquerda ficaria com só a nota dentro e a altura das sete perguntas. **`null` numa prop de imagem só funciona se o layout também colapsar.**
+- 2026-08-12 — "Home" entrou na navegação (`#top`, não `/`: âncora rola suave, a rota recarregaria a página). Alargou a pílula em 74px e **recriou a colisão com a marca em 1024**, com a folga caindo de 44px para 9px. Marca para 56px em `lg` e vãos da pílula apertados devolveram 39px. Pílula centralizada distribui cada pixel de largura nos dois lados — **remedir 1024 a cada item novo**.
+- 2026-08-12 — O rodapé tinha o MESMO defeito de telefone que a Localização, e eu corrigi só um dos dois na primeira passada: o mesmo número embaixo de "Telefone" e de "WhatsApp". **Ao corrigir defeito de conteúdo repetido, procurar todos os lugares que exibem o mesmo campo** — aqui eram quatro.
 
 ---
 
