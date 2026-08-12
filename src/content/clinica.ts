@@ -41,7 +41,12 @@ export const clinica: Clinica = {
     wordmark: "Suzuki Odontologia",
     // Enxuta de propósito: o header é uma pílula flutuante e sete itens não
     // cabem sem quebrar. A navegação completa fica no footer.
+    //
+    // "Home" aponta para `#top`, que é o id da seção do hero. Não é "/": âncora
+    // interna rola suave até o topo, e "/" recarregaria a página inteira para
+    // chegar ao mesmo lugar.
     nav: [
+      { label: "Home", href: "#top" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "Áreas", href: "#areas" },
       { label: "Tratamentos", href: "#tratamentos" },
@@ -65,11 +70,14 @@ export const clinica: Clinica = {
     responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112",
     // Mesmo retrato que o site antigo usa na home e em "sobre nós". O fundo
     // verde dele é do próprio consultório e encosta no petróleo do bloco.
-    // Versão AMPLA: 2560×703 contra os 500×482 do arquivo anterior. Foi trocada
-    // em 12/08 porque o retrato passou a sangrar na borda do bloco em desktop, e
-    // ampliar o arquivo pequeno o deixaria mole. O antigo segue em
-    // public/imagens/hero/dalton-suzuki.webp e em originais/.
-    retrato: "/imagens/hero/dalton-suzuki-amplo.webp",
+    // VOLTOU para o arquivo original (500×482, quase quadrado) no fim de 12/08.
+    // A versão ampla de 2560×703 existia para a foto sangrar na borda do bloco,
+    // e o usuário reprovou o resultado: "muito pra direita, não centralizada,
+    // cortada". O problema era geométrico e não de posição — uma imagem 3,6:1
+    // encaixada numa faixa 0,83:1 mostra 22% da largura do arquivo, ou seja um
+    // talho vertical. Neste arquivo, num cartão quase quadrado, não há recorte.
+    // O amplo segue em public/imagens/hero/ caso a faixa sangrada volte.
+    retrato: "/imagens/hero/dalton-suzuki.webp",
     retratoAlt: "Dr. Dalton Suzuki, responsável técnico da clínica, de braços cruzados",
   },
   diferenciais: {
@@ -77,14 +85,13 @@ export const clinica: Clinica = {
     titulo: "Experiência aplicada caso a caso.",
     descricao:
       "Nosso corpo clínico é formado por mestres e especialistas em diversas áreas da Odontologia. A proposta é unir conhecimento, experiência, ética e alta tecnologia em benefício de cada paciente.",
-    // Scanner intraoral ligado ao notebook com o modelo 3D da arcada. Entra aqui
-    // porque "alta tecnologia" está escrito na própria descrição da seção, e
-    // porque é equipamento da clínica — veio da página de implantodontia do site
-    // antigo. Proveniência e as candidatas descartadas em
-    // public/imagens/metodo/LEIA-ME.txt.
-    imagem: "/imagens/metodo/scanner-intraoral.jpeg",
-    imagemAlt:
-      "Scanner intraoral em seu suporte, ligado a um notebook que exibe o modelo digital em três dimensões de uma arcada",
+    // SEM imagem, por decisão do usuário em 12/08. Era a foto do scanner
+    // intraoral, que ficava num retângulo pequeno ao lado do texto de abertura.
+    // O arquivo continua em public/imagens/metodo/, com a proveniência no
+    // LEIA-ME.txt de lá — `null` colapsa a coluna e o texto ocupa a largura
+    // toda, sem buraco no layout.
+    imagem: null,
+    imagemAlt: "",
     itens: [
       {
         titulo: "Corpo clínico de especialistas",
@@ -551,25 +558,28 @@ export const clinica: Clinica = {
           "Não. Você pode agendar diretamente, tanto para avaliação inicial quanto para uma segunda opinião sobre um plano já existente.",
       },
     ],
-    // Atendimento real da clínica. Esta foto era da seção de Acompanhamento, e
-    // ficou órfã quando ela foi removida em 12/08 — é a única do acervo que
-    // mostra o trabalho em curso, e as perguntas desta seção são sobre
-    // justamente isso. A mesma imagem aparece na galeria de /estrutura, lá como
-    // ambiente.
-    imagem: "/imagens/estrutura/08-atendimento.webp",
-    imagemAlt:
-      "Dentista e auxiliar, de máscara e touca, durante um atendimento, com o monitor de imagens ao fundo",
+    // SEM imagem, por decisão do usuário em 12/08 — a foto do atendimento entrou
+    // e saiu no mesmo dia. Sem ela a seção volta a ser título à esquerda e
+    // perguntas à direita: com a coluna da esquerda carregando só a nota, ela
+    // ficaria com a altura das sete perguntas e quase nada dentro.
+    // A foto segue na galeria de /estrutura, como ambiente.
+    imagem: null,
+    imagemAlt: "",
     // Sob a foto. É link de texto, não pílula: a seção não precisa de mais um
     // botão alto, precisa de uma saída para a dúvida que a lista não cobre.
     nota: "Sua dúvida não está aqui? A recepção responde diretamente.",
     notaCta: { label: "Falar com a recepção", href: WHATSAPP_HREF },
   },
-  footer: {
-    ctaTitulo: "Comece pela avaliação.",
-    ctaDescricao:
+  // Saiu do rodapé em 12/08 e virou seção, depois da Localização.
+  chamadaFinal: {
+    titulo: "Comece pela avaliação.",
+    descricao:
       "Uma consulta define o diagnóstico, o plano e o orçamento. Sem compromisso de fechamento.",
-    ctaBotao: { label: "Agendar pelo WhatsApp", href: WHATSAPP_HREF },
+    cta: { label: "Agendar pelo WhatsApp", href: WHATSAPP_HREF },
+  },
+  footer: {
     colunaContatoLabel: "Contato",
+    telefoneWhatsappLabel: "Telefone e WhatsApp",
     colunaAreasLabel: "Áreas de atuação",
     colunaClinicaLabel: "Clínica",
     colunaAreas: [

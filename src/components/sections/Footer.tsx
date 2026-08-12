@@ -7,7 +7,6 @@ import type {
   SocialLink,
 } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
-import { ArrowButton, PillButton } from "@/components/Primitives";
 import { telHref, whatsappHref } from "@/lib/contato";
 
 function SocialIcon({ name, className }: { name: SocialLink["icon"]; className?: string }) {
@@ -36,13 +35,14 @@ function Coluna({ titulo, links }: { titulo: string; links: NavLink[] }) {
 }
 
 /**
- * Estrutura: FAIXA ESCURA fechando a página, no formato da referência —
- * card de CTA no topo com botão circular de seta, wordmark gigante translúcido
- * cortado pela borda, e só então as colunas de navegação.
+ * Estrutura: FAIXA ESCURA fechando a página — quatro colunas de navegação,
+ * endereço e créditos.
  *
- * O footer anterior era o pedaço mais genérico do site: card claro com botão
- * comum e quatro colunas iguais. Aqui ele passa a ser o par visual do hero,
- * fechando a página com o mesmo peso com que ela abre.
+ * O cartão de CTA que abria este bloco SAIU em 12/08 e virou a seção
+ * `ChamadaFinal`, logo antes daqui. Com ele foram também o `mt-24 md:mt-32` das
+ * colunas, que existia só para afastá-las do cartão, e os imports de
+ * `PillButton`/`ArrowButton`. O rodapé volta a ser rodapé: navegação e créditos,
+ * sem conversão dentro.
  */
 export function FooterSection({
   data,
@@ -62,36 +62,8 @@ export function FooterSection({
         />
 
         <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pt-16 md:px-10 md:pt-24">
-          {/* CTA final */}
-          <Reveal>
-            <div className="flex flex-col gap-8 rounded-2xl border border-ink-border bg-ink-elevated/50 p-7 backdrop-blur md:flex-row md:items-center md:justify-between md:gap-14 md:p-11">
-              {/* Largura em rem, não em ch — `ch` resolveria contra a fonte de
-                  16px deste bloco e estrangularia o h2 de ~52px. Mesmo erro já
-                  corrigido em Section.tsx. */}
-              <div className="max-w-[34rem]">
-                <h2 className="display-2 text-ink-foreground">{data.ctaTitulo}</h2>
-                <p className="mt-4 text-base leading-[1.65] text-ink-muted">
-                  {data.ctaDescricao}
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-4">
-                <PillButton
-                  label={data.ctaBotao.label}
-                  href={data.ctaBotao.href}
-                  tone="light"
-                  external
-                />
-                <ArrowButton
-                  href={data.ctaBotao.href}
-                  ariaLabel={data.ctaBotao.label}
-                  external
-                />
-              </div>
-            </div>
-          </Reveal>
-
           {/* Colunas */}
-          <div className="mt-24 grid grid-cols-2 gap-10 md:mt-32 md:grid-cols-4 md:gap-12">
+          <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-12">
             <div className="col-span-2 md:col-span-1">
               {brand.logo ? (
                 <img
@@ -133,27 +105,49 @@ export function FooterSection({
 
             <div>
               <p className="text-small text-ink-muted">{data.colunaContatoLabel}</p>
+              {/* Uma linha quando os dois números coincidem, duas quando não.
+                  Mesmo defeito que a Localização tinha: com o celular servindo de
+                  telefone e de WhatsApp, o rodapé listava o MESMO
+                  (41) 99206-1073 embaixo de dois rótulos, o que lê como erro de
+                  conteúdo. Os rótulos separados ficam no tipo para as variantes
+                  com fixo e celular distintos. */}
               <ul className="mt-5 space-y-3">
-                <li>
-                  <a
-                    href={telHref(contato.telefone)}
-                    className="text-base text-ink-foreground transition-colors duration-300 hover:text-ink-muted"
-                  >
-                    {contato.telefone}
-                  </a>
-                  <p className="mt-0.5 text-small text-ink-muted">{data.telefoneLabel}</p>
-                </li>
-                <li>
-                  <a
-                    href={whatsappHref(contato.whatsapp)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-base text-ink-foreground transition-colors duration-300 hover:text-ink-muted"
-                  >
-                    {contato.whatsapp}
-                  </a>
-                  <p className="mt-0.5 text-small text-ink-muted">{data.whatsappLabel}</p>
-                </li>
+                {contato.telefone === contato.whatsapp ? (
+                  <li>
+                    <a
+                      href={telHref(contato.telefone)}
+                      className="text-base text-ink-foreground transition-colors duration-300 hover:text-ink-muted"
+                    >
+                      {contato.telefone}
+                    </a>
+                    <p className="mt-0.5 text-small text-ink-muted">
+                      {data.telefoneWhatsappLabel}
+                    </p>
+                  </li>
+                ) : (
+                  <>
+                    <li>
+                      <a
+                        href={telHref(contato.telefone)}
+                        className="text-base text-ink-foreground transition-colors duration-300 hover:text-ink-muted"
+                      >
+                        {contato.telefone}
+                      </a>
+                      <p className="mt-0.5 text-small text-ink-muted">{data.telefoneLabel}</p>
+                    </li>
+                    <li>
+                      <a
+                        href={whatsappHref(contato.whatsapp)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-base text-ink-foreground transition-colors duration-300 hover:text-ink-muted"
+                      >
+                        {contato.whatsapp}
+                      </a>
+                      <p className="mt-0.5 text-small text-ink-muted">{data.whatsappLabel}</p>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </div>

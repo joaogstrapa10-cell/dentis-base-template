@@ -324,11 +324,25 @@ export type FaqContent = {
 
 export type FooterColuna = { titulo: string; links: NavLink[] };
 
+/**
+ * Convite à avaliação, em faixa escura depois da Localização.
+ *
+ * Era `ctaTitulo`/`ctaDescricao`/`ctaBotao` dentro de `FooterContent`, e saiu de
+ * lá em 12/08 junto com o bloco: seção própria tem conteúdo próprio, senão o
+ * rodapé continua dono do texto de uma seção que não é ele.
+ */
+export type ChamadaFinalContent = {
+  titulo: string;
+  descricao: string;
+  cta: Cta;
+};
+
 export type FooterContent = {
-  ctaTitulo: string;
-  ctaDescricao: string;
-  ctaBotao: Cta;
   colunaContatoLabel: string;
+  /** Rótulo único, para quando `telefone` e `whatsapp` são o mesmo número. Mesma
+   *  regra da Localização, e existe aqui também porque cada seção guarda os
+   *  próprios rótulos — o rodapé não lê os da outra. */
+  telefoneWhatsappLabel: string;
   colunaAreasLabel: string;
   colunaClinicaLabel: string;
   colunaAreas: NavLink[];
@@ -352,5 +366,6 @@ export type Clinica = {
   tratamentos: TratamentosContent;
   bio: BioContent;
   faq: FaqContent;
+  chamadaFinal: ChamadaFinalContent;
   footer: FooterContent;
 };

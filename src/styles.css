@@ -101,11 +101,18 @@
 
   --destructive: oklch(0.55 0.20 25);
 
-  --section-py: 5rem;
+  /* Padding vertical de cada seção. ATENÇÃO: ele vale para os DOIS lados, então
+     o vão entre duas seções é o DOBRO deste valor — 3,5rem aqui são 7rem de
+     branco entre uma seção e a seguinte.
+     Era 5rem/8rem, o que dava 160px no mobile e 256px no desktop, e com os
+     espaços internos de algumas seções o vão medido chegava a 344px entre
+     Estrutura e Áreas. O usuário apontou isso em 12/08 como "espaços em branco
+     entre as seções". Ao mexer aqui, medir o vão RESULTANTE, não o valor. */
+  --section-py: 3.5rem;
 }
 
 @media (min-width: 768px) {
-  :root { --section-py: 8rem; }
+  :root { --section-py: 4.5rem; }
 }
 
 @theme inline {

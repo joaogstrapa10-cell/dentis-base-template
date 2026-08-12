@@ -139,14 +139,17 @@ export function Header({
         // ganhar meio pixel. Mudar a altura da marca ou o padding da pílula
         // exige refazer esta conta.
         //
-        // A marca encolhe para 64px na faixa `lg` (1024–1279) e o `top` sobe
-        // para 32px para o centro continuar em 65px. Isso não é gosto: a pílula
+        // A marca encolhe para 56px na faixa `lg` (1024–1279) e o `top` desce
+        // para 36px para o centro continuar em 65px. Isso não é gosto: a pílula
         // é centralizada na janela e a navegação só existe a partir de `lg`, e
         // com a marca a 80px o par COLIDIA — medido em 1024, a pílula começava
-        // em 230px e a marca terminava em 238px, 8px de sobreposição, com o
-        // "SUZUKI" literalmente coberto. Volta aos 80px em `xl`, onde sobram
-        // 120px de folga.
-        className="fixed left-6 top-4 z-50 md:left-14 md:top-6 lg:top-8 xl:top-6"
+        // em 230px e a marca terminava em 238px, com o "SUZUKI" coberto.
+        //
+        // Foi para 64px quando a navegação tinha quatro itens, e para 56px
+        // quando "Home" entrou em 12/08: cada item novo alarga a pílula pelos
+        // dois lados, e um item de 74px come 37px da folga esquerda. Volta aos
+        // 80px em `xl`, onde sobram 80px de folga.
+        className="fixed left-6 top-4 z-50 md:left-14 md:top-6 lg:top-9 xl:top-6"
         style={{
           opacity: opacidadeMarca,
           pointerEvents: opacidadeMarca < 0.05 ? "none" : undefined,
@@ -160,7 +163,7 @@ export function Header({
             alt={logoAlt ?? data.wordmark}
             // Sombra suave: é o que faz a marca ler como peça solta sobre o
             // bloco, e não como algo impresso nele.
-            className="h-14 w-auto drop-shadow-[0_2px_14px_oklch(0_0_0/0.45)] md:h-20 lg:h-16 xl:h-20"
+            className="h-14 w-auto drop-shadow-[0_2px_14px_oklch(0_0_0/0.45)] md:h-20 lg:h-14 xl:h-20"
           />
         ) : (
           <span className="text-base font-semibold tracking-[-0.01em] text-ink-foreground">
@@ -188,12 +191,12 @@ export function Header({
           redondo ? "rounded-full" : "rounded-2xl",
         )}
       >
-        {/* Os vãos apertam um degrau na faixa `lg` e voltam em `xl`, pela mesma
-            colisão descrita na marca: 32px a menos de pílula é 32px a mais de
-            folga do lado esquerdo, e nos rótulos de uma linha só o aperto não
-            se percebe. */}
-        <div className="flex w-full items-center justify-end gap-x-8 md:justify-between lg:gap-x-8 xl:gap-x-10">
-          <nav className="hidden items-center gap-6 lg:flex xl:gap-8">
+        {/* Os vãos apertam na faixa `lg` e voltam em `xl`, pela mesma colisão
+            descrita na marca: como a pílula é centralizada, cada pixel que ela
+            perde de largura devolve meio pixel de folga em CADA lado, e nos
+            rótulos de uma linha só o aperto não se percebe. */}
+        <div className="flex w-full items-center justify-end gap-x-8 md:justify-between lg:gap-x-6 xl:gap-x-10">
+          <nav className="hidden items-center gap-5 lg:flex xl:gap-8">
             {data.nav.map((item: NavLink) => (
               <AnimatedNavLink key={item.href + item.label} href={item.href}>
                 {item.label}

@@ -49,9 +49,14 @@ export function FaqSection({ data }: { data: FaqContent }) {
 
   return (
     <Section id="faq">
-      <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-16">
+      <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
         <Reveal>
           <div className="lg:sticky lg:top-32">
+            {/* O TÍTULO vive na coluna da esquerda quando não há foto, e é o que
+                dá conteúdo àquela coluna. Com a foto, ele ia para o topo da
+                coluna das perguntas; sem ela, a coluna da esquerda ficaria com só
+                a nota dentro e a altura das sete perguntas — o vazio que o
+                usuário apontou na seção da Bio, agora aqui. */}
             {data.imagem ? (
               <img
                 src={data.imagem}
@@ -61,7 +66,9 @@ export function FaqSection({ data }: { data: FaqContent }) {
                 height={667}
                 className="aspect-[4/5] w-full rounded-2xl border border-border object-cover object-[50%_30%] sm:aspect-[4/3] lg:aspect-[4/5]"
               />
-            ) : null}
+            ) : (
+              <h2 className="display-2 text-foreground">{data.titulo}</h2>
+            )}
 
             <p className="mt-8 max-w-[34ch] text-base leading-[1.65] text-muted">
               {data.nota}
@@ -77,9 +84,11 @@ export function FaqSection({ data }: { data: FaqContent }) {
         </Reveal>
 
         <Reveal delay={120}>
-          <h2 className="display-2 text-foreground">{data.titulo}</h2>
+          {data.imagem ? (
+            <h2 className="display-2 text-foreground">{data.titulo}</h2>
+          ) : null}
 
-          <div className="mt-10 border-t border-border">
+          <div className={cn("border-t border-border", data.imagem ? "mt-10" : "")}>
             {data.itens.map((item, i) => {
               const estaAberta = aberta === i;
               const idResposta = `${idBase}-resposta-${i}`;

@@ -11,6 +11,7 @@ import { DepoimentosSection } from "@/components/sections/Depoimentos";
 import { TratamentosSection } from "@/components/sections/Tratamentos";
 import { BioSection } from "@/components/sections/Bio";
 import { FaqSection } from "@/components/sections/Faq";
+import { ChamadaFinalSection } from "@/components/sections/ChamadaFinal";
 import { FooterSection } from "@/components/sections/Footer";
 
 export const Route = createFileRoute("/")({
@@ -63,6 +64,7 @@ function Landing() {
         <BioSection data={clinica.bio} />
         <FaqSection data={clinica.faq} />
         <LocalizacaoSection data={clinica.localizacao} contato={clinica.contato} />
+        <ChamadaFinalSection data={clinica.chamadaFinal} />
       </main>
       <FooterSection
         data={clinica.footer}

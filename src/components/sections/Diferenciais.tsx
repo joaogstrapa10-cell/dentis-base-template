@@ -30,12 +30,16 @@ import { cn } from "@/lib/utils";
 export function DiferenciaisSection({ data }: { data: DiferenciaisContent }) {
   return (
     <Section id="diferenciais">
-      {/* `items-end` alinha a base da imagem com a última linha do parágrafo, em
-          vez de centralizar duas caixas de alturas diferentes. */}
-      <div className="grid gap-10 lg:grid-cols-[1fr_17rem] lg:items-end lg:gap-16">
-        <SectionHeader titulo={data.titulo} descricao={data.descricao} />
+      {/* A grade de duas colunas só existe QUANDO existe imagem. Sem ela, o
+          `lg:grid-cols-[1fr_17rem]` deixaria uma coluna de 17rem vazia e o texto
+          de abertura ficaria comprimido a ~70% da largura sem motivo visível —
+          espaço reservado para algo que não está lá. */}
+      {data.imagem ? (
+        /* `items-end` alinha a base da imagem com a última linha do parágrafo, em
+           vez de centralizar duas caixas de alturas diferentes. */
+        <div className="grid gap-10 lg:grid-cols-[1fr_17rem] lg:items-end lg:gap-16">
+          <SectionHeader titulo={data.titulo} descricao={data.descricao} />
 
-        {data.imagem ? (
           <Reveal delay={140}>
             {/* No mobile a imagem vem depois do texto e ocupa no máximo 17rem,
                 centralizada — em tela estreita, largura cheia a transformaria no
@@ -49,8 +53,10 @@ export function DiferenciaisSection({ data }: { data: DiferenciaisContent }) {
               className="mx-auto w-full max-w-[17rem] rounded-2xl border border-border bg-surface lg:mx-0"
             />
           </Reveal>
-        ) : null}
-      </div>
+        </div>
+      ) : (
+        <SectionHeader titulo={data.titulo} descricao={data.descricao} />
+      )}
 
       {/* Fileira de quatro. `divide-y` no mobile e `divide-x` a partir de `md`:
           o fio acompanha o eixo em que os itens se sucedem. */}
