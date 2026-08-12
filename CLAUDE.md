@@ -227,18 +227,26 @@ usar como referência antes de criar seção nova, para não repetir gesto:
 |---|---|
 | Bloco escuro sangrando, foto na borda | Hero |
 | Colunas separadas por fio **vertical** | Diferenciais |
-| Fio horizontal que **atravessa** e ordena | Acompanhamento |
 | Esteira contínua | Estrutura, Depoimentos |
-| Índice tipográfico de duas colunas com numeral | Áreas |
+| Grade 4×2 de células com fio, ícone e realce no hover | Áreas |
 | Pilha de dossiês alternando de lado | Casos |
 | Faixas horizontais, nome à esquerda e conteúdo à direita | Tratamentos |
 | Grade de retratos sobre bloco escuro | Bio |
-| Título à esquerda, conteúdo à direita | FAQ |
+| Foto à esquerda, accordion à direita | FAQ |
 | Fileira de dados + faixa larga de mídia | Localização |
 
-O que **não** existe mais em nenhuma seção, e não deve voltar: grade de cartões uniforme,
-rótulo em maiúscula com tracking largo, ícone por item de lista, e mais de uma chamada de
+São **doze** seções: "Cada etapa, acompanhada." foi removida em 12/08, a pedido
+do usuário.
+
+O que **não** existe mais em nenhuma seção, e não deve voltar: cartão com fundo e sombra
+próprios, rótulo em maiúscula com tracking largo, pill de tag, e mais de uma chamada de
 agendamento por seção.
+
+**Exceção registrada em 12/08, e não é descuido:** Áreas voltou a ter grade uniforme e
+ícone por item, por pedido explícito do usuário, a partir de um template que ele mandou.
+O que sustenta a volta é que a objeção de 03/08 era o texto existir **só no hover** — ali
+as descrições agora são permanentes, e o hover só acende fundo e barra. Não "corrigir"
+essa seção de volta para índice tipográfico.
 
 ---
 
@@ -490,6 +498,15 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-12 — **Corpo clínico era a última grade de cartões uniforme da página**: oito caixas com borda e um retrato circular de 48px dentro. Virou grade de retratos sem cartão nenhum. Os nove retratos são do mesmo ensaio de estúdio (mesmo fundo creme, mesmo uniforme, mesma proporção), e é isso que faz a grade funcionar sobre o bloco escuro — nove campos claros de tom idêntico leem como série, não como remendo.
 - 2026-08-12 — Recorte quadrado no corpo clínico por RITMO, não por gosto: em 3:4 as duas fileiras levavam a seção a 2,13 telas contra ~1,15 de média das outras. O quadrado devolveu ~180px sem tirar retrato da grade. Fechou em 1,94 tela, ainda a mais alta da página, e **isso é aceitável**: o diagnóstico de 03/08 concluiu que o problema é densidade, não comprimento, e a densidade dela caiu de 23 para 17.
 - 2026-08-12 — **Duas métricas minhas dão falso positivo e quase geraram trabalho inútil.** (a) O contador de átomos acusa 191,5/tela em Depoimentos por causa de 99 `<svg>`: fileira de 5 estrelas com preenchimento fracionário são 10 nós, a esteira duplica os cartões, e **uma fileira de estrelas é percebida como UM objeto**. (b) O check de overflow acusou 201 elementos "fora da direita" com `scrollWidth == innerWidth`, ou seja zero rolagem horizontal — são os itens duplicados das esteiras e a foto sangrada do hero, todos recortados de propósito. Conferir `scrollWidth` antes de acreditar em contagem de overflow.
+- 2026-08-12 — **Seção "Cada etapa, acompanhada." removida**, a pedido do usuário. Saiu inteira — componente, conteúdo, os dois tipos e o link "Como conduzimos" do rodapé, que apontava para `#acompanhamento`: **âncora de rodapé para seção inexistente rola para o topo sem avisar**, e o visitante não tem como saber que o destino sumiu. Ao remover seção, procurar quem linka para ela.
+- 2026-08-12 — **Áreas virou grade 4×2 com ícone**, de um template do Aceternity mandado pelo usuário. Isso reintroduz os dois padrões removidos em 03/08 (grade uniforme e ícone por item), e a volta se sustenta por um motivo: a objeção de 03/08 era o texto existir **só no hover**, e agora as descrições são permanentes — o hover só acende fundo e barra. Registrado como exceção no §5.1 para a próxima sessão não "corrigir" de volta.
+- 2026-08-12 — Adaptar template de terceiro custa mais que trocar cor: saiu todo `dark:` (o projeto não tem modo escuro por classe), `text-lg`/`text-sm` viraram `display-3`/`text-base` pela escala fechada, `px-10` virou `px-6` (em coluna de 280px, 40px de recuo quebra nome de especialidade em três linhas), e o azul do realce virou `--accent` — **dourado não serve para realce em fundo claro**, L 0.80 desaparece.
+- 2026-08-12 — **Oito ícones dentais desenhados no projeto.** O `lucide-react` não tem nenhum ícone dental e o `@tabler/icons-react` tem três, o que deixaria cinco especialidades com ícone genérico — e ícone genérico em especialidade clínica é enfeite no lugar de informação. Os quatro que usam silhueta de dente usam a MESMA silhueta, variando só a marca interna; renderizam a 28px porque a 24px a marca interna não se distingue da raiz.
+- 2026-08-12 — **Meu primeiro path de dente fechava em x≈6,8 em vez de 12**: o lado direito nunca era desenhado e a silhueta virava um blob torto, em três ícones ao mesmo tempo. Na página, a 24px, passava por "ícone pequeno" — só apareceu ao renderizar os oito a 64px num quadro HTML isolado. **Aprovar desenho em tamanho grande antes de pôr na página**, e conferir que path simétrico fecha no ponto de partida.
+- 2026-08-12 — **FAQ com foto ao lado e accordion próprio**, do segundo template do usuário. Duas coisas do original NÃO entraram: a fonte Poppins, porque `@import` de fonte remota derruba este build e a tipografia é a identidade da Suzuki; e o `<div onClick>`, que virou `<button>` com `aria-expanded`/`aria-controls` — no template a pergunta não é alcançável por teclado nem anunciada como controle, e quem navega por Tab não abre resposta nenhuma. Visual idêntico, passa a funcionar sem mouse.
+- 2026-08-12 — A foto do atendimento sobreviveu à remoção da seção dela e foi para o FAQ: é a única do acervo que mostra trabalho em curso, e as perguntas da seção são sobre isso. **Ao apagar seção, checar se algum asset dela é único** antes de deixá-lo órfão.
+- 2026-08-12 — **Bloco escuro não usa `--section-py` por dentro.** A Bio usava, e os 160px viravam ~200px de verde vazio acima do nome — o "espaço sobrando" que o usuário apontou. `--section-py` é o espaço ENTRE seções que dividem o mesmo fundo, onde o vão é a própria separação; dentro de uma faixa a separação já é a borda do bloco. Ficou em 96px, e o container repete a largura e o `px` do `Section` para o conteúdo alinhar com as seções claras vizinhas.
+- 2026-08-12 — `git add -p` é **interativo e não roda neste ambiente**: a chamada imprime o hunk e segue sem estagiar. Tentar dividir um commit por hunk em arquivo compartilhado terminou num `--amend` que engoliu tudo. Quando várias mudanças da mesma rodada compartilham `types.ts`/`clinica.ts` e dependem uma da outra, **um commit só é mais honesto que uma divisão que produz commit que não compila**.
 
 ---
 
