@@ -157,6 +157,8 @@ export const clinica: Clinica = {
     horarioLabel: "Horário",
     telefoneLabel: "Telefone",
     whatsappLabel: "WhatsApp",
+    // Usado só quando os dois números são iguais, que é o caso aqui.
+    telefoneWhatsappLabel: "Telefone e WhatsApp",
   },
   // Os 12 ambientes reais da clínica. O carrossel da home passa por todos; a
   // página /estrutura mostra todos de uma vez, com o rótulo de cada ambiente.

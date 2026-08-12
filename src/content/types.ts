@@ -130,6 +130,16 @@ export type LocalizacaoContent = {
   horarioLabel: string;
   telefoneLabel: string;
   whatsappLabel: string;
+  /**
+   * Rótulo único, usado quando `contato.telefone` e `contato.whatsapp` são o
+   * MESMO número — que é o caso da Suzuki, cujo telefone é um celular.
+   *
+   * Existe porque a seção mostrava duas linhas, "Telefone" e "WhatsApp", com o
+   * mesmo (41) 99206-1073 repetido embaixo das duas: lê como erro de conteúdo.
+   * Os três rótulos coexistem de propósito — nas variantes em que os números
+   * forem diferentes, as duas linhas separadas voltam sozinhas.
+   */
+  telefoneWhatsappLabel: string;
 };
 
 export type AreaAtuacao = {
