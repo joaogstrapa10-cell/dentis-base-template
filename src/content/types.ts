@@ -244,21 +244,36 @@ export type DepoimentosContent = {
   itens: Depoimento[];
 };
 
-export type TratamentoCard = {
+/**
+ * Um EIXO de tratamento, não um plano. A diferença é o que o tipo permite:
+ * não há `valorLabel`, `cta`, `destaque` nem `badge` por item, e a ausência é
+ * proposital.
+ *
+ * Antes havia os quatro, e com eles a seção era literalmente uma tabela de
+ * preços de software: três colunas, coluna do meio destacada, selo "Mais
+ * procurado", uma linha de valor repetida três vezes e três botões apontando
+ * para o MESMO link de WhatsApp. Enquanto o texto da seção diz que a clínica
+ * não trabalha com tabela fechada.
+ *
+ * `destaque`/`badge` eram pior que redundantes: "mais procurado" é pressão de
+ * demanda aplicada a decisão de saúde. O valor e a chamada passaram para o
+ * nível da seção, onde acontecem uma vez.
+ */
+export type TratamentoEixo = {
   titulo: string;
   descricao: string;
+  /** O que o eixo envolve. Renderiza em linha, separado por ponto médio. */
   inclui: string[];
-  valorLabel: string;
-  cta: Cta;
-  destaque?: boolean;
-  badge?: string;
 };
 
 export type TratamentosContent = {
   eyebrow: string;
   titulo: string;
   descricao: string;
-  cards: TratamentoCard[];
+  eixos: TratamentoEixo[];
+  /** A resposta ao "quanto custa", uma vez só, fechando a seção. */
+  notaValor: string;
+  cta: Cta;
 };
 
 export type BioMembro = {

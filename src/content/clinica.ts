@@ -445,13 +445,11 @@ export const clinica: Clinica = {
     titulo: "Orçamento após avaliação.",
     descricao:
       "Não trabalhamos com tabela fechada: o valor depende do diagnóstico, da extensão do caso e das etapas envolvidas. A avaliação inicial define o plano e o orçamento.",
-    cards: [
+    eixos: [
       {
         titulo: "Avaliação e prevenção",
         descricao: "Consulta de avaliação, diagnóstico, limpeza e plano de acompanhamento.",
         inclui: ["Exame clínico completo", "Diagnóstico por imagem", "Plano de tratamento por escrito"],
-        valorLabel: "Valor sob avaliação",
-        cta: { label: "Agendar avaliação", href: WHATSAPP_HREF },
       },
       {
         titulo: "Reabilitação",
@@ -462,10 +460,6 @@ export const clinica: Clinica = {
           "Prótese sobre implante",
           "Manutenção periódica",
         ],
-        valorLabel: "Valor sob avaliação",
-        cta: { label: "Agendar avaliação", href: WHATSAPP_HREF },
-        destaque: true,
-        badge: "Mais procurado",
       },
       {
         titulo: "Estética e harmonização",
@@ -476,10 +470,13 @@ export const clinica: Clinica = {
           "Clareamento",
           "Harmonização facial",
         ],
-        valorLabel: "Valor sob avaliação",
-        cta: { label: "Agendar avaliação", href: WHATSAPP_HREF },
       },
     ],
+    // Uma vez, no fim da seção. Estava repetida em cada um dos três cartões,
+    // que é como tabela de preço mostra preço — e a frase toda existe para
+    // dizer que não há tabela de preço.
+    notaValor: "Valor sob avaliação, em todos os eixos.",
+    cta: { label: "Agendar avaliação", href: WHATSAPP_HREF },
   },
   bio: {
     eyebrow: "Responsável técnico",
