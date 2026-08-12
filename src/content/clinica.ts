@@ -582,6 +582,11 @@ export const clinica: Clinica = {
           "Não. Você pode agendar diretamente, tanto para avaliação inicial quanto para uma segunda opinião sobre um plano já existente.",
       },
     ],
+    // Fecha a coluna do título, que de outro modo é 400px de vazio ao lado das
+    // perguntas. É link de texto, não pílula: a seção não precisa de mais um
+    // botão alto, precisa de uma saída para a dúvida que a lista não cobre.
+    nota: "Sua dúvida não está aqui? A recepção responde diretamente.",
+    notaCta: { label: "Falar com a recepção", href: WHATSAPP_HREF },
   },
   footer: {
     ctaTitulo: "Comece pela avaliação.",

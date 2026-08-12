@@ -305,6 +305,9 @@ export type FaqContent = {
   eyebrow: string;
   titulo: string;
   itens: FaqItem[];
+  /** Fecho da coluna do título: a saída para quem não achou a dúvida. */
+  nota: string;
+  notaCta: Cta;
 };
 
 export type FooterColuna = { titulo: string; links: NavLink[] };
