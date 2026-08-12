@@ -3,8 +3,12 @@ import { whatsappHref } from "@/lib/contato";
 
 // Fonte de verdade única para o número exibido. O href é derivado
 // via whatsappHref() — nunca escreva um wa.me literal aqui.
-const TELEFONE_NUMERO = "[TELEFONE-PRINCIPAL: a confirmar]";
-const WHATSAPP_NUMERO = "[WHATSAPP: a confirmar]";
+// Confirmado pelo usuário em 03/08. Veio do perfil do Google Business da
+// clínica; é celular, então serve de telefone e de WhatsApp.
+// O formato exibido é o que vale: telHref() e whatsappHref() derivam o link
+// dele, então "(41) 99206-1073" vira tel:+5541992061073 e wa.me/5541992061073.
+const TELEFONE_NUMERO = "(41) 99206-1073";
+const WHATSAPP_NUMERO = "(41) 99206-1073";
 const WHATSAPP_HREF = whatsappHref(WHATSAPP_NUMERO);
 
 export const clinica: Clinica = {
