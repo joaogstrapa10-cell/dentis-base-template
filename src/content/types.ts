@@ -83,9 +83,22 @@ export type HeroContent = {
   retratoAlt: string;
 };
 
+/**
+ * Qual ícone o diferencial usa. União fechada pelo mesmo motivo de `AreaIcone`:
+ * ícone é desenho, não conteúdo, e um nome errado renderizaria vazio em silêncio.
+ *
+ * Estes vêm do `lucide-react`, não dos ícones dentais desenhados no projeto — e a
+ * separação é deliberada. Diferencial não é especialidade: usar o ícone de
+ * implante aqui diria "implantodontia" onde o texto diz "corpo clínico de
+ * especialistas". Cada seção mantém um conjunto internamente coerente, e os dois
+ * conjuntos compartilham traço de 1.5 e caixa de 28px para lerem como um sistema.
+ */
+export type DiferencialIcone = "corpo" | "complexidade" | "planejamento" | "face";
+
 export type DiferencialItem = {
   titulo: string;
   descricao: string;
+  icone: DiferencialIcone;
 };
 
 export type DiferenciaisContent = {

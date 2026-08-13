@@ -95,21 +95,25 @@ export const clinica: Clinica = {
     itens: [
       {
         titulo: "Corpo clínico de especialistas",
+        icone: "corpo",
         descricao:
           "Cada área conduzida por quem se especializou nela. O caso não muda de mãos por conveniência de agenda.",
       },
       {
         titulo: "Casos de alta complexidade",
+        icone: "complexidade",
         descricao:
           "Reabilitações extensas e situações que exigem planejamento multidisciplinar são o centro da nossa rotina, não a exceção.",
       },
       {
         titulo: "Planejamento antes de execução",
+        icone: "planejamento",
         descricao:
           "Nenhum procedimento começa sem diagnóstico fechado e plano apresentado ao paciente, com etapas e critérios definidos.",
       },
       {
         titulo: "Harmonização com a face",
+        icone: "face",
         descricao:
           "Função mastigatória e estética tratadas em conjunto, considerando a face como um todo, não o dente isolado.",
       },

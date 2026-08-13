@@ -1,39 +1,46 @@
-import type { DiferenciaisContent } from "@/content/types";
+import { ClipboardList, Layers, ScanFace, Users } from "lucide-react";
+import type { DiferencialIcone, DiferenciaisContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
+import { GradeDeCelulas } from "@/components/sections/GradeDeCelulas";
 import { Reveal } from "@/components/Reveal";
-import { cn } from "@/lib/utils";
 
 /**
- * Estrutura: ABERTURA EM DUAS COLUNAS (afirmação + imagem do método) e, abaixo,
- * os quatro diferenciais numa FILEIRA separada por fios VERTICAIS.
+ * Estrutura: GRADE DE CÉLULAS, a mesma de Áreas — pedido do cliente em 12/08,
+ * "o mesmo template que utilizamos para a seção de especialidades". O componente
+ * vive em `GradeDeCelulas.tsx`, compartilhado pelas duas seções para não haver
+ * duas cópias divergindo na primeira correção.
  *
- * O que havia antes e por que mudou: era um `<ol>` vertical de quatro linhas
- * separadas por fio horizontal, com numeral, título e descrição em três colunas.
- * Correto e ilegível de tão neutro — o cliente resumiu como "layout muito
- * simples". Pior: a seção de Acompanhamento tinha EXATAMENTE a mesma anatomia
- * (`<ol>`, fio horizontal, três colunas), e as duas ficam a uma rolagem de
- * distância. Repetição de molde entre seções vizinhas é o defeito que fez o
- * cliente reprovar o layout como "cara de IA" três vezes.
+ * O que havia antes: os quatro diferenciais numa fileira separada por fios
+ * VERTICAIS, sem ícone. Correto e neutro. A grade acrescenta o realce de hover, a
+ * barra que cresce ao lado do nome e o ícone — e, sendo quatro itens em quatro
+ * colunas, a moldura fecha numa fileira só, sem fio sobrando no meio (a lógica de
+ * bordas é derivada da contagem, não fixa em 8 itens).
  *
- * A troca do eixo do fio, de horizontal para vertical, é o que faz a leitura
- * mudar: a fileira lê como um conjunto simultâneo de quatro atributos, e não
- * como uma lista que se percorre de cima para baixo.
+ * Os ícones vêm do `lucide-react`, e não dos ícones dentais desenhados no
+ * projeto. A separação é deliberada: diferencial não é especialidade, e usar o
+ * ícone de implante aqui diria "implantodontia" onde o texto diz "corpo clínico
+ * de especialistas". Vão a 28px com traço 1.5 para casar com o conjunto dental —
+ * o padrão do lucide é traço 2, que ao lado dos outros lê mais pesado.
  *
- * O numeral saiu. Numa fileira de quatro colunas separadas por fio, a numeração
- * não organiza nada que a coluna já não organize — era ornamento.
+ * `ScanFace` em Harmonização Facial, e não `Smile`: sorriso genérico é justamente
+ * o clichê que a §4 do CLAUDE.md proíbe. O ícone de leitura facial diz análise de
+ * proporção, que é o que a copy da seção descreve.
  *
- * A imagem é PEQUENA de propósito (≈17rem, sob 20% da largura em desktop): o
- * pedido foi "não quero imagem grande, deixar sutil". Ela mostra instrumento, não
- * ambiente — as fotos de ambiente têm a seção de estrutura, e repetir o assunto
- * aqui gastaria a única imagem desta seção com informação que já foi dada.
+ * A abertura mantém a imagem opcional. Com `imagem: null` — o caso hoje — a grade
+ * de duas colunas nem existe, senão sobra uma coluna de 17rem vazia comprimindo o
+ * texto de abertura a 70% da largura sem motivo visível.
  */
+
+const ICONES: Record<DiferencialIcone, React.ReactElement> = {
+  corpo: <Users size={28} strokeWidth={1.5} aria-hidden="true" />,
+  complexidade: <Layers size={28} strokeWidth={1.5} aria-hidden="true" />,
+  planejamento: <ClipboardList size={28} strokeWidth={1.5} aria-hidden="true" />,
+  face: <ScanFace size={28} strokeWidth={1.5} aria-hidden="true" />,
+};
+
 export function DiferenciaisSection({ data }: { data: DiferenciaisContent }) {
   return (
     <Section id="diferenciais">
-      {/* A grade de duas colunas só existe QUANDO existe imagem. Sem ela, o
-          `lg:grid-cols-[1fr_17rem]` deixaria uma coluna de 17rem vazia e o texto
-          de abertura ficaria comprimido a ~70% da largura sem motivo visível —
-          espaço reservado para algo que não está lá. */}
       {data.imagem ? (
         /* `items-end` alinha a base da imagem com a última linha do parágrafo, em
            vez de centralizar duas caixas de alturas diferentes. */
@@ -58,30 +65,16 @@ export function DiferenciaisSection({ data }: { data: DiferenciaisContent }) {
         <SectionHeader titulo={data.titulo} descricao={data.descricao} />
       )}
 
-      {/* Fileira de quatro. `divide-y` no mobile e `divide-x` a partir de `md`:
-          o fio acompanha o eixo em que os itens se sucedem. */}
-      <ul className="mt-16 divide-y divide-border border-y border-border md:mt-20 md:grid md:grid-cols-2 md:divide-y-0 lg:grid-cols-4 lg:divide-x">
-        {data.itens.map((item, i) => (
-          <Reveal key={item.titulo} delay={i * 70} as="li">
-            {/* Recuo por ÍNDICE, não por `first:`/`last:`. As pseudo-classes não
-                servem aqui: o `Reveal` embrulha o conteúdo, então este `<div>` é
-                sempre filho único e `:first-child` casaria em todos — foi o bug
-                que fez o texto da 3ª e da 4ª coluna encostar no fio.
-                Gutter só entre colunas; as bordas externas ficam rentes ao
-                container, alinhadas com o título da seção. */}
-            <div
-              className={cn(
-                "h-full py-8 lg:py-9",
-                i > 0 && "lg:pl-8",
-                i < data.itens.length - 1 && "lg:pr-8",
-              )}
-            >
-              <h3 className="display-3 text-foreground">{item.titulo}</h3>
-              <p className="mt-3 text-base text-muted">{item.descricao}</p>
-            </div>
-          </Reveal>
-        ))}
-      </ul>
+      <div className="mt-14 md:mt-16">
+        <GradeDeCelulas
+          itens={data.itens.map((item) => ({
+            chave: item.titulo,
+            titulo: item.titulo,
+            descricao: item.descricao,
+            icone: ICONES[item.icone],
+          }))}
+        />
+      </div>
     </Section>
   );
 }
