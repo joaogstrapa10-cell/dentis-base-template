@@ -288,7 +288,12 @@ export const clinica: Clinica = {
     aviso:
       "Descrição de processo clínico conduzido nesta clínica. Não constitui promessa de resultado. Cada caso é único e depende de diagnóstico individual. Em conformidade com a Resolução CFO-196/2019, esta seção não divulga imagens comparativas de antes e depois.",
     verTodos: { label: "Ver todos os casos", href: "/casos" },
-    limiteNaHome: 2,
+    // `limiteNaHome` saiu em 12/08, quando a home virou carrossel: o limite
+    // existia para a seção não crescer junto com o acervo, e carrossel tem
+    // altura fixa qualquer que seja a contagem. Campo morto no tipo é convite a
+    // reintroduzir o corte.
+    anteriorLabel: "Caso anterior",
+    proximoLabel: "Próximo caso",
     pagina: {
       titulo: "Casos conduzidos.",
       descricao:

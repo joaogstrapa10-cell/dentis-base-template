@@ -3,10 +3,18 @@ import type { CasoClinico, CasosContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 import { TextLink } from "@/components/Primitives";
+import { GaleriaDeCasos } from "@/components/sections/GaleriaDeCasos";
 import { cn } from "@/lib/utils";
 
 /**
- * Galeria de casos, em PILHA DE DOSSIÊS — não em grade de cards.
+ * Dossiê de casos, em PILHA — a peça da página /casos.
+ *
+ * A HOME não usa mais isto: desde 12/08 ela abre a galeria em pilha arrastável
+ * (`GaleriaDeCasos`), e este dossiê ficou sendo a documentação completa, que é
+ * onde ela pertence. Cartão de carrossel não caberia situação, conduta, duração e
+ * especialidades sem virar parede de texto sobre foto.
+ *
+ * Formato: PILHA DE DOSSIÊS — não grade de cards.
  *
  * Duas razões, e as duas importam:
  *
@@ -143,30 +151,30 @@ export function AvisoCasos({ texto }: { texto: string }) {
 }
 
 /**
- * Seção da home: é CHAMADA, não a galeria completa. Mostra `limiteNaHome` casos
- * e manda para /casos. Assim a home não cresce junto com o acervo de casos da
- * clínica.
+ * Seção da home: GALERIA em pilha arrastável, e não o dossiê. A divisão é
+ * deliberada — a galeria convida, a página /casos é que documenta.
+ *
+ * Era a `PilhaDeCasos` recortada em dois casos, com um "ver todos" ao lado do
+ * título. Virou carrossel em 12/08, a pedido do cliente e com o template que ele
+ * trouxe. O corte em dois deixou de existir junto: a pilha mostra todos os casos
+ * e tem altura fixa, então a home não cresce quando a clínica acumular acervo —
+ * que era a única razão do limite.
+ *
+ * O aviso da CFO-196/2019 continua aqui, abaixo da galeria. É exigência, não
+ * rodapé de cortesia: não remover.
  */
 export function CasosSection({ data }: { data: CasosContent }) {
-  const temMais = data.itens.length > data.limiteNaHome;
   return (
     <Section id="casos">
       <SectionHeader
         eyebrow={data.eyebrow}
         titulo={data.titulo}
         descricao={data.descricao}
-        // A ação entra na linha do título, que é o padrão do SectionHeader.
-        // Só aparece quando há caso além dos que a home mostra: um "ver todos"
-        // que leva à mesma lista já visível é ruído.
-        acao={
-          temMais ? (
-            <TextLink label={data.verTodos.label} href={data.verTodos.href} />
-          ) : undefined
-        }
+        acao={<TextLink label={data.verTodos.label} href={data.verTodos.href} />}
       />
 
-      <div className="mt-14">
-        <PilhaDeCasos data={data} limite={data.limiteNaHome} />
+      <div className="mt-10 md:mt-12">
+        <GaleriaDeCasos data={data} />
       </div>
 
       <AvisoCasos texto={data.aviso} />

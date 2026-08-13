@@ -206,10 +206,10 @@ export type CasosContent = {
   /** CTA da home para a página dedicada. `href` é rota interna, não link
    *  externo — nunca marcar `external` nele. */
   verTodos: Cta;
-  /** Quantos casos a home mostra antes do CTA. A página mostra todos, sempre.
-   *  Existe para a home continuar sendo chamada quando a clínica acumular
-   *  casos, em vez de crescer sem limite. */
-  limiteNaHome: number;
+  /** Rótulos dos botões do carrossel. Existem como conteúdo porque são o
+   *  `aria-label` deles: botão de ícone sem rótulo não é anunciado. */
+  anteriorLabel: string;
+  proximoLabel: string;
   /** Textos exclusivos da página /casos. */
   pagina: {
     titulo: string;

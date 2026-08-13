@@ -306,6 +306,30 @@
   .retrato-flutua { animation: none; }
 }
 
+/* ---------- Cartas da galeria de casos ----------
+   A geometria de cada carta (deslocamento, giro, escala, opacidade) é calculada
+   em JS e escrita inline, porque depende da distância dela até o centro da pilha.
+   Aqui fica só a TRANSIÇÃO, que é a parte que não varia — e ela precisa listar as
+   propriedades individualmente: no Tailwind v4 o deslocamento é `translate`, não
+   `transform`, então `transition: transform` não pegaria nada.
+
+   A duração vem inline e vale 0ms enquanto o dedo está na tela: com transição
+   ativa durante o arraste, a pilha chega atrasada em relação ao ponteiro e o
+   gesto perde a sensação de peso.
+
+   Quem pediu menos movimento não recebe nenhum: a pilha continua funcionando por
+   botão e por teclado. */
+.carta-pilha {
+  transition-property: translate, rotate, scale, opacity;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carta-pilha {
+    transition-duration: 0ms !important;
+  }
+}
+
 /* ---------- Retrato do hero, sem moldura ----------
    A foto vive DENTRO do bloco escuro do hero, não num cartão em cima dele. O
    pedido do usuário em 12/08 foi exatamente isso: "não quero ela em um
