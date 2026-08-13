@@ -37,15 +37,41 @@ export type CelulaGrade = {
   titulo: string;
   descricao: string;
   /** Ícone já renderizado. Quem chama escolhe o conjunto — as especialidades usam
-   *  os ícones dentais desenhados no projeto, os diferenciais usam lucide. */
+   *  os ícones dentais desenhados no projeto, diferenciais e tratamentos usam
+   *  lucide. */
   icone: ReactNode;
+  /** Conteúdo opcional abaixo da descrição. Existe para Tratamentos, onde cada
+   *  eixo lista o que envolve; as outras duas seções não passam nada. */
+  extra?: ReactNode;
 };
 
-export function GradeDeCelulas({ itens }: { itens: CelulaGrade[] }) {
+export function GradeDeCelulas({
+  itens,
+  colunas = 4,
+}: {
+  itens: CelulaGrade[];
+  /**
+   * Quantas colunas em `lg`. Existe porque Tratamentos tem TRÊS eixos: numa grade
+   * de quatro, a moldura pararia a três quartos do container e sobraria uma coluna
+   * vazia à direita. Com três, o fio fecha na borda.
+   */
+  colunas?: 3 | 4;
+}) {
   return (
-    <ul className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    <ul
+      className={cn(
+        "relative z-10 grid grid-cols-1 md:grid-cols-2",
+        colunas === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4",
+      )}
+    >
       {itens.map((item, i) => (
-        <Celula key={item.chave} item={item} index={i} total={itens.length} />
+        <Celula
+          key={item.chave}
+          item={item}
+          index={i}
+          total={itens.length}
+          colunas={colunas}
+        />
       ))}
     </ul>
   );
@@ -55,17 +81,18 @@ function Celula({
   item,
   index,
   total,
+  colunas,
 }: {
   item: CelulaGrade;
   index: number;
   total: number;
+  colunas: 3 | 4;
 }) {
   /* A lógica de bordas do template supõe exatamente 8 itens em 4 colunas
      ("index < 4" = fileira de cima). Aqui ela é DERIVADA de `total`, e é isso que
      permite o mesmo componente servir Áreas (8 itens, duas fileiras) e
      Diferenciais (4 itens, uma fileira só) sem fio sobrando no meio — e servir as
      variantes das outras clínicas, que podem ter outra contagem. */
-  const colunas = 4;
   const primeiraFileira = index < total - colunas;
   const inicioDeFileira = index % colunas === 0;
 
@@ -119,6 +146,10 @@ function Celula({
       <p className="relative z-10 px-6 text-base leading-[1.6] text-muted">
         {item.descricao}
       </p>
+
+      {item.extra ? (
+        <div className="relative z-10 mt-5 px-6">{item.extra}</div>
+      ) : null}
     </li>
   );
 }

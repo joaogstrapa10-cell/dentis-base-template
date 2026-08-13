@@ -276,11 +276,16 @@ export const clinica: Clinica = {
   // em `areas`. O que é específico de cada caso (situação, conduta, duração e o
   // registro clínico) só a clínica tem, e fica como placeholder nomeado, visível
   // na tela. Preencher inventando caso clínico é fabricar prontuário.
+  // ⚠️ A seção deixou de ser sobre CASOS COMPLEXOS em 12/08, por pedido do
+  // usuário: "tira a parte complexos, seria casos clínicos ali no geral". O
+  // recorte anterior ("Como um caso complexo é conduzido") descrevia um subgrupo
+  // e a clínica atende o espectro inteiro — o que a seção tem de único não é a
+  // complexidade dos casos, é o MÉTODO de documentar todos do mesmo jeito.
   casos: {
-    eyebrow: "Casos conduzidos",
-    titulo: "Como um caso complexo é conduzido.",
+    eyebrow: "Casos clínicos",
+    titulo: "Casos clínicos conduzidos aqui.",
     descricao:
-      "Cada caso é documentado por etapa: a situação clínica de partida, o plano, quem conduziu cada fase e o tempo de tratamento. O que segue é descrição de processo.",
+      "Casos reais conduzidos pelo corpo clínico, em diferentes especialidades e diferentes níveis de complexidade. Todos são documentados do mesmo modo: a situação clínica de partida, a conduta adotada em cada etapa, as especialidades envolvidas e o tempo de tratamento. É descrição de processo, não de resultado — cada caso depende de diagnóstico individual.",
     situacaoLabel: "Situação clínica",
     condutaLabel: "Conduta",
     especialidadesLabel: "Especialidades envolvidas",
@@ -288,16 +293,15 @@ export const clinica: Clinica = {
     aviso:
       "Descrição de processo clínico conduzido nesta clínica. Não constitui promessa de resultado. Cada caso é único e depende de diagnóstico individual. Em conformidade com a Resolução CFO-196/2019, esta seção não divulga imagens comparativas de antes e depois.",
     verTodos: { label: "Ver todos os casos", href: "/casos" },
-    // `limiteNaHome` saiu em 12/08, quando a home virou carrossel: o limite
-    // existia para a seção não crescer junto com o acervo, e carrossel tem
-    // altura fixa qualquer que seja a contagem. Campo morto no tipo é convite a
-    // reintroduzir o corte.
     anteriorLabel: "Caso anterior",
     proximoLabel: "Próximo caso",
+    // Cinco na home, todos na página — pedido do usuário. É curadoria, não
+    // limite de layout: o carrossel tem altura fixa e caberia a lista inteira.
+    limiteNaHome: 5,
     pagina: {
-      titulo: "Casos conduzidos.",
+      titulo: "Casos clínicos.",
       descricao:
-        "Cada caso documentado por etapa: a situação clínica de partida, a conduta, as especialidades envolvidas e o tempo de tratamento.",
+        "Todos os casos documentados, do mais recente ao mais antigo. De cada um: a situação clínica de partida, a conduta por etapa, as especialidades envolvidas e o tempo de tratamento. A home mostra uma seleção; aqui está a lista inteira.",
       voltarLabel: "Voltar para a home",
     },
     itens: [
@@ -333,6 +337,34 @@ export const clinica: Clinica = {
         imagem: null,
         imagemAlt: "Registro clínico do caso 03, ainda não fornecido pela clínica",
         rotuloSlot: "Registro 03",
+      },
+      // Casos 04 e 05 entraram em 12/08 para a galeria da home ter os cinco
+      // slots que o usuário pediu. Os TÍTULOS são categorias de tratamento reais,
+      // tiradas das especialidades que a clínica já lista — não são casos
+      // inventados: todo dado do caso (situação, conduta, duração) segue em
+      // placeholder nomeado, esperando a clínica. Se ela tiver outras cinco
+      // categorias em mente, trocar o título é uma linha.
+      {
+        numero: "04",
+        titulo: "Preservação de dente natural com tratamento de canal",
+        situacao: "[CASO 04 — SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 04 — CONDUTA, ETAPA POR ETAPA]",
+        especialidades: ["Endodontia", "Estética Dental"],
+        duracao: "[CASO 04 — DURAÇÃO]",
+        imagem: null,
+        imagemAlt: "Registro clínico do caso 04, ainda não fornecido pela clínica",
+        rotuloSlot: "Registro 04",
+      },
+      {
+        numero: "05",
+        titulo: "Tratamento periodontal e manutenção",
+        situacao: "[CASO 05 — SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 05 — CONDUTA, ETAPA POR ETAPA]",
+        especialidades: ["Periodontia", "Reabilitação Oral"],
+        duracao: "[CASO 05 — DURAÇÃO]",
+        imagem: null,
+        imagemAlt: "Registro clínico do caso 05, ainda não fornecido pela clínica",
+        rotuloSlot: "Registro 05",
       },
     ],
   },
@@ -433,11 +465,13 @@ export const clinica: Clinica = {
     eixos: [
       {
         titulo: "Avaliação e prevenção",
+        icone: "avaliacao",
         descricao: "Consulta de avaliação, diagnóstico, limpeza e plano de acompanhamento.",
         inclui: ["Exame clínico completo", "Diagnóstico por imagem", "Plano de tratamento por escrito"],
       },
       {
         titulo: "Reabilitação",
+        icone: "reabilitacao",
         descricao: "Implantes, próteses e reabilitação da função mastigatória em casos extensos.",
         inclui: [
           "Planejamento multidisciplinar",
@@ -448,6 +482,7 @@ export const clinica: Clinica = {
       },
       {
         titulo: "Estética e harmonização",
+        icone: "estetica",
         descricao: "Facetas, cerâmicas, clareamento e harmonização facial integrados ao plano.",
         inclui: [
           "Planejamento a partir da face",
@@ -603,6 +638,10 @@ export const clinica: Clinica = {
     ],
     colunaClinica: [
       { label: "Diferenciais", href: "#diferenciais" },
+      // Rota interna, não âncora: é a página com a lista inteira. O header não
+      // recebe este item — a pílula já está em cinco e um sexto recria a colisão
+      // com a marca em 1024px, medida duas vezes nesta sessão.
+      { label: "Casos clínicos", href: "/casos" },
       // "Como conduzimos" saiu junto com a seção de Acompanhamento em 12/08.
       // Link de rodapé para âncora que não existe mais rola para o topo sem
       // avisar, e não há como o visitante saber que o destino sumiu.

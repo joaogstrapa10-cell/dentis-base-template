@@ -156,9 +156,11 @@ export function AvisoCasos({ texto }: { texto: string }) {
  *
  * Era a `PilhaDeCasos` recortada em dois casos, com um "ver todos" ao lado do
  * título. Virou carrossel em 12/08, a pedido do cliente e com o template que ele
- * trouxe. O corte em dois deixou de existir junto: a pilha mostra todos os casos
- * e tem altura fixa, então a home não cresce quando a clínica acumular acervo —
- * que era a única razão do limite.
+ * trouxe.
+ *
+ * O recorte continua, agora em CINCO e por outra razão. Ele não protege mais o
+ * layout — carrossel tem altura fixa e caberia a lista inteira — e sim faz
+ * curadoria: o cliente pediu "os cinco principais" na home e todos na página.
  *
  * O aviso da CFO-196/2019 continua aqui, abaixo da galeria. É exigência, não
  * rodapé de cortesia: não remover.
@@ -174,7 +176,7 @@ export function CasosSection({ data }: { data: CasosContent }) {
       />
 
       <div className="mt-10 md:mt-12">
-        <GaleriaDeCasos data={data} />
+        <GaleriaDeCasos data={data} limite={data.limiteNaHome} />
       </div>
 
       <AvisoCasos texto={data.aviso} />

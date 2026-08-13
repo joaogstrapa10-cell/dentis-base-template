@@ -63,8 +63,17 @@ function configuracao(largura: number) {
   return { divisorDistancia: 200, divisorVelocidade: 800, sensibilidade: 250, x: 170, y: 40, giro: 12, reducao: 0.12 };
 }
 
-export function GaleriaDeCasos({ data }: { data: CasosContent }) {
-  const total = data.itens.length;
+export function GaleriaDeCasos({
+  data,
+  limite,
+}: {
+  data: CasosContent;
+  /** Quantos casos a pilha mostra. Omitido, mostra todos. A home passa
+   *  `limiteNaHome`; a página /casos usa o dossiê, não esta galeria. */
+  limite?: number;
+}) {
+  const itens = limite ? data.itens.slice(0, limite) : data.itens;
+  const total = itens.length;
   const [progresso, setProgresso] = useState(0);
   const [arrastando, setArrastando] = useState(false);
   const [config, setConfig] = useState(() => configuracao(1280));
@@ -185,7 +194,7 @@ export function GaleriaDeCasos({ data }: { data: CasosContent }) {
         )}
       >
         <ul className="contents">
-          {data.itens.map((caso, i) => (
+          {itens.map((caso, i) => (
             <Carta
               key={caso.numero}
               caso={caso}

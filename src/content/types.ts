@@ -210,6 +210,16 @@ export type CasosContent = {
    *  `aria-label` deles: botão de ícone sem rótulo não é anunciado. */
   anteriorLabel: string;
   proximoLabel: string;
+  /**
+   * Quantos casos a galeria da home mostra. A página /casos mostra todos.
+   *
+   * Saiu do tipo em 12/08 e VOLTOU no mesmo dia, e a razão mudou: antes ele
+   * existia para a home não crescer com o acervo, o que o carrossel resolve
+   * sozinho por ter altura fixa. Agora é EDITORIAL — o cliente pediu "os cinco
+   * principais" na home e a lista inteira na página. Ou seja, o limite não
+   * protege o layout, define uma curadoria.
+   */
+  limiteNaHome: number;
   /** Textos exclusivos da página /casos. */
   pagina: {
     titulo: string;
@@ -278,11 +288,17 @@ export type DepoimentosContent = {
  * demanda aplicada a decisão de saúde. O valor e a chamada passaram para o
  * nível da seção, onde acontecem uma vez.
  */
+/** Ícone do eixo de tratamento. Do `lucide-react`, como os diferenciais — e
+ *  distinto dos dois conjuntos já em uso, para nenhum ícone significar duas
+ *  coisas em seções diferentes da mesma página. */
+export type TratamentoIcone = "avaliacao" | "reabilitacao" | "estetica";
+
 export type TratamentoEixo = {
   titulo: string;
   descricao: string;
   /** O que o eixo envolve. Renderiza em linha, separado por ponto médio. */
   inclui: string[];
+  icone: TratamentoIcone;
 };
 
 export type TratamentosContent = {
