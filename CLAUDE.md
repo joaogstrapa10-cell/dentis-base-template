@@ -279,6 +279,28 @@ bunx vite dev --host 127.0.0.1 --port 4173  # render local — o --host é obrig
 Não usar `vite preview` (procura `dist/server/`, que este build não gera) nem
 `node .output/server/index.mjs` (é módulo de Worker, não servidor).
 
+### Gerar o layout num arquivo .html avulso
+
+Quando o usuário pedir o layout **sem link** — o que ele pediu em 13/08, e faz
+sentido depois da confusão das URLs do Lovable (§8):
+
+```bash
+bun run build                                    # o CSS compilado sai daqui
+bunx vite dev --host 127.0.0.1 --port 4176 &
+PLAYWRIGHT_CORE=/caminho/node_modules/playwright-core \
+  node scripts/congelar-html.mjs                 # saída em ./snapshots (gitignored)
+```
+
+Gera `suzuki-layout-home.html` (~3,2 MB) e `suzuki-layout-casos.html` (~490 KB),
+cada um autossuficiente: CSS inline e imagens em data URI. O script documenta as
+cinco armadilhas que custaram uma versão inteira — a principal é que **o CSS não
+pode sair do DOM**, porque em dev o TanStack Start emite
+`<link href="/src/styles.css">` e num arquivo local isso é 404 (o primeiro
+snapshot saiu em Times New Roman, sem uma regra de estilo).
+
+⚠️ É snapshot de **layout**: sem os scripts do app, o arraste da galeria, o
+accordion do FAQ e o menu do mobile não respondem.
+
 ---
 
 ## 6. Arquivos deste projeto
@@ -576,6 +598,9 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-13 — **Cinco imagens entraram nos cartões de Casos**, uma por especialidade: implante de titânio, facetas de cerâmica, aparelho fixo, canais radiculares, raspagem periodontal. Todas das páginas de especialidade do site antigo, e todas ilustração ou banco de imagem — **nenhuma é registro clínico**. É o que torna o uso possível: registro de paciente exige autorização de uso de imagem por escrito, e a CFO-196/2019 restringe imagem comparativa. O alt descreve o que a imagem É, e uma frase nova em `casos.aviso` diz isso na tela, nos dois lugares onde as imagens aparecem.
 - 2026-08-13 — O filtro para escolher as cinco foi o **RECORTE**, não o assunto: o cartão da galeria é retrato 2:3 e quase todo arquivo do acervo é paisagem 1,5:1, então um recorte centralizado mostra 44% da largura. Só serve imagem de assunto vertical ou compacto. Foi o que descartou a fileira de próteses e as arcadas inteiras — cortadas, viram talho sem assunto. Mesma armadilha da foto do hero em 12/08. Duas foram descartadas por CONTEÚDO: `asset-5-2` (modelo loira, sorriso de estúdio, fundo azul-claro — três clichês proibidos de uma vez) e `asset-7-2` (metade do dente limpa, metade com cálculo — imagem comparativa, que é o gesto que a resolução restringe; ser ilustração não muda o que comunica).
 - 2026-08-13 — **A pílula fixa cortava o título de TODA seção alcançada pelo menu**, e era defeito antigo que só apareceu ao remedir as âncoras depois da troca de ordem: base da pílula em 85px, topo do título em 72px. `scroll-mt-12` no `Section` e nas três seções de marcação própria (Estrutura, Bio, Chamada final) — título passou a cair em 120px, folga de 35px. **Nenhum `scroll-mt` existia no projeto**; ao criar seção com id, herdar o do `Section` ou repetir a classe.
+- 2026-08-13 — **O layout passou a ter versão em arquivo `.html` avulso** (`scripts/congelar-html.mjs`), a pedido do usuário: "gerar uma página html do layout ao invés de link". Faz sentido além do pedido — é o antídoto para a confusão de URLs do §8, porque o arquivo não depende de qual projeto do Lovable está publicado. `snapshots/` está no .gitignore: 3,2 MB de imagens embutidas não entram no repo nem no sync.
+- 2026-08-13 — A armadilha do congelamento, e ela consumiu a primeira versão inteira: **o CSS não pode sair do DOM**. Em dev o TanStack Start emite `<link rel="stylesheet" href="/src/styles.css">`, que num `file://` é 404 — o arquivo saiu com zero regra de estilo, fonte Times New Roman e fundo transparente, e `document.styleSheets.length` era 2, o que faz o defeito passar por "tem CSS". Medir `cssRules.length`, não a contagem de folhas. O CSS vem de `.output/public/assets/styles-*.css`, já compilado.
+- 2026-08-13 — Três detalhes menores do congelamento, todos medidos: (a) `loading="lazy"` tem de sair, senão imagem fora da viewport nem decodifica — 5 das 7 de /casos vinham "quebradas"; (b) o `src` original precisa virar `data-congelado` com um GIF de 1px no lugar, senão o navegador dispara 29 requisições `file:///imagens/...` antes de o script trocar pelo data URI; (c) a marca volta a ser `absolute`, porque `fixed` sem o JS que a apaga deixa o logo branco fixo por cima das seções claras.
 
 ---
 

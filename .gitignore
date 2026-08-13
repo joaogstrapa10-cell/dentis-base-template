@@ -30,3 +30,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# HTML congelado por scripts/congelar-html.mjs — alguns MB de imagens embutidas,
+# não entra no repo nem no sync do Lovable.
+snapshots/
