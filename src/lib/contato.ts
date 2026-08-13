@@ -27,3 +27,17 @@ export function whatsappHref(numero: string, mensagem?: string): string {
   if (!mensagem) return base;
   return `${base}?text=${encodeURIComponent(mensagem)}`;
 }
+
+/**
+ * Link para o endereço no Google Maps, derivado do endereço EXIBIDO — mesma regra
+ * do telefone: uma string é a fonte, e o link não pode divergir do que está na
+ * tela. Usa a URL de busca documentada do Maps (`?api=1&query=`), que funciona em
+ * navegador e abre o app no celular.
+ *
+ * Existe porque o mapa da seção é uma imagem: sem este link, quem quer traçar
+ * rota não tem para onde clicar. Um mapa que não leva a lugar nenhum é decoração.
+ */
+export function mapaHref(endereco: string, cidadeUf: string): string {
+  const consulta = [endereco, cidadeUf].filter(Boolean).join(", ");
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(consulta)}`;
+}

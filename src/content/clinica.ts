@@ -36,6 +36,14 @@ export const clinica: Clinica = {
     mapaEmbedSrc:
       "https://www.google.com/maps?q=Rua+At%C3%ADlio+B%C3%B3rio+547+Alto+da+XV+Curitiba+PR&output=embed",
     mapaTitle: "Mapa da localização da clínica na Rua Atílio Bório, 547, Alto da XV, Curitiba/PR",
+    // ⚠️ A PREENCHER, e é o que falta para o mapa em tiles ligar. Com `null` a
+    // seção usa o embed do Google, que acha o endereço pelo texto e aponta certo.
+    // Não estimei os valores de propósito: no zoom 16 um erro de 300m manda o
+    // paciente para outra quadra, e o erro é invisível para quem publica.
+    // Como obter, em 10 segundos: abrir o endereço no Google Maps, clicar com o
+    // botão direito no ponto exato da clínica e copiar o par que aparece no menu.
+    latitude: null,
+    longitude: null,
   },
   header: {
     wordmark: "Suzuki Odontologia",
@@ -121,7 +129,10 @@ export const clinica: Clinica = {
   },
   localizacao: {
     eyebrow: "Onde estamos",
-    titulo: "Alto da XV, Curitiba.",
+    // "Onde ficamos." a pedido do cliente em 12/08, no lugar de "Alto da XV,
+    // Curitiba." — o bairro e a cidade já aparecem no endereço logo abaixo, e o
+    // título repetia o dado em vez de nomear a seção.
+    titulo: "Onde ficamos.",
     descricao: "",
     enderecoLabel: "Endereço",
     horarioLabel: "Horário",
@@ -129,6 +140,7 @@ export const clinica: Clinica = {
     whatsappLabel: "WhatsApp",
     // Usado só quando os dois números são iguais, que é o caso aqui.
     telefoneWhatsappLabel: "Telefone e WhatsApp",
+    rotaLabel: "Ver rota no Google Maps",
   },
   // Os 12 ambientes reais da clínica. O carrossel da home passa por todos; a
   // página /estrutura mostra todos de uma vez, com o rótulo de cada ambiente.

@@ -28,6 +28,16 @@ export type ContatoContent = {
   whatsapp: string;
   mapaEmbedSrc: string;
   mapaTitle: string;
+  /**
+   * Coordenadas do endereço, para o mosaico de tiles do mapa desenhar o pino.
+   *
+   * `null` nas duas faz a seção cair no embed do Google, que resolve o endereço em
+   * texto. É a única forma segura de tratar a ausência: NÃO se estima coordenada
+   * de clínica — no zoom em uso, 300m de erro apontam outra quadra, e quem publica
+   * não tem como notar. Preencher as duas liga o mapa em tiles.
+   */
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export type SocialLink = { label: string; href: string; icon: "instagram" | "facebook" };
@@ -132,6 +142,9 @@ export type LocalizacaoContent = {
    * forem diferentes, as duas linhas separadas voltam sozinhas.
    */
   telefoneWhatsappLabel: string;
+  /** Rótulo do link que abre o endereço no Google Maps. O mapa da seção é uma
+   *  imagem; este link é o que permite traçar rota. */
+  rotaLabel: string;
 };
 
 /**
