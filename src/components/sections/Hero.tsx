@@ -48,12 +48,19 @@ export function HeroSection({ data }: { data: HeroContent }) {
         {/* O padding de baixo encolheu junto com a saída do wordmark fantasma:
             os 11rem existiam para dar espaço à palavra gigante, e sem ela
             sobrava uma faixa vazia de quase 200px no pé do bloco. */}
-        <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pb-20 pt-28 md:px-10 md:pb-24 md:pt-36">
+        {/* O `pr` grande em `lg`+ é o que RESERVA a faixa do retrato, que a partir
+            dali é `absolute` e sai deste container. Os dois valores são derivados,
+            não escolhidos: com o retrato ocupando 42vw encostado na borda direita
+            da janela, o texto tem de terminar em `100vw - 42vw`. Resolvendo para
+            o padding deste container, dá 42vw enquanto a janela é menor que o
+            `max-w` (o container acompanha a janela) e `600px - 8vw` depois disso
+            (o container congela em 1200px e só a janela cresce). Medido: sobram
+            675px de texto em 1440 e 554px em 1024, contra 644px e 508px da linha
+            mais longa da headline. */}
+        <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pb-20 pt-28 md:px-10 md:pb-24 md:pt-36 lg:pr-[42vw] xl:pr-[calc(37.5rem-8vw)]">
           <div
             className={
-              data.retrato
-                ? "grid gap-12 lg:grid-cols-[1fr_22rem] lg:items-center lg:gap-10 xl:grid-cols-[1fr_25rem]"
-                : "grid gap-10 md:grid-cols-[1.35fr_1fr] md:gap-16"
+              data.retrato ? "" : "grid gap-10 md:grid-cols-[1.35fr_1fr] md:gap-16"
             }
           >
             <div>
@@ -97,11 +104,34 @@ export function HeroSection({ data }: { data: HeroContent }) {
               </Reveal>
             </div>
 
-            {/* UMA figura para todos os tamanhos. Antes eram duas — uma faixa
-                sangrada em `lg` e um cartão no mobile — e manter duas versões da
-                mesma foto era o que permitia o recorte extremo passar sem ser
-                notado no desenvolvimento, porque em tela estreita ele não
-                aparecia.
+            {/* UMA figura para todos os tamanhos, e o que muda entre eles é só o
+                POSICIONAMENTO: no fluxo abaixo de `lg`, `absolute` a partir dali.
+                Continua sendo um elemento e um recorte só — foram duas versões
+                por uma rodada, e foi isso que deixou um recorte extremo passar sem
+                ser notado, porque em tela estreita ele não aparecia.
+
+                Em `lg`+ ela é ancorada ao CONTAINER (que é `relative`), e o
+                `right` negativo é o que a leva até a borda da janela:
+                `max(0px, 50vw - 600px)` é a distância da borda direita do
+                container até a da janela — zero enquanto o container acompanha a
+                janela, e metade do excedente depois que ele congela em 1200px.
+                O valor resolve contra a caixa de PADDING do container, não a de
+                conteúdo: errei isso na primeira conta e a foto passava 40px da
+                janela.
+
+                A largura é `min(42vw, 38rem)`. O teto não é estético: sem ele, em
+                janela larga a foto passaria da ALTURA do bloco e o
+                `overflow-hidden` a cortaria — e recorte é o defeito que esta
+                rodada toda existe para eliminar. Em 38rem sobram 28px de vão em
+                cima e embaixo em 1920, que é o espaço de que a flutuação precisa.
+
+                A margem de cima do mobile é `max-lg:mt-12`, não `mt-12` com
+                `lg:mt-0`: `margin-top: 0` vence `margin-block: auto` na cascata do
+                Tailwind, então o `lg:mt-0` prendia a figura no TOPO do container
+                em vez de centralizá-la, e a flutuação a levava para fora do bloco.
+                Medido com `prefers-reduced-motion` ligado para separar layout de
+                animação: 0px de vão em cima e 25px embaixo, quando deveriam ser
+                12,5px nos dois.
 
                 A proporção é a NATIVA do arquivo (500×482), não `aspect-square`:
                 assim o `object-cover` não tem o que cortar, e o retrato aparece
@@ -126,8 +156,19 @@ export function HeroSection({ data }: { data: HeroContent }) {
                 O `figure` não tem fundo, borda nem raio: qualquer um dos três
                 reintroduz o "elemento". */}
             {data.retrato ? (
-              <Reveal delay={260}>
-                <figure className="retrato-flutua relative mx-auto w-full max-w-[24rem] lg:mx-0 lg:max-w-none">
+              /* ⚠️ SEM `Reveal` em volta, e não é esquecimento. O `Reveal` aplica
+                 `translate`, e qualquer valor de `translate` diferente de `none`
+                 cria BLOCO DE CONTENÇÃO para descendentes absolutos — mesmo
+                 `translate: 0 0`. Com a figura dentro dele, o `absolute` se
+                 ancorava no wrapper do Reveal em vez do container: medido, a foto
+                 parava em x=995 numa janela de 1440 (o wrapper tem a largura do
+                 CONTEÚDO, 675px) e o `inset-y-0` a centralizava na altura de uma
+                 caixa de altura zero, jogando-a 552px abaixo do topo do bloco e
+                 fora do bloco por baixo. A foto já tem animação própria
+                 (`retrato-flutua`) e abre acima da dobra, então a entrada revelada
+                 não faz falta aqui. */
+              <>
+                <figure className="retrato-flutua relative mx-auto w-full max-w-[26rem] max-lg:mt-12 lg:absolute lg:inset-y-0 lg:my-auto lg:h-fit lg:max-w-none lg:right-[calc(-1*max(0px,50vw_-_600px))] lg:w-[min(42vw,38rem)]">
                   {/* Mancha escura atrás da figura, no lugar da sombra de caixa.
                       Radial e maior que a foto, então não tem borda para
                       denunciar — dá o assentamento sem desenhar contorno.
@@ -148,7 +189,7 @@ export function HeroSection({ data }: { data: HeroContent }) {
                     className="retrato-fundido relative z-10 aspect-[500/482] w-full object-cover object-center"
                   />
                 </figure>
-              </Reveal>
+              </>
             ) : null}
           </div>
         </div>

@@ -277,14 +277,29 @@
    pessoa lê como desenho animado, não como clínica de alto padrão.
    Usa a propriedade `translate`, não `transform` — é o que o Tailwind v4 usa,
    e misturar as duas faz uma sobrescrever a outra silenciosamente. */
+/* Amplitude reduzida de 0,85rem para 0,5rem em 12/08, quando o retrato passou a
+   quase preencher a altura do bloco do hero: 13,6px de subida não cabiam no vão
+   de 12–28px que sobra em cima dele, e a foto encostava na borda do bloco, que é
+   `overflow-hidden`. Num retrato de ~600px o movimento também lê mais pesado que
+   num cartão pequeno — 8px é deriva, 14px é salto. */
 @keyframes retrato-flutua {
   0%, 100% { translate: 0 0; }
-  50%      { translate: 0 -0.85rem; }
+  50%      { translate: 0 -0.5rem; }
 }
 
+/* ⚠️ SEM `will-change: translate`, e não é descuido — ele estava aqui e causava
+   um defeito de PINTURA que só aparece em tela não-retina.
+   Com o retrato virando `absolute` + mascarado + animado, o `will-change`
+   promovia a figura a uma camada de composição que OCULTAVA os elementos vizinhos
+   do hero: em `deviceScaleFactor: 1`, o subtítulo, os botões e a linha do
+   responsável simplesmente não eram pintados, embora estivessem no DOM com
+   `opacity: 1` e na posição certa. Medido por luminância máxima na faixa de cada
+   um: subtítulo 27 e pílula 30 (o fundo do bloco) em 1×, contra 168 e 249 em 2×.
+   Removido o `will-change`, os dois vão a 170 e 255 nas duas escalas.
+   `will-change` é dica de performance, não requisito: a animação roda igual sem
+   ele. Não reintroduzir. */
 .retrato-flutua {
   animation: retrato-flutua 4.2s ease-in-out infinite;
-  will-change: translate;
 }
 
 @media (prefers-reduced-motion: reduce) {
