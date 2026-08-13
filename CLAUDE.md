@@ -358,6 +358,29 @@ que nada tinha subido — quando na verdade estava tudo no projeto dele.
 Os nomes dos dois projetos são quase iguais, o que agrava o risco de abrir o errado. Vale
 renomear a cópia de entrega com a data quando ela for gerada.
 
+### ⚠️ A cópia CONGELADA é a que está publicada
+
+Descoberto em 13/08, quando o usuário reportou "as edições não saíram para mim" — e era
+a segunda vez que essa confusão acontecia. O estado dos dois projetos naquele dia:
+
+| | Projeto do João (`1f2b8513`) | Cópia do Giulliano (`1896d5fd`) |
+|---|---|---|
+| `latest_commit_sha` | o commit do último push | `de9b9450`, de **25/07** |
+| `is_published` | **false** — só existe preview | **true** |
+| URL pública | não tem | `clinic-base-starter.lovable.app` |
+
+Ou seja: **o único endereço público do projeto serve a versão de 25 de julho.** Quem abre
+`clinic-base-starter.lovable.app` esperando ver o trabalho novo vê o site antigo — tema
+azul, wordmark gigante, barra de formações — e conclui que o push não saiu.
+
+O endereço que reflete o trabalho é o preview do projeto do João:
+`https://id-preview--1f2b8513-c555-4640-a43b-1b94dbd2734d.lovable.app`
+
+**Como diagnosticar em 30 segundos**, sem adivinhar: `git rev-parse origin/main` e
+`get_project` nos dois projetos, comparando `latest_commit_sha`. Se o do João bate com o
+`origin/main`, o sync funcionou e o problema é qual URL a pessoa abriu (ou cache do
+navegador). Não refazer push nem re-editar código antes de fazer essa comparação.
+
 🗑️ **Apagar `9d05bd27-0257-47ec-bd63-1901ee5d1c12`** do workspace do Giulliano: é a primeira
 tentativa, parou no commit `e8fa86b1`, sem tema tech, sem tipografia e sem a reformulação
 estrutural. Manter os dois convida a editar o errado.
@@ -520,6 +543,7 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-12 — Fotos de Diferenciais e do FAQ removidas a pedido, as duas com `imagem: null`. Nos dois casos o componente precisou deixar de RESERVAR a coluna, não só de renderizar a imagem: em Diferenciais a coluna de 17rem vazia comprimia o texto de abertura a 70% da largura, e no FAQ a coluna da esquerda ficaria com só a nota dentro e a altura das sete perguntas. **`null` numa prop de imagem só funciona se o layout também colapsar.**
 - 2026-08-12 — "Home" entrou na navegação (`#top`, não `/`: âncora rola suave, a rota recarregaria a página). Alargou a pílula em 74px e **recriou a colisão com a marca em 1024**, com a folga caindo de 44px para 9px. Marca para 56px em `lg` e vãos da pílula apertados devolveram 39px. Pílula centralizada distribui cada pixel de largura nos dois lados — **remedir 1024 a cada item novo**.
 - 2026-08-12 — O rodapé tinha o MESMO defeito de telefone que a Localização, e eu corrigi só um dos dois na primeira passada: o mesmo número embaixo de "Telefone" e de "WhatsApp". **Ao corrigir defeito de conteúdo repetido, procurar todos os lugares que exibem o mesmo campo** — aqui eram quatro.
+- 2026-08-13 — **"As edições não saíram" era a URL, não o push.** `origin/main` e o `latest_commit_sha` do projeto do João batiam no mesmo commit, e o screenshot do Lovable já mostrava o trabalho novo. A causa: a cópia CONGELADA do Giulliano (`1896d5fd`, parada em 25/07) é a única com `is_published: true`, servindo `clinic-base-starter.lovable.app` — então o único endereço público do projeto mostra o site de julho. Ver §8. **Antes de refazer push ou reabrir código, comparar `git rev-parse origin/main` com o `latest_commit_sha` dos dois projetos.**
 
 ---
 
