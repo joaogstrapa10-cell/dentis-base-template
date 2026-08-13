@@ -2,20 +2,17 @@ import { Blocks, Gem, Stethoscope } from "lucide-react";
 import type { TratamentoIcone, TratamentosContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
 import { GradeDeCelulas } from "@/components/sections/GradeDeCelulas";
-import { Reveal } from "@/components/Reveal";
-import { PillButton } from "@/components/Primitives";
 
 /**
  * Estrutura: GRADE DE CÉLULAS de três colunas, a mesma de Áreas e Diferenciais —
  * pedido do cliente em 12/08, "para ficar tudo condizente". O componente vive em
  * `GradeDeCelulas.tsx`.
  *
- * ⚠️ Esta é a TERCEIRA seção da página com esta anatomia, e vale registrar o
- * risco: seis das treze seções serem o mesmo molde foi a causa do layout ser
- * reprovado como "cara de IA" em 25/07. Duas coisas mantêm esta longe de ser um
- * clone das outras duas — TRÊS colunas em vez de quatro, e a linha de fecho com a
- * nota de valor e a chamada, que nenhuma outra grade tem. Ao criar uma quarta
- * seção, não usar esta grade: a página não aguenta um quarto.
+ * ⚠️ Esta é a TERCEIRA seção da página com esta anatomia, e o risco é real: seis
+ * das treze seções serem o mesmo molde foi a causa do layout ser reprovado como
+ * "cara de IA" em 25/07. O que mantém esta distinta são as TRÊS colunas em vez de
+ * quatro — a linha de fecho, que era a outra diferença, saiu em 13/08 a pedido do
+ * cliente. Com uma diferença só de pé, NÃO usar esta grade numa quarta seção.
  *
  * O que veio antes, e por que não volta: até 12/08 esta seção foi uma TABELA DE
  * PREÇOS de software, com três colunas iguais, a do meio destacada, selo "Mais
@@ -24,9 +21,14 @@ import { PillButton } from "@/components/Primitives";
  * ficha técnica em faixas horizontais. As três travas que sobreviveram às duas
  * mudanças, e que a grade preserva:
  *
- * 1. O valor aparece UMA vez, no fecho, não por coluna.
- * 2. UMA chamada de agendamento, não uma por eixo. As três apontavam para o mesmo
- *    link de WhatsApp, e chamada repetida com destino idêntico não é escolha.
+ * 1. NENHUM valor por coluna. Em 13/08 o cliente removeu também a nota de valor do
+ *    fecho, então a seção não exibe valor em lugar nenhum — a explicação de como o
+ *    orçamento funciona vive no parágrafo de abertura, que é o certo: ela é a
+ *    política da clínica, não o preço de um item.
+ * 2. NENHUMA chamada de agendamento aqui. Eram três, uma por coluna, todas para o
+ *    mesmo link de WhatsApp; viraram uma no fecho e essa saiu em 13/08. A conversão
+ *    da página está no header fixo, no hero e na seção "Comece pela avaliação",
+ *    logo antes do rodapé.
  * 3. Nenhum eixo é destacado sobre os outros, e não existe selo de demanda:
  *    "mais procurado" é pressão aplicada a decisão de saúde.
  *
@@ -72,15 +74,6 @@ export function TratamentosSection({ data }: { data: TratamentosContent }) {
         />
       </div>
 
-      {/* Fecho: a resposta ao "quanto custa" e a chamada, no mesmo eixo
-          horizontal. Fora das células de propósito — dentro delas, valor volta a
-          ler como preço de item, que é o que a seção inteira existe para negar. */}
-      <Reveal delay={240}>
-        <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <p className="text-base text-foreground">{data.notaValor}</p>
-          <PillButton label={data.cta.label} href={data.cta.href} external />
-        </div>
-      </Reveal>
     </Section>
   );
 }

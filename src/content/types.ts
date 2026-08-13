@@ -319,9 +319,13 @@ export type TratamentosContent = {
   titulo: string;
   descricao: string;
   eixos: TratamentoEixo[];
-  /** A resposta ao "quanto custa", uma vez só, fechando a seção. */
-  notaValor: string;
-  cta: Cta;
+  /*
+   * SEM `notaValor` e SEM `cta`, os dois removidos em 13/08 a pedido do cliente.
+   * Não deixei os campos como opcionais: campo morto no tipo é convite a
+   * reintroduzir o padrão, e neste tipo especificamente já foi assim uma vez —
+   * `valorLabel`, `destaque` e `badge` existiam e sustentavam a tabela de preços
+   * que a seção era. A política de orçamento vive em `descricao`.
+   */
 };
 
 export type BioMembro = {

@@ -43,6 +43,15 @@ function Coluna({ titulo, links }: { titulo: string; links: NavLink[] }) {
  * colunas, que existia só para afastá-las do cartão, e os imports de
  * `PillButton`/`ArrowButton`. O rodapé volta a ser rodapé: navegação e créditos,
  * sem conversão dentro.
+ *
+ * O `pt` do wrapper existe por causa dessa mudança, e não é decoração: a
+ * `ChamadaFinal` também é uma faixa escura sangrada, e nenhuma das duas usa
+ * `--section-py` por fora. Sem ele os dois blocos ficavam ENCOSTADOS, e duas
+ * massas verdes coladas leem como um bloco só com uma emenda no meio — foi o que
+ * o cliente apontou em 13/08. O vão é o dobro da goteira lateral: igual à
+ * goteira ele viraria um fio de 12px entre dois cantos de raio 24px, e no ritmo
+ * de seção (`--section-py`) sobraria uma faixa de branco maior que a separação
+ * entre superfícies precisa ser.
  */
 export function FooterSection({
   data,
@@ -54,7 +63,7 @@ export function FooterSection({
   contato: ContatoContent;
 }) {
   return (
-    <footer className="px-3 pb-3 md:px-4 md:pb-4">
+    <footer className="px-3 pb-3 pt-6 md:px-4 md:pb-4 md:pt-8">
       <div className="relative isolate overflow-hidden rounded-3xl bg-ink">
         <div
           aria-hidden="true"

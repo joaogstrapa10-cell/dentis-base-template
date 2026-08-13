@@ -225,23 +225,28 @@ usar como referência antes de criar seção nova, para não repetir gesto:
 
 | Anatomia | Seções |
 |---|---|
-| Bloco escuro sangrando, texto e retrato contido | Hero |
-| Título largo + fileira separada por fio **vertical** | Diferenciais |
+| Bloco escuro sangrando, texto à esquerda e retrato sangrando à direita, dissolvido por máscara nas quatro bordas | Hero |
+| Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Áreas (4 col.), Diferenciais (4 col.), **Tratamentos (3 col.)** |
 | Esteira contínua | Estrutura, Depoimentos |
-| Grade 4×2 de células com fio, ícone e realce no hover | Áreas |
-| Pilha de dossiês alternando de lado | Casos |
-| Faixas horizontais, nome à esquerda e conteúdo à direita | Tratamentos |
+| Pilha de cartões arrastável | Casos (na home) |
+| Pilha de dossiês alternando de lado | Casos (em `/casos`) |
 | Grade de retratos sobre bloco escuro | Bio |
-| Título à esquerda, accordion à direita | FAQ |
-| Fileira de dados + faixa larga de mídia | Localização |
+| Título em cima, accordion em coluna única de largura cheia | FAQ |
+| Fileira de dados à esquerda + cartão de mapa à direita | Localização |
 | Faixa escura curta, texto à esquerda e chamada à direita | Chamada final |
 
 São **doze** seções: "Cada etapa, acompanhada." foi removida em 12/08 e a chamada
 final saiu do rodapé e virou seção na mesma data.
 
+⚠️ **`GradeDeCelulas` já serve TRÊS seções**, e desde 13/08 a única coisa que
+distingue Tratamentos das outras duas é a contagem de colunas — a linha de fecho,
+que era a outra diferença, saiu a pedido do usuário. **Não usar essa grade numa
+quarta seção.** Seis das treze seções sendo o mesmo molde foi exatamente o que
+reprovou o layout como "cara de IA" em 25/07.
+
 **Só três seções têm foto**: o hero (retrato do responsável), Estrutura (esteira
-de 12 ambientes) e Bio (nove retratos). As de Diferenciais e do FAQ entraram e
-saíram em 12/08.
+de 12 ambientes) e Bio (nove retratos) — mais os slots vazios dos cartões de Casos.
+As de Diferenciais e do FAQ entraram e saíram em 12/08.
 
 O que **não** existe mais em nenhuma seção, e não deve voltar: cartão com fundo e sombra
 próprios, rótulo em maiúscula com tracking largo, pill de tag, e mais de uma chamada de
@@ -544,6 +549,9 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-12 — "Home" entrou na navegação (`#top`, não `/`: âncora rola suave, a rota recarregaria a página). Alargou a pílula em 74px e **recriou a colisão com a marca em 1024**, com a folga caindo de 44px para 9px. Marca para 56px em `lg` e vãos da pílula apertados devolveram 39px. Pílula centralizada distribui cada pixel de largura nos dois lados — **remedir 1024 a cada item novo**.
 - 2026-08-12 — O rodapé tinha o MESMO defeito de telefone que a Localização, e eu corrigi só um dos dois na primeira passada: o mesmo número embaixo de "Telefone" e de "WhatsApp". **Ao corrigir defeito de conteúdo repetido, procurar todos os lugares que exibem o mesmo campo** — aqui eram quatro.
 - 2026-08-13 — **"As edições não saíram" era a URL, não o push.** `origin/main` e o `latest_commit_sha` do projeto do João batiam no mesmo commit, e o screenshot do Lovable já mostrava o trabalho novo. A causa: a cópia CONGELADA do Giulliano (`1896d5fd`, parada em 25/07) é a única com `is_published: true`, servindo `clinic-base-starter.lovable.app` — então o único endereço público do projeto mostra o site de julho. Ver §8. **Antes de refazer push ou reabrir código, comparar `git rev-parse origin/main` com o `latest_commit_sha` dos dois projetos.**
+- 2026-08-13 — **Tratamentos perdeu a última chamada e a nota de valor**, os dois a pedido do usuário. A seção agora não exibe valor em lugar nenhum nem convida a agendar: a política de orçamento vive só no parágrafo de abertura, e a conversão está no header fixo, no hero e na "Comece pela avaliação". `notaValor` e `cta` saíram do tipo em vez de virarem opcionais — **campo morto neste tipo específico é o que sustentou a tabela de preços por três semanas**. Consequência a vigiar: a grade de três colunas ficou com UMA diferença só em relação às de Áreas e Diferenciais (a contagem de colunas), então não usar essa grade numa quarta seção.
+- 2026-08-13 — Antes de remover o botão, medi os cinco "Agendar" da página por cor de fundo, porque o print não diz qual é qual: quatro são pílulas claras (header ×2, hero, chamada final) e só o de Tratamentos era escuro. **Print de um botão que se repete não identifica o botão** — amostrar a cor computada antes de apagar.
+- 2026-08-13 — **"Comece pela avaliação." e o rodapé estavam encostados**, e a causa era estrutural: as duas são faixas escuras sangradas e nenhuma das duas usa `--section-py` por fora, então só a goteira lateral separava as bordas. `pt-6 md:pt-8` no rodapé — o **dobro da goteira**: igual à goteira (12/16px) o vão viraria um fio entre dois cantos de raio 24px, e no ritmo de seção sobraria mais branco que a separação entre duas superfícies precisa. Medido: 24px no mobile, 32px no desktop, goteira 12/16, zero overflow. **Duas seções que não participam do ritmo de seção não ganham vão nenhum de graça** — ao criar faixa sangrada nova, conferir quem vem antes e depois.
 
 ---
 

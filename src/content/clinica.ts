@@ -504,11 +504,6 @@ export const clinica: Clinica = {
         ],
       },
     ],
-    // Uma vez, no fim da seção. Estava repetida em cada um dos três cartões,
-    // que é como tabela de preço mostra preço — e a frase toda existe para
-    // dizer que não há tabela de preço.
-    notaValor: "Valor sob avaliação, em todos os eixos.",
-    cta: { label: "Agendar avaliação", href: WHATSAPP_HREF },
   },
   bio: {
     eyebrow: "Responsável técnico",
