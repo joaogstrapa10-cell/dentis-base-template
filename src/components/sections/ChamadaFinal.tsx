@@ -26,7 +26,7 @@ import { ArrowButton, PillButton } from "@/components/Primitives";
  */
 export function ChamadaFinalSection({ data }: { data: ChamadaFinalContent }) {
   return (
-    <section id="chamada" className="px-3 md:px-4">
+    <section id="chamada" className="scroll-mt-12 px-3 md:px-4">
       <div className="relative isolate overflow-hidden rounded-3xl bg-ink">
         <div
           aria-hidden="true"

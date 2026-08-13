@@ -47,9 +47,22 @@ import { cn } from "@/lib/utils";
  * cada caso (conduta, duração, especialidades) fica na página /casos, em dossiê.
  * Galeria convida; a página é que documenta.
  *
- * Registro clínico de paciente exige autorização de uso de imagem por escrito.
- * Enquanto ela não vier, `imagem: null` renderiza o slot rotulado — vazio
- * deliberado é melhor que caixa cinza que lê como site quebrado.
+ * ⚠️ AS CINCO IMAGENS QUE ESTÃO NOS CARTÕES NÃO SÃO REGISTRO CLÍNICO. Entraram em
+ * 13/08 e ilustram a ESPECIALIDADE de cada caso — implante, faceta, aparelho,
+ * canal, raspagem —, todas vindas das páginas de especialidade do site antigo, e
+ * todas ilustração ou banco de imagem. Registro clínico de paciente exige
+ * autorização de uso de imagem por escrito, e é por isso que ele ainda não está
+ * aqui. Duas consequências que não devem se perder:
+ *
+ * - O `imagemAlt` descreve o que a imagem É, nunca "registro do caso 0N".
+ * - A última frase de `casos.aviso` diz isso ao visitante, e vale para os dois
+ *   lugares onde as imagens aparecem.
+ *
+ * Proveniência, pareamento e o que foi descartado: public/imagens/casos/LEIA-ME.txt.
+ *
+ * Com `imagem: null` o cartão volta ao slot rotulado — vazio deliberado é melhor
+ * que caixa cinza que lê como site quebrado, e é assim que as variantes das outras
+ * clínicas nascem.
  */
 
 /** Passos de configuração por largura, como no template. */

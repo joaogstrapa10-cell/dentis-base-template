@@ -49,19 +49,39 @@ function Landing() {
         logo={clinica.brand.logo}
         logoAlt={clinica.brand.logoAlt}
       />
+      {/* ORDEM DAS SEÇÕES — ditada pelo usuário em 13/08, nesta sequência:
+          hero, casos, especialidades, corpo clínico, experiência aplicada,
+          ambiente, como funciona, avaliações, onde ficamos, comece a sua
+          avaliação, rodapé.
+
+          O FAQ não estava na lista e FICOU, entre avaliações e "onde ficamos" —
+          que é a posição que ele já ocupava em relação à Localização. Duas razões
+          para não tratar a ausência como remoção: o usuário sempre pediu remoção
+          com verbo ("essa seção quero que retire", "esse botão pode tirar"), e o
+          FAQ foi refeito duas vezes a pedido dele na véspera. Se a intenção era
+          removê-lo, é uma linha aqui e outra no `clinica.ts`.
+
+          "Como funciona" = a seção de Tratamentos ("Orçamento após avaliação"),
+          que é a que descreve como o processo e o orçamento funcionam. As outras
+          dez etiquetas da lista batem com o título ou o assunto de uma seção
+          existente, uma a uma.
+
+          A ordem do menu (`header.nav`) e da coluna "Clínica" do rodapé segue
+          esta mesma sequência — âncora que sobe a página em vez de descer lê como
+          link errado. */}
       <main>
         <HeroSection data={clinica.hero} />
+        <CasosSection data={clinica.casos} />
+        <AreasSection data={clinica.areas} />
+        <BioSection data={clinica.bio} />
         <DiferenciaisSection data={clinica.diferenciais} />
         <EstruturaSection data={clinica.estrutura} />
-        <AreasSection data={clinica.areas} />
-        <CasosSection data={clinica.casos} />
+        <TratamentosSection data={clinica.tratamentos} />
         <DepoimentosSection
           data={clinica.depoimentos}
           logo={clinica.brand.logoEscuro}
           logoAlt={clinica.brand.logoAlt}
         />
-        <TratamentosSection data={clinica.tratamentos} />
-        <BioSection data={clinica.bio} />
         <FaqSection data={clinica.faq} />
         <LocalizacaoSection data={clinica.localizacao} contato={clinica.contato} />
         <ChamadaFinalSection data={clinica.chamadaFinal} />

@@ -1,0 +1,74 @@
+IMAGENS DA SEÇÃO DE CASOS CLÍNICOS
+==================================
+
+Cinco arquivos, um por caso, cada um ILUSTRANDO a especialidade principal daquele
+caso. Pedido do usuário em 13/08: "coloque imagens fictícias baseada em cada
+especialização, pegue umas 5 das que tem".
+
+LEIA ISTO ANTES DE TROCAR QUALQUER ARQUIVO
+------------------------------------------
+
+NENHUMA destas imagens é registro clínico do caso que ela acompanha. Todas saíram
+das PÁGINAS DE ESPECIALIDADE do site antigo da própria clínica, e são ilustração
+3D, foto de objeto ou imagem de banco — não são fotos de pacientes desta clínica
+(ver a nota final do MANIFESTO.md: só as 11 fotos de estrutura, os retratos da
+equipe e as 3 fotos de depoente são conteúdo próprio).
+
+Isso é o que torna o uso possível: registro clínico de paciente exige autorização
+de uso de imagem por escrito, e a CFO-196/2019 restringe imagem comparativa de
+antes e depois. Ilustração da especialidade não é nem uma coisa nem a outra.
+
+Por isso duas regras:
+
+1. O texto ALTERNATIVO de cada imagem descreve o que a imagem É ("ilustração 3D
+   de implante de titânio…"), nunca "registro do caso 01". Atribuir a imagem ao
+   caso seria afirmar o que não se sabe.
+2. O aviso da seção diz, em uma frase, que as imagens ilustram a especialidade e
+   não são registro do caso descrito. Está no campo `casos.aviso` do clinica.ts e
+   aparece na home e em /casos. Não remover essa frase junto com um redesign.
+
+Quando a clínica fornecer registro clínico de verdade, com autorização por
+escrito, é ele que entra aqui — e aí o alt passa a descrever o registro.
+
+TABELA
+------
+
+| arquivo                      | origem (public/imagens/originais/) | página do site antigo    | o que aparece |
+|------------------------------|------------------------------------|--------------------------|---------------|
+| 01-implante-titanio.jpeg     | 202205-asset-2.jpeg   595×446      | implantodontia-e-cirurgia| ilustração 3D de implante de titânio rosqueado entre dentes naturais, fundo preto |
+| 02-facetas-ceramica.jpeg     | asset-3-1.jpeg        595×397      | estetica-dental          | seis facetas de cerâmica apoiadas sobre folha verde, fundo preto |
+| 03-aparelho-fixo.jpeg        | asset-3-4.jpeg        595×397      | ortodontia               | close de boca com bráquetes metálicos e fio |
+| 04-canais-radiculares.jpeg   | 202204-asset-2.jpeg  1000×1000     | endodontia               | ilustração 3D de dente translúcido com os canais e o feixe nervoso em vermelho |
+| 05-raspagem-periodontal.jpeg | asset-6-2.jpeg        595×397      | periodontia              | raspagem com instrumento periodontal sob afastador |
+
+Pareamento caso ↔ imagem (o "tratamento respectivo" que o usuário pediu):
+
+  01  Reabilitação total sobre implantes                  → implante de titânio
+  02  Reabilitação estética com harmonização facial       → facetas de cerâmica
+  03  Tratamento ortodôntico em adulto                    → aparelho fixo
+  04  Preservação de dente natural com tratamento de canal→ canais radiculares
+  05  Tratamento periodontal e manutenção                 → raspagem periodontal
+
+POR QUE ESTAS CINCO, E NÃO OUTRAS
+---------------------------------
+
+O acervo das especialidades tem ~40 imagens. O filtro foi o RECORTE: o cartão da
+galeria é retrato (256×384 no desktop, proporção 2:3) e quase todo arquivo do
+acervo é paisagem 1,5:1 — um recorte centralizado mostra 44% da largura. Então só
+serve imagem de assunto VERTICAL ou compacto e centralizado, que sobrevive ao
+corte. Foi o que descartou, por exemplo, a fileira de próteses e as arcadas
+inteiras: cortadas, viram um talho sem assunto. Mesma armadilha da foto do hero em
+12/08 — arquivo panorâmico em caixa vertical não se resolve com object-position.
+
+Duas foram descartadas por conteúdo, não por formato:
+
+- `asset-5-2.jpeg` (ortodontia): modelo loira, sorriso branco de estúdio, fundo
+  azul-claro. Acerta três dos clichês proibidos na §4 do CLAUDE.md de uma vez.
+- `asset-7-2.jpeg` (periodontia): ilustração com metade do dente limpa e metade
+  coberta de cálculo. É imagem COMPARATIVA — o gesto que a CFO-196/2019 restringe.
+  Ser ilustração e não paciente não muda o que ela comunica.
+
+Compromisso conhecido no 05: o campo cirúrgico é azul-claro de consultório, que a
+§4 lista como clichê. Ficou porque é foto documental do procedimento periodontal
+correto, e trocar por ilustração de fundo branco poria um cartão claro no meio de
+quatro escuros. Se aparecer opção melhor de periodontia, é uma linha no clinica.ts.

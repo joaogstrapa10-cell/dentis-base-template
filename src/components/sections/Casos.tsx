@@ -34,8 +34,14 @@ import { cn } from "@/lib/utils";
  * O aviso do fim da seção é obrigatório, não decorativo. Não remover.
  */
 
-/** Registro clínico, ou o slot rotulado quando ele não existe. Mesmo padrão da
- *  seção de estrutura: slot vazio precisa parecer deliberado, não quebrado. */
+/** A imagem do caso, ou o slot rotulado quando ela não existe. Mesmo padrão da
+ *  seção de estrutura: slot vazio precisa parecer deliberado, não quebrado.
+ *
+ *  ⚠️ Desde 13/08 as cinco imagens ILUSTRAM a especialidade do caso e não são
+ *  registro clínico do paciente descrito — ver a nota em `GaleriaDeCasos.tsx` e
+ *  `public/imagens/casos/LEIA-ME.txt`. Aqui o recorte é 4:3, ao contrário do
+ *  cartão da galeria, que é retrato: as duas proporções mostram a mesma imagem
+ *  em cortes diferentes, e é por isso que só serve arquivo de assunto centralizado. */
 function Registro({ caso }: { caso: CasoClinico }) {
   if (caso.imagem) {
     return (

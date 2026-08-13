@@ -61,7 +61,13 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
   const faixa = [...data.imagens, ...data.imagens];
 
   return (
-    <section id="estrutura" style={{ paddingBlock: "var(--section-py)" }}>
+    // `scroll-mt-12` pelo mesmo motivo do `Section`: sem ela a pílula fixa corta
+    // o título quando o menu leva até aqui. Ver a nota em Section.tsx.
+    <section
+      id="estrutura"
+      className="scroll-mt-12"
+      style={{ paddingBlock: "var(--section-py)" }}
+    >
       <div className="mx-auto w-full max-w-[1200px] px-5 md:px-10">
         <SectionHeader
           eyebrow={data.eyebrow}

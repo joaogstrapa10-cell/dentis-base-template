@@ -70,7 +70,7 @@ function Retrato({
 
 export function BioSection({ data }: { data: BioContent }) {
   return (
-    <section id="responsavel" className="px-3 md:px-4">
+    <section id="responsavel" className="scroll-mt-12 px-3 md:px-4">
       <div className="relative isolate overflow-hidden rounded-3xl bg-ink">
         {/* Padding PRÓPRIO, menor que o `--section-py` da página (160px em
             desktop), e a diferença é conceitual: `--section-py` é o espaço ENTRE

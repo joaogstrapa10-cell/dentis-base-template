@@ -244,9 +244,16 @@ que era a outra diferença, saiu a pedido do usuário. **Não usar essa grade nu
 quarta seção.** Seis das treze seções sendo o mesmo molde foi exatamente o que
 reprovou o layout como "cara de IA" em 25/07.
 
-**Só três seções têm foto**: o hero (retrato do responsável), Estrutura (esteira
-de 12 ambientes) e Bio (nove retratos) — mais os slots vazios dos cartões de Casos.
-As de Diferenciais e do FAQ entraram e saíram em 12/08.
+**Quatro seções têm foto**: o hero (retrato do responsável), Estrutura (esteira de
+12 ambientes), Bio (nove retratos) e — desde 13/08 — **Casos**, com uma imagem por
+cartão ilustrando a especialidade do caso. As de Diferenciais e do FAQ entraram e
+saíram em 12/08.
+
+⚠️ As cinco imagens de Casos **não são registro clínico**: são ilustração e banco de
+imagem das páginas de especialidade do site antigo. O alt de cada uma descreve o que
+a imagem é, e a última frase de `casos.aviso` diz isso ao visitante. Ver
+`public/imagens/casos/LEIA-ME.txt` para proveniência, pareamento e o que foi
+descartado.
 
 O que **não** existe mais em nenhuma seção, e não deve voltar: cartão com fundo e sombra
 próprios, rótulo em maiúscula com tracking largo, pill de tag, e mais de uma chamada de
@@ -407,8 +414,20 @@ src/routes/index.tsx          lê clinica.ts e distribui props tipadas
 src/styles.css                @theme + :root com os tokens; --section-py
 ```
 
-Ordem de render: Hero → Selos → Diferenciais → Acompanhamento → Localizacao →
-**Estrutura** → Areas → Depoimentos → Comparativo → Tratamentos → Bio → Faq → Footer.
+**Ordem de render, ditada pelo usuário em 13/08** (a de antes era herança da
+geração inicial, com seções que já não existem):
+
+Hero → **Casos** → Areas → Bio → Diferenciais → Estrutura → Tratamentos →
+Depoimentos → Faq → Localizacao → ChamadaFinal → Footer.
+
+A lista que ele mandou tem dez seções e o rodapé; o **FAQ não estava nela e ficou**,
+entre Depoimentos e Localização — que é a posição que já ocupava em relação ao mapa.
+Ele sempre pediu remoção com verbo ("essa seção quero que retire"), e o FAQ havia
+sido refeito duas vezes a pedido dele na véspera. "Como funciona" da lista dele é a
+seção de **Tratamentos**, a que descreve como o orçamento e o processo funcionam.
+
+O menu (`header.nav`) e a coluna "Clínica" do rodapé seguem esta ordem. Âncora que
+sobe a página enquanto a de baixo desce lê como link errado.
 
 ### Stack real do scaffold (≠ do que o prompt assumiu)
 
@@ -552,6 +571,11 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-13 — **Tratamentos perdeu a última chamada e a nota de valor**, os dois a pedido do usuário. A seção agora não exibe valor em lugar nenhum nem convida a agendar: a política de orçamento vive só no parágrafo de abertura, e a conversão está no header fixo, no hero e na "Comece pela avaliação". `notaValor` e `cta` saíram do tipo em vez de virarem opcionais — **campo morto neste tipo específico é o que sustentou a tabela de preços por três semanas**. Consequência a vigiar: a grade de três colunas ficou com UMA diferença só em relação às de Áreas e Diferenciais (a contagem de colunas), então não usar essa grade numa quarta seção.
 - 2026-08-13 — Antes de remover o botão, medi os cinco "Agendar" da página por cor de fundo, porque o print não diz qual é qual: quatro são pílulas claras (header ×2, hero, chamada final) e só o de Tratamentos era escuro. **Print de um botão que se repete não identifica o botão** — amostrar a cor computada antes de apagar.
 - 2026-08-13 — **"Comece pela avaliação." e o rodapé estavam encostados**, e a causa era estrutural: as duas são faixas escuras sangradas e nenhuma das duas usa `--section-py` por fora, então só a goteira lateral separava as bordas. `pt-6 md:pt-8` no rodapé — o **dobro da goteira**: igual à goteira (12/16px) o vão viraria um fio entre dois cantos de raio 24px, e no ritmo de seção sobraria mais branco que a separação entre duas superfícies precisa. Medido: 24px no mobile, 32px no desktop, goteira 12/16, zero overflow. **Duas seções que não participam do ritmo de seção não ganham vão nenhum de graça** — ao criar faixa sangrada nova, conferir quem vem antes e depois.
+- 2026-08-13 — **Ordem das seções ditada pelo usuário**, em lista: hero, casos, especialidades, corpo clínico, experiência aplicada, ambiente, como funciona, avaliações, onde ficamos, comece a sua avaliação, rodapé. Aplicada em `src/routes/index.tsx`. Casos subiu da 5ª para a 2ª posição, o que muda o argumento da página: ela agora abre pelo trabalho feito, não pelos diferenciais.
+- 2026-08-13 — **O FAQ não estava na lista e FICOU**, entre Depoimentos e Localização. Duas razões, e as duas são evidência, não gosto: o usuário sempre pediu remoção com verbo explícito ("essa seção quero que retire", "esse botão pode tirar"), e o FAQ tinha sido refeito duas vezes a pedido dele no dia anterior. "Como funciona" da lista é Tratamentos — as outras dez etiquetas batem uma a uma com o título ou o assunto de uma seção existente. **Se a intenção era removê-lo, é uma linha no index e outra no clinica.ts.**
+- 2026-08-13 — **Cinco imagens entraram nos cartões de Casos**, uma por especialidade: implante de titânio, facetas de cerâmica, aparelho fixo, canais radiculares, raspagem periodontal. Todas das páginas de especialidade do site antigo, e todas ilustração ou banco de imagem — **nenhuma é registro clínico**. É o que torna o uso possível: registro de paciente exige autorização de uso de imagem por escrito, e a CFO-196/2019 restringe imagem comparativa. O alt descreve o que a imagem É, e uma frase nova em `casos.aviso` diz isso na tela, nos dois lugares onde as imagens aparecem.
+- 2026-08-13 — O filtro para escolher as cinco foi o **RECORTE**, não o assunto: o cartão da galeria é retrato 2:3 e quase todo arquivo do acervo é paisagem 1,5:1, então um recorte centralizado mostra 44% da largura. Só serve imagem de assunto vertical ou compacto. Foi o que descartou a fileira de próteses e as arcadas inteiras — cortadas, viram talho sem assunto. Mesma armadilha da foto do hero em 12/08. Duas foram descartadas por CONTEÚDO: `asset-5-2` (modelo loira, sorriso de estúdio, fundo azul-claro — três clichês proibidos de uma vez) e `asset-7-2` (metade do dente limpa, metade com cálculo — imagem comparativa, que é o gesto que a resolução restringe; ser ilustração não muda o que comunica).
+- 2026-08-13 — **A pílula fixa cortava o título de TODA seção alcançada pelo menu**, e era defeito antigo que só apareceu ao remedir as âncoras depois da troca de ordem: base da pílula em 85px, topo do título em 72px. `scroll-mt-12` no `Section` e nas três seções de marcação própria (Estrutura, Bio, Chamada final) — título passou a cair em 120px, folga de 35px. **Nenhum `scroll-mt` existia no projeto**; ao criar seção com id, herdar o do `Section` ou repetir a classe.
 
 ---
 

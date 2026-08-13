@@ -53,10 +53,14 @@ export const clinica: Clinica = {
     // "Home" aponta para `#top`, que é o id da seção do hero. Não é "/": âncora
     // interna rola suave até o topo, e "/" recarregaria a página inteira para
     // chegar ao mesmo lugar.
+    // A ordem segue a da PÁGINA (ver o comentário em src/routes/index.tsx). Áreas
+    // passou à frente de Estrutura em 13/08 porque as seções trocaram de lugar:
+    // link que sobe a página quando o de baixo desce lê como link errado, e o
+    // menu é a única pista de ordem que o visitante tem antes de rolar.
     nav: [
       { label: "Home", href: "#top" },
-      { label: "Estrutura", href: "#estrutura" },
       { label: "Áreas", href: "#areas" },
+      { label: "Estrutura", href: "#estrutura" },
       { label: "Tratamentos", href: "#tratamentos" },
       { label: "FAQ", href: "#faq" },
     ],
@@ -302,8 +306,12 @@ export const clinica: Clinica = {
     condutaLabel: "Conduta",
     especialidadesLabel: "Especialidades envolvidas",
     duracaoLabel: "Duração",
+    // ⚠️ A última frase entrou em 13/08, junto com as imagens, e não é rodapé de
+    // cortesia: as cinco imagens ILUSTRAM a especialidade de cada caso e não são
+    // registro do paciente descrito. Sem essa frase, uma foto ao lado de um caso
+    // afirma ser daquele caso. Ver public/imagens/casos/LEIA-ME.txt.
     aviso:
-      "Descrição de processo clínico conduzido nesta clínica. Não constitui promessa de resultado. Cada caso é único e depende de diagnóstico individual. Em conformidade com a Resolução CFO-196/2019, esta seção não divulga imagens comparativas de antes e depois.",
+      "Descrição de processo clínico conduzido nesta clínica. Não constitui promessa de resultado. Cada caso é único e depende de diagnóstico individual. Em conformidade com a Resolução CFO-196/2019, esta seção não divulga imagens comparativas de antes e depois. As imagens ilustram a especialidade de cada caso e não são registro clínico do paciente descrito.",
     verTodos: { label: "Ver todos os casos", href: "/casos" },
     anteriorLabel: "Caso anterior",
     proximoLabel: "Próximo caso",
@@ -324,8 +332,15 @@ export const clinica: Clinica = {
         conduta: "[CASO 01 — CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Implantodontia e Cirurgia", "Reabilitação Oral", "Periodontia"],
         duracao: "[CASO 01 — DURAÇÃO]",
-        imagem: null,
-        imagemAlt: "Registro clínico do caso 01, ainda não fornecido pela clínica",
+        // ⚠️ IMAGEM ILUSTRATIVA DA ESPECIALIDADE, NÃO REGISTRO DESTE CASO.
+        // O alt descreve o que a imagem é, e é isso que impede a página de
+        // afirmar que a foto é do paciente descrito acima. Proveniência e o
+        // critério de escolha das cinco: public/imagens/casos/LEIA-ME.txt.
+        // `rotuloSlot` fica: é o rótulo do slot vazio, que volta a aparecer se
+        // a imagem sair, e as variantes das outras clínicas nascem sem imagem.
+        imagem: "/imagens/casos/01-implante-titanio.jpeg",
+        imagemAlt:
+          "Ilustração 3D de implante de titânio rosqueado instalado entre dentes naturais",
         rotuloSlot: "Registro 01",
       },
       {
@@ -335,8 +350,9 @@ export const clinica: Clinica = {
         conduta: "[CASO 02 — CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Estética Dental", "Harmonização Facial"],
         duracao: "[CASO 02 — DURAÇÃO]",
-        imagem: null,
-        imagemAlt: "Registro clínico do caso 02, ainda não fornecido pela clínica",
+        imagem: "/imagens/casos/02-facetas-ceramica.jpeg",
+        imagemAlt:
+          "Facetas de cerâmica finíssimas apoiadas sobre uma folha verde, em fundo escuro",
         rotuloSlot: "Registro 02",
       },
       {
@@ -346,8 +362,8 @@ export const clinica: Clinica = {
         conduta: "[CASO 03 — CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Ortodontia", "Periodontia"],
         duracao: "[CASO 03 — DURAÇÃO]",
-        imagem: null,
-        imagemAlt: "Registro clínico do caso 03, ainda não fornecido pela clínica",
+        imagem: "/imagens/casos/03-aparelho-fixo.jpeg",
+        imagemAlt: "Detalhe de aparelho ortodôntico fixo, com bráquetes e fio",
         rotuloSlot: "Registro 03",
       },
       // Casos 04 e 05 entraram em 12/08 para a galeria da home ter os cinco
@@ -363,8 +379,9 @@ export const clinica: Clinica = {
         conduta: "[CASO 04 — CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Endodontia", "Estética Dental"],
         duracao: "[CASO 04 — DURAÇÃO]",
-        imagem: null,
-        imagemAlt: "Registro clínico do caso 04, ainda não fornecido pela clínica",
+        imagem: "/imagens/casos/04-canais-radiculares.jpeg",
+        imagemAlt:
+          "Ilustração 3D de dente translúcido mostrando os canais radiculares e o feixe nervoso",
         rotuloSlot: "Registro 04",
       },
       {
@@ -374,8 +391,9 @@ export const clinica: Clinica = {
         conduta: "[CASO 05 — CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Periodontia", "Reabilitação Oral"],
         duracao: "[CASO 05 — DURAÇÃO]",
-        imagem: null,
-        imagemAlt: "Registro clínico do caso 05, ainda não fornecido pela clínica",
+        imagem: "/imagens/casos/05-raspagem-periodontal.jpeg",
+        imagemAlt:
+          "Raspagem periodontal em andamento, com instrumento sob afastador",
         rotuloSlot: "Registro 05",
       },
     ],
@@ -643,17 +661,18 @@ export const clinica: Clinica = {
       { label: "Periodontia", href: "#areas" },
       { label: "Reabilitação Oral", href: "#areas" },
     ],
+    // Na ordem da página, como o menu. "Como conduzimos" saiu junto com a seção
+    // de Acompanhamento em 12/08: link de rodapé para âncora que não existe mais
+    // rola para o topo sem avisar, e não há como o visitante saber que o destino
+    // sumiu.
     colunaClinica: [
-      { label: "Diferenciais", href: "#diferenciais" },
       // Rota interna, não âncora: é a página com a lista inteira. O header não
       // recebe este item — a pílula já está em cinco e um sexto recria a colisão
       // com a marca em 1024px, medida duas vezes nesta sessão.
       { label: "Casos clínicos", href: "/casos" },
-      // "Como conduzimos" saiu junto com a seção de Acompanhamento em 12/08.
-      // Link de rodapé para âncora que não existe mais rola para o topo sem
-      // avisar, e não há como o visitante saber que o destino sumiu.
-      { label: "Estrutura", href: "#estrutura" },
       { label: "Responsável técnico", href: "#responsavel" },
+      { label: "Diferenciais", href: "#diferenciais" },
+      { label: "Estrutura", href: "#estrutura" },
       { label: "Perguntas frequentes", href: "#faq" },
     ],
     telefoneLabel: "Telefone",

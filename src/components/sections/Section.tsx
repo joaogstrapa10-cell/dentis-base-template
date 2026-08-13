@@ -13,7 +13,19 @@ export function Section({
   as?: "section" | "footer" | "header" | "div";
 }) {
   return (
-    <As id={id} className={cn(className)} style={{ paddingBlock: "var(--section-py)" }}>
+    /* `scroll-mt-12`: a pílula de navegação é FIXA e opaca, e sem esta margem o
+       clique numa âncora do menu para a seção com o topo em y=0 — a base da
+       pílula fica em 85px e o título de 36px começa em 72px, ou seja a pílula
+       corta o título pela metade. Medido em 13/08 com screenshot, depois de a
+       ordem das seções mudar: era defeito antigo, e todo item do menu caía nele.
+       48px de margem descem o título para ~120px, folga de ~35px da pílula.
+       Vale para as seções construídas com este wrapper; as três que têm marcação
+       própria (Estrutura, Bio, Chamada final) repetem a classe. */
+    <As
+      id={id}
+      className={cn("scroll-mt-12", className)}
+      style={{ paddingBlock: "var(--section-py)" }}
+    >
       <div className="mx-auto w-full max-w-[1200px] px-5 md:px-10">{children}</div>
     </As>
   );
