@@ -1,6 +1,7 @@
 import type { HeroContent } from "@/content/types";
 import { PillButton, TextLink } from "@/components/Primitives";
 import { Reveal } from "@/components/Reveal";
+import { cn } from "@/lib/utils";
 
 /**
  * Estrutura: bloco escuro sangrando na largura da janela, texto à esquerda e o
@@ -133,12 +134,13 @@ export function HeroSection({ data }: { data: HeroContent }) {
                 animação: 0px de vão em cima e 25px embaixo, quando deveriam ser
                 12,5px nos dois.
 
-                A proporção é a NATIVA do arquivo (500×482), não `aspect-square`:
-                assim o `object-cover` não tem o que cortar, e o retrato aparece
-                inteiro. Era quadrado, o que tirava 3,6% das laterais — pouco, mas
-                o pedido de 12/08 foi o rosto aparecendo 100%, e proporção nativa
-                é a única forma de garantir isso independente do arquivo que cada
-                clínica fornecer.
+                A proporção é a NATIVA do arquivo, e desde 13/08 vem do CONTEÚDO
+                (`retratoLargura`/`retratoAltura`) em vez de cravada aqui — assim o
+                `object-cover` não tem o que cortar, seja qual for a foto que cada
+                clínica fornecer. Estava em 500×482 fixo, que serviu enquanto o
+                arquivo era o retrato do Dalton e passaria a recortar no dia em que
+                fosse outro. É a mesma classe de defeito de 12/08, quando o arquivo
+                mudou e a caixa não.
 
                 NÃO É MAIS UM CARTÃO. Canto arredondado, fio dourado e sombra de
                 caixa saíram em 12/08, a pedido: "não quero ela em um
@@ -184,9 +186,19 @@ export function HeroSection({ data }: { data: HeroContent }) {
                   <img
                     src={data.retrato}
                     alt={data.retratoAlt}
-                    width={500}
-                    height={482}
-                    className="retrato-fundido relative z-10 aspect-[500/482] w-full object-cover object-center"
+                    width={data.retratoLargura}
+                    height={data.retratoAltura}
+                    style={{
+                      aspectRatio: `${data.retratoLargura} / ${data.retratoAltura}`,
+                    }}
+                    className={cn(
+                      "relative z-10 w-full object-cover object-center",
+                      /* Duas máscaras, e a escolha vem do conteúdo. Ver a nota em
+                         `retratoSemFundo`, no types.ts: figura recortada e foto
+                         retangular precisam de bordas opostas, e trocar as duas
+                         de lugar apaga gente ou deixa um retângulo à vista. */
+                      data.retratoSemFundo ? "figura-recortada" : "retrato-fundido",
+                    )}
                   />
                 </figure>
               </>

@@ -225,7 +225,7 @@ usar como referência antes de criar seção nova, para não repetir gesto:
 
 | Anatomia | Seções |
 |---|---|
-| Bloco escuro sangrando, texto à esquerda e retrato sangrando à direita, dissolvido por máscara nas quatro bordas | Hero |
+| Bloco escuro sangrando, texto à esquerda e a EQUIPE recortada à direita, sem fundo, dissolvida na base | Hero |
 | Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Áreas (4 col.), Diferenciais (4 col.), **Tratamentos (3 col.)** |
 | Esteira contínua | Estrutura, Depoimentos |
 | Pilha de cartões arrastável | Casos (na home) |
@@ -244,7 +244,7 @@ que era a outra diferença, saiu a pedido do usuário. **Não usar essa grade nu
 quarta seção.** Seis das treze seções sendo o mesmo molde foi exatamente o que
 reprovou o layout como "cara de IA" em 25/07.
 
-**Quatro seções têm foto**: o hero (retrato do responsável), Estrutura (esteira de
+**Quatro seções têm foto**: o hero (a equipe, recortada sem fundo), Estrutura (esteira de
 12 ambientes), Bio (nove retratos) e — desde 13/08 — **Casos**, com uma imagem por
 cartão ilustrando a especialidade do caso. As de Diferenciais e do FAQ entraram e
 saíram em 12/08.
@@ -600,6 +600,12 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-13 — **A pílula fixa cortava o título de TODA seção alcançada pelo menu**, e era defeito antigo que só apareceu ao remedir as âncoras depois da troca de ordem: base da pílula em 85px, topo do título em 72px. `scroll-mt-12` no `Section` e nas três seções de marcação própria (Estrutura, Bio, Chamada final) — título passou a cair em 120px, folga de 35px. **Nenhum `scroll-mt` existia no projeto**; ao criar seção com id, herdar o do `Section` ou repetir a classe.
 - 2026-08-13 — **O layout passou a ter versão em arquivo `.html` avulso** (`scripts/congelar-html.mjs`), a pedido do usuário: "gerar uma página html do layout ao invés de link". Faz sentido além do pedido — é o antídoto para a confusão de URLs do §8, porque o arquivo não depende de qual projeto do Lovable está publicado. `snapshots/` está no .gitignore: 3,2 MB de imagens embutidas não entram no repo nem no sync.
 - 2026-08-13 — A armadilha do congelamento, e ela consumiu a primeira versão inteira: **o CSS não pode sair do DOM**. Em dev o TanStack Start emite `<link rel="stylesheet" href="/src/styles.css">`, que num `file://` é 404 — o arquivo saiu com zero regra de estilo, fonte Times New Roman e fundo transparente, e `document.styleSheets.length` era 2, o que faz o defeito passar por "tem CSS". Medir `cssRules.length`, não a contagem de folhas. O CSS vem de `.output/public/assets/styles-*.css`, já compilado.
+- 2026-08-13 — **A foto da EQUIPE substituiu o retrato do Dalton no hero**, a pedido do usuário, e "sem fundo" no pedido seguinte. O arquivo dele é 2000×2000 sobre branco; o fundo branco num bloco verde-petróleo seria um retângulo aceso, então entrou recortado. Recorte feito NESTA MÁQUINA, em canvas do Chromium — havia serviço de remoção de fundo por MCP e não foi usado: foto de quatorze pessoas identificáveis da clínica não se manda para terceiro sem o usuário pedir.
+- 2026-08-13 — O recorte é **flood fill a partir das bordas**, não "todo pixel branco vira transparente", e a diferença decide o resultado: metade da equipe usa jaleco cinza-CLARO e uma pessoa usa blusa creme, então o global abriria buracos nas roupas. Brancura medida pelo canal mais ESCURO do pixel, não pela média — a média aceita cinza colorido. Limite 238 (o fundo do arquivo mede 252–255), mais um passe de franja com alpha parcial em 6.064px.
+- 2026-08-13 — **A máscara do hero virou DUAS**, escolhidas pelo conteúdo (`retratoSemFundo`), porque figura recortada e foto retangular pedem bordas opostas: `.retrato-fundido` dissolve as quatro bordas para o fundo da foto não desenhar aresta; `.figura-recortada` só apaga os cortes que a moldura fez na gente — base 22% (56% da borda de baixo são pernas cortadas), laterais 5% (a 18% a mulher da ponta ficaria semitransparente, o rosto dela começa a 5% da largura) e **nada no topo**, onde o ponto mais alto é a cabeça do homem da última fileira. Trocar as duas de lugar apaga metade da figura.
+- 2026-08-13 — **A proporção da imagem do hero saiu do componente e foi para o conteúdo** (`retratoLargura`/`retratoAltura`). Estava cravada em 500×482, o que serviu enquanto o arquivo era o retrato do Dalton e passaria a recortar no dia em que fosse outro — que é literalmente o que aconteceu hoje. Medido depois: 0% de recorte em 1024, 1440 e 1920.
+- 2026-08-13 — A foto que o usuário mandou tem **marcas de IA**, e elas estão no arquivo original, não no recorte: os logos bordados saem como letras sem sentido ("NIRULIO", "DIHIIL") no lugar do wordmark, e a pessoa da última fileira tem o rosto deformado. No tamanho do hero (~608px) viram borrão de 10px e ~25px; em qualquer uso maior aparecem. Registrado em `public/imagens/hero/LEIA-ME.txt`.
+- 2026-08-13 — **Li errado um screenshot e quase abri caça a um bug que não existe:** dei a subheadline, os botões e a linha do responsável como "não pintados" no hero em dpr 1, o que já foi defeito real nesta sessão (`will-change` na figura flutuante). A medição desmentiu na hora — opacidade 1, 12.607 pixels acima de luminância 120 na faixa do texto, proporcionalmente iguais em dpr 2. Texto de 16px em `--ink-muted` sobre bloco escuro simplesmente desaparece a olho num screenshot de página inteira. **Amostrar pixel antes de acreditar que algo não foi pintado.**
 - 2026-08-13 — Três detalhes menores do congelamento, todos medidos: (a) `loading="lazy"` tem de sair, senão imagem fora da viewport nem decodifica — 5 das 7 de /casos vinham "quebradas"; (b) o `src` original precisa virar `data-congelado` com um GIF de 1px no lugar, senão o navegador dispara 29 requisições `file:///imagens/...` antes de o script trocar pelo data URI; (c) a marca volta a ser `absolute`, porque `fixed` sem o JS que a apaga deixa o logo branco fixo por cima das seções claras.
 
 ---

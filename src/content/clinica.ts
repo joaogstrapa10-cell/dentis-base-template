@@ -80,17 +80,24 @@ export const clinica: Clinica = {
     ctaPrimario: { label: "Agendar avaliação", href: WHATSAPP_HREF },
     ctaSecundario: { label: "Conhecer a clínica", href: "#diferenciais" },
     responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112",
-    // Mesmo retrato que o site antigo usa na home e em "sobre nós". O fundo
-    // verde dele é do próprio consultório e encosta no petróleo do bloco.
-    // VOLTOU para o arquivo original (500×482, quase quadrado) no fim de 12/08.
-    // A versão ampla de 2560×703 existia para a foto sangrar na borda do bloco,
-    // e o usuário reprovou o resultado: "muito pra direita, não centralizada,
-    // cortada". O problema era geométrico e não de posição — uma imagem 3,6:1
-    // encaixada numa faixa 0,83:1 mostra 22% da largura do arquivo, ou seja um
-    // talho vertical. Neste arquivo, num cartão quase quadrado, não há recorte.
-    // O amplo segue em public/imagens/hero/ caso a faixa sangrada volte.
-    retrato: "/imagens/hero/dalton-suzuki.webp",
-    retratoAlt: "Dr. Dalton Suzuki, responsável técnico da clínica, de braços cruzados",
+    // FOTO DA EQUIPE, a pedido do usuário em 13/08: "coloque essa foto no lugar
+    // da do dalton", e em seguida "sem fundo". O arquivo que ele mandou vem em
+    // 2000×2000 sobre fundo BRANCO; o que está aqui é o recorte, com fundo
+    // transparente, feito nesta máquina por flood fill a partir das bordas —
+    // ver public/imagens/hero/LEIA-ME.txt para o método e o porquê.
+    //
+    // O fundo branco não podia ficar: o bloco do hero é verde-petróleo, e uma
+    // foto de fundo branco ali é um retângulo branco aceso no meio do bloco. Com
+    // o recorte, a equipe fica sobre o próprio bloco.
+    //
+    // O retrato do Dr. Dalton segue em public/imagens/hero/dalton-suzuki.webp
+    // (500×482, `retratoSemFundo: false`) — voltar é trocar estas quatro linhas.
+    retrato: "/imagens/hero/equipe-suzuki.webp",
+    retratoAlt:
+      "Corpo clínico e equipe da Suzuki Odontologia reunidos, de uniforme, com o Dr. Dalton Suzuki ao centro",
+    retratoLargura: 1200,
+    retratoAltura: 1078,
+    retratoSemFundo: true,
   },
   diferenciais: {
     eyebrow: "Por que aqui",

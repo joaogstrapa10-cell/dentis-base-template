@@ -381,6 +381,37 @@
   mask-repeat: no-repeat;
 }
 
+/* Variante para figura JÁ RECORTADA — fundo transparente, como a foto da equipe
+   que entrou no hero em 13/08. É outra classe e não um ajuste da de cima, porque
+   o problema é o oposto: ali a máscara tem de dissolver um FUNDO retangular; aqui
+   não há fundo, e o que sobra para resolver são os cortes que a MOLDURA da foto
+   original fez na própria gente.
+
+   Medido no arquivo, com a fração de cada borda da caixa que tem corpo em cima:
+   base 56%, esquerda 18,6%, direita 13,9%, topo 0%.
+
+   Daí a assimetria:
+   - BASE 22%, a mais longa. Mais da metade da borda de baixo são pernas cortadas
+     pela moldura; sem dissolver, o grupo fica plantado numa linha reta no meio do
+     bloco. Com o degradê, as pernas somem no verde e o grupo se apoia no bloco.
+   - ESQUERDA e DIREITA 5%, curtas de propósito: as duas cortam gente, e é só a
+     ARESTA que precisa sumir. A 18% como na outra classe, a mulher da ponta
+     esquerda ficaria semitransparente — o rosto dela começa a 5% da largura.
+   - TOPO nenhum. O ponto mais alto do recorte é a cabeça do homem da última
+     fileira; qualquer degradê ali come o cabelo dele. */
+.figura-recortada {
+  --borda-esq: linear-gradient(to right, transparent, #fff 5%);
+  --borda-base: linear-gradient(to top, transparent, #fff 22%);
+  --borda-dir: linear-gradient(to left, transparent, #fff 5%);
+
+  -webkit-mask-image: var(--borda-esq), var(--borda-base), var(--borda-dir);
+  mask-image: var(--borda-esq), var(--borda-base), var(--borda-dir);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
 /* ---------- Movimento ---------- */
 
 /* Hover de card: sobe e a sombra abre. Transform em vez de mudar layout. */

@@ -1,0 +1,69 @@
+IMAGEM DO HERO
+==============
+
+| arquivo                  | dimensões | fundo        | em uso |
+|--------------------------|-----------|--------------|--------|
+| equipe-suzuki.webp       | 1200×1078 | TRANSPARENTE | sim, desde 13/08 |
+| dalton-suzuki.webp       |  500×482  | verde (parede do consultório) | não |
+| dalton-suzuki-amplo.webp | 2560×703  | verde        | não — ver aviso abaixo |
+
+Trocar de imagem é trocar quatro linhas em `src/content/clinica.ts` (`retrato`,
+`retratoAlt`, `retratoLargura`/`retratoAltura` e `retratoSemFundo`). Nenhum
+componente precisa mudar — mas as dimensões e o `retratoSemFundo` PRECISAM
+acompanhar o arquivo, senão a foto recorta ou a máscara errada apaga metade dela.
+
+⚠️ `dalton-suzuki-amplo.webp` (3,6:1) foi reprovado em 12/08 numa faixa vertical:
+`object-cover` mostrava 22% da largura, ou seja um talho. Não encaixar arquivo
+panorâmico em caixa vertical.
+
+
+COMO O RECORTE DA EQUIPE FOI FEITO
+----------------------------------
+
+O usuário mandou a foto em 2000×2000 sobre fundo BRANCO e pediu "sem fundo". O
+recorte foi feito NESTA MÁQUINA, num canvas do Chromium — a foto não saiu daqui.
+Havia serviço de remoção de fundo disponível por MCP e ele não foi usado: foto de
+quatorze pessoas identificáveis da clínica não se manda para terceiro sem o
+usuário pedir. O script está em scratchpad (`sem-fundo.mjs`), e o método é este:
+
+1. FLOOD FILL a partir das quatro bordas, não "todo pixel branco vira
+   transparente". A diferença decide o resultado: metade da equipe usa jaleco
+   cinza-CLARO e uma pessoa usa blusa creme. Trocar todo branco por transparente
+   abre buracos dentro das roupas. Preenchendo a partir da moldura, só sai o
+   branco LIGADO a ela.
+   Brancura medida pelo canal mais ESCURO do pixel (não pela média, que aceitaria
+   um cinza colorido), limite 238. O fundo do arquivo mede 252–255.
+2. Franja de anti-serrilhado: pixel vizinho do fundo e ainda claro recebe alpha
+   parcial. 6.064 pixels, um passe.
+3. Recorte na caixa do conteúdo. A foto tinha 203px de branco no topo, que no hero
+   roubariam altura da figura.
+4. Redução para 1200px de largura: o slot exibe ~608px em 1440, então 1200 cobre
+   tela retina e nada além. Resultado 217 KB em WebP com alpha.
+
+O que a medição do recorte revelou, e que determinou a máscara do hero:
+
+  base   56% da borda tem corpo em cima  → pernas cortadas pela moldura
+  esq    18,6%                            → a mulher da ponta esquerda é cortada
+  dir    13,9%                            → a da ponta direita também
+  topo   0%                               → nada cortado em cima
+
+Daí `.figura-recortada` no styles.css: degradê de 22% na base (dissolve as pernas
+no bloco, senão o grupo fica plantado numa linha reta), 5% na esquerda e na direita
+(só apaga a aresta; a 18% a mulher da ponta ficaria semitransparente) e NENHUM no
+topo (o ponto mais alto é a cabeça do homem da última fileira).
+
+
+DEFEITOS DO ARQUIVO ORIGINAL, PARA DECIDIR COM CONHECIMENTO
+-----------------------------------------------------------
+
+A foto tem marcas de geração ou ampliação por IA, e elas existem no arquivo que o
+usuário mandou — não foram introduzidas pelo recorte:
+
+- Os logos bordados nos jalecos saem como LETRAS SEM SENTIDO ("NIRULIO",
+  "DIHIIL") no lugar do wordmark SUZUKI.
+- A pessoa da última fileira, atrás e à direita do centro, tem o rosto deformado.
+
+No tamanho do hero (~608px de largura) os logos viram borrão de 10px e o rosto
+deformado tem ~25px, então o risco na home é baixo. Em qualquer uso maior — página
+de equipe, impressão, redes — os dois aparecem. Se houver a foto original da
+clínica, sem passar por IA, ela é melhor.

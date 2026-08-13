@@ -86,11 +86,26 @@ export type HeroContent = {
   ctaPrimario: Cta;
   ctaSecundario: Cta;
   responsavelLinha: string;
-  /** Retrato do responsável técnico, em /public. `null` faz o hero voltar a
-   *  duas colunas de texto, sem buraco no layout. Exige autorização de uso de
-   *  imagem, ver docs/imagens.md. */
+  /** Imagem do hero, em /public. Era o retrato do responsável técnico e desde
+   *  13/08 é a foto da EQUIPE, a pedido do usuário — o campo guardou o nome.
+   *  `null` faz o hero voltar a duas colunas de texto, sem buraco no layout.
+   *  Exige autorização de uso de imagem, ver docs/imagens.md. */
   retrato: string | null;
   retratoAlt: string;
+  /** Dimensões REAIS do arquivo. Ficam no conteúdo, e não cravadas no
+   *  componente, porque é delas que sai a proporção da caixa: proporção que não
+   *  bate com o arquivo faz `object-cover` recortar, e foi exatamente esse o
+   *  defeito de 12/08 (arquivo 3,6:1 numa faixa 0,83:1 mostrava 22% da largura).
+   *  Cada clínica fornece uma foto com enquadramento próprio. */
+  retratoLargura: number;
+  retratoAltura: number;
+  /** `true` quando o arquivo já vem RECORTADO, com fundo transparente. Decide
+   *  qual máscara de borda o hero usa, e as duas resolvem problemas opostos:
+   *  `.retrato-fundido` dissolve as quatro bordas de uma foto retangular para o
+   *  fundo dela não desenhar uma aresta no bloco; `.figura-recortada` só suaviza
+   *  os cortes que a moldura fez na gente. Trocar as duas de lugar apaga metade
+   *  da figura ou deixa um retângulo aparente. Ver `src/styles.css`. */
+  retratoSemFundo: boolean;
 };
 
 /**
