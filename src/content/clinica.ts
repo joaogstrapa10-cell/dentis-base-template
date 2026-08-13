@@ -106,22 +106,42 @@ export const clinica: Clinica = {
         altura: 1078,
         semFundo: true,
       },
+      // [1] SORRISO, pedido pelo usuário em 13/08 — ele pediu arcada dentária e
+      // corrigiu para "um sorriso bem bonito" na mensagem seguinte.
+      //
+      // ⚠️ A §4 do CLAUDE.md proíbe "sorriso genérico de estoque", e esta imagem
+      // encosta nisso: é banco de imagem, da página de estética do site antigo. O
+      // pedido foi explícito e é decisão do cliente, então ela entra — mas a
+      // escolha DENTRO do acervo foi pelo menos clichê possível: perfil em plano
+      // fechado, dentes naturais, sem clareamento de estúdio e sem fundo
+      // azul-claro. Foram descartadas a modelo loira de sorriso branco com fundo
+      // azul (três clichês de uma vez) e o registro clínico de reabilitação total
+      // — este último por outra razão além do visual: sorriso reabilitado no topo
+      // da página lê como promessa de resultado, que é o que a CFO-196/2019
+      // restringe.
       {
-        src: "/imagens/estrutura/02-recepcao.webp",
-        alt: "Recepção da clínica, com balcão curvo de madeira, orquídeas e piso escuro polido",
-        largura: 1000,
-        altura: 667,
+        src: "/imagens/hero/sorriso.jpeg",
+        alt: "Sorriso em plano fechado, de perfil, com dentes alinhados",
+        largura: 600,
+        altura: 400,
         semFundo: false,
-        // O balcão e as orquídeas estão no terço esquerdo do arquivo. No quadrado
-        // centralizado sobrava o corredor e a parede branca — medido no render.
+        // A boca está no terço esquerdo do arquivo e o resto é fundo de estúdio.
+        // No quadrado centralizado entrava uma faixa de branco à direita, que num
+        // cartão sobre bloco escuro é a parte mais acesa do hero.
         foco: "esquerda",
       },
+      // [2] PACIENTE SENDO ATENDIDO, também pedido dele. É a única foto do acervo
+      // que mostra atendimento em curso, e é foto REAL da clínica — a mesma que
+      // aparece na esteira da seção de estrutura, então ela se repete na página.
+      // O assunto (a dentista e a paciente) está na metade DIREITA do arquivo:
+      // centralizado, o quadrado mostraria o braço do equipamento e a parede.
       {
-        src: "/imagens/estrutura/09-consultorio-digital.webp",
-        alt: "Consultório com equipamento digital: monitor exibindo modelo 3D da arcada e impressora 3D na bancada",
+        src: "/imagens/hero/atendimento.webp",
+        alt: "Atendimento em andamento: dentista com máscara e touca fazendo escaneamento intraoral em paciente na cadeira",
         largura: 1000,
         altura: 667,
         semFundo: false,
+        foco: "direita",
       },
     ],
     // ⚠️ TRÊS NÚMEROS, TODOS VERIFICÁVEIS, e é essa a regra desta fileira.

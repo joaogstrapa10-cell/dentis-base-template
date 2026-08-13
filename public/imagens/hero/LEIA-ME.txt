@@ -1,16 +1,41 @@
-IMAGEM DO HERO
-==============
+IMAGENS DO HERO
+===============
 
-| arquivo                  | dimensões | fundo        | em uso |
-|--------------------------|-----------|--------------|--------|
-| equipe-suzuki.webp       | 1200×1078 | TRANSPARENTE | sim, desde 13/08 |
-| dalton-suzuki.webp       |  500×482  | verde (parede do consultório) | não |
-| dalton-suzuki-amplo.webp | 2560×703  | verde        | não — ver aviso abaixo |
+Desde 13/08 o hero é uma COLAGEM de três cartões (template trazido pelo usuário),
+e não uma foto só. A ordem em `hero.colagem` é hierarquia de tamanho: [0] é a
+maior, ao centro no topo; [1] a média, à direita; [2] a menor, embaixo à esquerda.
 
-Trocar de imagem é trocar quatro linhas em `src/content/clinica.ts` (`retrato`,
-`retratoAlt`, `retratoLargura`/`retratoAltura` e `retratoSemFundo`). Nenhum
-componente precisa mudar — mas as dimensões e o `retratoSemFundo` PRECISAM
-acompanhar o arquivo, senão a foto recorta ou a máscara errada apaga metade dela.
+| # | arquivo             | dimensões | fundo        | o que é |
+|---|---------------------|-----------|--------------|---------|
+| 0 | equipe-suzuki.webp  | 1200×1078 | TRANSPARENTE | equipe recortada, ver o método abaixo |
+| 1 | sorriso.jpeg        |  600×400  | branco       | sorriso em plano fechado, de perfil — banco de imagem da página de estética do site antigo |
+| 2 | atendimento.webp    | 1000×667  | consultório  | atendimento em curso, foto REAL da clínica (a mesma da esteira de estrutura) |
+
+Fora de uso, guardados:
+
+| arquivo                  | dimensões | por que está aqui |
+|--------------------------|-----------|-------------------|
+| dalton-suzuki.webp       |  500×482  | era a foto única do hero até 13/08 |
+| dalton-suzuki-amplo.webp | 2560×703  | ver o aviso abaixo |
+
+Trocar uma imagem é trocar um objeto em `hero.colagem` (`src`, `alt`, `largura`,
+`altura`, `semFundo` e, se o assunto não estiver no meio do arquivo, `foco`).
+Nenhum componente precisa mudar — mas as dimensões e o `semFundo` PRECISAM
+acompanhar o arquivo, senão a foto recorta ou o acabamento sai errado.
+
+⚠️ O cartão [0] usa a proporção NATIVA do arquivo e recorta 0%; os cartões [1] e
+[2] são quadrados e recortam ~33% da largura. É deliberado: **foto de ambiente
+aceita corte, gente não**. Se puser gente em [1] ou [2], ou o assunto vai para o
+meio do arquivo, ou o `foco` corrige, ou o cartão precisa de outra proporção.
+
+Sobre o sorriso, para quem for revisar: a §4 do CLAUDE.md proíbe "sorriso genérico
+de estoque" e esta imagem encosta nisso. Ela entrou por pedido explícito do usuário
+em 13/08 ("ao invés da arcada dentária, colocar um sorriso bem bonito"), e a escolha
+dentro do acervo foi pelo menos clichê disponível: perfil em plano fechado, dentes
+naturais, sem clareamento de estúdio e sem fundo azul-claro. Descartadas a modelo
+loira de sorriso branco com fundo azul e o registro clínico de reabilitação total —
+este último também porque sorriso reabilitado no topo da página lê como promessa de
+resultado, que é o que a CFO-196/2019 restringe.
 
 ⚠️ `dalton-suzuki-amplo.webp` (3,6:1) foi reprovado em 12/08 numa faixa vertical:
 `object-cover` mostrava 22% da largura, ou seja um talho. Não encaixar arquivo
