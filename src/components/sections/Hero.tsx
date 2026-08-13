@@ -110,21 +110,42 @@ export function HeroSection({ data }: { data: HeroContent }) {
                 é a única forma de garantir isso independente do arquivo que cada
                 clínica fornecer.
 
-                A SOMBRA é em duas camadas e com preto quase opaco, e isso é
-                exigência do fundo: o bloco é `--ink` (L 0,21), então uma sombra
-                fraca simplesmente não existe sobre ele — o `shadow-2xl` do
-                Tailwind é calibrado para fundo claro e aqui era invisível. A
-                camada larga e difusa (64px de blur) descola o cartão do bloco; a
-                curta e fechada (24px) desenha o contato. */}
+                NÃO É MAIS UM CARTÃO. Canto arredondado, fio dourado e sombra de
+                caixa saíram em 12/08, a pedido: "não quero ela em um
+                quadrado/elemento". No lugar deles, `.retrato-fundido` dissolve as
+                bordas da foto até transparente, então ela pertence ao bloco em
+                vez de estar apoiada nele. A explicação da máscara está no
+                `styles.css`, junto da regra.
+
+                A sombra de caixa não poderia ficar junto com a máscara nem se
+                quisesse: `box-shadow` acompanha a CAIXA do elemento, não a
+                máscara, então ela desenharia exatamente o retângulo que a máscara
+                existe para apagar. O que dá profundidade agora é a mancha escura
+                atrás, logo abaixo — essa sim segue uma forma sem aresta.
+
+                O `figure` não tem fundo, borda nem raio: qualquer um dos três
+                reintroduz o "elemento". */}
             {data.retrato ? (
               <Reveal delay={260}>
-                <figure className="retrato-flutua mx-auto w-full max-w-[24rem] lg:mx-0 lg:max-w-none">
+                <figure className="retrato-flutua relative mx-auto w-full max-w-[24rem] lg:mx-0 lg:max-w-none">
+                  {/* Mancha escura atrás da figura, no lugar da sombra de caixa.
+                      Radial e maior que a foto, então não tem borda para
+                      denunciar — dá o assentamento sem desenhar contorno.
+
+                      `z-0` na mancha e `z-10` na imagem, não `-z-10` na mancha:
+                      índice negativo dentro de um `relative` sem contexto próprio
+                      manda a camada para trás do FUNDO do bloco escuro, e ela
+                      desaparece. */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -inset-6 z-0 bg-[radial-gradient(58%_52%_at_50%_60%,oklch(0_0_0/0.5),transparent_74%)] blur-xl"
+                  />
                   <img
                     src={data.retrato}
                     alt={data.retratoAlt}
                     width={500}
                     height={482}
-                    className="aspect-[500/482] w-full rounded-[1.6rem] object-cover object-center shadow-[0_40px_80px_-12px_oklch(0_0_0/0.85),0_14px_34px_-6px_oklch(0_0_0/0.65)] ring-1 ring-gold/30"
+                    className="retrato-fundido relative z-10 aspect-[500/482] w-full object-cover object-center"
                   />
                 </figure>
               </Reveal>

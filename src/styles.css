@@ -291,6 +291,57 @@
   .retrato-flutua { animation: none; }
 }
 
+/* ---------- Retrato do hero, sem moldura ----------
+   A foto vive DENTRO do bloco escuro do hero, não num cartão em cima dele. O
+   pedido do usuário em 12/08 foi exatamente isso: "não quero ela em um
+   quadrado/elemento".
+
+   Sem moldura, uma foto retangular sobre o verde-petróleo lê como recorte
+   colado — o fundo da própria foto é a janela clara do consultório de um lado e
+   a parede verde do outro, então ela não encosta no bloco sem denunciar a
+   aresta. A máscara resolve isso dissolvendo as bordas até transparente, e é o
+   que substitui o canto arredondado, o fio dourado e a sombra de caixa que
+   estavam ali antes.
+
+   São QUATRO degradês lineares, um por borda, e não um radial só. O radial foi a
+   primeira tentativa e não serve: com um sujeito que ocupa quase todo o quadro,
+   qualquer elipse pequena o bastante para dissolver as quatro bordas come ombro e
+   braço, e qualquer elipse grande o bastante para preservá-lo deixa as bordas
+   retas intactas — medido, com raios de 108%/112% as bordas caíam em 0,36–0,54 do
+   raio, ou seja dentro do núcleo opaco, e só os cantos suavizavam.
+
+   Com um degradê por borda cada lado tem a própria distância, calibrada pelo
+   enquadramento REAL do arquivo: o cabelo começa a 11% do topo, o braço a 26% da
+   esquerda. Daí esquerda 18%, topo 10%, base 14% e direita 6% — nenhuma alcança a
+   figura. A direita é a mais curta de propósito: aquele lado da foto é a parede
+   verde do consultório, que já é quase a cor do bloco.
+
+   `mask-composite: intersect` multiplica as camadas, então as bordas se dissolvem
+   de forma independente e o centro fica opaco. O `-webkit-mask-composite` legado
+   usa outra palavra (`source-in`) e vai junto pelo Safari antigo.
+
+   ⚠️ Os gradientes usam BRANCO, e trocar por preto apaga a foto inteira. O padrão
+   de `mask-mode` é `match-source`, e o navegador pode resolver isso por ALFA ou
+   por LUMINÂNCIA: no primeiro caso preto opaco revela, no segundo preto é
+   luminância zero e esconde. Branco opaco revela nos dois. Escrevi com `#000` na
+   primeira tentativa e a foto simplesmente não apareceu — sem erro de build, sem
+   aviso no console, com a caixa medindo 400×386 e a imagem carregada. */
+.retrato-fundido {
+  --borda-esq: linear-gradient(to right, transparent, #fff 18%);
+  --borda-topo: linear-gradient(to bottom, transparent, #fff 10%);
+  --borda-base: linear-gradient(to top, transparent, #fff 14%);
+  --borda-dir: linear-gradient(to left, transparent, #fff 6%);
+
+  -webkit-mask-image: var(--borda-esq), var(--borda-topo), var(--borda-base),
+    var(--borda-dir);
+  mask-image: var(--borda-esq), var(--borda-topo), var(--borda-base),
+    var(--borda-dir);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
 /* ---------- Movimento ---------- */
 
 /* Hover de card: sobe e a sombra abre. Transform em vez de mudar layout. */
