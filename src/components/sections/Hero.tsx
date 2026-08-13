@@ -52,7 +52,7 @@ export function HeroSection({ data }: { data: HeroContent }) {
           <div
             className={
               data.retrato
-                ? "grid gap-12 lg:grid-cols-[1fr_18rem] lg:items-center lg:gap-16 xl:grid-cols-[1fr_22rem]"
+                ? "grid gap-12 lg:grid-cols-[1fr_22rem] lg:items-center lg:gap-10 xl:grid-cols-[1fr_25rem]"
                 : "grid gap-10 md:grid-cols-[1.35fr_1fr] md:gap-16"
             }
           >
@@ -103,21 +103,28 @@ export function HeroSection({ data }: { data: HeroContent }) {
                 notado no desenvolvimento, porque em tela estreita ele não
                 aparecia.
 
-                `aspect-square` com arquivo 500×482: o recorte lateral é de 3,6%,
-                ou seja invisível. `object-center` porque o assunto ESTÁ no centro
-                do arquivo — deslocar o enquadramento aqui é que o descentralizava.
+                A proporção é a NATIVA do arquivo (500×482), não `aspect-square`:
+                assim o `object-cover` não tem o que cortar, e o retrato aparece
+                inteiro. Era quadrado, o que tirava 3,6% das laterais — pouco, mas
+                o pedido de 12/08 foi o rosto aparecendo 100%, e proporção nativa
+                é a única forma de garantir isso independente do arquivo que cada
+                clínica fornecer.
 
-                No mobile a foto vem depois do texto e limita em 20rem, centrada:
-                em largura cheia ela viraria o elemento dominante da abertura. */}
+                A SOMBRA é em duas camadas e com preto quase opaco, e isso é
+                exigência do fundo: o bloco é `--ink` (L 0,21), então uma sombra
+                fraca simplesmente não existe sobre ele — o `shadow-2xl` do
+                Tailwind é calibrado para fundo claro e aqui era invisível. A
+                camada larga e difusa (64px de blur) descola o cartão do bloco; a
+                curta e fechada (24px) desenha o contato. */}
             {data.retrato ? (
               <Reveal delay={260}>
-                <figure className="retrato-flutua mx-auto w-full max-w-[20rem] lg:mx-0 lg:max-w-none">
+                <figure className="retrato-flutua mx-auto w-full max-w-[24rem] lg:mx-0 lg:max-w-none">
                   <img
                     src={data.retrato}
                     alt={data.retratoAlt}
                     width={500}
                     height={482}
-                    className="aspect-square w-full rounded-[1.6rem] object-cover object-center shadow-2xl ring-1 ring-gold/30"
+                    className="aspect-[500/482] w-full rounded-[1.6rem] object-cover object-center shadow-[0_40px_80px_-12px_oklch(0_0_0/0.85),0_14px_34px_-6px_oklch(0_0_0/0.65)] ring-1 ring-gold/30"
                   />
                 </figure>
               </Reveal>
