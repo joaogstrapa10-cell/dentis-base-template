@@ -225,7 +225,7 @@ usar como referência antes de criar seção nova, para não repetir gesto:
 
 | Anatomia | Seções |
 |---|---|
-| Bloco escuro sangrando, texto à esquerda e a EQUIPE recortada à direita, sem fundo, dissolvida na base | Hero |
+| Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
 | Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Áreas (4 col.), Diferenciais (4 col.), **Tratamentos (3 col.)** |
 | Esteira contínua | Estrutura, Depoimentos |
 | Pilha de cartões arrastável | Casos (na home) |
@@ -244,7 +244,8 @@ que era a outra diferença, saiu a pedido do usuário. **Não usar essa grade nu
 quarta seção.** Seis das treze seções sendo o mesmo molde foi exatamente o que
 reprovou o layout como "cara de IA" em 25/07.
 
-**Quatro seções têm foto**: o hero (a equipe, recortada sem fundo), Estrutura (esteira de
+**Quatro seções têm foto**: o hero (colagem de três — a equipe recortada, a recepção
+e o consultório digital), Estrutura (esteira de
 12 ambientes), Bio (nove retratos) e — desde 13/08 — **Casos**, com uma imagem por
 cartão ilustrando a especialidade do caso. As de Diferenciais e do FAQ entraram e
 saíram em 12/08.
@@ -606,6 +607,13 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-13 — **A proporção da imagem do hero saiu do componente e foi para o conteúdo** (`retratoLargura`/`retratoAltura`). Estava cravada em 500×482, o que serviu enquanto o arquivo era o retrato do Dalton e passaria a recortar no dia em que fosse outro — que é literalmente o que aconteceu hoje. Medido depois: 0% de recorte em 1024, 1440 e 1920.
 - 2026-08-13 — A foto que o usuário mandou tem **marcas de IA**, e elas estão no arquivo original, não no recorte: os logos bordados saem como letras sem sentido ("NIRULIO", "DIHIIL") no lugar do wordmark, e a pessoa da última fileira tem o rosto deformado. No tamanho do hero (~608px) viram borrão de 10px e ~25px; em qualquer uso maior aparecem. Registrado em `public/imagens/hero/LEIA-ME.txt`.
 - 2026-08-13 — **Li errado um screenshot e quase abri caça a um bug que não existe:** dei a subheadline, os botões e a linha do responsável como "não pintados" no hero em dpr 1, o que já foi defeito real nesta sessão (`will-change` na figura flutuante). A medição desmentiu na hora — opacidade 1, 12.607 pixels acima de luminância 120 na faixa do texto, proporcionalmente iguais em dpr 2. Texto de 16px em `--ink-muted` sobre bloco escuro simplesmente desaparece a olho num screenshot de página inteira. **Amostrar pixel antes de acreditar que algo não foi pintado.**
+- 2026-08-13 — **O hero virou o template de COLAGEM** que o usuário mandou: duas colunas, texto + fileira de números à esquerda, três fotos sobrepostas em cartões com sombra à direita, e formas pequenas flutuando atrás. Com isso saiu a máquina da foto sangrada — o `lg:pr-[42vw]` do container e o `right` negativo sobre `50vw - 600px` —, porque colagem dentro de coluna não precisa dela. A foto da equipe recortada, de duas horas antes, virou o cartão MAIOR da colagem, e é o único com passe-partout claro: figura sem fundo precisa de fundo para não flutuar no vazio, e o recorte dela foi feito sobre branco de estúdio.
+- 2026-08-13 — A largura da coluna da colagem é `min(38vw, 26rem)`, em rem e não em fração, **e isso é requisito, não gosto**: em fração ela rouba largura da headline conforme a janela encolhe e "complexidade, conduzida" quebra — o mesmo defeito que em 12/08 empurrou a foto para fora do container. Medido: 672px de texto em 1440 e 523px em 1024, contra 644 e 508 da linha mais longa.
+- 2026-08-13 — **Meu medidor de quebra de linha estava errado e sempre "passava"**: comparava a largura do span com a do `h1`, e o span estica até o container, então os dois batem sempre. O certo é contar RETÂNGULOS (`getClientRects().length`) — 1 por linha significa que não quebrou. Com o medidor certo: 3 linhas, 3 retângulos, em 1024/1280/1440/1920.
+- 2026-08-13 — Os três números do hero são **5,0 (nota do Google), 8 (especialidades) e 9 (corpo clínico)**, e todos saem de dado que já está no repo — a nota do perfil, a contagem de `areas.itens` e a de `bio.equipe`. O rótulo do terceiro diz "no corpo clínico" e não "especialistas", porque o CRO e a especialidade de oito deles ainda são placeholder. **Não acrescentar "anos de clínica" nem "pacientes atendidos"** sem a clínica fornecer: é a métrica mais fácil de inventar e a mais fácil de desmentir.
+- 2026-08-13 — Adaptar este template cobrou três correções que não são cor: `bg-muted` do original pintaria o passe-partout com a cor do TEXTO (neste projeto `--color-muted` é `--muted`, o texto secundário, não um fundo); as formas decorativas eram azul-claro, roxo e verde pastel, três clichês e uma quarta paleta de uma vez; e o `<Button onClick>` virou link, porque chamada de clínica que não navega é botão morto.
+- 2026-08-13 — **O recorte quadrado do cartão exigiu campo de FOCO no conteúdo** (`HeroImagem.foco`). A recepção é 3:2 e perde 33% da largura no quadrado; centralizada, o que sobrava era o corredor e a parede branca, porque o balcão curvo e as orquídeas estão no terço esquerdo do arquivo. Com `foco: "esquerda"` o assunto volta. Foto de ambiente aceita corte, **gente não**: o cartão da equipe usa a proporção nativa e recorta 0%.
+- 2026-08-13 — **Quase reportei um bug de revelação que era o dev server hidratando.** Os três cartões da colagem apareciam com `opacity: 0` em alguns viewports e 1 em outros, sempre depois de 2,6s de espera. Medido no tempo: viram 1 entre 1000 e 2000ms — o TanStack em dev recompila a cada primeiro acesso de página. Em screenshot de coisa animada, **esperar pela condição (`waitForFunction`) e não pelo cronômetro.**
 - 2026-08-13 — Três detalhes menores do congelamento, todos medidos: (a) `loading="lazy"` tem de sair, senão imagem fora da viewport nem decodifica — 5 das 7 de /casos vinham "quebradas"; (b) o `src` original precisa virar `data-congelado` com um GIF de 1px no lugar, senão o navegador dispara 29 requisições `file:///imagens/...` antes de o script trocar pelo data URI; (c) a marca volta a ser `absolute`, porque `fixed` sem o JS que a apaga deixa o logo branco fixo por cima das seções claras.
 
 ---

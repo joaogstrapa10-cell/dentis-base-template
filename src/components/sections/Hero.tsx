@@ -1,35 +1,152 @@
-import type { HeroContent } from "@/content/types";
+import { GraduationCap, LayoutGrid, Star } from "lucide-react";
+import type { HeroContent, HeroImagem, HeroStatIcone } from "@/content/types";
 import { PillButton, TextLink } from "@/components/Primitives";
 import { Reveal } from "@/components/Reveal";
 import { cn } from "@/lib/utils";
 
 /**
- * Estrutura: bloco escuro sangrando na largura da janela, texto à esquerda e o
- * RETRATO CONTIDO à direita, alinhado ao centro vertical do texto.
+ * Estrutura: bloco escuro sangrando na largura da janela, DUAS COLUNAS — texto e
+ * fileira de números à esquerda, COLAGEM de três fotos à direita.
  *
- * ⚠️ O retrato JÁ SANGROU na borda direita do bloco, ocupando a altura inteira,
- * e foi reprovado pelo usuário em 12/08: "muito pra direita, não centralizada,
- * cortada". A causa era geométrica, não de posicionamento — o arquivo amplo é
- * 2560×703 (3,6:1) e a faixa era 576×693 (0,83:1), então `object-cover`
- * mostrava 22% da largura do arquivo. Nenhum ajuste de `object-position`
- * resolve isso: qualquer recorte de 22% de uma foto panorâmica é um talho.
- * Não voltar a encaixar arquivo panorâmico em faixa vertical.
+ * ---------------------------------------------------------------------------
+ * DE ONDE VEM ESTA ANATOMIA
+ * ---------------------------------------------------------------------------
+ * Do template que o usuário trouxe em 13/08. O que veio dele, e é o que define a
+ * seção: duas colunas, os números ao pé do texto com ícone em disco, e três fotos
+ * sobrepostas em cartões arredondados com sombra — a maior ao centro no topo, a
+ * média à direita no terço de cima, a menor embaixo à esquerda. As formas
+ * pequenas que flutuam atrás também são dele.
  *
- * Agora o retrato usa o arquivo original, quase quadrado, num cartão de
- * proporção quase igual à dele — ou seja, sem recorte perceptível. O fio dourado
- * e a flutuação voltaram junto: os dois dependem de a foto ter borda visível, e
- * numa imagem sangrada não havia o que contornar.
+ * Antes disso o hero tinha UMA foto, `absolute`, sangrando até a borda da janela.
+ * Ela saiu junto com a máquina que a sustentava: o `lg:pr-[42vw]` do container e o
+ * `right` negativo calculado sobre `50vw - 600px`. Com a colagem dentro de uma
+ * coluna, a grade resolve o mesmo problema sem nada disso.
  *
- * A coluna do retrato tem largura em `rem`, não em fração, e cresce um degrau em
- * `xl`. Em fração, o retrato roubaria largura da headline conforme a janela
- * encolhe, e a linha "complexidade, conduzida" quebra — foi o que motivou a
- * faixa sangrada. Com largura fixa, a headline fica com 592px em 1024 para 508px
- * de linha mais longa.
+ * ---------------------------------------------------------------------------
+ * O QUE FOI TROCADO DO TEMPLATE
+ * ---------------------------------------------------------------------------
+ * - `framer-motion` não está no projeto, e não entra por uma seção. As três
+ *   variantes dele (stagger do container, subida dos itens, escala das imagens)
+ *   viram `Reveal` com atraso crescente, que é o mecanismo que o resto da página
+ *   já usa. A flutuação vira `.retrato-flutua`, keyframe que já existia.
+ * - O template é uma seção CLARA (`bg-background`). Aqui o hero é o bloco escuro
+ *   que abre a página — é ele que sustenta a alternância verde/branco que fechou
+ *   a paleta em 30/07. Trocar por claro não é adaptar o template, é refazer a
+ *   decisão de paleta.
+ * - `bg-muted` do template NÃO serve: neste projeto `--color-muted` é a cor do
+ *   TEXTO secundário (o `@theme` mapeia `--color-muted` para `--muted`), então
+ *   `bg-muted` pintaria o passe-partout com a cor de texto. Os cartões usam
+ *   `bg-surface`.
+ * - As formas decorativas eram azul-claro, roxo e verde pastel, com variante
+ *   `dark:`. O projeto não tem modo escuro por classe, e azul-claro de
+ *   consultório é um dos clichês proibidos na §4 do CLAUDE.md. Viraram dourado e
+ *   petróleo em opacidade baixa — atmosfera, não confete.
+ * - `text-4xl sm:text-6xl`, `text-lg`, `text-xl` e `text-sm` do template saem
+ *   pela escala fechada de cinco degraus: `.display-1`, `text-base`, `.display-3`
+ *   e `text-small`.
+ * - Os botões do template são `<Button onClick>`. Aqui a chamada é um LINK para o
+ *   WhatsApp — clique que não navega em CTA de clínica é botão morto —, então
+ *   ficam `PillButton` e `TextLink`, que carregam o glifo do WhatsApp e o
+ *   sublinhado da identidade.
  *
- * O header não vive aqui: é uma pílula flutuante no nível da página. O
- * padding-top generoso existe para o conteúdo não passar por baixo dela.
+ * ---------------------------------------------------------------------------
+ * LARGURA DA COLUNA DA COLAGEM: 26rem, E É REQUISITO
+ * ---------------------------------------------------------------------------
+ * A coluna da direita tem largura em `rem`, não em fração. Em fração ela rouba
+ * largura da headline conforme a janela encolhe, e a linha "complexidade,
+ * conduzida" QUEBRA — foi esse defeito que, em 12/08, levou a foto a sangrar para
+ * fora do container. Com `min(38vw, 26rem)` sobram 672px de texto em 1440 e 523px
+ * em 1024, contra 644px e 508px da linha mais longa. Medido, e a medição é por
+ * contagem de RETÂNGULOS de cada linha (`getClientRects`), não por comparar
+ * larguras: os spans esticam até o container e a comparação sempre "passa".
  */
+
+const ICONES: Record<HeroStatIcone, React.ReactElement> = {
+  nota: <Star size={18} strokeWidth={1.75} aria-hidden="true" />,
+  especialidades: <LayoutGrid size={18} strokeWidth={1.75} aria-hidden="true" />,
+  corpoClinico: <GraduationCap size={18} strokeWidth={1.75} aria-hidden="true" />,
+};
+
+/**
+ * Um cartão da colagem.
+ *
+ * `semFundo` decide DUAS coisas, e as duas por conteúdo, não por gosto:
+ *
+ * 1. O acabamento. A figura recortada ganha passe-partout claro — ela não tem
+ *    fundo próprio, e o recorte foi feito sobre branco de estúdio, então o claro é
+ *    o fundo natural dela. Foto de ambiente preenche o cartão inteiro: moldura
+ *    interna ali só encolheria a foto.
+ * 2. A PROPORÇÃO, e é a parte que evita recorte errado. O cartão da figura
+ *    recortada recebe a proporção nativa do arquivo, então `object-cover` não tem
+ *    o que cortar: GENTE não se corta, e no recorte da equipe as pessoas das duas
+ *    pontas já estão na borda. Os cartões de ambiente ficam quadrados, como no
+ *    template, e aí o corte é de ~33% da largura — em foto de sala isso é
+ *    enquadramento, não perda de assunto.
+ */
+function CartaColagem({
+  imagem,
+  className,
+  atraso,
+}: {
+  imagem: HeroImagem;
+  /** Só LARGURA quando a imagem é recortada (a altura sai da proporção), largura
+   *  e altura quando é foto de ambiente. */
+  className?: string;
+  atraso: number;
+}) {
+  return (
+    <Reveal
+      delay={atraso}
+      className={cn(
+        "absolute overflow-hidden rounded-2xl shadow-[0_28px_70px_-22px_oklch(0_0_0/0.55)]",
+        imagem.semFundo ? "bg-surface p-2" : "bg-ink-elevated",
+        className,
+      )}
+      style={
+        imagem.semFundo
+          ? { aspectRatio: `${imagem.largura} / ${imagem.altura}` }
+          : undefined
+      }
+    >
+      <img
+        src={imagem.src}
+        alt={imagem.alt}
+        width={imagem.largura}
+        height={imagem.altura}
+        className={cn(
+          "h-full w-full rounded-xl object-cover",
+          imagem.foco === "esquerda"
+            ? "object-left"
+            : imagem.foco === "direita"
+              ? "object-right"
+              : "object-center",
+        )}
+      />
+    </Reveal>
+  );
+}
+
+/**
+ * Forma que flutua atrás da colagem. Dourado e petróleo em opacidade baixa, no
+ * lugar do azul-claro, roxo e verde pastel do template — azul-claro de consultório
+ * é um dos clichês proibidos na §4 do CLAUDE.md, e os três juntos punham uma
+ * quarta paleta na página.
+ *
+ * `hidden sm:block`: em 390px os cartões já estão em 208, 144 e 128px, e três
+ * formas soltas em volta deles competem com as fotos em vez de ambientá-las.
+ */
+function FormaFlutuante({ className }: { className: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={cn("retrato-flutua pointer-events-none absolute hidden sm:block", className)}
+    />
+  );
+}
+
 export function HeroSection({ data }: { data: HeroContent }) {
+  const temColagem = data.colagem.length > 0;
+
   return (
     <section id="top">
       {/* Sangra até a borda da janela: sem padding externo e sem canto
@@ -46,24 +163,16 @@ export function HeroSection({ data }: { data: HeroContent }) {
           className="ink-arc pointer-events-none absolute inset-0 opacity-[0.28]"
         />
 
-        {/* O padding de baixo encolheu junto com a saída do wordmark fantasma:
-            os 11rem existiam para dar espaço à palavra gigante, e sem ela
-            sobrava uma faixa vazia de quase 200px no pé do bloco. */}
-        {/* O `pr` grande em `lg`+ é o que RESERVA a faixa do retrato, que a partir
-            dali é `absolute` e sai deste container. Os dois valores são derivados,
-            não escolhidos: com o retrato ocupando 42vw encostado na borda direita
-            da janela, o texto tem de terminar em `100vw - 42vw`. Resolvendo para
-            o padding deste container, dá 42vw enquanto a janela é menor que o
-            `max-w` (o container acompanha a janela) e `600px - 8vw` depois disso
-            (o container congela em 1200px e só a janela cresce). Medido: sobram
-            675px de texto em 1440 e 554px em 1024, contra 644px e 508px da linha
-            mais longa da headline. */}
-        <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pb-20 pt-28 md:px-10 md:pb-24 md:pt-36 lg:pr-[42vw] xl:pr-[calc(37.5rem-8vw)]">
+        <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pb-20 pt-28 md:px-10 md:pb-24 md:pt-32">
           <div
-            className={
-              data.retrato ? "" : "grid gap-10 md:grid-cols-[1.35fr_1fr] md:gap-16"
-            }
+            className={cn(
+              "grid items-center gap-14",
+              /* Largura fixa na coluna da colagem, não fração — ver a nota no
+                 topo do arquivo. */
+              temColagem && "lg:grid-cols-[1fr_min(38vw,26rem)] lg:gap-10",
+            )}
           >
+            {/* ---------------- Coluna do texto ---------------- */}
             <div>
               <h1 className="display-1 text-ink-foreground">
                 {data.headline.map((linha, i) => (
@@ -83,6 +192,7 @@ export function HeroSection({ data }: { data: HeroContent }) {
                   {data.subheadline}
                 </p>
               </Reveal>
+
               <Reveal delay={300}>
                 <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
                   <PillButton
@@ -98,114 +208,78 @@ export function HeroSection({ data }: { data: HeroContent }) {
                   />
                 </div>
               </Reveal>
-              <Reveal delay={380}>
+
+              {/* Fileira de números do template. Separada por um fio, e não por
+                  cartões: cartão com fundo próprio é o padrão que a repaginação
+                  de 03/08 tirou da página inteira. */}
+              {data.stats.length > 0 ? (
+                <Reveal delay={380}>
+                  <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-6 border-t border-ink-border pt-8">
+                    {data.stats.map((stat) => (
+                      <div key={stat.rotulo} className="flex items-center gap-3">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink-elevated text-gold">
+                          {ICONES[stat.icone]}
+                        </span>
+                        <div>
+                          <dd className="display-3 text-ink-foreground">{stat.valor}</dd>
+                          <dt className="text-small text-ink-muted">{stat.rotulo}</dt>
+                        </div>
+                      </div>
+                    ))}
+                  </dl>
+                </Reveal>
+              ) : null}
+
+              <Reveal delay={460}>
                 <p className="mt-8 text-small text-ink-muted">
                   {data.responsavelLinha}
                 </p>
               </Reveal>
             </div>
 
-            {/* UMA figura para todos os tamanhos, e o que muda entre eles é só o
-                POSICIONAMENTO: no fluxo abaixo de `lg`, `absolute` a partir dali.
-                Continua sendo um elemento e um recorte só — foram duas versões
-                por uma rodada, e foi isso que deixou um recorte extremo passar sem
-                ser notado, porque em tela estreita ele não aparecia.
+            {/* ---------------- Coluna da colagem ---------------- */}
+            {temColagem ? (
+              /* Altura fixa porque os cartões são `absolute` e não empurram nada:
+                 sem ela a coluna colapsa e a colagem sai por cima do texto.
+                 Os tamanhos são os do template reduzidos um degrau — os 256px do
+                 cartão maior foram desenhados para uma coluna de ~600px, e nesta,
+                 de 416px, três cartões daquele tamanho viram uma pilha sem
+                 respiro. */
+              <div className="relative h-[22rem] w-full sm:h-[26rem] lg:h-[27rem]">
+                <FormaFlutuante className="left-[18%] top-2 h-16 w-16 rounded-full bg-gold/15" />
+                <FormaFlutuante className="bottom-6 right-[22%] h-12 w-12 rounded-xl bg-accent/25 [animation-delay:1.4s]" />
+                <FormaFlutuante className="bottom-[26%] left-1 h-6 w-6 rounded-full bg-gold/25 [animation-delay:2.6s]" />
 
-                Em `lg`+ ela é ancorada ao CONTAINER (que é `relative`), e o
-                `right` negativo é o que a leva até a borda da janela:
-                `max(0px, 50vw - 600px)` é a distância da borda direita do
-                container até a da janela — zero enquanto o container acompanha a
-                janela, e metade do excedente depois que ele congela em 1200px.
-                O valor resolve contra a caixa de PADDING do container, não a de
-                conteúdo: errei isso na primeira conta e a foto passava 40px da
-                janela.
-
-                A largura é `min(42vw, 38rem)`. O teto não é estético: sem ele, em
-                janela larga a foto passaria da ALTURA do bloco e o
-                `overflow-hidden` a cortaria — e recorte é o defeito que esta
-                rodada toda existe para eliminar. Em 38rem sobram 28px de vão em
-                cima e embaixo em 1920, que é o espaço de que a flutuação precisa.
-
-                A margem de cima do mobile é `max-lg:mt-12`, não `mt-12` com
-                `lg:mt-0`: `margin-top: 0` vence `margin-block: auto` na cascata do
-                Tailwind, então o `lg:mt-0` prendia a figura no TOPO do container
-                em vez de centralizá-la, e a flutuação a levava para fora do bloco.
-                Medido com `prefers-reduced-motion` ligado para separar layout de
-                animação: 0px de vão em cima e 25px embaixo, quando deveriam ser
-                12,5px nos dois.
-
-                A proporção é a NATIVA do arquivo, e desde 13/08 vem do CONTEÚDO
-                (`retratoLargura`/`retratoAltura`) em vez de cravada aqui — assim o
-                `object-cover` não tem o que cortar, seja qual for a foto que cada
-                clínica fornecer. Estava em 500×482 fixo, que serviu enquanto o
-                arquivo era o retrato do Dalton e passaria a recortar no dia em que
-                fosse outro. É a mesma classe de defeito de 12/08, quando o arquivo
-                mudou e a caixa não.
-
-                NÃO É MAIS UM CARTÃO. Canto arredondado, fio dourado e sombra de
-                caixa saíram em 12/08, a pedido: "não quero ela em um
-                quadrado/elemento". No lugar deles, `.retrato-fundido` dissolve as
-                bordas da foto até transparente, então ela pertence ao bloco em
-                vez de estar apoiada nele. A explicação da máscara está no
-                `styles.css`, junto da regra.
-
-                A sombra de caixa não poderia ficar junto com a máscara nem se
-                quisesse: `box-shadow` acompanha a CAIXA do elemento, não a
-                máscara, então ela desenharia exatamente o retângulo que a máscara
-                existe para apagar. O que dá profundidade agora é a mancha escura
-                atrás, logo abaixo — essa sim segue uma forma sem aresta.
-
-                O `figure` não tem fundo, borda nem raio: qualquer um dos três
-                reintroduz o "elemento". */}
-            {data.retrato ? (
-              /* ⚠️ SEM `Reveal` em volta, e não é esquecimento. O `Reveal` aplica
-                 `translate`, e qualquer valor de `translate` diferente de `none`
-                 cria BLOCO DE CONTENÇÃO para descendentes absolutos — mesmo
-                 `translate: 0 0`. Com a figura dentro dele, o `absolute` se
-                 ancorava no wrapper do Reveal em vez do container: medido, a foto
-                 parava em x=995 numa janela de 1440 (o wrapper tem a largura do
-                 CONTEÚDO, 675px) e o `inset-y-0` a centralizava na altura de uma
-                 caixa de altura zero, jogando-a 552px abaixo do topo do bloco e
-                 fora do bloco por baixo. A foto já tem animação própria
-                 (`retrato-flutua`) e abre acima da dobra, então a entrada revelada
-                 não faz falta aqui. */
-              <>
-                <figure className="retrato-flutua relative mx-auto w-full max-w-[26rem] max-lg:mt-12 lg:absolute lg:inset-y-0 lg:my-auto lg:h-fit lg:max-w-none lg:right-[calc(-1*max(0px,50vw_-_600px))] lg:w-[min(42vw,38rem)]">
-                  {/* Mancha escura atrás da figura, no lugar da sombra de caixa.
-                      Radial e maior que a foto, então não tem borda para
-                      denunciar — dá o assentamento sem desenhar contorno.
-
-                      `z-0` na mancha e `z-10` na imagem, não `-z-10` na mancha:
-                      índice negativo dentro de um `relative` sem contexto próprio
-                      manda a camada para trás do FUNDO do bloco escuro, e ela
-                      desaparece. */}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute -inset-6 z-0 bg-[radial-gradient(58%_52%_at_50%_60%,oklch(0_0_0/0.5),transparent_74%)] blur-xl"
+                {/* Só largura: a altura vem da proporção do arquivo. */}
+                {data.colagem[0] ? (
+                  <CartaColagem
+                    imagem={data.colagem[0]}
+                    atraso={120}
+                    className="left-1/2 top-0 w-52 -translate-x-1/2 sm:w-60 lg:w-[15.5rem]"
                   />
-                  <img
-                    src={data.retrato}
-                    alt={data.retratoAlt}
-                    width={data.retratoLargura}
-                    height={data.retratoAltura}
-                    style={{
-                      aspectRatio: `${data.retratoLargura} / ${data.retratoAltura}`,
-                    }}
-                    className={cn(
-                      "relative z-10 w-full object-cover object-center",
-                      /* Duas máscaras, e a escolha vem do conteúdo. Ver a nota em
-                         `retratoSemFundo`, no types.ts: figura recortada e foto
-                         retangular precisam de bordas opostas, e trocar as duas
-                         de lugar apaga gente ou deixa um retângulo à vista. */
-                      data.retratoSemFundo ? "figura-recortada" : "retrato-fundido",
-                    )}
+                ) : null}
+                {/* `top-[42%]` e não `top-1/3` como no template: a um terço, este
+                    cartão cobria 77px da altura do cartão da equipe, entrando no
+                    corpo das pessoas da ponta direita. A 42% a sobreposição cai
+                    para ~40px, que é o encaixe do template sem comer gente. */}
+                {data.colagem[1] ? (
+                  <CartaColagem
+                    imagem={data.colagem[1]}
+                    atraso={260}
+                    className="right-0 top-[42%] h-36 w-36 sm:h-44 sm:w-44 lg:h-48 lg:w-48"
                   />
-                </figure>
-              </>
+                ) : null}
+                {data.colagem[2] ? (
+                  <CartaColagem
+                    imagem={data.colagem[2]}
+                    atraso={400}
+                    className="bottom-0 left-0 h-32 w-32 sm:h-40 sm:w-40 lg:h-40 lg:w-40"
+                  />
+                ) : null}
+              </div>
             ) : null}
           </div>
         </div>
-
       </div>
     </section>
   );

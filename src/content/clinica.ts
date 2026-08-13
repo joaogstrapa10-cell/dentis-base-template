@@ -80,24 +80,66 @@ export const clinica: Clinica = {
     ctaPrimario: { label: "Agendar avaliação", href: WHATSAPP_HREF },
     ctaSecundario: { label: "Conhecer a clínica", href: "#diferenciais" },
     responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112",
-    // FOTO DA EQUIPE, a pedido do usuário em 13/08: "coloque essa foto no lugar
-    // da do dalton", e em seguida "sem fundo". O arquivo que ele mandou vem em
-    // 2000×2000 sobre fundo BRANCO; o que está aqui é o recorte, com fundo
-    // transparente, feito nesta máquina por flood fill a partir das bordas —
-    // ver public/imagens/hero/LEIA-ME.txt para o método e o porquê.
+    // COLAGEM de três imagens, na anatomia do template que o usuário trouxe em
+    // 13/08. A ordem é hierarquia de tamanho, não gosto: a primeira é a maior.
     //
-    // O fundo branco não podia ficar: o bloco do hero é verde-petróleo, e uma
-    // foto de fundo branco ali é um retângulo branco aceso no meio do bloco. Com
-    // o recorte, a equipe fica sobre o próprio bloco.
+    // [0] é a EQUIPE, pedida por ele na mensagem anterior ("coloque essa foto no
+    // lugar da do dalton") e recortada a pedido ("sem fundo"). O arquivo veio
+    // 2000×2000 sobre branco; o recorte foi feito nesta máquina — método e
+    // proveniência em public/imagens/hero/LEIA-ME.txt. Ela é a única com
+    // `semFundo: true`, e é o que lhe dá o passe-partout claro: figura recortada
+    // precisa de fundo para não flutuar no vazio, e o dela era branco de estúdio.
+    //
+    // [1] e [2] são fotos reais da clínica, as mesmas do acervo da seção de
+    // estrutura. Escolhidas por LEGIBILIDADE em cartão pequeno: a recepção tem um
+    // assunto central (o balcão curvo) e o consultório digital tem o monitor com a
+    // arcada 3D, que ainda se lê a 160px. Ambientes vazios e corredores viram
+    // mancha nesse tamanho.
     //
     // O retrato do Dr. Dalton segue em public/imagens/hero/dalton-suzuki.webp
-    // (500×482, `retratoSemFundo: false`) — voltar é trocar estas quatro linhas.
-    retrato: "/imagens/hero/equipe-suzuki.webp",
-    retratoAlt:
-      "Corpo clínico e equipe da Suzuki Odontologia reunidos, de uniforme, com o Dr. Dalton Suzuki ao centro",
-    retratoLargura: 1200,
-    retratoAltura: 1078,
-    retratoSemFundo: true,
+    // (500×482, `semFundo: false`) para quando a colagem mudar.
+    colagem: [
+      {
+        src: "/imagens/hero/equipe-suzuki.webp",
+        alt: "Corpo clínico e equipe da Suzuki Odontologia reunidos, de uniforme, com o Dr. Dalton Suzuki ao centro",
+        largura: 1200,
+        altura: 1078,
+        semFundo: true,
+      },
+      {
+        src: "/imagens/estrutura/02-recepcao.webp",
+        alt: "Recepção da clínica, com balcão curvo de madeira, orquídeas e piso escuro polido",
+        largura: 1000,
+        altura: 667,
+        semFundo: false,
+        // O balcão e as orquídeas estão no terço esquerdo do arquivo. No quadrado
+        // centralizado sobrava o corredor e a parede branca — medido no render.
+        foco: "esquerda",
+      },
+      {
+        src: "/imagens/estrutura/09-consultorio-digital.webp",
+        alt: "Consultório com equipamento digital: monitor exibindo modelo 3D da arcada e impressora 3D na bancada",
+        largura: 1000,
+        altura: 667,
+        semFundo: false,
+      },
+    ],
+    // ⚠️ TRÊS NÚMEROS, TODOS VERIFICÁVEIS, e é essa a regra desta fileira.
+    //   5,0  — nota real do perfil da clínica no Google, a mesma que alimenta a
+    //          seção de avaliações (`depoimentos.resumo.nota`).
+    //     8  — as oito especialidades de `areas.itens`, uma a uma.
+    //     9  — os nove retratos de `bio.equipe`, contados.
+    // O rótulo do terceiro diz "no corpo clínico", e não "especialistas": o CRO e
+    // a especialidade de oito deles ainda são placeholder, então afirmar a
+    // titulação de todos seria afirmar o que não se sabe.
+    // NÃO acrescentar "anos de clínica" nem "pacientes atendidos" sem a clínica
+    // fornecer o número — é a métrica mais fácil de inventar e a mais fácil de
+    // desmentir, e publicidade odontológica não é lugar para número redondo.
+    stats: [
+      { valor: "5,0", rotulo: "Nota no Google", icone: "nota" },
+      { valor: "8", rotulo: "Especialidades", icone: "especialidades" },
+      { valor: "9", rotulo: "No corpo clínico", icone: "corpoClinico" },
+    ],
   },
   diferenciais: {
     eyebrow: "Por que aqui",

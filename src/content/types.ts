@@ -86,26 +86,51 @@ export type HeroContent = {
   ctaPrimario: Cta;
   ctaSecundario: Cta;
   responsavelLinha: string;
-  /** Imagem do hero, em /public. Era o retrato do responsável técnico e desde
-   *  13/08 é a foto da EQUIPE, a pedido do usuário — o campo guardou o nome.
-   *  `null` faz o hero voltar a duas colunas de texto, sem buraco no layout.
-   *  Exige autorização de uso de imagem, ver docs/imagens.md. */
-  retrato: string | null;
-  retratoAlt: string;
+  /** COLAGEM do hero: três imagens sobrepostas em passe-partout claro, na
+   *  anatomia do template que o usuário trouxe em 13/08. A ordem importa e não é
+   *  estética — é hierarquia de tamanho: [0] é a maior, ao centro e no topo; [1]
+   *  a média, à direita; [2] a menor, embaixo à esquerda.
+   *
+   *  Lista vazia faz o hero voltar a duas colunas de texto, sem buraco no
+   *  layout. Cada imagem exige autorização de uso, ver docs/imagens.md. */
+  colagem: HeroImagem[];
+  /** Os três números ao pé do texto. Ver a nota em `clinica.ts`: só entra aqui
+   *  dado VERIFICÁVEL. Lista vazia não renderiza a fileira. */
+  stats: HeroStat[];
+};
+
+export type HeroImagem = {
+  src: string;
+  alt: string;
   /** Dimensões REAIS do arquivo. Ficam no conteúdo, e não cravadas no
-   *  componente, porque é delas que sai a proporção da caixa: proporção que não
+   *  componente, porque é delas que sai a proporção do cartão: proporção que não
    *  bate com o arquivo faz `object-cover` recortar, e foi exatamente esse o
-   *  defeito de 12/08 (arquivo 3,6:1 numa faixa 0,83:1 mostrava 22% da largura).
-   *  Cada clínica fornece uma foto com enquadramento próprio. */
-  retratoLargura: number;
-  retratoAltura: number;
-  /** `true` quando o arquivo já vem RECORTADO, com fundo transparente. Decide
-   *  qual máscara de borda o hero usa, e as duas resolvem problemas opostos:
-   *  `.retrato-fundido` dissolve as quatro bordas de uma foto retangular para o
-   *  fundo dela não desenhar uma aresta no bloco; `.figura-recortada` só suaviza
-   *  os cortes que a moldura fez na gente. Trocar as duas de lugar apaga metade
-   *  da figura ou deixa um retângulo aparente. Ver `src/styles.css`. */
-  retratoSemFundo: boolean;
+   *  defeito de 12/08 (arquivo 3,6:1 numa faixa 0,83:1 mostrava 22% da largura). */
+  largura: number;
+  altura: number;
+  /** `true` quando o arquivo já vem RECORTADO, com fundo transparente — como a
+   *  foto da equipe. Decide se o cartão recebe passe-partout CLARO (a figura
+   *  recortada precisa de fundo para não flutuar no vazio, e a dela era branco de
+   *  estúdio) ou se a foto preenche o cartão inteiro. */
+  semFundo: boolean;
+  /** De que lado o recorte quadrado do cartão deve ficar. Só importa nas fotos de
+   *  ambiente, que são 3:2 e perdem ~33% da largura no quadrado: se o assunto não
+   *  está no meio do arquivo, o recorte centralizado mostra parede. A recepção é o
+   *  caso — o balcão curvo e as orquídeas estão no terço ESQUERDO, e centralizada
+   *  ela virava um corredor vazio. Omitido, é `centro`. */
+  foco?: "centro" | "esquerda" | "direita";
+};
+
+/** Qual ícone o número usa. União fechada como as outras: ícone é desenho, e um
+ *  nome livre renderizaria vazio em silêncio. Nenhum destes se repete em outra
+ *  seção — ícone que significa duas coisas na mesma página informa menos que
+ *  nenhum. */
+export type HeroStatIcone = "nota" | "especialidades" | "corpoClinico";
+
+export type HeroStat = {
+  valor: string;
+  rotulo: string;
+  icone: HeroStatIcone;
 };
 
 /**
