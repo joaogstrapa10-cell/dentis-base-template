@@ -152,8 +152,8 @@ servir uma quarta.
 
 ## 5.2 Ponto de retomada
 
-**Última sessão: 14/08.** Vinte e um commits na `main`, o último `HEAD`. Nada pendente
-no working tree, nada esperando OK.
+**Última sessão: 14/08.** Vinte e dois commits na `main`, o último `10a49b4`. Nada
+pendente no working tree, nada esperando OK.
 
 O que aconteceu nessa sessão, em uma linha cada — o log do §9 tem o detalhe e o
 porquê de cada decisão:
@@ -164,7 +164,7 @@ porquê de cada decisão:
 | 5 imagens nos cartões de Casos, uma por especialidade | `public/imagens/casos/` |
 | Hero refeito no template de COLAGEM: texto + 3 números à esquerda, 3 fotos à direita | `Hero.tsx` |
 | Foto da equipe recortada à mão (fundo transparente) e integrada ao bloco | `public/imagens/hero/` |
-| Corpo clínico: passou por círculo aberto por rolagem (13/08) e terminou em ESTEIRA em laço (14/08) | `CorpoClinicoEsteira.tsx` |
+| Corpo clínico: passou por círculo aberto por rolagem (13/08) e terminou em ESTEIRA em laço, retratos em COR e cabeçalho um degrau acima (14/08) | `CorpoClinicoEsteira.tsx` |
 | CRO dos 8 saiu da tela (só a especialidade) — **ver o aviso legal abaixo** | `BioMembro` |
 | Gerador de `.html` avulso do layout | `scripts/congelar-html.mjs` |
 | `scroll-mt-12` nas seções: a pílula fixa cortava o título de toda âncora do menu | `Section.tsx` + 3 seções |
@@ -667,12 +667,16 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-14 — **O corpo clínico virou ESTEIRA em laço**, de um template que o usuário mandou, e a ÓRBITA de 13/08 foi deletada junto (`CorpoClinicoOrbita.tsx`, 413 linhas). Três ganhos medidos, e é por isso que a troca se sustenta: retrato de 188px para **288px** (o maior que o corpo clínico já teve, contra a auditoria de 03/08 que achou 28 das 32 fotos abaixo de 15% da largura da tela); **uma forma só** para toda largura, em vez de órbita em `lg`+ mais grade abaixo; e a seção deixou de precisar do trilho de 190vh, devolvendo ~810px de página.
 - 2026-08-14 — **É a TERCEIRA esteira do site** (Estrutura e Depoimentos são as outras), e passou porque o usuário pediu. O que a justifica aqui é o mesmo que justificava a grade: os nove retratos são do mesmo ensaio de estúdio e leem como série. ⚠️ Se aparecer pedido de uma quarta, vale a conversa que travou a `GradeDeCelulas` em três.
 - 2026-08-14 — Do template entrou o carrossel, o cartão em retrato e o painel de identificação; **ficaram fora** o cabeçalho com ícone em quadrado azul, os rabiscos em SVG e o depoimento no pé do bloco — nenhum dos três é corpo clínico, e os dois primeiros reintroduziriam vocabulário que saiu em 03/08. O painel do template era CLARO e virou escuro: as fotos são de estúdio com fundo creme, e painel claro sobre elas desaparece.
-- 2026-08-14 — O cinza que vira cor no hover ficou atrás de `@media (hover:hover)`, e não é detalhe: sem isso, no celular — de onde vem a maioria — os nove retratos ficariam permanentemente em preto e branco, porque não há como acender a foto sem ponteiro.
+- 2026-08-14 — ⚠️ **O `grayscale` do template entrou e SAIU no mesmo dia, reprovado:** "as imagens estão em preto e branco, coloque no padrão que elas já estavam". Ele tinha entrado atrás de `@media (hover:hover)` para o celular não ficar com nove retratos permanentemente em cinza — o que resolvia metade do problema e não o problema. É a COR dos retratos (fundo creme, uniforme cinza-azulado, mesmo ensaio de estúdio) que faz os nove lerem como série sobre o bloco escuro, e esse é o mesmo argumento que sustentava a grade antiga. A classe `group` saiu junto, porque só existia para o `group-hover:grayscale-0` — **classe de estado sem estado é convite a reintroduzir o efeito por engano.** Não devolver o filtro.
 - 2026-08-14 — `aspect-[3/4]` na esteira é a proporção NATIVA dos arquivos, então o recorte é ZERO. É o oposto da grade que saiu, que recortava em quadrado para ganhar ~180px de altura — numa esteira a altura é fixa e não há esse imposto a pagar.
 - 2026-08-14 — Velocidade em 40s para ~152rem de faixa (~61px/s), **metade** da esteira de Estrutura. Lá passam ambientes, aqui passam nomes, e nome que passa rápido demais não chega a ser lido.
 
 - 2026-08-14 — ⚠️ **A ÓRBITA foi restaurada por engano e apagada de novo no mesmo dia.** Eu li "volte para o prompt do código que mandei por último" como o template do círculo, restaurei os 413 linhas do `CorpoClinicoOrbita.tsx` de `c71d8be` e comecei a validar — o "último código" era o template do CARROSSEL, que o usuário colou em seguida, e ele fechou o assunto com **"não quero mais a órbita"**. Nada disso virou commit: o estado bom já era o `e474c9f`. Lição de processo: quando o pedido é "volte para o código que mandei", **confirmar QUAL antes de mexer** — havia dois templates na mesa e o histórico do git tornou o desfazer barato, mas a rodada foi perdida.
 - 2026-08-14 — A esteira do corpo clínico bate item por item com o que o usuário pediu do template ("apenas o carrossel com as fotos e o elemento em cada card com nome e especialidade"), medido em 1440 e 390: cartão 288×384 (3:4, **0% de recorte**), 8 retratos mais 8 cópias `aria-hidden` fechando o laço, laço de 40s, painel com nome e especialidade dentro de cada cartão, zero overflow. A página caiu de 11,4 para **10,1 telas** com a saída do trilho de 190vh.
+- 2026-08-14 — **Cabeçalho do corpo clínico subiu um degrau na escala**, a pedido: rótulo de `display-3` para `display-2` (22 → 36px) e a nota de `text-base` para 22px. Com isso "Corpo clínico" virou **par do nome do responsável**, que também é `display-2` — e é o correto ali: as duas são as metades do mesmo bloco escuro, separadas por um fio, não título e subtítulo. Nenhum degrau novo de tamanho entrou; a escala de 03/08 segue em cinco.
+- 2026-08-14 — ⚠️ **Armadilha que custou uma correção e explica uma classe nova:** os degraus `.display-1/2/3` são declarados **FORA de `@layer`** no `styles.css`, e estilo sem camada vence qualquer utilitário do Tailwind (que vive em `@layer utilities`). Pôr `display-3 font-normal` num elemento computava peso **600**, e o `leading-[...]` do mesmo elemento era ignorado do mesmo jeito — silenciosamente, sem erro. Daí `.display-3-leve`: mesmo 1.375rem da escala, peso 400. **Não tentar ajustar peso ou leading de um `.display-*` por utilitário** — não funciona e não avisa.
+- 2026-08-14 — `max-w` do cabeçalho foi de `52ch` para `44rem`, e é a MESMA armadilha do `ch` pela quarta vez: ele resolve contra a fonte do elemento onde está, e o wrapper é 16px — os 52ch davam ~416px e estrangulavam um rótulo que agora tem 36px. Em bloco cujo filho muda de tamanho, largura em `rem`.
+- 2026-08-14 — Medição da rodada, em 1440×900 e 390×844: rótulo 36px/peso 700, nota 22px/peso 400, `filter` na foto `none`, **saturação média do retrato 29,1** (cinza seria ~0), zero overflow, esteira inalterada. E no `.html` congelado, servido de `file://`: 140 regras de CSS, 52 imagens todas decodificadas, 0 `src` de arquivo local pendente, um único request falhado — o Google Fonts, que é bloqueado aqui e carrega na máquina do usuário.
 
 ---
 
@@ -724,8 +728,13 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - **Esteira parada precisa virar rolável.** Sob `prefers-reduced-motion` a regra global
   congela a animação, e dentro de `overflow-hidden` isso deixaria os últimos itens
   inalcançáveis — daí o `motion-reduce:overflow-x-auto` obrigatório em cada esteira.
-- **Filtro de hover em imagem só atrás de `@media (hover:hover)`.** Sem isso, o estado de
-  repouso (cinza) fica permanente no celular, que é a maioria do tráfego.
+- **Filtro de hover em imagem só atrás de `@media (hover:hover)`** — e, nos retratos do corpo
+  clínico, **nem assim**: o `grayscale` do template foi reprovado em 14/08 e não volta. A cor
+  do ensaio é o que faz os nove lerem como série.
+- **Peso e leading de um `.display-*` não se ajustam por utilitário do Tailwind.** Os degraus
+  da escala são declarados FORA de `@layer`, então vencem `@layer utilities`: `font-normal`
+  num `.display-3` computa 600, e `leading-[...]` é ignorado — sem erro nenhum. Para 22px com
+  peso de texto existe `.display-3-leve`.
 - **`rounded-full` em caixa NÃO quadrada dá estádio, não elipse** — o raio infinito é
   clampado e sobram lados retos. `rounded-[50%]` é sempre metade de cada eixo.
 - **Ao dimensionar por medição, medir o PIOR caso da lista, não o primeiro item.** Medi a
