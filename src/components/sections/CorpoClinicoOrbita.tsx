@@ -68,7 +68,7 @@ export function CorpoClinicoOrbita({
   const trilho = useRef<HTMLDivElement>(null);
   const palco = useRef<HTMLDivElement>(null);
   const [progresso, setProgresso] = useState(0);
-  const [raio, setRaio] = useState(0);
+  const [raio, setRaio] = useState({ x: 0, y: 0 });
   const [semMovimento, setSemMovimento] = useState(false);
 
   useEffect(() => {
@@ -79,16 +79,25 @@ export function CorpoClinicoOrbita({
     return () => mq.removeEventListener("change", ler);
   }, []);
 
-  /* Raio a partir do palco medido. As folgas são o meio-cartão mais o espaço do
-     rótulo — sem elas o retrato de baixo encosta na borda e o nome é cortado. */
+  /* DOIS raios, um por eixo, medidos do palco — a órbita é uma ELIPSE, não um
+     círculo. O template é circular, e circular aqui significa que o raio é o menor
+     dos dois eixos: o palco tem ~1120×710, então o círculo fica preso nos 710 da
+     altura e sobram ~250px de vazio de cada lado. Foi o que o usuário apontou em
+     13/08 ("tem muito espaço"), e o pedido dele nomeia a solução: proporcional ao
+     tamanho da seção. Com um raio por eixo, o espaçamento entre as pessoas cresce
+     exatamente onde há espaço para crescer — de 272px de raio para ~428 na
+     horizontal, mantendo os ~236 da vertical.
+     As folgas subtraídas são o meio-cartão mais o rótulo: sem elas o retrato de
+     baixo encosta na borda do palco e o nome é cortado. */
   useEffect(() => {
     const medir = () => {
       const el = palco.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
-      const porLargura = r.width / 2 - 56 - 76;
-      const porAltura = r.height / 2 - 56 - 64;
-      setRaio(Math.max(0, Math.min(porLargura, porAltura)));
+      setRaio({
+        x: Math.max(0, r.width / 2 - 56 - 76),
+        y: Math.max(0, r.height / 2 - 56 - 64),
+      });
     };
     medir();
     window.addEventListener("resize", medir);
@@ -132,7 +141,9 @@ export function CorpoClinicoOrbita({
      começar. Medido no render e é o que mais chama atenção na versão fechada.
      Em 32% eles formam um aglomerado sobreposto, que lê como grupo apertado
      esperando para abrir, e o gesto de expansão continua inteiro. */
-  const distancia = raio * (0.32 + 0.68 * suave);
+  const fator = 0.32 + 0.68 * suave;
+  const distX = raio.x * fator;
+  const distY = raio.y * fator;
 
   const anelMeioVisivel = progresso > 0.22;
   const anelExternoVisivel = progresso > 0.5;
@@ -158,11 +169,13 @@ export function CorpoClinicoOrbita({
           {/* ---------- Os três anéis, um por cor ---------- */}
           {/* De fora: o fio claro do bloco (`--ink-border`, branco a 12%). É o mais
               discreto dos três de propósito — ele só fecha a composição. */}
+          {/* Os anéis acompanham os DOIS raios, então são elipses — se ficassem
+              circulares, a órbita passaria por fora deles nas laterais. */}
           <div
             aria-hidden="true"
-            style={{ width: raio * 2, height: raio * 2 }}
+            style={{ width: raio.x * 2, height: raio.y * 2 }}
             className={cn(
-              "absolute rounded-full border transition-all duration-700",
+              "absolute rounded-[50%] border transition-all duration-700",
               anelExternoVisivel ? "border-ink-border" : "border-transparent",
             )}
           />
@@ -171,9 +184,9 @@ export function CorpoClinicoOrbita({
               docs/referencia-layout.md. */}
           <div
             aria-hidden="true"
-            style={{ width: raio * 2 * ANEL_MEIO, height: raio * 2 * ANEL_MEIO }}
+            style={{ width: raio.x * 2 * ANEL_MEIO, height: raio.y * 2 * ANEL_MEIO }}
             className={cn(
-              "absolute rounded-full border transition-all duration-700",
+              "absolute rounded-[50%] border transition-all duration-700",
               anelMeioVisivel ? "border-gold/40" : "border-transparent",
             )}
           />
@@ -181,10 +194,10 @@ export function CorpoClinicoOrbita({
               que existe desde o começo: é o núcleo de onde os retratos saem. */}
           <div
             aria-hidden="true"
-            style={{ width: raio * 2 * ANEL_INTERNO, height: raio * 2 * ANEL_INTERNO }}
-            className="absolute rounded-full bg-gradient-to-br from-accent via-gold to-accent p-px"
+            style={{ width: raio.x * 2 * ANEL_INTERNO, height: raio.y * 2 * ANEL_INTERNO }}
+            className="absolute rounded-[50%] bg-gradient-to-br from-accent via-gold to-accent p-px"
           >
-            <div className="h-full w-full rounded-full bg-ink" />
+            <div className="h-full w-full rounded-[50%] bg-ink" />
           </div>
 
           {/* ---------- Texto do centro ---------- */}
@@ -204,8 +217,8 @@ export function CorpoClinicoOrbita({
               /* Começa em -90° (meio-dia) e gira no sentido do relógio, então a
                  ordem visual bate com a ordem da lista lida em voz alta. */
               const angulo = (i / membros.length) * Math.PI * 2 - Math.PI / 2;
-              const x = Math.cos(angulo) * distancia;
-              const y = Math.sin(angulo) * distancia;
+              const x = Math.cos(angulo) * distX;
+              const y = Math.sin(angulo) * distY;
               return (
                 <li
                   key={m.nome}
