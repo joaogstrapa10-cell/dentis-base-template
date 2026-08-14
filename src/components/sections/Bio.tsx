@@ -166,18 +166,14 @@ export function BioSection({ data }: { data: BioContent }) {
                 ))}
               </ul>
 
-              {/* A órbita SAI do container de 1200px e ocupa a largura do BLOCO.
-                  É o que decide o tamanho dos retratos, e a conta é direta: com
-                  oito peças numa elipse, o vão horizontal entre a peça diagonal e a
-                  lateral é `0,293·raioX`, e o raio sai da largura disponível. Preso
-                  nos 1120px de conteúdo, esse vão é 132px — teto de ~128px por
-                  retrato. Solto na largura do bloco (1408px em 1440), vira 180px, e
-                  o retrato pode ir a 160px, que é o que o usuário pediu em 13/08
-                  ("aumentar os cards, estão muito pequenos ainda").
-                  A margem negativa é `2,5rem` (o `px-10` do container) mais a folga
-                  entre o container e o bloco, que é `50vw - 616px` — 616 = 600 do
-                  meio-container mais os 16px de goteira da seção. */}
-              <div className="hidden lg:-mx-[calc(2.5rem+max(0px,50vw-616px))] lg:block">
+              {/* ⚠️ A roda fica DENTRO do container, alinhada com o resto da seção.
+                  Ela já sangrou até a largura do bloco por uma rodada, com margem
+                  negativa, para caber retrato maior — e o usuário reprovou: "ficou
+                  muito expansivo e muito para a direita". Sangrar só ajudava
+                  enquanto a órbita era ELIPSE; num círculo o limite é a ALTURA do
+                  palco, não a largura, então a sangria dava largura que o círculo
+                  não usa e espalhava a composição de graça. Não devolver. */}
+              <div className="hidden lg:block">
                 <CorpoClinicoOrbita
                   membros={data.corpoClinicoMembros}
                   label={data.corpoClinicoLabel}

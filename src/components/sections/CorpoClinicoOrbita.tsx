@@ -71,6 +71,15 @@ const FASE = -Math.PI / 2;
 /** Vão mínimo entre duas peças vizinhas, em px. */
 const FOLGA = 8;
 
+/**
+ * Faixa de tamanho do retrato, em px. O valor exato é calculado do espaço (ver a
+ * medição no componente), e estes são só os limites da busca: o teto existe para a
+ * roda não virar quatro fotos enormes numa tela muito alta, e o piso para o nome
+ * dentro do cartão continuar legível.
+ */
+const TETO = 240;
+const PISO = 128;
+
 export function CorpoClinicoOrbita({
   membros,
   label,
@@ -86,9 +95,9 @@ export function CorpoClinicoOrbita({
   /** Uma peça basta: as oito têm o mesmo tamanho. */
   const primeiraPeca = useRef<HTMLLIElement>(null);
   const [progresso, setProgresso] = useState(0);
-  const [raio, setRaio] = useState({ x: 0, y: 0 });
+  const [raio, setRaio] = useState(0);
   /** Lado do retrato, em px. Calculado do espaço — ver a nota da medição. */
-  const [cartao, setCartao] = useState(160);
+  const [cartao, setCartao] = useState(PISO);
   const [semMovimento, setSemMovimento] = useState(false);
 
   useEffect(() => {
@@ -99,10 +108,12 @@ export function CorpoClinicoOrbita({
     return () => mq.removeEventListener("change", ler);
   }, []);
 
-  /* DOIS raios, um por eixo — a órbita é uma ELIPSE, não um círculo. Círculo aqui
-     significa raio = o MENOR dos dois eixos, e o palco é muito mais largo que alto:
-     o círculo ficava preso na altura e sobravam ~250px de vazio de cada lado. Foi o
-     que o usuário apontou em 13/08 ("tem muito espaço").
+  /* UM raio só: a roda é um CÍRCULO PERFEITO, como no template.
+     Passou por uma rodada como ELIPSE (um raio por eixo), para ocupar a largura que
+     o palco tem de sobra, e o usuário reprovou: "eles precisam estar em um círculo
+     perfeito, você fez uma órbita, quero um círculo igual o do template". Então o
+     raio volta a ser o MENOR dos dois eixos, e na prática é sempre a altura que
+     manda — o palco é muito mais largo que alto.
      ---------------------------------------------------------------------------
      O TAMANHO DO RETRATO É CALCULADO, NÃO ESCOLHIDO
      ---------------------------------------------------------------------------
@@ -123,44 +134,46 @@ export function CorpoClinicoOrbita({
       const peca = primeiraPeca.current;
       if (!el || !peca) return;
       const r = el.getBoundingClientRect();
-      const cartaoAtual = peca.firstElementChild?.getBoundingClientRect().height ?? 0;
-      const rotulo = Math.max(40, peca.getBoundingClientRect().height - cartaoAtual);
 
       const passo = (Math.PI * 2) / membros.length;
       const cabe = (largura: number) => {
-        const altura = largura + rotulo;
-        const rx = Math.max(0, r.width / 2 - largura / 2 - 8);
-        const ry = Math.max(0, r.height / 2 - altura / 2 - 8);
-        if (rx <= 0 || ry <= 0) return null;
+        /* A peça é o próprio quadrado do retrato: o nome vive DENTRO dele. Era
+           `largura + rótulo`, e com o rótulo fora o círculo não fechava — ver a
+           conta na nota do `Retrato`. */
+        const altura = largura;
+        /* Um raio para os dois eixos: o menor dos dois é o que cabe nas duas
+           direções, e é isso que faz a roda ser redonda em vez de achatada. */
+        const raio = Math.min(
+          r.width / 2 - largura / 2 - 8,
+          r.height / 2 - altura / 2 - 8,
+        );
+        if (raio <= 0) return null;
         for (let i = 0; i < membros.length; i++) {
           const a = FASE + i * passo;
           const b = FASE + ((i + 1) % membros.length) * passo;
-          const dx = Math.abs(Math.cos(a) - Math.cos(b)) * rx;
-          const dy = Math.abs(Math.sin(a) - Math.sin(b)) * ry;
+          const dx = Math.abs(Math.cos(a) - Math.cos(b)) * raio;
+          const dy = Math.abs(Math.sin(a) - Math.sin(b)) * raio;
           /* Folga de 8px em cada eixo: com tolerância de 1px o cálculo
              "passava" e o render ainda mostrava 3 a 5px de sobreposição, por
              arredondamento de subpixel e pela borda de 2px do retrato. Medido nos
              quatro breakpoints antes e depois. */
           if (dx < largura + FOLGA && dy < altura + FOLGA) return null;
         }
-        return { x: rx, y: ry };
+        return raio;
       };
 
-      for (let largura = 176; largura >= 88; largura -= 4) {
-        const raios = cabe(largura);
-        if (raios) {
+      for (let largura = TETO; largura >= PISO; largura -= 4) {
+        const raio = cabe(largura);
+        if (raio) {
           setCartao(largura);
-          setRaio(raios);
+          setRaio(raio);
           return;
         }
       }
-      /* Nem 88px passa: palco muito apertado. Mantém o menor tamanho e deixa a
-         elipse no que couber — melhor apertado que invisível. */
-      setCartao(88);
-      setRaio({
-        x: Math.max(0, r.width / 2 - 52),
-        y: Math.max(0, r.height / 2 - 52 - rotulo / 2),
-      });
+      /* Nem o piso passa: palco muito apertado. Mantém o menor tamanho e deixa a
+         roda no que couber — melhor apertada que invisível. */
+      setCartao(PISO);
+      setRaio(Math.max(0, Math.min(r.width, r.height) / 2 - PISO / 2 - 8));
     };
     medir();
     const t = setTimeout(medir, 400);
@@ -209,8 +222,7 @@ export function CorpoClinicoOrbita({
      Em 32% eles formam um aglomerado sobreposto, que lê como grupo apertado
      esperando para abrir, e o gesto de expansão continua inteiro. */
   const fator = 0.32 + 0.68 * suave;
-  const distX = raio.x * fator;
-  const distY = raio.y * fator;
+  const distancia = raio * fator;
 
   const anelMeioVisivel = progresso > 0.22;
   const anelExternoVisivel = progresso > 0.5;
@@ -236,11 +248,12 @@ export function CorpoClinicoOrbita({
           {/* ---------- Os três anéis, um por cor ---------- */}
           {/* De fora: o fio claro do bloco (`--ink-border`, branco a 12%). É o mais
               discreto dos três de propósito — ele só fecha a composição. */}
-          {/* Os anéis acompanham os DOIS raios, então são elipses — se ficassem
-              circulares, a órbita passaria por fora deles nas laterais. */}
+          {/* Anéis circulares, do mesmo raio da roda. `rounded-[50%]` em caixa
+              quadrada é igual a `rounded-full`; ficou o 50% porque é o que continua
+              certo se a caixa deixar de ser quadrada. */}
           <div
             aria-hidden="true"
-            style={{ width: raio.x * 2, height: raio.y * 2 }}
+            style={{ width: raio * 2, height: raio * 2 }}
             className={cn(
               "absolute rounded-[50%] border transition-all duration-700",
               anelExternoVisivel ? "border-ink-border" : "border-transparent",
@@ -251,7 +264,7 @@ export function CorpoClinicoOrbita({
               docs/referencia-layout.md. */}
           <div
             aria-hidden="true"
-            style={{ width: raio.x * 2 * ANEL_MEIO, height: raio.y * 2 * ANEL_MEIO }}
+            style={{ width: raio * 2 * ANEL_MEIO, height: raio * 2 * ANEL_MEIO }}
             className={cn(
               "absolute rounded-[50%] border transition-all duration-700",
               anelMeioVisivel ? "border-gold/40" : "border-transparent",
@@ -261,7 +274,7 @@ export function CorpoClinicoOrbita({
               que existe desde o começo: é o núcleo de onde os retratos saem. */}
           <div
             aria-hidden="true"
-            style={{ width: raio.x * 2 * ANEL_INTERNO, height: raio.y * 2 * ANEL_INTERNO }}
+            style={{ width: raio * 2 * ANEL_INTERNO, height: raio * 2 * ANEL_INTERNO }}
             className="absolute rounded-[50%] bg-gradient-to-br from-accent via-gold to-accent p-px"
           >
             <div className="h-full w-full rounded-[50%] bg-ink" />
@@ -285,8 +298,8 @@ export function CorpoClinicoOrbita({
           <ul className="contents">
             {membros.map((m, i) => {
               const angulo = FASE + (i / membros.length) * Math.PI * 2;
-              const x = Math.cos(angulo) * distX;
-              const y = Math.sin(angulo) * distY;
+              const x = Math.cos(angulo) * distancia;
+              const y = Math.sin(angulo) * distancia;
               return (
                 <li
                   key={m.nome}
@@ -301,31 +314,13 @@ export function CorpoClinicoOrbita({
                     width: cartao,
                     zIndex: 10,
                   }}
-                  className="absolute left-1/2 top-1/2 flex flex-col items-center transition-[translate] duration-300 ease-out"
+                  className="absolute left-1/2 top-1/2 transition-[translate] duration-300 ease-out"
                 >
-                  <Retrato m={m} lado={cartao} />
-                  {/* Nome e ESPECIALIDADE embaixo do cartão, aparecendo quando a
-                      órbita termina de abrir — foi o pedido. Ficam no DOM sempre,
-                      então leitor de tela lê a lista em qualquer estado.
-                      O nome subiu para `display-3` e a linha de baixo para
-                      `text-base` em 13/08, no mesmo pedido dos cartões maiores.
-
-                      ⚠️ O CRO SAIU DA TELA no mesmo dia, a pedido do usuário —
-                      "manter apenas a especialidade". O dado continua em
-                      `m.cro`; ver a nota do tipo `BioMembro`, porque a
-                      CFO-196/2019 exige número de inscrição na divulgação de
-                      cirurgião-dentista. Voltar a exibir é uma linha aqui. */}
-                  <div
-                    className={cn(
-                      "mt-3 text-center transition-opacity duration-500",
-                      nomesVisiveis ? "opacity-100" : "opacity-0",
-                    )}
-                  >
-                    <p className="display-3 text-ink-foreground">{m.nome}</p>
-                    <p className="mt-1 text-base leading-[1.35] text-ink-muted">
-                      {m.especialidade}
-                    </p>
-                  </div>
+                  <Retrato
+                    m={m}
+                    lado={cartao}
+                    nomesVisiveis={nomesVisiveis}
+                  />
                 </li>
               );
             })}
@@ -337,36 +332,82 @@ export function CorpoClinicoOrbita({
 }
 
 /**
- * Retrato do membro. Quadrado, e `object-[50%_22%]` é o mesmo
- * enquadramento da grade: mantém cabeça e ombros e corta só o fundo creme.
+ * Retrato do membro, com o NOME E A ESPECIALIDADE DENTRO do cartão, no pé, sobre um
+ * véu escuro.
+ *
+ * ---------------------------------------------------------------------------
+ * POR QUE DENTRO, E NÃO EMBAIXO
+ * ---------------------------------------------------------------------------
+ * Era embaixo, e num CÍRCULO perfeito isso não fecha. A conta, com oito peças e a
+ * fase em -90°: o par que quase se toca é o diagonal com o lateral, separado por
+ * `0,707·raio` na vertical, e o raio vem da altura do palco. Resolvendo para o lado
+ * do retrato com o rótulo FORA, o teto é
+ *   lado ≤ 0,261·altura_do_palco − 10 − rótulo
+ * o que dá ~100px numa janela de 900px de altura e é IMPOSSÍVEL numa de 800 —
+ * medido, a roda colapsava no mínimo e ainda sobrepunha 25px. Foi o que apareceu ao
+ * trocar a elipse pelo círculo a pedido do usuário.
+ *
+ * Com o rótulo DENTRO, a peça volta a ser um quadrado e o teto sobe para
+ *   lado ≤ 0,261·altura_do_palco − 10
+ * ou seja 192px em 1440×900, 168 em 1280×800 e 240 em 1920×1080 — maior que os 168
+ * que a elipse dava, e num círculo de verdade. É a troca que atende os dois pedidos
+ * ao mesmo tempo: "círculo igual o do template" e "aumentar os cards".
+ *
+ * O véu não é enfeite: sem ele o texto cai sobre o uniforme cinza-claro e perde
+ * contraste. O enquadramento `object-[50%_22%]` põe cabeça e ombros no topo do
+ * quadro, então o pé do cartão é jaleco — lugar certo para escurecer.
  */
-function Retrato({ m, lado }: { m: BioMembro; lado: number }) {
-  /* O LADO vem calculado do espaço disponível (ver a medição no componente pai),
-     entre 88 e 176px. Era classe fixa de 96px e passou por 144 e 160 em duas rodadas
-     de "aumentar os cards" — o que mostrou que o número certo não é escolhido, é
-     derivado: o teto é `0,293·raioX`, o vão entre a peça diagonal e a lateral, e ele
-     depende da largura do palco. Em 1440 dá 176px; em 1024, 128. */
-  const comum =
-    "shrink-0 overflow-hidden rounded-2xl border-2 border-ink-elevated shadow-[0_18px_40px_-14px_oklch(0_0_0/0.6)]";
-  if (!m.retrato) {
-    return (
-      <div
-        role="img"
-        aria-label={m.retratoAlt}
-        style={{ width: lado, height: lado }}
-        className={cn(comum, "slot-grid-ink bg-ink-elevated")}
-      />
-    );
-  }
+function Retrato({
+  m,
+  lado,
+  nomesVisiveis,
+}: {
+  m: BioMembro;
+  /** Lado do quadrado, em px. Vem calculado do espaço — ver a medição no pai. */
+  lado: number;
+  nomesVisiveis: boolean;
+}) {
   return (
-    <img
-      src={m.retrato}
-      alt={m.retratoAlt}
-      loading="lazy"
-      width={lado}
-      height={lado}
+    <div
       style={{ width: lado, height: lado }}
-      className={cn(comum, "object-cover object-[50%_22%]")}
-    />
+      className="relative overflow-hidden rounded-2xl border-2 border-ink-elevated bg-ink-elevated shadow-[0_18px_40px_-14px_oklch(0_0_0/0.6)]"
+    >
+      {m.retrato ? (
+        <img
+          src={m.retrato}
+          alt={m.retratoAlt}
+          loading="lazy"
+          width={lado}
+          height={lado}
+          className="absolute inset-0 h-full w-full object-cover object-[50%_22%]"
+        />
+      ) : (
+        <div role="img" aria-label={m.retratoAlt} className="slot-grid-ink absolute inset-0" />
+      )}
+
+      {/* Nome e ESPECIALIDADE, aparecendo quando a roda termina de abrir — foi o
+          pedido. Ficam no DOM sempre, então leitor de tela lê a lista em qualquer
+          estado.
+
+          ⚠️ O CRO saiu da tela em 13/08, a pedido do usuário — "manter apenas a
+          especialidade". O dado continua em `m.cro`; ver a nota do tipo
+          `BioMembro`, porque a CFO-196/2019 exige número de inscrição na
+          divulgação de cirurgião-dentista. Voltar a exibir é uma linha aqui. */}
+      <div
+        className={cn(
+          /* Véu SÓLIDO até 58% da própria altura e só então dissolvendo. Com um
+             degradê contínuo (`from-ink via-ink/90 to-transparent`) o nome pegava a
+             faixa de fundo creme do estúdio, que é o que sobra no pé do
+             enquadramento, e perdia contraste. A cor vem de `var(--ink)` e não de
+             literal: paleta deste projeto vive em token, e cor cravada é o que já
+             deixou o `.slot-grid` fora da paleta numa virada de tema. */
+          "absolute inset-x-0 bottom-0 bg-[linear-gradient(to_top,var(--ink)_0%,var(--ink)_58%,transparent_100%)] px-3 pb-3 pt-10 transition-opacity duration-500",
+          nomesVisiveis ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <p className="display-3 leading-[1.15] text-ink-foreground">{m.nome}</p>
+        <p className="mt-1 text-base leading-[1.3] text-ink-muted">{m.especialidade}</p>
+      </div>
+    </div>
   );
 }
