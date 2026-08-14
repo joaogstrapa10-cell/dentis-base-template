@@ -104,6 +104,10 @@ na UI do Lovable, pede explicitamente e **para**.
 | — | Redesign a partir da referência real | **Concluída em 25/07** — ver §5.1 |
 | — | Imagens reais do site antigo | **Concluída em 29/07** — ver §5.1 |
 | — | Avaliações do Google | **Concluída em 03/08** — 4 avaliações reais no site, via print. Ver log §9 |
+| — | Repaginação por densidade (diagnóstico da Apple) | **Concluída em 03/08** — escala tipográfica fechada em 5 degraus, 2 seções deletadas |
+| — | Rodada de templates do usuário (Áreas, FAQ, casos, mapa) | **Concluída em 12/08** |
+| — | Ordem das seções, hero em colagem, corpo clínico em círculo | **Concluída em 13/08** — ver §5.2 |
+| — | Replicar para Rogério e Décio | **Não iniciada** — ver a ressalva de §5.2 e `docs/replicacao.md`, que precisa de correção antes |
 
 ---
 
@@ -134,9 +138,11 @@ O que a referência revelou e estava errado antes:
 
 **Monotonia estrutural era o problema mais fundo.** Seis das treze seções eram o mesmo
 componente: cabeçalho, parágrafo, fileira de cards iguais. Hoje cada uma tem uma ideia
-própria: Diferenciais é lista editorial numerada sem card; Áreas é índice interativo com
-revelação por hover; Depoimentos é carrossel; Bio é faixa escura de largura cheia;
-Tratamentos é um card largo dividido por fios. **Não reintroduzir grid de cards uniforme.**
+própria — **a lista atualizada é a tabela de anatomias em §5.2**, e é lá que se olha antes
+de criar seção nova; este parágrafo já descreveu três layouts diferentes e não vale mais
+como referência. O que continua valendo é a regra: **não reintroduzir grid de cards
+uniforme**, e a exceção registrada da grade de células, que já serve TRÊS seções e não pode
+servir uma quarta.
 
 **Imagens reais estão no site** desde 29/07: 12 fotos de estrutura, 9 retratos de equipe,
 3 fotos de depoentes e o logo. Baixadas pelo agente do Lovable, que tem rede própria —
@@ -146,50 +152,38 @@ Tratamentos é um card largo dividido por fios. **Não reintroduzir grid de card
 
 ## 5.2 Ponto de retomada
 
-**A extração do Google terminou, e voltou pela metade.** O agente do Lovable escreveu
-`public/imagens/originais/AVALIACOES-GOOGLE.json`, já no repo. Ler o array `falhas` dele antes
-de tentar qualquer coisa: **0 de 12 avaliações**. O Google entrega a IP de datacenter uma
-"visualização limitada do Google Maps" — nome, nota, endereço e telefone carregam, a aba de
-avaliações não renderiza (0 nós `[data-review-id]` após rolagem e expansão). O agente tentou
-quatro caminhos: o endpoint interno devolveu 404 e `search.google.com/local/reviews` caiu em
-reCAPTCHA por dois IPs distintos. **Não repetir a raspagem — é crédito gasto para o mesmo 403.**
+**Última sessão: 13/08.** Vinte commits, todos na `main`, o último `c71d8be`. Nada
+pendente no working tree, nada esperando OK.
 
-**O que entrou no site em 30/07** (`depoimentos.resumo`, tudo verificado no perfil):
+O que aconteceu nessa sessão, em uma linha cada — o log do §9 tem o detalhe e o
+porquê de cada decisão:
 
-| Campo | Valor |
+| O quê | Onde |
 |---|---|
-| `nota` | `5,0` — real; alimenta o texto e o preenchimento das estrelas |
-| `cta.href` | `search.google.com/local/writereview?placeid=ChIJzSb5vkjk3JQREHbgq6qWPhA` |
-| `place_id` | `ChIJzSb5vkjk3JQREHbgq6qWPhA` — confirmado: abre com nome e endereço certos |
-| `totalLabel` | segue placeholder; a contagem não aparece na visualização limitada |
+| Ordem das seções trocada pelo usuário | `src/routes/index.tsx`, e o menu/rodapé seguem ela |
+| 5 imagens nos cartões de Casos, uma por especialidade | `public/imagens/casos/` |
+| Hero refeito no template de COLAGEM: texto + 3 números à esquerda, 3 fotos à direita | `Hero.tsx` |
+| Foto da equipe recortada à mão (fundo transparente) e integrada ao bloco | `public/imagens/hero/` |
+| Corpo clínico virou CÍRCULO aberto por rolagem, nome dentro do cartão | `CorpoClinicoOrbita.tsx` |
+| CRO dos 8 saiu da tela (só a especialidade) — **ver o aviso legal abaixo** | `BioMembro` |
+| Gerador de `.html` avulso do layout | `scripts/congelar-html.mjs` |
+| `scroll-mt-12` nas seções: a pílula fixa cortava o título de toda âncora do menu | `Section.tsx` + 3 seções |
 
-O endereço do perfil confere com o do `clinica.ts` (Atílio Bório, 547, CEP 80045-120), o que
-confirma que o `place_id` é **desta** clínica e não de outra Suzuki de Curitiba.
+**O que fazer a seguir não está definido pelo usuário.** A última rodada foi de
+refino visual pedido item por item; ele encerrou com "salve tudo isso". Ou seja:
+abrir a próxima sessão perguntando o que ele quer, e não presumindo trabalho. As
+únicas frentes com trabalho conhecido são as pendências abaixo, e nenhuma delas
+depende de Claude — todas esperam dado da clínica ou decisão dele.
 
-**O caminho limpo para as avaliações, e é o único que falta:** `maps.googleapis.com` **está
-liberado** nesta sessão (testado, HTTP 200 — é a exceção à §7). Com uma chave da Places API dá
-para puxar oficialmente `rating`, `userRatingCount` e até 5 avaliações com autor, nota, texto,
-data e foto, sem raspagem:
+### O aviso que mais importa
 
-```bash
-curl -s "https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJzSb5vkjk3JQREHbgq6qWPhA&fields=name,rating,user_ratings_total,reviews&language=pt-BR&key=$CHAVE"
-```
-
-Alternativa sem chave: o usuário abre o perfil no navegador dele e cola as avaliações. Por
-avaliação bastam quatro campos — autor, nota, quando, texto — mais o total do resumo.
-
-Até uma das duas acontecer, `depoimentos.itens` **continua com os três depoimentos do site
-anterior**, marcados `fonte: "site"`. A decisão de 30/07 de removê-los vale **quando as do
-Google entrarem**; antes disso, removê-los esvazia a seção, e não se inventa avaliação
-atribuída a paciente real.
-
-O campo `fonte` existe para não atribuir origem falsa: `"site"` renderiza sem marca e sem
-estrelas, porque depoimento de site não tem nota e não veio do Google.
-
-**Achado colateral, que destrava uma pendência de publicação:** o perfil expõe o telefone
-**`+55 41 99206-1073`**. É celular, então serve de WhatsApp. **Não foi aplicado** — telefone
-está na coluna "só o usuário" abaixo, e número errado em site de clínica é caro. Ao confirmar,
-trocar `TELEFONE_NUMERO` em `src/content/clinica.ts:6`.
+⚠️ **O CRO dos oito profissionais não é mais exibido**, a pedido dele em 13/08
+("manter apenas a especialidade"). A Resolução CFO-196/2019 exige nome e número de
+inscrição na divulgação de cirurgião-dentista, e hoje o site só mostra CRO do
+responsável técnico (hero e título da Bio). O dado NÃO foi apagado: vive em
+`BioMembro.cro`, e voltar a exibir é uma linha em `CorpoClinicoOrbita.tsx` e outra
+em `Bio.tsx`. Isso foi dito ao usuário quando ele pediu. **Antes de publicar,
+confirmar com quem cuida do jurídico da clínica.**
 
 ### Pendências que bloqueiam publicação
 
@@ -201,9 +195,10 @@ trocar `TELEFONE_NUMERO` em `src/content/clinica.ts:6`.
 | ~~Logo em versão escura~~ | ✅ resolvido em 30/07: `brand.logoEscuro`, os 21 traços do SVG recoloridos | — |
 | CNPJ e nome jurídico | `[CNPJ]`, `[NOME DA CLÍNICA]` | usuário |
 | 3 casos da galeria: situação, conduta, duração e registro clínico | `[CASO 0N — ...]` na tela | clínica |
+| Latitude e longitude da clínica | não bloqueia: sem elas a Localização usa o embed do Google, que acha pelo endereço. Com elas, liga o mapa em mosaico de tiles | usuário — botão direito no ponto exato no Google Maps |
 
-**CRO é obrigatório em publicidade odontológica.** Enquanto os 8 estiverem com
-placeholder, o site não pode ir ao ar.
+**CRO é obrigatório em publicidade odontológica**, e desde 13/08 ele nem é exibido para os
+oito — ver o aviso no começo do §5.2. Enquanto isso não se resolver, o site não vai ao ar.
 
 **A galeria de casos é a seção mais exposta da CFO-196/2019.** Ela foi construída para
 documentar processo, não resultado: um registro por caso (não par), campos de situação /
@@ -220,8 +215,8 @@ gerar as variantes.
 
 ### Seções que ainda repetem o molde antigo
 
-**Nenhuma.** A lista fechou em 12/08. As treze seções têm anatomia própria, e são estas —
-usar como referência antes de criar seção nova, para não repetir gesto:
+**Nenhuma.** A lista fechou em 12/08. As ONZE seções da home têm anatomia própria, e são
+estas — **é esta tabela que se consulta antes de criar seção nova**, para não repetir gesto:
 
 | Anatomia | Seções |
 |---|---|
@@ -230,13 +225,15 @@ usar como referência antes de criar seção nova, para não repetir gesto:
 | Esteira contínua | Estrutura, Depoimentos |
 | Pilha de cartões arrastável | Casos (na home) |
 | Pilha de dossiês alternando de lado | Casos (em `/casos`) |
-| Grade de retratos sobre bloco escuro (mobile) + ÓRBITA aberta por rolagem em `lg`+ | Bio |
+| Grade de retratos (mobile) + CÍRCULO de oito retratos aberto por rolagem em `lg`+, nome dentro do cartão | Bio |
 | Título em cima, accordion em coluna única de largura cheia | FAQ |
 | Fileira de dados à esquerda + cartão de mapa à direita | Localização |
 | Faixa escura curta, texto à esquerda e chamada à direita | Chamada final |
 
-São **doze** seções: "Cada etapa, acompanhada." foi removida em 12/08 e a chamada
-final saiu do rodapé e virou seção na mesma data.
+São **onze** seções mais o rodapé, na ordem: Hero, Casos, Áreas, Bio, Diferenciais,
+Estrutura, Tratamentos, Depoimentos, FAQ, Localização, Chamada final, Footer. "Cada etapa,
+acompanhada." foi removida em 12/08 e a chamada final saiu do rodapé e virou seção na mesma
+data.
 
 ⚠️ **`GradeDeCelulas` já serve TRÊS seções**, e desde 13/08 a única coisa que
 distingue Tratamentos das outras duas é a contagem de colunas — a linha de fecho,
@@ -425,17 +422,44 @@ estrutural. Manter os dois convida a editar o errado.
 ```
 src/content/types.ts          tipos, um por seção + raiz Clinica, zero `any`
 src/content/clinica.ts        100% do conteúdo; telefone/whatsapp em constante única
-src/lib/contato.ts            telHref() / whatsappHref() — derivam o link do número exibido
+src/lib/contato.ts            telHref() / whatsappHref() / mapaHref() — derivam o link
+                              do próprio dado exibido
 src/hooks/useReveal.ts        IntersectionObserver à mão
-src/components/Reveal.tsx     wrapper de animação de entrada
-src/components/Header.tsx     header fixo, âncoras, CTA
-src/components/sections/      Section.tsx (wrapper de ritmo) + SectionHeader
-                              Hero, Selos, Diferenciais, Acompanhamento, Localizacao,
-                              Estrutura, Areas, Depoimentos, Comparativo, Tratamentos,
-                              Bio, Faq, Footer
-src/routes/index.tsx          lê clinica.ts e distribui props tipadas
-src/styles.css                @theme + :root com os tokens; --section-py
+src/components/Reveal.tsx     wrapper de animação de entrada (aceita `style`)
+src/components/Header.tsx     header fixo (pílula), marca que se apaga na rolagem
+src/components/Primitives.tsx PillButton, ArrowButton, TextLink
+src/components/IconesEspecialidade.tsx  8 ícones dentais desenhados aqui (o lucide
+                              não tem nenhum)
+
+src/components/sections/
+  Section.tsx                 wrapper de ritmo (--section-py) + SectionHeader + scroll-mt
+  Hero.tsx                    colagem de 3 fotos + fileira de números
+  Casos.tsx                   PilhaDeCasos (dossiê, /casos) + AvisoCasos + seção da home
+  GaleriaDeCasos.tsx          pilha arrastável de cartões (home)
+  Areas.tsx / Diferenciais.tsx / Tratamentos.tsx
+                              as três usam GradeDeCelulas — NÃO usar numa quarta
+  GradeDeCelulas.tsx          grade de células com fio, ícone e realce no hover
+  Bio.tsx                     faixa escura: responsável + corpo clínico
+  CorpoClinicoOrbita.tsx      círculo de 8 retratos aberto por rolagem (lg+)
+  Estrutura.tsx               esteira de 12 fotos
+  Depoimentos.tsx             esteira das 4 avaliações do Google
+  Faq.tsx                     accordion em coluna única, acessível por teclado
+  Localizacao.tsx             dados + MapaLocalizacao
+  MapaLocalizacao.tsx         mosaico de tiles (ou embed do Google sem coordenadas)
+  ChamadaFinal.tsx            faixa escura com o convite à avaliação
+  Footer.tsx                  navegação e créditos
+
+src/routes/index.tsx          ordem das seções + props tipadas
+src/routes/casos.tsx          página /casos, com todos os casos em dossiê
+src/styles.css                @theme + :root com os tokens; --section-py; escala de
+                              cinco degraus; máscaras e keyframes
+scripts/congelar-html.mjs     gera o layout num .html avulso (ver §"Como validar")
 ```
+
+⚠️ **Seções que EXISTIRAM e não voltam:** Selos, Acompanhamento ("Cada etapa,
+acompanhada.") e Comparativo ("nós vs. o convencional"). As três foram removidas com
+aprovação explícita, cada uma por um motivo registrado no §9. Se aparecerem numa
+variante, é sinal de que alguém partiu de um commit antigo.
 
 **Ordem de render, ditada pelo usuário em 13/08** (a de antes era herança da
 geração inicial, com seções que já não existem):
@@ -656,16 +680,49 @@ fases 0 e 1, já espelhado aqui, e o ambiente não permite misturar owners.
 
 **Ordem de leitura para entrar no assunto:**
 
-1. `CLAUDE.md` §5.1 (o que o site é hoje) e §5.2 (o que fazer agora)
-2. `docs/referencia-layout.md` §8 (tokens em vigor e por que são esses)
-3. `docs/imagens.md` (o que já veio e o que falta)
-4. `docs/replicacao.md` (Fase 5, gerar as variantes)
+1. `CLAUDE.md` §5.2 — o ponto de retomada, a tabela de anatomias e o aviso do CRO
+2. `CLAUDE.md` §8 — mapa dos arquivos, qual projeto do Lovable é o certo, e qual URL
+   mostra o trabalho (essa confusão já aconteceu duas vezes)
+3. `CLAUDE.md` §9 — o log. É longo, mas é onde está o **porquê** de cada decisão, e
+   quase toda ideia "nova" que aparecer já foi tentada e reprovada uma vez
+4. `docs/referencia-layout.md` §9 (paleta medida) e §8 (tokens em vigor)
+5. `public/imagens/*/LEIA-ME.txt` — proveniência de cada imagem, com o que foi
+   descartado e por quê. `hero/` e `casos/` são os que mais importam
+6. `docs/replicacao.md` — só quando for gerar as variantes, e **corrigir antes**: ele
+   ainda promete que trocar de clínica é trocar tokens, o que vale para mudar de
+   matiz e não para inverter claro/escuro (decisão de 30/07)
 
 **Não ler** `docs/prompt-lovable.md` como especificação: é o prompt da geração inicial,
 descreve um site escuro que não existe mais. Só a seção final, de correções, segue válida.
 
+**Como o usuário trabalha, e vale saber antes da primeira resposta:** ele manda
+template de terceiro (código colado ou print) e pede para aplicar na identidade da
+Suzuki; corrige em rodadas curtas, às vezes trocando de ideia na mensagem seguinte
+("arcada dentária" → "um sorriso bem bonito"); e pede remoção com verbo explícito
+("essa seção quero que retire"). Ausência de menção **não** é pedido de remoção — foi
+assim que o FAQ ficou. Ele não lê diff: o que funciona é screenshot, o `.html`
+congelado, e resposta curta dizendo o que mudou e o que foi medido.
+
 ### Armadilhas já pagas, não repetir
 
+- **`overflow-hidden` mata `position: sticky`.** Ancestral com overflow diferente de
+  `visible` vira o contêiner de rolagem do sticky e, como não rola, o elemento não gruda.
+  Foi por isso que o bloco da Bio perdeu o `overflow-hidden`.
+- **`rounded-full` em caixa NÃO quadrada dá estádio, não elipse** — o raio infinito é
+  clampado e sobram lados retos. `rounded-[50%]` é sempre metade de cada eixo.
+- **Ao dimensionar por medição, medir o PIOR caso da lista, não o primeiro item.** Medi a
+  altura do rótulo só da primeira peça do círculo; os nomes quebram em número diferente de
+  linhas e o cálculo aprovou um tamanho que sobrepunha 26px nas peças de nome longo.
+- **Screenshot em dev engana duas vezes:** o TanStack recompila no primeiro acesso de cada
+  página, então esperar por CRONÔMETRO pega a página pré-hidratação (elemento em opacity 0
+  que parece bug). Esperar pela CONDIÇÃO (`waitForFunction`). E texto de 16px em cor secundária
+  sobre bloco escuro desaparece a olho num screenshot de página inteira — **amostrar pixel
+  antes de acreditar que algo não foi pintado**.
+- **Print de um botão que se repete não identifica qual é** — amostrar a cor computada antes
+  de apagar. Cinco "Agendar" na página, quatro visualmente iguais.
+- **Imagem anexada pelo usuário não existe como arquivo no disco.** O base64 está no
+  transcript da sessão (`/root/.claude/projects/.../<sessão>.jsonl`); é de lá que se extrai
+  para poder processar os pixels. Script em `scratchpad/extrai-anexo.mjs`.
 - **`ch` em `max-width`** resolve contra a fonte do elemento onde está, não do filho.
   `max-w-[42ch]` num wrapper de 16px estrangula um `h2` de 52px. Aconteceu três vezes.
 - **`leading-[...]` com `text-[clamp(...)]`** não funciona no Tailwind v4: o utilitário de
