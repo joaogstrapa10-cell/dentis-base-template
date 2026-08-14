@@ -456,9 +456,11 @@ src/styles.css                @theme + :root com os tokens; --section-py; escala
 scripts/congelar-html.mjs     gera o layout num .html avulso (ver §"Como validar")
 ```
 
-⚠️ **Seções que EXISTIRAM e não voltam:** Selos, Acompanhamento ("Cada etapa,
-acompanhada.") e Comparativo ("nós vs. o convencional"). As três foram removidas com
-aprovação explícita, cada uma por um motivo registrado no §9. Se aparecerem numa
+⚠️ **Seções e formas que EXISTIRAM e não voltam:** Selos, Acompanhamento ("Cada etapa,
+acompanhada."), Comparativo ("nós vs. o convencional") e a **ÓRBITA do corpo clínico**
+(`CorpoClinicoOrbita.tsx`, 413 linhas, apagado). As quatro saíram com aprovação ou pedido
+explícito, cada uma por um motivo registrado no §9 — a órbita com as palavras "não quero
+mais a órbita". Se aparecerem numa
 variante, é sinal de que alguém partiu de um commit antigo.
 
 **Ordem de render, ditada pelo usuário em 13/08** (a de antes era herança da
@@ -668,6 +670,9 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-14 — O cinza que vira cor no hover ficou atrás de `@media (hover:hover)`, e não é detalhe: sem isso, no celular — de onde vem a maioria — os nove retratos ficariam permanentemente em preto e branco, porque não há como acender a foto sem ponteiro.
 - 2026-08-14 — `aspect-[3/4]` na esteira é a proporção NATIVA dos arquivos, então o recorte é ZERO. É o oposto da grade que saiu, que recortava em quadrado para ganhar ~180px de altura — numa esteira a altura é fixa e não há esse imposto a pagar.
 - 2026-08-14 — Velocidade em 40s para ~152rem de faixa (~61px/s), **metade** da esteira de Estrutura. Lá passam ambientes, aqui passam nomes, e nome que passa rápido demais não chega a ser lido.
+
+- 2026-08-14 — ⚠️ **A ÓRBITA foi restaurada por engano e apagada de novo no mesmo dia.** Eu li "volte para o prompt do código que mandei por último" como o template do círculo, restaurei os 413 linhas do `CorpoClinicoOrbita.tsx` de `c71d8be` e comecei a validar — o "último código" era o template do CARROSSEL, que o usuário colou em seguida, e ele fechou o assunto com **"não quero mais a órbita"**. Nada disso virou commit: o estado bom já era o `e474c9f`. Lição de processo: quando o pedido é "volte para o código que mandei", **confirmar QUAL antes de mexer** — havia dois templates na mesa e o histórico do git tornou o desfazer barato, mas a rodada foi perdida.
+- 2026-08-14 — A esteira do corpo clínico bate item por item com o que o usuário pediu do template ("apenas o carrossel com as fotos e o elemento em cada card com nome e especialidade"), medido em 1440 e 390: cartão 288×384 (3:4, **0% de recorte**), 8 retratos mais 8 cópias `aria-hidden` fechando o laço, laço de 40s, painel com nome e especialidade dentro de cada cartão, zero overflow. A página caiu de 11,4 para **10,1 telas** com a saída do trilho de 190vh.
 
 ---
 
