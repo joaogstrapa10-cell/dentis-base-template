@@ -150,21 +150,34 @@ export function BioSection({ data }: { data: BioContent }) {
                       alt={m.retratoAlt}
                       className="aspect-square w-full object-[50%_22%]"
                     />
-                    {/* Nome e credencial ABAIXO do retrato, não ao lado: em
+                    {/* Nome e ESPECIALIDADE abaixo do retrato, não ao lado: em
                         coluna estreita, nome ao lado da foto obriga a truncar —
                         e nome de profissional truncado com reticências num site
-                        de clínica é falha de conteúdo, não de layout. */}
+                        de clínica é falha de conteúdo, não de layout.
+                        O CRO saiu da tela em 13/08 a pedido do usuário; o dado
+                        fica em `m.cro` — ver a nota do tipo `BioMembro`. */}
                     <p className="mt-4 text-base font-medium text-ink-foreground">
                       {m.nome}
                     </p>
                     <p className="mt-1 text-small leading-[1.4] text-ink-muted">
-                      {m.credencial}
+                      {m.especialidade}
                     </p>
                   </Reveal>
                 ))}
               </ul>
 
-              <div className="hidden lg:block">
+              {/* A órbita SAI do container de 1200px e ocupa a largura do BLOCO.
+                  É o que decide o tamanho dos retratos, e a conta é direta: com
+                  oito peças numa elipse, o vão horizontal entre a peça diagonal e a
+                  lateral é `0,293·raioX`, e o raio sai da largura disponível. Preso
+                  nos 1120px de conteúdo, esse vão é 132px — teto de ~128px por
+                  retrato. Solto na largura do bloco (1408px em 1440), vira 180px, e
+                  o retrato pode ir a 160px, que é o que o usuário pediu em 13/08
+                  ("aumentar os cards, estão muito pequenos ainda").
+                  A margem negativa é `2,5rem` (o `px-10` do container) mais a folga
+                  entre o container e o bloco, que é `50vw - 616px` — 616 = 600 do
+                  meio-container mais os 16px de goteira da seção. */}
+              <div className="hidden lg:-mx-[calc(2.5rem+max(0px,50vw-616px))] lg:block">
                 <CorpoClinicoOrbita
                   membros={data.corpoClinicoMembros}
                   label={data.corpoClinicoLabel}

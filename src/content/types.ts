@@ -370,9 +370,21 @@ export type TratamentosContent = {
 
 export type BioMembro = {
   nome: string;
-  /** CRO e especialidade. Enquanto não vierem da página /equipe/, fica o
-   *  placeholder nomeado — CRO é obrigatório em publicidade odontológica. */
-  credencial: string;
+  /**
+   * ⚠️ O CRO ESTÁ NO CONTEÚDO MAS NÃO É EXIBIDO desde 13/08, por pedido do
+   * usuário: "tirar o CRO de cada um deles, manter apenas a especialidade".
+   *
+   * O campo FICA, e é de propósito: a Resolução CFO-196/2019 exige nome e número
+   * de inscrição no CRO na divulgação de cirurgião-dentista, e o site só mostra
+   * CRO do responsável técnico (no hero e no título desta seção). Voltar a exibir
+   * é uma linha em `CorpoClinicoOrbita.tsx` e outra em `Bio.tsx` — apagar o dado
+   * do conteúdo tornaria isso uma coleta nova.
+   *
+   * Enquanto a clínica não fornecer, os dois seguem em placeholder nomeado.
+   */
+  cro: string;
+  /** Especialidade registrada. É o que aparece embaixo do nome. */
+  especialidade: string;
   /** Caminho em /public. `null` renderiza o slot rotulado. */
   retrato: string | null;
   retratoAlt: string;
