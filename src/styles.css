@@ -248,6 +248,22 @@
   letter-spacing: -0.018em;
 }
 
+/* Mesmo TAMANHO do degrau acima, com peso de texto corrido — para quando 22px é
+   usado como linha de APOIO e não como título. É o caso da nota do corpo clínico:
+   a 22px em peso 600 ela competia com o rótulo em vez de explicá-lo.
+   ⚠️ Existe como classe, e não como `font-normal` no componente, porque os três
+   degraus acima são declarados FORA de `@layer` — e estilo sem camada vence
+   qualquer utilitário do Tailwind, que vive em `@layer utilities`. Medido: com
+   `display-3 font-normal` o peso computado continuava 600, e o `leading-[...]` do
+   mesmo elemento também era ignorado. Não é uma sexta medida de fonte: é o mesmo
+   1.375rem da escala. */
+.display-3-leve {
+  font-weight: 400;
+  font-size: 1.375rem;
+  line-height: 1.45;
+  letter-spacing: -0.014em;
+}
+
 /* ---------- Superfície escura ---------- */
 
 /* O quadriculado sobre os blocos escuros (`.ink-grid`) foi REMOVIDO em 30/07 a

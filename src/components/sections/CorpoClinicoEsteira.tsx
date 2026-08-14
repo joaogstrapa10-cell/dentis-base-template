@@ -37,7 +37,10 @@ import type { BioMembro } from "@/content/types";
  *  cima, ancorado embaixo. */
 function CartaoMembro({ m }: { m: BioMembro }) {
   return (
-    <div className="group relative aspect-[3/4] w-60 shrink-0 overflow-hidden rounded-2xl border border-ink-border bg-ink-elevated md:w-72">
+    // `group` saiu junto com o `grayscale`: existia só para o
+    // `group-hover:grayscale-0`, e classe de estado sem estado é convite a
+    // reintroduzir o efeito por engano.
+    <div className="relative aspect-[3/4] w-60 shrink-0 overflow-hidden rounded-2xl border border-ink-border bg-ink-elevated md:w-72">
       {m.retrato ? (
         <img
           src={m.retrato}
@@ -47,12 +50,15 @@ function CartaoMembro({ m }: { m: BioMembro }) {
              zero — o enquadramento do ensaio já é o certo e não há o que
              reposicionar.
 
-             Cinza que vira cor no hover, como no template. Só onde existe
-             ponteiro (`@media (hover:hover)`): no celular não há como acender a
-             foto, e nove retratos permanentemente em cinza deixariam o corpo
-             clínico em preto e branco para quem entra pelo telefone — que é a
-             maioria. */
-          className="h-full w-full object-cover transition-[filter] duration-500 [@media(hover:hover)]:grayscale [@media(hover:hover)]:group-hover:grayscale-0"
+             ⚠️ SEM `grayscale`, e não é esquecimento. O template deixa as fotos em
+             cinza e as acende no hover; entrou assim e o usuário reprovou em 14/08
+             ("as imagens estão em preto e branco, coloque no padrão que elas já
+             estavam"). Os retratos são do mesmo ensaio de estúdio e é a COR deles
+             — fundo creme e uniforme cinza-azulado — que faz os nove lerem como
+             série sobre o bloco escuro, que é o mesmo argumento que sustentava a
+             grade antiga. Em cinza, além disso, a foto só existe de verdade para
+             quem tem ponteiro. Não devolver o filtro. */
+          className="h-full w-full object-cover"
         />
       ) : (
         <div
@@ -94,9 +100,22 @@ export function CorpoClinicoEsteira({
 
   return (
     <div>
-      <div className="max-w-[52ch]">
-        <p className="display-3 text-ink-foreground">{label}</p>
-        <p className="mt-3 text-base leading-[1.6] text-ink-muted">{nota}</p>
+      {/* Um degrau acima na escala, a pedido do usuário em 14/08: `display-2` no
+          rótulo e `display-3` na nota, contra `display-3`/`text-base` antes. Com
+          isso "Corpo clínico" passa a ser PAR do nome do responsável, que também é
+          `display-2` — o que é correto aqui: as duas são as duas metades do bloco
+          escuro, separadas por um fio, e não título e subtítulo.
+
+          Largura em `rem`, não em `ch`: `ch` resolve contra a fonte do elemento
+          onde está, e este wrapper é 16px — os 52ch davam ~416px e estrangulavam
+          um rótulo que agora tem 36px. É a mesma armadilha que já apareceu três
+          vezes no projeto. */}
+      <div className="max-w-[44rem]">
+        <p className="display-2 text-ink-foreground">{label}</p>
+        {/* `display-3-leve`: mesmo 22px do degrau, com peso de texto. Não dá para
+            resolver com `font-normal` aqui — os degraus da escala são declarados
+            fora de `@layer` no styles.css e vencem os utilitários do Tailwind. */}
+        <p className="display-3-leve mt-4 text-ink-muted">{nota}</p>
       </div>
 
       {/* Sangra até as bordas do bloco escuro (`-mx-5 md:-mx-10` desfaz o `px` do
