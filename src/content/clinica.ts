@@ -607,10 +607,9 @@ export const clinica: Clinica = {
       "Graduação, PUC-PR",
     ],
     corpoClinicoLabel: "Corpo clínico",
-    // Aparece no centro da órbita, quando os retratos se afastam. Descreve o que
-    // a seção mostra, sem prometer nada: são oito profissionais e as
-    // especialidades que a clínica lista. Não inventar "os melhores" nem número
-    // de anos aqui.
+    // Abre a esteira de retratos. Descreve o que a seção mostra, sem prometer
+    // nada: são oito profissionais e as especialidades que a clínica lista. Não
+    // inventar "os melhores" nem número de anos aqui.
     corpoClinicoNota:
       "Oito profissionais, cada especialidade conduzida por quem se especializou nela.",
     corpoClinicoMembros: [

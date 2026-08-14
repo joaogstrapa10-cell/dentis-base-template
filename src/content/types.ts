@@ -377,8 +377,8 @@ export type BioMembro = {
    * O campo FICA, e é de propósito: a Resolução CFO-196/2019 exige nome e número
    * de inscrição no CRO na divulgação de cirurgião-dentista, e o site só mostra
    * CRO do responsável técnico (no hero e no título desta seção). Voltar a exibir
-   * é uma linha em `CorpoClinicoOrbita.tsx` e outra em `Bio.tsx` — apagar o dado
-   * do conteúdo tornaria isso uma coleta nova.
+   * é uma linha no cartão de `CorpoClinicoEsteira.tsx` — apagar o dado do
+   * conteúdo tornaria isso uma coleta nova.
    *
    * Enquanto a clínica não fornecer, os dois seguem em placeholder nomeado.
    */
@@ -400,9 +400,8 @@ export type BioContent = {
   corpo: string;
   titulacao: string[];
   corpoClinicoLabel: string;
-  /** Linha curta que aparece no CENTRO da órbita, quando os retratos saem de cima
-   *  dela. Só é usada na versão em órbita (`lg`+); a grade do mobile mostra apenas
-   *  o `corpoClinicoLabel`. */
+  /** Linha curta abaixo do `corpoClinicoLabel`, acima da esteira de retratos.
+   *  Descreve o que a seção mostra — não é chamada nem promessa. */
   corpoClinicoNota: string;
   corpoClinicoMembros: BioMembro[];
 };

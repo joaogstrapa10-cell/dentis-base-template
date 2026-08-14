@@ -152,8 +152,8 @@ servir uma quarta.
 
 ## 5.2 Ponto de retomada
 
-**Última sessão: 13/08.** Vinte commits, todos na `main`, o último `c71d8be`. Nada
-pendente no working tree, nada esperando OK.
+**Última sessão: 14/08.** Vinte e um commits na `main`, o último `HEAD`. Nada pendente
+no working tree, nada esperando OK.
 
 O que aconteceu nessa sessão, em uma linha cada — o log do §9 tem o detalhe e o
 porquê de cada decisão:
@@ -164,7 +164,7 @@ porquê de cada decisão:
 | 5 imagens nos cartões de Casos, uma por especialidade | `public/imagens/casos/` |
 | Hero refeito no template de COLAGEM: texto + 3 números à esquerda, 3 fotos à direita | `Hero.tsx` |
 | Foto da equipe recortada à mão (fundo transparente) e integrada ao bloco | `public/imagens/hero/` |
-| Corpo clínico virou CÍRCULO aberto por rolagem, nome dentro do cartão | `CorpoClinicoOrbita.tsx` |
+| Corpo clínico: passou por círculo aberto por rolagem (13/08) e terminou em ESTEIRA em laço (14/08) | `CorpoClinicoEsteira.tsx` |
 | CRO dos 8 saiu da tela (só a especialidade) — **ver o aviso legal abaixo** | `BioMembro` |
 | Gerador de `.html` avulso do layout | `scripts/congelar-html.mjs` |
 | `scroll-mt-12` nas seções: a pílula fixa cortava o título de toda âncora do menu | `Section.tsx` + 3 seções |
@@ -181,8 +181,8 @@ depende de Claude — todas esperam dado da clínica ou decisão dele.
 ("manter apenas a especialidade"). A Resolução CFO-196/2019 exige nome e número de
 inscrição na divulgação de cirurgião-dentista, e hoje o site só mostra CRO do
 responsável técnico (hero e título da Bio). O dado NÃO foi apagado: vive em
-`BioMembro.cro`, e voltar a exibir é uma linha em `CorpoClinicoOrbita.tsx` e outra
-em `Bio.tsx`. Isso foi dito ao usuário quando ele pediu. **Antes de publicar,
+`BioMembro.cro`, e voltar a exibir é uma linha no cartão de
+`CorpoClinicoEsteira.tsx`. Isso foi dito ao usuário quando ele pediu. **Antes de publicar,
 confirmar com quem cuida do jurídico da clínica.**
 
 ### Pendências que bloqueiam publicação
@@ -222,10 +222,10 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 |---|---|
 | Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
 | Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Áreas (4 col.), Diferenciais (4 col.), **Tratamentos (3 col.)** |
-| Esteira contínua | Estrutura, Depoimentos |
+| Esteira contínua | Estrutura, Depoimentos, **corpo clínico da Bio** |
 | Pilha de cartões arrastável | Casos (na home) |
 | Pilha de dossiês alternando de lado | Casos (em `/casos`) |
-| Grade de retratos (mobile) + CÍRCULO de oito retratos aberto por rolagem em `lg`+, nome dentro do cartão | Bio |
+| Esteira de retratos em laço, painel de nome dentro do cartão | Bio (corpo clínico) |
 | Título em cima, accordion em coluna única de largura cheia | FAQ |
 | Fileira de dados à esquerda + cartão de mapa à direita | Localização |
 | Faixa escura curta, texto à esquerda e chamada à direita | Chamada final |
@@ -440,7 +440,7 @@ src/components/sections/
                               as três usam GradeDeCelulas — NÃO usar numa quarta
   GradeDeCelulas.tsx          grade de células com fio, ícone e realce no hover
   Bio.tsx                     faixa escura: responsável + corpo clínico
-  CorpoClinicoOrbita.tsx      círculo de 8 retratos aberto por rolagem (lg+)
+  CorpoClinicoEsteira.tsx     esteira de retratos em laço, uma forma para toda largura
   Estrutura.tsx               esteira de 12 fotos
   Depoimentos.tsx             esteira das 4 avaliações do Google
   Faq.tsx                     accordion em coluna única, acessível por teclado
@@ -658,9 +658,16 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-13 — **Eu medi a altura do rótulo só da PRIMEIRA peça, e as oito não têm a mesma altura**: "Ana Lúcia" cabe numa linha e "Cláudio Kleinhans" quebra em duas. O cálculo aprovava 128px de retrato e o render mostrava 26px de sobreposição nas peças de nome longo. Ao dimensionar por medição, **medir o pior caso da lista, não o primeiro item**.
 - 2026-08-13 — Duas armadilhas de geometria da órbita, as duas medidas: (a) **girar a fase meio passo é PIOR** — tira os retratos dos extremos dos eixos, mas cria dois pares de mesmo X separados só pelo vão vertical, que é menor que a peça (17px de sobreposição em 1440, 55px em 1280); com a fase em -90° nenhum par vizinho compartilha X. (b) **tolerância de 1px no teste não basta**: o cálculo "passava" e o render ainda mostrava 3 a 5px de sobreposição, por subpixel e pela borda de 2px do retrato. Folga de 8px resolve.
 - 2026-08-13 — **O CRO dos oito saiu da tela**, a pedido do usuário ("manter apenas a especialidade"), e o campo FICOU no conteúdo — `credencial` virou `cro` + `especialidade`. ⚠️ A CFO-196/2019 exige nome e número de inscrição na divulgação de cirurgião-dentista; hoje o site só mostra CRO do responsável técnico (hero e título da Bio). Voltar a exibir é uma linha em cada um dos dois layouts. Apagar o dado do conteúdo tornaria isso uma coleta nova.
-- 2026-08-13 — Custo medido da animação: a página foi de 9,7 para **11,4 telas** em 1440 (o trilho tem 190vh, ou seja ~810px de curso). É o preço de uma animação comandada por rolagem, e está registrado porque o diagnóstico de 03/08 concluiu que o problema da página era densidade, não comprimento — se o comprimento voltar a incomodar, encurtar o trilho é uma linha.
+- 2026-08-13 — Custo medido da animação: a página foi de 9,7 para **11,4 telas** em 1440 (o trilho tinha 190vh, ou seja ~810px de curso). Isso foi revertido em 14/08 junto com a órbita — a esteira não usa trilho e a página devolveu os ~810px.
 - 2026-08-13 — O congelamento em `.html` precisou aprender a órbita: o estado dela é estilo inline escrito pelo React, então voltando ao topo ela era serializada FECHADA. O script agora rola até o ponto de abertura ANTES de serializar — a posição de rolagem não vai para o arquivo, o estilo inline vai.
 - 2026-08-13 — Três detalhes menores do congelamento, todos medidos: (a) `loading="lazy"` tem de sair, senão imagem fora da viewport nem decodifica — 5 das 7 de /casos vinham "quebradas"; (b) o `src` original precisa virar `data-congelado` com um GIF de 1px no lugar, senão o navegador dispara 29 requisições `file:///imagens/...` antes de o script trocar pelo data URI; (c) a marca volta a ser `absolute`, porque `fixed` sem o JS que a apaga deixa o logo branco fixo por cima das seções claras.
+
+- 2026-08-14 — **O corpo clínico virou ESTEIRA em laço**, de um template que o usuário mandou, e a ÓRBITA de 13/08 foi deletada junto (`CorpoClinicoOrbita.tsx`, 413 linhas). Três ganhos medidos, e é por isso que a troca se sustenta: retrato de 188px para **288px** (o maior que o corpo clínico já teve, contra a auditoria de 03/08 que achou 28 das 32 fotos abaixo de 15% da largura da tela); **uma forma só** para toda largura, em vez de órbita em `lg`+ mais grade abaixo; e a seção deixou de precisar do trilho de 190vh, devolvendo ~810px de página.
+- 2026-08-14 — **É a TERCEIRA esteira do site** (Estrutura e Depoimentos são as outras), e passou porque o usuário pediu. O que a justifica aqui é o mesmo que justificava a grade: os nove retratos são do mesmo ensaio de estúdio e leem como série. ⚠️ Se aparecer pedido de uma quarta, vale a conversa que travou a `GradeDeCelulas` em três.
+- 2026-08-14 — Do template entrou o carrossel, o cartão em retrato e o painel de identificação; **ficaram fora** o cabeçalho com ícone em quadrado azul, os rabiscos em SVG e o depoimento no pé do bloco — nenhum dos três é corpo clínico, e os dois primeiros reintroduziriam vocabulário que saiu em 03/08. O painel do template era CLARO e virou escuro: as fotos são de estúdio com fundo creme, e painel claro sobre elas desaparece.
+- 2026-08-14 — O cinza que vira cor no hover ficou atrás de `@media (hover:hover)`, e não é detalhe: sem isso, no celular — de onde vem a maioria — os nove retratos ficariam permanentemente em preto e branco, porque não há como acender a foto sem ponteiro.
+- 2026-08-14 — `aspect-[3/4]` na esteira é a proporção NATIVA dos arquivos, então o recorte é ZERO. É o oposto da grade que saiu, que recortava em quadrado para ganhar ~180px de altura — numa esteira a altura é fixa e não há esse imposto a pagar.
+- 2026-08-14 — Velocidade em 40s para ~152rem de faixa (~61px/s), **metade** da esteira de Estrutura. Lá passam ambientes, aqui passam nomes, e nome que passa rápido demais não chega a ser lido.
 
 ---
 
@@ -707,7 +714,13 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 
 - **`overflow-hidden` mata `position: sticky`.** Ancestral com overflow diferente de
   `visible` vira o contêiner de rolagem do sticky e, como não rola, o elemento não gruda.
-  Foi por isso que o bloco da Bio perdeu o `overflow-hidden`.
+  Foi por isso que o bloco da Bio perdeu o `overflow-hidden` — e ele **continua sem**, o que
+  está certo: a esteira que substituiu a órbita recorta nela mesma (`esteira-mask`).
+- **Esteira parada precisa virar rolável.** Sob `prefers-reduced-motion` a regra global
+  congela a animação, e dentro de `overflow-hidden` isso deixaria os últimos itens
+  inalcançáveis — daí o `motion-reduce:overflow-x-auto` obrigatório em cada esteira.
+- **Filtro de hover em imagem só atrás de `@media (hover:hover)`.** Sem isso, o estado de
+  repouso (cinza) fica permanente no celular, que é a maioria do tráfego.
 - **`rounded-full` em caixa NÃO quadrada dá estádio, não elipse** — o raio infinito é
   clampado e sobram lados retos. `rounded-[50%]` é sempre metade de cada eixo.
 - **Ao dimensionar por medição, medir o PIOR caso da lista, não o primeiro item.** Medi a

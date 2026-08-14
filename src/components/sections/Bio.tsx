@@ -1,11 +1,11 @@
 import type { BioContent } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
-import { CorpoClinicoOrbita } from "@/components/sections/CorpoClinicoOrbita";
+import { CorpoClinicoEsteira } from "@/components/sections/CorpoClinicoEsteira";
 
 /**
  * Estrutura: FAIXA ESCURA de largura cheia. Em cima, retrato grande do
  * responsável à esquerda e texto corrido à direita. Embaixo, o corpo clínico
- * como GRADE DE RETRATOS, sem cartão nenhum.
+ * como ESTEIRA de retratos em laço (`CorpoClinicoEsteira.tsx`).
  *
  * É o contraponto de ritmo da página: depois de uma sequência de seções claras,
  * uma faixa escura funciona como respiro e reancora a atenção. Não usa o
@@ -22,16 +22,11 @@ import { CorpoClinicoOrbita } from "@/components/sections/CorpoClinicoOrbita";
  *
  * Os nove retratos (os oito do corpo clínico mais o do responsável) são fotos de
  * estúdio do mesmo ensaio: mesmo fundo creme, mesmo uniforme, mesma proporção
- * 3:4. Isso é o que faz a grade funcionar sobre o bloco escuro — nove campos
- * claros de tom idêntico leem como série, não como remendo.
- *
- * A grade recorta em QUADRADO, e é uma escolha de ritmo, não de gosto: em 3:4,
- * a proporção nativa, as duas fileiras levavam a seção a 2,13 telas, contra as
- * ~1,15 de média das outras — a única fora do compasso da página. O quadrado
- * devolve ~180px sem tirar retrato nenhum da grade, e o corte só perde fundo
- * creme: o enquadramento (`object-[50%_22%]`) mantém cabeça e ombros, que é o
- * conteúdo de um retrato de equipe. O retrato do responsável fica em 3:4, sem
- * recorte, porque ali a foto é o argumento e não um item de série.
+ * 3:4. Isso é o que faz a série funcionar sobre o bloco escuro — nove campos
+ * claros de tom idêntico leem como conjunto, não como remendo. É também o que
+ * permite que a esteira exiba todos em 3:4 sem recortar nada: o enquadramento do
+ * ensaio já é o certo. O retrato do responsável fica maior e à parte, porque ali
+ * a foto é o argumento e não um item de série.
  */
 
 /** Retrato real quando `src` existe; slot rotulado enquanto não existe. */
@@ -129,57 +124,19 @@ export function BioSection({ data }: { data: BioContent }) {
             {/* Corpo clínico. O fio acima substitui as bordas dos cartões que
                 saíram: sem ele as duas metades do bloco encostam sem transição.
 
-                DUAS FORMAS PARA O MESMO CONTEÚDO, escolhidas pelo espaço:
-                - `lg`+ : ÓRBITA com abertura por rolagem, do template que o
-                  usuário trouxe em 13/08. Ver `CorpoClinicoOrbita.tsx`.
-                - abaixo de `lg`: a GRADE de sempre. A órbita precisa de
-                  `2·raio + cartão + rótulo` de largura, e num celular de 390px o
-                  raio cairia para ~55px, com os retratos empilhados uns sobre os
-                  outros. Grade não é fallback pobre aqui: é a forma que funciona
-                  na largura disponível. */}
+                UMA FORMA SÓ, para todas as larguras, desde 14/08: a esteira de
+                retratos que o usuário pediu. Antes eram duas — órbita aberta por
+                rolagem em `lg`+ e grade abaixo dela —, e manter duas formas do
+                mesmo conteúdo foi o que deixou recorte extremo passar sem ser
+                visto em 12/08. Ver `CorpoClinicoEsteira.tsx`. */}
             <div className="mt-20 border-t border-ink-border pt-12">
-              <p className="text-base text-ink-muted lg:sr-only">
-                {data.corpoClinicoLabel}
-              </p>
-
-              <ul className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:hidden">
-                {data.corpoClinicoMembros.map((m, i) => (
-                  <Reveal key={m.nome} delay={i * 60} as="li">
-                    <Retrato
-                      src={m.retrato}
-                      alt={m.retratoAlt}
-                      className="aspect-square w-full object-[50%_22%]"
-                    />
-                    {/* Nome e ESPECIALIDADE abaixo do retrato, não ao lado: em
-                        coluna estreita, nome ao lado da foto obriga a truncar —
-                        e nome de profissional truncado com reticências num site
-                        de clínica é falha de conteúdo, não de layout.
-                        O CRO saiu da tela em 13/08 a pedido do usuário; o dado
-                        fica em `m.cro` — ver a nota do tipo `BioMembro`. */}
-                    <p className="mt-4 text-base font-medium text-ink-foreground">
-                      {m.nome}
-                    </p>
-                    <p className="mt-1 text-small leading-[1.4] text-ink-muted">
-                      {m.especialidade}
-                    </p>
-                  </Reveal>
-                ))}
-              </ul>
-
-              {/* ⚠️ A roda fica DENTRO do container, alinhada com o resto da seção.
-                  Ela já sangrou até a largura do bloco por uma rodada, com margem
-                  negativa, para caber retrato maior — e o usuário reprovou: "ficou
-                  muito expansivo e muito para a direita". Sangrar só ajudava
-                  enquanto a órbita era ELIPSE; num círculo o limite é a ALTURA do
-                  palco, não a largura, então a sangria dava largura que o círculo
-                  não usa e espalhava a composição de graça. Não devolver. */}
-              <div className="hidden lg:block">
-                <CorpoClinicoOrbita
+              <Reveal>
+                <CorpoClinicoEsteira
                   membros={data.corpoClinicoMembros}
                   label={data.corpoClinicoLabel}
                   nota={data.corpoClinicoNota}
                 />
-              </div>
+              </Reveal>
             </div>
           </div>
         </div>
