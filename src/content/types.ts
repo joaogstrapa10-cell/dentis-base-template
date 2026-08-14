@@ -388,6 +388,10 @@ export type BioContent = {
   corpo: string;
   titulacao: string[];
   corpoClinicoLabel: string;
+  /** Linha curta que aparece no CENTRO da órbita, quando os retratos saem de cima
+   *  dela. Só é usada na versão em órbita (`lg`+); a grade do mobile mostra apenas
+   *  o `corpoClinicoLabel`. */
+  corpoClinicoNota: string;
   corpoClinicoMembros: BioMembro[];
 };
 

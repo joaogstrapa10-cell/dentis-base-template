@@ -109,6 +109,21 @@ async function congelar(rota, arquivo, titulo) {
   await p.evaluate(() => window.scrollTo(0, 0));
   await p.waitForTimeout(700);
 
+  /* A ÓRBITA do corpo clínico tem a abertura comandada pela rolagem, e o estado
+     dela vive em estilo inline escrito pelo React. Voltando ao topo, ela é
+     serializada FECHADA — um aglomerado de retratos, que não é o que a seção
+     mostra. Aqui a página é levada até o ponto em que a órbita está aberta e
+     serializada ali: a posição de rolagem não vai para o arquivo, mas o estilo
+     inline vai. Sem JS no arquivo congelado, é este estado que fica. */
+  await p.evaluate(() => {
+    const palco = document.querySelector("#responsavel .sticky");
+    if (!palco) return;
+    const trilho = palco.parentElement;
+    const r = trilho.getBoundingClientRect();
+    window.scrollTo(0, r.top + window.scrollY + (r.height - window.innerHeight));
+  });
+  await p.waitForTimeout(900);
+
   const presos = await p.evaluate(
     () =>
       [...document.querySelectorAll("main *, footer *")].filter((el) => {

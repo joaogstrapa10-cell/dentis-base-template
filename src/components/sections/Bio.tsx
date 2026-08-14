@@ -1,5 +1,6 @@
 import type { BioContent } from "@/content/types";
 import { Reveal } from "@/components/Reveal";
+import { CorpoClinicoOrbita } from "@/components/sections/CorpoClinicoOrbita";
 
 /**
  * Estrutura: FAIXA ESCURA de largura cheia. Em cima, retrato grande do
@@ -71,7 +72,14 @@ function Retrato({
 export function BioSection({ data }: { data: BioContent }) {
   return (
     <section id="responsavel" className="scroll-mt-12 px-3 md:px-4">
-      <div className="relative isolate overflow-hidden rounded-3xl bg-ink">
+      {/* ⚠️ SEM `overflow-hidden`, e é requisito da órbita, não descuido: o palco
+          dela é `position: sticky`, e um ancestral com `overflow` diferente de
+          `visible` vira o contêiner de rolagem do sticky — que não rola, então o
+          elemento simplesmente não gruda. Estava aqui por cópia do padrão dos
+          outros blocos escuros; medido depois de tirar, nada transborda o canto
+          arredondado. Ao acrescentar peça que sangre neste bloco, recortar nela e
+          não aqui. */}
+      <div className="relative isolate rounded-3xl bg-ink">
         {/* Padding PRÓPRIO, menor que o `--section-py` da página (160px em
             desktop), e a diferença é conceitual: `--section-py` é o espaço ENTRE
             seções que dividem o mesmo fundo, onde o vão é a própria separação.
@@ -119,11 +127,22 @@ export function BioSection({ data }: { data: BioContent }) {
             </div>
 
             {/* Corpo clínico. O fio acima substitui as bordas dos cartões que
-                saíram: sem ele as duas metades do bloco encostam sem transição. */}
-            <div className="mt-20 border-t border-ink-border pt-12">
-              <p className="text-base text-ink-muted">{data.corpoClinicoLabel}</p>
+                saíram: sem ele as duas metades do bloco encostam sem transição.
 
-              <ul className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
+                DUAS FORMAS PARA O MESMO CONTEÚDO, escolhidas pelo espaço:
+                - `lg`+ : ÓRBITA com abertura por rolagem, do template que o
+                  usuário trouxe em 13/08. Ver `CorpoClinicoOrbita.tsx`.
+                - abaixo de `lg`: a GRADE de sempre. A órbita precisa de
+                  `2·raio + cartão + rótulo` de largura, e num celular de 390px o
+                  raio cairia para ~55px, com os retratos empilhados uns sobre os
+                  outros. Grade não é fallback pobre aqui: é a forma que funciona
+                  na largura disponível. */}
+            <div className="mt-20 border-t border-ink-border pt-12">
+              <p className="text-base text-ink-muted lg:sr-only">
+                {data.corpoClinicoLabel}
+              </p>
+
+              <ul className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:hidden">
                 {data.corpoClinicoMembros.map((m, i) => (
                   <Reveal key={m.nome} delay={i * 60} as="li">
                     <Retrato
@@ -144,6 +163,14 @@ export function BioSection({ data }: { data: BioContent }) {
                   </Reveal>
                 ))}
               </ul>
+
+              <div className="hidden lg:block">
+                <CorpoClinicoOrbita
+                  membros={data.corpoClinicoMembros}
+                  label={data.corpoClinicoLabel}
+                  nota={data.corpoClinicoNota}
+                />
+              </div>
             </div>
           </div>
         </div>
