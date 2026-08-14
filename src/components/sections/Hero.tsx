@@ -245,23 +245,35 @@ export function HeroSection({ data }: { data: HeroContent }) {
                  cartão maior foram desenhados para uma coluna de ~600px, e nesta,
                  de 416px, três cartões daquele tamanho viram uma pilha sem
                  respiro. */
-              /* AUMENTAR A COLAGEM foi pedido em 13/08, e o espaço não podia vir
-                 da largura do texto: a headline precisa de 644px em 1440 e a
-                 grade só tem 1120 de conteúdo, então a coluna da colagem tem teto
-                 de ~436px ali. O espaço vem da MARGEM DO BLOCO — o container para
-                 em 1200px e o bloco sangra até a janela, sobrando 40px de padding
-                 mais metade do excedente de cada lado. A margem direita negativa
-                 empurra a colagem para dentro dessa faixa, sem tocar na coluna do
-                 texto: a trilha da grade continua em `min(38vw, 26rem)`.
-                 Os degraus são o que caber com folga em cada faixa, medido:
-                 24px em lg (a partir de 1024 sobram 40), 64px em xl (sobram 80 em
-                 1280) e 112px em 2xl (sobram 208 em 1536). */
+              /* AUMENTAR A COLAGEM foi pedido duas vezes em 13/08, e o espaço
+                 nunca pôde vir da largura do TEXTO. A conta que fecha isso:
+                 a `.display-1` tem teto de 3rem, então a linha mais longa da
+                 headline mede ~644px de 1280px para cima, e a trilha do texto na
+                 grade é `1120 - 40 (gap) - 416 (colagem)` = 664px. Sobram 20px.
+                 Ou seja a TRILHA da colagem está no limite e não pode crescer.
+
+                 Todo o crescimento vem da MARGEM DO BLOCO: o container para em
+                 1200px, o bloco sangra até a janela, e entre um e outro há 40px de
+                 padding mais metade do excedente da janela. A margem direita
+                 negativa leva a colagem para dentro dessa faixa sem tocar na
+                 coluna do texto.
+
+                 Uma expressão em vez de uma escada de breakpoints:
+                 `min(12rem, max(0px, 50vw - 600px) + 2rem)`
+                 — `max(0px, 50vw - 600px)` é a folga de um lado (0 até 1200px de
+                   janela, metade do excedente depois);
+                 — `+ 2rem` são 32px dos 40px de padding, deixando 8px de ar para o
+                   cartão não encostar na janela;
+                 — o teto de 12rem existe porque sem ele, em 1920, a colagem iria a
+                   808px e ficaria maior que a coluna de texto.
+                 Resultado medido: 421px de colagem em 1024, 488 em 1280, 568 em
+                 1440 e 608 de 1600 para cima. */
               /* Sem `w-full`, e é isso que faz a margem negativa funcionar: item
                  de grade com largura AUTO estica para a trilha MENOS as margens,
                  então margem negativa o alarga. Com `width: 100%` a largura fica
                  presa na trilha e a margem negativa não alarga nada — só desloca
                  o que vem depois. */
-              <div className="relative h-[23rem] sm:h-[27rem] lg:-mr-6 lg:h-[24rem] xl:-mr-16 xl:h-[27rem] 2xl:-mr-28 2xl:h-[30rem]">
+              <div className="relative h-[24rem] sm:h-[28rem] lg:mr-[calc(-1*min(12rem,max(0px,50vw_-_600px)+2rem))] lg:h-[27rem] xl:h-[30rem] 2xl:h-[33rem]">
                 <FormaFlutuante className="left-[18%] top-2 h-16 w-16 rounded-full bg-gold/15" />
                 <FormaFlutuante className="bottom-6 right-[22%] h-12 w-12 rounded-xl bg-accent/25 [animation-delay:1.4s]" />
                 <FormaFlutuante className="bottom-[26%] left-1 h-6 w-6 rounded-full bg-gold/25 [animation-delay:2.6s]" />
@@ -271,7 +283,7 @@ export function HeroSection({ data }: { data: HeroContent }) {
                   <CartaColagem
                     imagem={data.colagem[0]}
                     atraso={120}
-                    className="left-1/2 top-0 w-56 -translate-x-1/2 sm:w-64 lg:w-[17rem] xl:w-[19rem] 2xl:w-[21rem]"
+                    className="left-1/2 top-0 w-64 -translate-x-1/2 sm:w-72 lg:w-[20rem] xl:w-[22.5rem] 2xl:w-[24rem]"
                   />
                 ) : null}
                 {/* `top-[42%]` e não `top-1/3` como no template: a um terço, este
@@ -282,14 +294,14 @@ export function HeroSection({ data }: { data: HeroContent }) {
                   <CartaColagem
                     imagem={data.colagem[1]}
                     atraso={260}
-                    className="right-0 top-[42%] h-40 w-40 sm:h-48 sm:w-48 lg:h-52 lg:w-52 xl:h-56 xl:w-56 2xl:h-64 2xl:w-64"
+                    className="right-0 top-[42%] h-44 w-44 sm:h-52 sm:w-52 lg:h-60 lg:w-60 xl:h-[17rem] xl:w-[17rem] 2xl:h-72 2xl:w-72"
                   />
                 ) : null}
                 {data.colagem[2] ? (
                   <CartaColagem
                     imagem={data.colagem[2]}
                     atraso={400}
-                    className="bottom-0 left-0 h-36 w-36 sm:h-44 sm:w-44 lg:h-44 lg:w-44 xl:h-48 xl:w-48 2xl:h-56 2xl:w-56"
+                    className="bottom-0 left-0 h-40 w-40 sm:h-48 sm:w-48 lg:h-52 lg:w-52 xl:h-56 xl:w-56 2xl:h-64 2xl:w-64"
                   />
                 ) : null}
               </div>
