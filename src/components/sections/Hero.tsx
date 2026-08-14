@@ -68,45 +68,60 @@ const ICONES: Record<HeroStatIcone, React.ReactElement> = {
 };
 
 /**
- * Um cartão da colagem.
+ * Uma peça da colagem, e `semFundo` decide se ela é FIGURA ou CARTÃO. São dois
+ * acabamentos diferentes, não uma variação de estilo:
  *
- * `semFundo` decide DUAS coisas, e as duas por conteúdo, não por gosto:
+ * FIGURA (`semFundo: true`, a equipe recortada) — sem fundo, sem sombra, sem
+ * canto arredondado. A imagem fica direto sobre o bloco verde, com
+ * `.figura-recortada` dissolvendo as bordas onde a moldura da foto original
+ * cortou gente. Foi o pedido do usuário em 13/08: "essa foto eu quero que fique
+ * em relação ao site, condizente". Antes ela vinha num passe-partout CLARO, e o
+ * retângulo branco era a coisa mais acesa do hero — lia como print colado no
+ * bloco, não como parte dele. Também usa a proporção nativa do arquivo, então
+ * `object-cover` não tem o que cortar: GENTE não se corta, e no recorte da
+ * equipe as pessoas das duas pontas já estão na borda.
  *
- * 1. O acabamento. A figura recortada ganha passe-partout claro — ela não tem
- *    fundo próprio, e o recorte foi feito sobre branco de estúdio, então o claro é
- *    o fundo natural dela. Foto de ambiente preenche o cartão inteiro: moldura
- *    interna ali só encolheria a foto.
- * 2. A PROPORÇÃO, e é a parte que evita recorte errado. O cartão da figura
- *    recortada recebe a proporção nativa do arquivo, então `object-cover` não tem
- *    o que cortar: GENTE não se corta, e no recorte da equipe as pessoas das duas
- *    pontas já estão na borda. Os cartões de ambiente ficam quadrados, como no
- *    template, e aí o corte é de ~33% da largura — em foto de sala isso é
- *    enquadramento, não perda de assunto.
+ * CARTÃO (`semFundo: false`, as fotos) — fundo, sombra, canto arredondado e
+ * FLUTUAÇÃO, também a pedido ("faça essas outras duas em movimento"). Fica
+ * quadrado, como no template, e aí o corte é de ~33% da largura: em foto de
+ * ambiente ou plano fechado isso é enquadramento, não perda de assunto, e o
+ * `foco` corrige quando o assunto não está no meio do arquivo.
+ *
+ * ⚠️ A flutuação NÃO pode ir para a figura da equipe: o keyframe escreve a
+ * propriedade `translate`, e o cartão do centro é posicionado com
+ * `-translate-x-1/2` — a animação zeraria a centralização e a figura pularia meia
+ * largura para a direita.
  */
 function CartaColagem({
   imagem,
   className,
   atraso,
+  atrasoFlutuacao,
 }: {
   imagem: HeroImagem;
   /** Só LARGURA quando a imagem é recortada (a altura sai da proporção), largura
    *  e altura quando é foto de ambiente. */
   className?: string;
   atraso: number;
+  /** Defasagem da flutuação, em ms. Sem ela as duas fotos sobem e descem juntas,
+   *  o que lê como a página inteira respirando em vez de duas peças soltas. */
+  atrasoFlutuacao?: number;
 }) {
+  const figura = imagem.semFundo;
   return (
     <Reveal
       delay={atraso}
       className={cn(
-        "absolute overflow-hidden rounded-2xl shadow-[0_28px_70px_-22px_oklch(0_0_0/0.55)]",
-        imagem.semFundo ? "bg-surface p-2" : "bg-ink-elevated",
+        "absolute",
+        figura
+          ? null
+          : "carta-flutua overflow-hidden rounded-2xl bg-ink-elevated shadow-[0_28px_70px_-22px_oklch(0_0_0/0.55)]",
         className,
       )}
-      style={
-        imagem.semFundo
-          ? { aspectRatio: `${imagem.largura} / ${imagem.altura}` }
-          : undefined
-      }
+      style={{
+        ...(figura ? { aspectRatio: `${imagem.largura} / ${imagem.altura}` } : null),
+        ...(atrasoFlutuacao ? { animationDelay: `${atrasoFlutuacao}ms` } : null),
+      }}
     >
       <img
         src={imagem.src}
@@ -114,7 +129,8 @@ function CartaColagem({
         width={imagem.largura}
         height={imagem.altura}
         className={cn(
-          "h-full w-full rounded-xl object-cover",
+          "h-full w-full object-cover",
+          figura ? "figura-recortada" : "rounded-xl",
           imagem.foco === "esquerda"
             ? "object-left"
             : imagem.foco === "direita"
@@ -286,22 +302,32 @@ export function HeroSection({ data }: { data: HeroContent }) {
                     className="left-1/2 top-0 w-64 -translate-x-1/2 sm:w-72 lg:w-[20rem] xl:w-[22.5rem] 2xl:w-[24rem]"
                   />
                 ) : null}
-                {/* `top-[42%]` e não `top-1/3` como no template: a um terço, este
-                    cartão cobria 77px da altura do cartão da equipe, entrando no
-                    corpo das pessoas da ponta direita. A 42% a sobreposição cai
-                    para ~40px, que é o encaixe do template sem comer gente. */}
+                {/* AS DUAS POSIÇÕES ESTÃO TROCADAS em relação ao template, a
+                    pedido do usuário em 13/08: "a outra imagem do sorriso quero
+                    ela mais à esquerda da seção". O sorriso é `colagem[1]` e
+                    passou a ocupar o canto de BAIXO À ESQUERDA, que é o ponto mais
+                    à esquerda que a colagem alcança sem invadir a coluna do texto;
+                    o atendimento assumiu a faixa da direita.
+                    Os TAMANHOS não foram trocados junto: o sorriso continua sendo
+                    o maior dos dois, agora à esquerda. */}
                 {data.colagem[1] ? (
                   <CartaColagem
                     imagem={data.colagem[1]}
                     atraso={260}
-                    className="right-0 top-[42%] h-44 w-44 sm:h-52 sm:w-52 lg:h-60 lg:w-60 xl:h-[17rem] xl:w-[17rem] 2xl:h-72 2xl:w-72"
+                    atrasoFlutuacao={0}
+                    className="bottom-0 left-0 h-44 w-44 sm:h-52 sm:w-52 lg:h-60 lg:w-60 xl:h-[17rem] xl:w-[17rem] 2xl:h-72 2xl:w-72"
                   />
                 ) : null}
+                {/* `top-[42%]` e não `top-1/3` como no template: a um terço, este
+                    cartão cobria 77px da altura da figura da equipe, entrando no
+                    corpo das pessoas da ponta direita. A 42% a sobreposição cai
+                    para ~40px, que é o encaixe do template sem comer gente. */}
                 {data.colagem[2] ? (
                   <CartaColagem
                     imagem={data.colagem[2]}
                     atraso={400}
-                    className="bottom-0 left-0 h-40 w-40 sm:h-48 sm:w-48 lg:h-52 lg:w-52 xl:h-56 xl:w-56 2xl:h-64 2xl:w-64"
+                    atrasoFlutuacao={1800}
+                    className="right-0 top-[42%] h-40 w-40 sm:h-48 sm:w-48 lg:h-52 lg:w-52 xl:h-56 xl:w-56 2xl:h-64 2xl:w-64"
                   />
                 ) : null}
               </div>

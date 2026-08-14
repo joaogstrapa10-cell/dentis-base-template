@@ -306,6 +306,32 @@
   .retrato-flutua { animation: none; }
 }
 
+/* ---------- Cartões de foto da colagem do hero ----------
+   "Faça essas outras duas em movimento", pedido do usuário em 13/08. Keyframe
+   próprio, e não o `.retrato-flutua`, por duas razões de escala: num cartão de
+   ~250px os 8px daquele são quase imperceptíveis, e um cartão é objeto solto —
+   deriva um pouco mais sem ficar cômico, o que não valia para um retrato de 600px
+   de uma pessoa. Amplitude 0,75rem, ciclo mais lento.
+
+   A defasagem entre os dois vem inline (`animationDelay`): em fase, os dois sobem
+   e descem juntos e a leitura é a página respirando, não duas peças flutuando.
+
+   ⚠️ NÃO aplicar na figura da equipe. O keyframe escreve a propriedade
+   `translate`, e o cartão do centro é posicionado com `-translate-x-1/2` — a
+   animação zeraria a centralização e ele pularia meia largura para a direita. */
+@keyframes carta-flutua {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -0.75rem; }
+}
+
+.carta-flutua {
+  animation: carta-flutua 5.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carta-flutua { animation: none; }
+}
+
 /* ---------- Cartas da galeria de casos ----------
    A geometria de cada carta (deslocamento, giro, escala, opacidade) é calculada
    em JS e escrita inline, porque depende da distância dela até o centro da pilha.
