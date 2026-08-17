@@ -16,15 +16,16 @@ import type { ArcadaContent, ArcadaEtapa } from "@/content/types";
  * certo — cinco estados são cinco estados, e nenhuma transição de opacidade
  * inventa os quadros que faltam no meio.
  *
- * Agora os cinco quadros são as PONTAS de quatro clipes gerados por interpolação
- * (1→2, 2→3, 3→4, 4→5), concatenados num vídeo só, e a rolagem controla o
- * `currentTime` dele. Isso resolve dois problemas de uma vez: a fluidez, e a
- * inconsistência de enquadramento entre os quadros — o modelo interpola entre duas
- * pontas fixas, então a câmera não pula mais.
+ * Agora os dois quadros do conteúdo são as PONTAS de um clipe gerado por
+ * interpolação entre eles, e a rolagem controla o `currentTime` dele. Isso resolve
+ * dois problemas de uma vez: a fluidez, e a inconsistência de enquadramento — o
+ * modelo interpola entre duas pontas fixas, então a câmera não pula mais.
  *
- * Os cinco quadros CONTINUAM no conteúdo e não são resíduo: o primeiro é o `poster`
+ * Os dois quadros CONTINUAM no conteúdo e não são resíduo: o primeiro é o `poster`
  * do vídeo (o que aparece antes de o arquivo carregar) e o último é o estado
- * mostrado sob `prefers-reduced-motion`, onde não há animação nenhuma.
+ * mostrado sob `prefers-reduced-motion`, onde não há animação nenhuma. Os dois são
+ * os quadros EXATOS de início e fim extraídos do próprio clipe, não gerações
+ * separadas — é o que garante que a troca de poster para vídeo não salte.
  *
  * ⚠️ O QUE NÃO VEIO DO TEMPLATE, E CONTINUA FORA
  * Ele comanda o progresso sequestrando a rolagem: `preventDefault` em `wheel` e
@@ -50,13 +51,17 @@ import type { ArcadaContent, ArcadaEtapa } from "@/content/types";
  * a reclamação de 17/08.
  *
  * Histórico: 300vh para 20s, 560vh quando o vídeo foi para 50s, 380vh quando voltou a
- * ~30s, e 280vh agora que o usuário pediu "o vídeo precisa ser curto" e a sequência
- * ficou em dois clipes (~20s). A taxa fica em ~0,11 s/vh em todas, que é o ritmo
- * aprovado — o número anda junto com a duração, sempre.
+ * ~30s, 280vh quando ficou em dois clipes (~20s) e 240vh agora, com o clipe único de
+ * 10s. A taxa fica em ~0,12 s/vh em todas, que é o ritmo aprovado — o número anda
+ * junto com a duração, sempre.
  *
- * Custo: a abertura ocupa 2,8 telas de rolagem.
+ * A conta, para a próxima vez que o clipe mudar: o trecho escrubado é
+ * `ARCADA_DESCIDA_INICIO - ARCADA_INTRO_ATE` do curso, e o curso é `trilho - 100vh`.
+ * Aqui: 0,60 × 140vh = 84vh de rolagem para 10,04s, ou seja 0,120 s/vh.
+ *
+ * Custo: a abertura ocupa 2,4 telas de rolagem.
  */
-export const ARCADA_TRILHO_VH = 280;
+export const ARCADA_TRILHO_VH = 240;
 
 /**
  * Fração do curso em que a marca grande do centro termina de sair.
@@ -64,16 +69,54 @@ export const ARCADA_TRILHO_VH = 280;
  * Caiu de 0,22 para 0,10 quando o trilho foi para 560vh: 22% de um curso de 460vh
  * seriam ~101vh de rolagem só para a logo encolher, ou seja uma tela inteira antes
  * de a arcada começar. Em fração de curso, este número tem de ser relido a cada
- * mudança do trilho.
+ * mudança do trilho — e subiu para 0,14 quando o trilho caiu para 240vh, justamente
+ * para a logo continuar levando ~20vh de rolagem em vez de 13vh.
  */
-export const ARCADA_INTRO_ATE = 0.1;
+export const ARCADA_INTRO_ATE = 0.14;
 
 /**
- * Quantos passos a revelação tem por arcada. Catorze é o número de posições de dente
- * de uma arcada adulta sem os sisos, e é o que faz a revelação parecer "um dente por
- * vez" em vez de uma cortina lisa: a máscara avança em degraus, não continuamente.
+ * Fração do curso em que o vídeo ACABA e a descida começa.
+ *
+ * É constante de módulo, e não um número solto no corpo do componente, porque dois
+ * lugares dependem dela: a escrubagem termina aqui, e a descida começa aqui. Se as
+ * duas divergirem, a arcada desce enquanto ainda está ganhando dentes — que é o
+ * oposto do pedido, "AO FINALIZAR, essa arcada precisa ir descendo".
  */
-const DENTES_POR_ARCADA = 14;
+const ARCADA_DESCIDA_INICIO = 0.74;
+
+/**
+ * ONDE A DESCIDA TEM DE PARAR: largura e centro horizontal da arcada do hero, em px,
+ * calculados a partir da janela.
+ *
+ * Isso não é refinamento, é o pedido: "precisa parar no lugar desse sorriso na seção
+ * onde começa o site de fato". Com escala e deslocamento cravados a mão a peça errava
+ * o alvo por 131px em 1440 e por 192px em 390 — no celular ela terminava com menos da
+ * metade do tamanho do sorriso que deveria virar, e aí a aterrissagem não lê como o
+ * mesmo objeto, lê como duas imagens diferentes.
+ *
+ * ⚠️ ESTES NÚMEROS ESPELHAM AS CLASSES DE `Hero.tsx`, e é a única duplicação do
+ * projeto que não dá para evitar: o alvo tem de ser conhecido ANTES de o hero existir
+ * na tela, então não há como medi-lo no DOM. Se mudar lá a trilha da coluna
+ * (`lg:grid-cols-[1fr_min(38vw,26rem)]`), a sangria (`lg:mr-[…min(12rem,…)]`), o
+ * `gap-10`, o `max-w-[1200px]` ou o `px-5`/`md:px-10`, muda aqui na mesma rodada.
+ */
+function alvoDoHero(vw: number) {
+  const rem = 16;
+  if (vw >= 1024) {
+    /* Em `lg`+ a arcada vive na coluna da direita e SANGRA para fora do container. */
+    const trilha = Math.min(0.38 * vw, 26 * rem);
+    const sangria = Math.min(12 * rem, Math.max(0, 0.5 * vw - 600) + 2 * rem);
+    const largura = trilha + sangria;
+    const conteudo = Math.min(vw, 1200) - 2 * 40;
+    const colunaTexto = conteudo - 40 - trilha;
+    const inicio = (vw - conteudo) / 2 + colunaTexto + 40;
+    return { largura, centroX: inicio + largura / 2 };
+  }
+  /* Abaixo de `lg` a grade colapsa: a arcada ocupa a largura do conteúdo e fica
+     centrada, então o deslocamento horizontal da descida tem de ser ZERO. */
+  const px = vw >= 768 ? 40 : 20;
+  return { largura: Math.min(vw, 1200) - 2 * px, centroX: vw / 2 };
+}
 
 /** Estado de repouso e fallback: o quadro, ou o slot nomeado se o arquivo faltar. */
 function Quadro({ etapa, slotRotulo }: { etapa: ArcadaEtapa; slotRotulo: string }) {
@@ -107,7 +150,12 @@ export function ArcadaHero({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [p, setP] = useState(0);
   const [semAnimacao, setSemAnimacao] = useState(false);
-  const [compacto, setCompacto] = useState(false);
+  /* Medidas da janela em px. Não há `window` no SSR, então nascem no caso desktop e o
+     efeito corrige na montagem — mesmo padrão do `compacto` que existia aqui antes. O
+     custo é um quadro com o alvo errado, e ele é invisível porque em `p = 0` a descida
+     vale zero de todo jeito. */
+  const [janela, setJanela] = useState({ w: 1440, h: 900 });
+  const compacto = janela.w < 768;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -118,7 +166,12 @@ export function ArcadaHero({
   }, []);
 
   useEffect(() => {
-    const ver = () => setCompacto(window.innerWidth < 768);
+    const ver = () =>
+      setJanela((a) =>
+        a.w === window.innerWidth && a.h === window.innerHeight
+          ? a
+          : { w: window.innerWidth, h: window.innerHeight },
+      );
     ver();
     window.addEventListener("resize", ver);
     return () => window.removeEventListener("resize", ver);
@@ -142,16 +195,18 @@ export function ArcadaHero({
       setP(fr);
 
       /* ESCRUBAGEM: a rolagem define o instante do vídeo. O trecho útil começa
-         quando a marca sai (`ARCADA_INTRO_ATE`) e termina no fim do trilho.
+         quando a marca sai (`ARCADA_INTRO_ATE`) e termina onde a descida começa
+         (`ARCADA_DESCIDA_INICIO`) — o último dente tem de estar no lugar ANTES de a
+         arcada começar a descer, senão ela desce se formando.
          `readyState >= 1` garante que a duração já é conhecida; sem isso o
          `currentTime` é descartado em silêncio. O limiar de 1/50s evita mandar
          `currentTime` a cada quadro para o mesmo instante, o que engasga a
-         decodificação em vídeo longo. */
+         decodificação. */
       const v = videoRef.current;
       if (v && v.readyState >= 1 && Number.isFinite(v.duration) && v.duration > 0) {
+        const janela = ARCADA_DESCIDA_INICIO - ARCADA_INTRO_ATE;
         const t =
-          Math.min(1, Math.max(0, (fr - ARCADA_INTRO_ATE) / (1 - ARCADA_INTRO_ATE))) *
-          v.duration;
+          Math.min(1, Math.max(0, (fr - ARCADA_INTRO_ATE) / janela)) * v.duration;
         if (Math.abs(v.currentTime - t) > 0.02) v.currentTime = t;
       }
     };
@@ -193,43 +248,58 @@ export function ArcadaHero({
   const largura = inicioL + (fimL - inicioL) * suave;
   const altura = largura / (16 / 9);
 
-  /* O GIRO do fecho, pedido em 17/08: "ao terminar arcada 100%, quero que faça ela
-     em movimento giratório e que ela pare no lugar onde estão as fotos".
-     Uma volta completa nos últimos 18% do trilho, e a peça encolhe junto — é o que
-     entrega a leitura de que ela sai desta seção e vai aterrissar no hero de baixo,
-     onde a arcada agora ocupa o lugar que era das três fotos.
-     A volta é 360° e não 180°: parando de cabeça para baixo, a arcada superior
-     viraria a inferior e a peça leria como erro. */
-  const giroInicio = 0.82;
-  const giroFrac = Math.min(1, Math.max(0, (p - giroInicio) / (1 - giroInicio)));
-  const giro = giroFrac * 360;
-  const encolhe = 1 - 0.28 * giroFrac;
+  /* A DESCIDA do fecho, pedida em 17/08: "ao finalizar, essa arcada precisa ir
+     descendo, com efeitos e bem feito, e precisa parar no lugar desse sorriso na
+     seção onde começa o site de fato".
+     Ela SUBSTITUI o giro de 360° da versão anterior — o usuário trocou a ideia.
+     Nos últimos 26% do trilho a arcada desce, encolhe e escorrega para a direita,
+     mirando a coluna direita do hero, que é onde o sorriso agora vive.
+
+     A curva é `ease-out` calculada à mão (1 - (1-x)³) e não linear, e é isso que faz
+     a peça DESACELERAR ao chegar em vez de bater: é a diferença entre "descer" e
+     "cair". Foi o pedido de "bem feito".
+
+     A escala e o deslocamento horizontal do fim NÃO são valores escolhidos: saem de
+     `alvoDoHero`, ou seja da geometria da coluna onde o sorriso vive. Foram números
+     cravados até esta rodada, e a medição mostrou que erravam o alvo por 131px em 1440
+     e por 192px em 390 — ver a nota da função. */
+  const bruta = Math.min(
+    1,
+    Math.max(0, (p - ARCADA_DESCIDA_INICIO) / (1 - ARCADA_DESCIDA_INICIO)),
+  );
+  const desce = 1 - Math.pow(1 - bruta, 3);
+  const descidaY = desce * 26;
+
+  const alvo = alvoDoHero(janela.w);
+  /* Largura REAL da caixa no fim da abertura, para a escala sair de uma razão entre
+     duas medidas e não de um palpite. O `min` repete a guarda de `maxHeight: 84svh`:
+     em janela baixa e larga é a altura que limita, e ignorar isso daria uma escala
+     calculada sobre uma largura que a caixa nunca teve. */
+  const larguraFinal = Math.min((fimL / 100) * janela.w, 0.84 * janela.h * (16 / 9));
+  /* Teto e piso por segurança: janela extrema não deve produzir escala absurda. Acima
+     de 1 é legítimo e acontece no celular e no tablet, onde o sorriso do hero é mais
+     largo que a caixa da abertura — ali a arcada desce CRESCENDO um pouco.
+     ⚠️ O teto era 1,2 e ERRAVA a faixa de tablet: em 768 o alvo pede 1,357 e em 1023
+     pede 1,397, então a arcada parava 80px e 133px menor que o sorriso. 1,45 cobre a
+     faixa inteira; medido em 360, 767, 768, 1023, 1024, 1440 e 1920. */
+  const escalaAlvo = Math.min(1.45, Math.max(0.3, alvo.largura / larguraFinal));
+  const encolhe = 1 - (1 - escalaAlvo) * desce;
+  const descidaX = ((alvo.centroX - janela.w / 2) * desce) / janela.w * 100;
 
   const primeira = data.etapas[0];
   const ultima = data.etapas[data.etapas.length - 1];
 
-  /* ── PASSO 2: os dentes surgindo um a um ──────────────────────────────────────
-     Pedido do usuário: "os dentes corretos nos lugares certos irem surgindo um a
-     um, começando pela parte de cima da esquerda para a direita, e depois a mesma
-     coisa para a parte de baixo".
+  /* ⚠️ NÃO EXISTE MAIS a revelação por `clip-path` que empilhava um quadro com
+     dentes sobre o quadro com implantes e ia descobrindo em faixas. Ela entregava a
+     ordem certa (superior da esquerda para a direita, depois a inferior) mas o
+     usuário reprovou na hora, e com razão: "você apenas colocou uma imagem em cima,
+     quero algo intuitivo e profissional, como a gente já havia feito mais cedo".
 
-     A ordem NÃO vem do modelo de vídeo — três tentativas falharam, ele acende
-     vários dentes juntos ou fora de sequência. Aqui os dois quadros são o MESMO
-     enquadramento (o segundo foi gerado com o primeiro como referência), então dá
-     para deixar o quadro com dentes empilhado por cima do quadro com implantes e
-     revelá-lo em faixas: primeiro a metade de cima, depois a de baixo, sempre da
-     esquerda para a direita.
-
-     O `Math.floor` é o que transforma a cortina lisa em passos de dente: sem ele a
-     borda de revelação desliza continuamente e não lê como "um a um". */
-  const revelaCima = Math.min(1, Math.max(0, (p - 0.18) / 0.34));
-  const revelaBaixo = Math.min(1, Math.max(0, (p - 0.52) / 0.34));
-  const passo = (x: number) =>
-    Math.ceil(x * DENTES_POR_ARCADA) / DENTES_POR_ARCADA;
-  /* `inset(top right bottom left)`: a faixa cresce pela DIREITA, encolhendo o
-     recorte de 100% até 0%. A metade de cima recorta 50% em baixo, e vice-versa. */
-  const clipCima = `inset(0% ${100 - passo(revelaCima) * 100}% 50% 0%)`;
-  const clipBaixo = `inset(50% ${100 - passo(revelaBaixo) * 100}% 0% 0%)`;
+     Quem coloca os dentes é o VÍDEO ESCRUBADO pela rolagem, que é o mecanismo que
+     ele aprovou antes — a rolagem controla o `currentTime` e os dentes entram um a
+     um dentro da própria animação. A ordem passou a ser responsabilidade do prompt
+     do clipe, e o clipe é gerado entre dois quadros fixos: as duas arcadas
+     implantadas e as duas com os dentes. Não reintroduzir a sobreposição. */
 
   /* ── Sem animação: um quadro só, o estado final, em tamanho contido. Nada de
      trilho, nada de sticky, nada de vídeo — animação comandada por rolagem é o caso
@@ -278,8 +348,10 @@ export function ArcadaHero({
           {/* A MÍDIA. Aparece atrás da marca e cresce. */}
           <div
             /* `video-fundido`: dissolve as quatro bordas no fundo. Ver a nota da
-               classe no styles.css — tirar raio e sombra não bastou, porque o verde
-               de dentro do vídeo não é exatamente o `--ink` da página. */
+               classe no styles.css — tirar raio e sombra não bastou, e a medição diz
+               por quê: o fundo do clipe é `#001518`, MAIS ESCURO que o `--ink` da
+               página (~`#013435`). Sem a máscara, os 4 cantos desenham um retângulo
+               escuro, que é o "quadrado" que o usuário reclamou duas vezes. */
             className="video-fundido relative"
             style={{
               width: `${largura}vw`,
@@ -291,7 +363,9 @@ export function ArcadaHero({
               /* Duas escalas multiplicadas de propósito: `midiaEntra` é a entrada no
                  começo e `encolhe` é a saída no fim. */
               scale: `${(0.92 + 0.08 * midiaEntra) * encolhe}`,
-              rotate: `${giro}deg`,
+              /* `translate` e não `top`/`left`: é propriedade animável sem reflow, e
+                 no Tailwind v4 é a mesma propriedade que o resto do projeto usa. */
+              translate: `${descidaX}vw ${descidaY}svh`,
               /* ⚠️ SEM `borderRadius`, SEM `overflow: hidden` e SEM `boxShadow`, a
                  pedido do usuário em 17/08: "não quero aquela borda que está no
                  vídeo". O cartão arredondado com sombra desenhava um retângulo
@@ -326,35 +400,7 @@ export function ArcadaHero({
                 <source src={data.video} type="video/mp4" />
               </video>
             ) : (
-              <>
-                {/* BASE: as duas gengivas com os implantes. É o estado de repouso,
-                    aprovado pelo usuário como passo 1. */}
-                <Quadro etapa={primeira} slotRotulo={data.slotRotulo} />
-
-                {/* Por cima, o MESMO quadro com os dentes, em duas cópias
-                    recortadas: a de cima é revelada primeiro, da esquerda para a
-                    direita, e depois a de baixo. `aria-hidden` porque é a mesma
-                    coisa que a base já descreve — o leitor de tela não deve ouvir a
-                    arcada três vezes. */}
-                {ultima !== primeira && ultima.src ? (
-                  <>
-                    <img
-                      src={ultima.src}
-                      alt=""
-                      aria-hidden="true"
-                      className="absolute inset-0 h-full w-full object-cover"
-                      style={{ clipPath: clipCima }}
-                    />
-                    <img
-                      src={ultima.src}
-                      alt=""
-                      aria-hidden="true"
-                      className="absolute inset-0 h-full w-full object-cover"
-                      style={{ clipPath: clipBaixo }}
-                    />
-                  </>
-                ) : null}
-              </>
+              <Quadro etapa={primeira} slotRotulo={data.slotRotulo} />
             )}
           </div>
 

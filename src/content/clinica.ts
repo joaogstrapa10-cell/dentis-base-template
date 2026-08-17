@@ -111,16 +111,21 @@ export const clinica: Clinica = {
        `arcada: null` — nenhum componente muda. A proveniência e as marcas de IA da
        foto da equipe estão em public/imagens/hero/LEIA-ME.txt. */
     colagem: [],
-    /* O sorriso completo, o mesmo último quadro da animação da abertura — de
-       propósito: é o que faz a arcada parecer ter vindo de lá e parado aqui.
-       Renderizada com a máscara `.video-fundido`, porque o fundo verde do arquivo é
-       mais claro que o `--ink` do bloco e sem ela desenharia um retângulo, que foi
-       exatamente a borda reprovada na abertura. */
+    /* O sorriso do hero é EXATAMENTE a mesma imagem em que a descida da abertura
+       termina, e isso não é economia de asset: é o que faz a aterrissagem ler como o
+       mesmo objeto tendo vindo de lá. Trocar por uma imagem parecida quebra o efeito,
+       porque o olho percebe a substituição.
+       É o ÚLTIMO QUADRO DO CLIPE, extraído do próprio arquivo, e é a mesma URL de
+       `arcada.etapas[1].src`. Não duplicar por descuido de cópia: se as duas
+       divergirem, a arcada muda de imagem no instante em que aterrissa.
+       Renderizada com a máscara `.video-fundido`, porque o fundo do arquivo (`#001518`,
+       medido) é mais ESCURO que o `--ink` do bloco e sem ela desenharia um retângulo —
+       a borda que foi reprovada duas vezes na abertura. */
     arcada: {
-      src: "/imagens/arcada/etapa-6.webp",
+      src: "https://pikaso.cdnpk.net/private/production/5188738596/end_frame.jpg?token=exp=1787184000~hmac=061e4df88f639faaefa5ae00739966209dfdfef349fa310cc32138ed36cc17b9",
       alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo. Ilustração técnica, não é registro de paciente.",
-      largura: 2048,
-      altura: 1152,
+      largura: 1280,
+      altura: 720,
       semFundo: false,
     },
     // ⚠️ TRÊS NÚMEROS, TODOS VERIFICÁVEIS, e é essa a regra desta fileira.
@@ -572,133 +577,76 @@ export const clinica: Clinica = {
     ],
   },
   arcada: {
-    /* Concatenação de TRÊS clipes, ~30s, 1280×720. É o `currentTime` dele que a
-       rolagem controla.
+    /* UM clipe só, 10,04s, 1280×720, 24fps. É o `currentTime` dele que a rolagem
+       controla, e ele é o conteúdo inteiro da abertura.
 
-       A sequência começa DEPOIS dos implantes de baixo, a pedido do usuário em
-       17/08 ("o site precisa começar assim com os dentes surgindo... remover a
-       primeira parte do vídeo"): dentes da inferior surgindo um a um → arcada
-       superior entrando já implantada → dentes da superior e o fecho no sorriso
-       junto.
+       O clipe foi gerado por INTERPOLAÇÃO entre os dois quadros de `etapas`, que são
+       exatamente as suas pontas: começa nas duas gengivas já implantadas e termina no
+       sorriso completo. É isso que faz a câmera ficar parada — o modelo não escolhe
+       enquadramento, ele preenche o meio entre duas imagens fixas. A inconsistência de
+       enquadramento das versões de cinco e seis quadros morreu aqui.
 
-       Duas partes foram REMOVIDAS a pedido, e não por descuido: a colocação dos
-       implantes de baixo (ele quer começar com eles já lá) e a colocação dos
-       implantes de cima, que o modelo desenhou como parafusos compridos pendurados.
+       ⚠️ QUEM COLOCA OS DENTES É O VÍDEO, e isso foi uma correção do usuário: "quero
+       você colocando os dentes ao scrollar, você apenas colocou uma imagem em cima,
+       quero algo intuitivo e profissional". A tentativa anterior empilhava um quadro
+       com dentes sobre o quadro com implantes e descobria por `clip-path`; entregava a
+       ordem certa e foi reprovada na hora, porque é sobreposição e não animação. Não
+       reintroduzir.
 
-       ⚠️ ~5,8MB no topo da home é peso real. Fica porque a peça É a abertura e o
+       MEDIDO no próprio arquivo (contagem de pixels de esmalte por quadro, 4 amostras
+       por segundo), e é a primeira vez neste projeto que uma dessas propriedades foi
+       verificada em vez de pedida ao modelo e aceita no escuro:
+
+         · os dentes entram em DEGRAUS, ~8 saltos de 350 a 500px de esmalte, com
+           ~0,75s de patamar entre eles — ou seja um a um, não em bloco;
+         · a arcada de CIMA vai de 0,0 a 5,75s e a de BAIXO só começa em 5,75s, então
+           a ordem "primeiro em cima, depois embaixo" está no arquivo;
+         · o centro dos pixels NOVOS caminha de 0,35 para 0,64 da largura na de cima e
+           de 0,34 para 0,68 na de baixo — esquerda para a direita nas duas;
+         · a caixa do assunto anda 2px em 10s, ou seja a câmera está travada.
+
+       ⚠️ ~4,5MB no topo da home é peso real. Fica porque a peça É a abertura e o
        arquivo carrega com `preload="auto"` de propósito — escrubar vídeo sem buffer
        engasga. Se virar problema de LCP, o caminho é uma versão 480p para telas
-       estreitas, não trocar a mecânica. */
-    /* ⚠️ DESLIGADO em 17/08. O arquivo que está no repo é a versão anterior, que
-       ainda contém as duas partes que o usuário mandou remover (a colocação dos
-       implantes de baixo e a de cima). Com `null` a seção mostra o primeiro quadro
-       parado, que é exatamente o que ele pediu como passo 1: "depois de scrollar a
-       logo da Suzuki, já apareça as gengivas de cima e de baixo com os implantes".
-       Voltar a ligar é uma linha, quando o vídeo novo existir. */
-    video: null,
-    // WebM/VP9 com keyframe por segundo, oferecido primeiro. Ver a nota do tipo:
-    // além de menor, é o único formato decodificável no ambiente de
-    // desenvolvimento, então é o que torna a escrubagem verificável.
+       estreitas, não trocar a mecânica.
+
+       ⚠️ O `src` do vídeo e os dois quadros apontam para URLs EXTERNAS, e isso é
+       ponte, não solução: o CDN do gerador é 403 nesta rede e o workspace do Lovable,
+       que era o caminho de download, ficou sem crédito. O navegador do usuário
+       carrega; o meu não. Os tokens EXPIRAM EM 20/08/2026 — antes disso os três
+       arquivos têm de ser baixados para `public/imagens/arcada/` e os `src` trocados,
+       senão a abertura para de carregar. As URLs se renovam do lado do gerador (a
+       criação é permanente, só a assinatura vence), então isso não depende do usuário.
+
+       ⚠️ SEM WebM. O par WebM/VP9 existia para o Chromium deste ambiente, que não
+       decodifica H.264 — era ele que tornava a escrubagem verificável localmente. Como
+       o arquivo novo não pode ser baixado para cá, não há o que converter, e o `null`
+       é honesto: o mp4 serve todo navegador real. Quando os arquivos entrarem no repo,
+       gerar o WebM com `-g 24` (keyframe por segundo) — sem isso, procurar um instante
+       entre keyframes distantes salta para o anterior e a animação anda aos pulos. */
+    video:
+      "https://pikaso.cdnpk.net/private/production/5188738384/ae7c9ee0-8622-43c7-839d-41ff312f3c93-0.mp4?token=exp=1787184000~hmac=82a64af1622c1c889ae4101a77847b461da0db7a2bc842002d24e42676e83136",
     videoWebm: null,
     slotRotulo: "[QUADRO DA ARCADA — 3D]",
-    /* CINCO etapas, na ordem que o usuário definiu em 17/08: gengiva → implantes
-       da inferior → superior surgindo já com os implantes → dentes da superior →
-       dentes da inferior.
+    /* DOIS quadros, e eles não são ilustração à parte: são o primeiro e o último
+       quadro EXTRAÍDOS do próprio clipe. O primeiro é o `poster` do vídeo e o último é
+       o estado exibido sob `prefers-reduced-motion` — só esses dois chegam à tela como
+       imagem, o resto do tempo quem aparece é o vídeo.
 
-       Os dentes são DUAS etapas, e é o que atende "um após o outro, começando de
-       um lado": ele falou dos dentes da parte de cima, e a arcada só fecha com a
-       de baixo também — separar em dois quadros deixa a ordem explícita em vez de
-       implícita.
+       Vindo do próprio arquivo, a troca de poster para vídeo não salta um pixel. Antes
+       eram gerações separadas, e é de lá que vinha o pulo no primeiro quadro.
 
-       Cada descrição fala de PROCEDIMENTO, nunca de desfecho. É a mesma régua da
-       galeria de casos, e aqui ela pesa mais: a peça é bonita e é justamente onde
-       um verbo a mais viraria promessa de resultado.
-
-       Os arquivos entraram em 17/08, 2048×1152 (16:9), baixados pelo agente do
-       Lovable — o CDN do Magnific é 403 nesta rede, mesmo caminho das 12 fotos de
-       estrutura em 29/07. Proveniência, URLs e o que NÃO fazer com estas imagens
-       em public/imagens/arcada/LEIA-ME.txt.
-
-       ⚠️ O ENQUADRAMENTO dos cinco NÃO é consistente, e isso se vê na troca: 1 e 2
-       são planos fechados só da arcada inferior, 4 é plano aberto com as duas, e 5
-       é mais fechado que 4. Cada quadro foi gerado em chamada separada, então a
-       câmera não se manteve. A sequência funciona, mas lê mais como cinco fotos do
-       que como uma coisa se formando. O conserto é regerar 1, 2, 3 e 5 usando o
-       quadro 4 como REFERÊNCIA de imagem, o que trava composição e escala. */
-    /* SEIS etapas, na ordem que o usuário definiu em 17/08 — e a mudança em relação
-       à versão anterior é que a arcada SUPERIOR repete o processo inteiro em vez de
-       aparecer já com os implantes: "e na parte de cima, fazer a mesma coisa,
-       replicar todo o processo". São dois ciclos de gengiva → implantes → coroas,
-       primeiro embaixo e depois em cima, e o sexto quadro é o fecho com a dentição
-       completa centralizada.
-
-       Os quadros são as PONTAS dos cinco clipes que formam o vídeo. O primeiro é o
-       `poster` e o sexto é o estado exibido sob `prefers-reduced-motion` — só esses
-       dois vão para a tela como imagem; o resto do tempo quem aparece é o vídeo.
-
-       ⚠️ A ordem dos arquivos É o conteúdo: trocar dois nomes inverte a ordem de um
-       procedimento clínico na tela. */
-    /* QUATRO etapas, e a lista mudou de tamanho duas vezes em 17/08 conforme o
-       usuário foi cortando o começo. Hoje ela é o esqueleto do vídeo:
-
-         1. inferior com os implantes já colocados  ← é aqui que a página ABRE
-         2. inferior restaurada
-         3. superior entrando, espelhada e já implantada
-         4. sorriso completo, as duas arcadas juntas
-
-       O primeiro quadro é o `poster` do vídeo e o último é o estado exibido sob
-       `prefers-reduced-motion` — só esses dois chegam à tela como imagem.
-
-       ⚠️ `etapa-1.webp` (gengiva vazia com os leitos) e `etapa-4.webp` (gengiva da
-       superior aberta) continuam na pasta e NÃO estão nesta lista: as duas etapas
-       foram cortadas do vídeo a pedido dele. Os arquivos ficam como registro do que
-       existiu, e a proveniência está no LEIA-ME.txt. Não recolocar sem pedido.
-
-       ⚠️ A ordem dos arquivos É o conteúdo: trocar dois nomes inverte a ordem de um
-       procedimento clínico na tela. */
-    /* PASSO 1 do que o usuário pediu em 17/08, e por enquanto é só isso: depois da
-       logo, as duas gengivas com os implantes. O primeiro quadro é o que a seção
-       exibe em repouso.
-
-       ⚠️ O `src` do primeiro aponta para uma URL EXTERNA, e isso é temporário. O
-       arquivo está na conta do Magnific; o CDN deles é 403 nesta rede e o workspace
-       do Lovable — que era como eu baixava — ficou sem crédito no meio da rodada.
-       O navegador do usuário carrega, o meu não. O token da URL EXPIRA EM 20/08/2026:
-       antes disso o arquivo tem de ser baixado para
-       `public/imagens/arcada/etapa-implantes.webp` e o `src` trocado, senão a imagem
-       simplesmente para de carregar.
-
-       ⚠️ Eu NÃO consegui ver este quadro (mesma rede bloqueada). Se a arcada de cima
-       vier curvando para o mesmo lado da de baixo, é o defeito de espelhamento que já
-       apareceu duas vezes, e o conserto é regerar este quadro. */
-    /* DOIS quadros do MESMO enquadramento, e é isso que faz o passo 2 funcionar:
-       [0] as duas arcadas só com os implantes, e [1] o mesmo quadro com todos os
-       dentes instalados. O segundo foi gerado usando o primeiro como REFERÊNCIA de
-       imagem, para a câmera, a posição e a escala não mudarem — é o que permite
-       revelar os dentes por cima dos implantes sem nada saltar de lugar.
-
-       A ORDEM DE APARIÇÃO NÃO VEM DO MODELO, vem do componente: ele revela o quadro
-       [1] em faixas verticais, quantizadas em posições de dente, primeiro na metade
-       de CIMA da esquerda para a direita e depois na de BAIXO. Três tentativas de
-       pedir essa ordem a um modelo de vídeo falharam — ele acende vários dentes
-       juntos ou fora de sequência. Em código a ordem é aritmética e não erra.
-
-       ⚠️ Os dois `src` apontam para URLs EXTERNAS e os tokens EXPIRAM EM 20/08/2026.
-       É ponte, não solução: o CDN do Magnific é 403 nesta rede e o workspace do
-       Lovable, que era o caminho de download, ficou sem crédito. O navegador do
-       usuário carrega; o meu não. Antes de 20/08 baixar os dois para
-       `public/imagens/arcada/` e trocar os `src`, senão as imagens param de carregar.
-
-       ⚠️ Eu não consegui VER nenhum dos dois quadros, pela mesma rede. */
+       ⚠️ A ordem dos dois É o conteúdo: trocá-los inverte a ordem de um procedimento
+       clínico na tela. */
     etapas: [
       {
         rotulo: "Gengivas com os implantes",
-        src: "https://pikaso.cdnpk.net/private/production/5188491522/render.jpg?token=exp=1787184000~hmac=15fd15c012de9c1ddd75232095285ee022f3aec175c203f437ecd14647ada0f8",
+        src: "https://pikaso.cdnpk.net/private/production/5188738583/start_frame.jpg?token=exp=1787184000~hmac=2fcb1c103b305f2ce6f41f3151c489dbc7daf1c680eeb3d18ffe01eee46a53ae",
         alt: "Modelo 3D das duas arcadas sem dentes, a de cima espelhada acima da de baixo, ambas com os implantes de titânio assentados na crista da gengiva.",
       },
       {
         rotulo: "Dentes instalados",
-        src: "https://pikaso.cdnpk.net/private/production/5188619952/render.jpg?token=exp=1787184000~hmac=dbf70a45c40cbfad9d3c07021cbcf62f27c2fc43175a0bc41c72a5e29dcabf8a",
+        src: "https://pikaso.cdnpk.net/private/production/5188738596/end_frame.jpg?token=exp=1787184000~hmac=061e4df88f639faaefa5ae00739966209dfdfef349fa310cc32138ed36cc17b9",
         alt: "Modelo 3D das duas arcadas com as coroas de cerâmica instaladas sobre todos os implantes, sem nenhuma peça metálica aparente.",
       },
     ],
