@@ -671,6 +671,25 @@ export const clinica: Clinica = {
        ⚠️ Eu NÃO consegui ver este quadro (mesma rede bloqueada). Se a arcada de cima
        vier curvando para o mesmo lado da de baixo, é o defeito de espelhamento que já
        apareceu duas vezes, e o conserto é regerar este quadro. */
+    /* DOIS quadros do MESMO enquadramento, e é isso que faz o passo 2 funcionar:
+       [0] as duas arcadas só com os implantes, e [1] o mesmo quadro com todos os
+       dentes instalados. O segundo foi gerado usando o primeiro como REFERÊNCIA de
+       imagem, para a câmera, a posição e a escala não mudarem — é o que permite
+       revelar os dentes por cima dos implantes sem nada saltar de lugar.
+
+       A ORDEM DE APARIÇÃO NÃO VEM DO MODELO, vem do componente: ele revela o quadro
+       [1] em faixas verticais, quantizadas em posições de dente, primeiro na metade
+       de CIMA da esquerda para a direita e depois na de BAIXO. Três tentativas de
+       pedir essa ordem a um modelo de vídeo falharam — ele acende vários dentes
+       juntos ou fora de sequência. Em código a ordem é aritmética e não erra.
+
+       ⚠️ Os dois `src` apontam para URLs EXTERNAS e os tokens EXPIRAM EM 20/08/2026.
+       É ponte, não solução: o CDN do Magnific é 403 nesta rede e o workspace do
+       Lovable, que era o caminho de download, ficou sem crédito. O navegador do
+       usuário carrega; o meu não. Antes de 20/08 baixar os dois para
+       `public/imagens/arcada/` e trocar os `src`, senão as imagens param de carregar.
+
+       ⚠️ Eu não consegui VER nenhum dos dois quadros, pela mesma rede. */
     etapas: [
       {
         rotulo: "Gengivas com os implantes",
@@ -678,9 +697,9 @@ export const clinica: Clinica = {
         alt: "Modelo 3D das duas arcadas sem dentes, a de cima espelhada acima da de baixo, ambas com os implantes de titânio assentados na crista da gengiva.",
       },
       {
-        rotulo: "Sorriso completo",
-        src: "/imagens/arcada/etapa-6.webp",
-        alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo. Ilustração técnica, não é registro de paciente.",
+        rotulo: "Dentes instalados",
+        src: "https://pikaso.cdnpk.net/private/production/5188619952/render.jpg?token=exp=1787184000~hmac=dbf70a45c40cbfad9d3c07021cbcf62f27c2fc43175a0bc41c72a5e29dcabf8a",
+        alt: "Modelo 3D das duas arcadas com as coroas de cerâmica instaladas sobre todos os implantes, sem nenhuma peça metálica aparente.",
       },
     ],
     aviso:

@@ -68,6 +68,13 @@ export const ARCADA_TRILHO_VH = 280;
  */
 export const ARCADA_INTRO_ATE = 0.1;
 
+/**
+ * Quantos passos a revelação tem por arcada. Catorze é o número de posições de dente
+ * de uma arcada adulta sem os sisos, e é o que faz a revelação parecer "um dente por
+ * vez" em vez de uma cortina lisa: a máscara avança em degraus, não continuamente.
+ */
+const DENTES_POR_ARCADA = 14;
+
 /** Estado de repouso e fallback: o quadro, ou o slot nomeado se o arquivo faltar. */
 function Quadro({ etapa, slotRotulo }: { etapa: ArcadaEtapa; slotRotulo: string }) {
   if (!etapa.src) {
@@ -201,6 +208,29 @@ export function ArcadaHero({
   const primeira = data.etapas[0];
   const ultima = data.etapas[data.etapas.length - 1];
 
+  /* ── PASSO 2: os dentes surgindo um a um ──────────────────────────────────────
+     Pedido do usuário: "os dentes corretos nos lugares certos irem surgindo um a
+     um, começando pela parte de cima da esquerda para a direita, e depois a mesma
+     coisa para a parte de baixo".
+
+     A ordem NÃO vem do modelo de vídeo — três tentativas falharam, ele acende
+     vários dentes juntos ou fora de sequência. Aqui os dois quadros são o MESMO
+     enquadramento (o segundo foi gerado com o primeiro como referência), então dá
+     para deixar o quadro com dentes empilhado por cima do quadro com implantes e
+     revelá-lo em faixas: primeiro a metade de cima, depois a de baixo, sempre da
+     esquerda para a direita.
+
+     O `Math.floor` é o que transforma a cortina lisa em passos de dente: sem ele a
+     borda de revelação desliza continuamente e não lê como "um a um". */
+  const revelaCima = Math.min(1, Math.max(0, (p - 0.18) / 0.34));
+  const revelaBaixo = Math.min(1, Math.max(0, (p - 0.52) / 0.34));
+  const passo = (x: number) =>
+    Math.ceil(x * DENTES_POR_ARCADA) / DENTES_POR_ARCADA;
+  /* `inset(top right bottom left)`: a faixa cresce pela DIREITA, encolhendo o
+     recorte de 100% até 0%. A metade de cima recorta 50% em baixo, e vice-versa. */
+  const clipCima = `inset(0% ${100 - passo(revelaCima) * 100}% 50% 0%)`;
+  const clipBaixo = `inset(50% ${100 - passo(revelaBaixo) * 100}% 0% 0%)`;
+
   /* ── Sem animação: um quadro só, o estado final, em tamanho contido. Nada de
      trilho, nada de sticky, nada de vídeo — animação comandada por rolagem é o caso
      que a WCAG 2.3.3 pede para poder desligar. ── */
@@ -296,7 +326,35 @@ export function ArcadaHero({
                 <source src={data.video} type="video/mp4" />
               </video>
             ) : (
-              <Quadro etapa={primeira} slotRotulo={data.slotRotulo} />
+              <>
+                {/* BASE: as duas gengivas com os implantes. É o estado de repouso,
+                    aprovado pelo usuário como passo 1. */}
+                <Quadro etapa={primeira} slotRotulo={data.slotRotulo} />
+
+                {/* Por cima, o MESMO quadro com os dentes, em duas cópias
+                    recortadas: a de cima é revelada primeiro, da esquerda para a
+                    direita, e depois a de baixo. `aria-hidden` porque é a mesma
+                    coisa que a base já descreve — o leitor de tela não deve ouvir a
+                    arcada três vezes. */}
+                {ultima !== primeira && ultima.src ? (
+                  <>
+                    <img
+                      src={ultima.src}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 h-full w-full object-cover"
+                      style={{ clipPath: clipCima }}
+                    />
+                    <img
+                      src={ultima.src}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 h-full w-full object-cover"
+                      style={{ clipPath: clipBaixo }}
+                    />
+                  </>
+                ) : null}
+              </>
             )}
           </div>
 
