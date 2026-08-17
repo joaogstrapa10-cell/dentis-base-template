@@ -94,6 +94,17 @@ export type HeroContent = {
    *  Lista vazia faz o hero voltar a duas colunas de texto, sem buraco no
    *  layout. Cada imagem exige autorização de uso, ver docs/imagens.md. */
   colagem: HeroImagem[];
+  /**
+   * A ARCADA no lugar das fotos, pedida pelo usuário em 17/08: "quero que ela pare
+   * no lugar onde estão as fotos, tire essas fotos".
+   *
+   * Quando preenchida, ela ocupa a coluna direita do hero e a `colagem` fica vazia.
+   * As duas coexistem no tipo de propósito: a colagem é o caminho para as variantes
+   * de Rogério e Décio, que podem querer fotos ali; a arcada é a escolha da Suzuki.
+   *
+   * `null` devolve a colagem (ou, sem ela, o hero em coluna única).
+   */
+  arcada: HeroImagem | null;
   /** Os três números ao pé do texto. Ver a nota em `clinica.ts`: só entra aqui
    *  dado VERIFICÁVEL. Lista vazia não renderiza a fileira. */
   stats: HeroStat[];

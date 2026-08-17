@@ -162,6 +162,10 @@ function FormaFlutuante({ className }: { className: string }) {
 
 export function HeroSection({ data }: { data: HeroContent }) {
   const temColagem = data.colagem.length > 0;
+  /* A ARCADA no lugar das fotos, pedida em 17/08. Ela e a colagem são exclusivas: a
+     coluna direita mostra uma ou a outra. Ver a nota do campo em `types.ts`. */
+  const arcada = data.arcada;
+  const temFigura = temColagem || arcada !== null;
 
   return (
     <section id="top">
@@ -185,7 +189,7 @@ export function HeroSection({ data }: { data: HeroContent }) {
               "grid items-center gap-14",
               /* Largura fixa na coluna da colagem, não fração — ver a nota no
                  topo do arquivo. */
-              temColagem && "lg:grid-cols-[1fr_min(38vw,26rem)] lg:gap-10",
+              temFigura && "lg:grid-cols-[1fr_min(38vw,26rem)] lg:gap-10",
             )}
           >
             {/* ---------------- Coluna do texto ---------------- */}
@@ -253,7 +257,30 @@ export function HeroSection({ data }: { data: HeroContent }) {
               </Reveal>
             </div>
 
-            {/* ---------------- Coluna da colagem ---------------- */}
+            {/* ---------------- Coluna da figura ---------------- */}
+            {arcada ? (
+              /* A ARCADA. Sem cartão, sem sombra e sem canto: `.video-fundido`
+                 dissolve as quatro bordas no bloco escuro. O arquivo é renderizado
+                 sobre verde-petróleo, mais claro que o `--ink` daqui, e sem a
+                 máscara ele desenharia o mesmo retângulo que o usuário reprovou na
+                 abertura.
+
+                 A proporção vem do arquivo (`largura`/`altura`), não cravada: é a
+                 lição de 12/08, quando uma proporção fixa recortou 78% de uma foto
+                 panorâmica. */
+              <div className="lg:mr-[calc(-1*min(12rem,max(0px,50vw_-_600px)+2rem))]">
+                <Reveal delay={200}>
+                  <img
+                    src={arcada.src}
+                    alt={arcada.alt}
+                    width={arcada.largura}
+                    height={arcada.altura}
+                    className="video-fundido w-full"
+                    style={{ aspectRatio: `${arcada.largura} / ${arcada.altura}` }}
+                  />
+                </Reveal>
+              </div>
+            ) : null}
             {temColagem ? (
               /* Altura fixa porque os cartões são `absolute` e não empurram nada:
                  sem ela a coluna colapsa e a colagem sai por cima do texto.

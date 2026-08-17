@@ -101,52 +101,28 @@ export const clinica: Clinica = {
     //
     // O retrato do Dr. Dalton segue em public/imagens/hero/dalton-suzuki.webp
     // (500×482, `semFundo: false`) para quando a colagem mudar.
-    colagem: [
-      {
-        src: "/imagens/hero/equipe-suzuki.webp",
-        alt: "Corpo clínico e equipe da Suzuki Odontologia reunidos, de uniforme, com o Dr. Dalton Suzuki ao centro",
-        largura: 1200,
-        altura: 1078,
-        semFundo: true,
-      },
-      // [1] SORRISO, pedido pelo usuário em 13/08 — ele pediu arcada dentária e
-      // corrigiu para "um sorriso bem bonito" na mensagem seguinte.
-      //
-      // ⚠️ A §4 do CLAUDE.md proíbe "sorriso genérico de estoque", e esta imagem
-      // encosta nisso: é banco de imagem, da página de estética do site antigo. O
-      // pedido foi explícito e é decisão do cliente, então ela entra — mas a
-      // escolha DENTRO do acervo foi pelo menos clichê possível: perfil em plano
-      // fechado, dentes naturais, sem clareamento de estúdio e sem fundo
-      // azul-claro. Foram descartadas a modelo loira de sorriso branco com fundo
-      // azul (três clichês de uma vez) e o registro clínico de reabilitação total
-      // — este último por outra razão além do visual: sorriso reabilitado no topo
-      // da página lê como promessa de resultado, que é o que a CFO-196/2019
-      // restringe.
-      {
-        src: "/imagens/hero/sorriso.jpeg",
-        alt: "Sorriso em plano fechado, de perfil, com dentes alinhados",
-        largura: 600,
-        altura: 400,
-        semFundo: false,
-        // A boca está no terço esquerdo do arquivo e o resto é fundo de estúdio.
-        // No quadrado centralizado entrava uma faixa de branco à direita, que num
-        // cartão sobre bloco escuro é a parte mais acesa do hero.
-        foco: "esquerda",
-      },
-      // [2] PACIENTE SENDO ATENDIDO, também pedido dele. É a única foto do acervo
-      // que mostra atendimento em curso, e é foto REAL da clínica — a mesma que
-      // aparece na esteira da seção de estrutura, então ela se repete na página.
-      // O assunto (a dentista e a paciente) está na metade DIREITA do arquivo:
-      // centralizado, o quadrado mostraria o braço do equipamento e a parede.
-      {
-        src: "/imagens/hero/atendimento.webp",
-        alt: "Atendimento em andamento: dentista com máscara e touca fazendo escaneamento intraoral em paciente na cadeira",
-        largura: 1000,
-        altura: 667,
-        semFundo: false,
-        foco: "direita",
-      },
-    ],
+    /* SEM COLAGEM DE FOTOS desde 17/08: "tire essas fotos". As três imagens
+       (equipe recortada, sorriso e atendimento) saíram do hero e a ARCADA ficou no
+       lugar delas — é onde a animação da abertura vai aterrissar depois de girar.
+
+       Os arquivos continuam em public/imagens/hero/ e o campo `colagem` continua no
+       tipo: é o caminho para as variantes de Rogério e Décio, que podem querer fotos
+       aqui. Para trazer as três de volta, é repovoar esta lista e pôr
+       `arcada: null` — nenhum componente muda. A proveniência e as marcas de IA da
+       foto da equipe estão em public/imagens/hero/LEIA-ME.txt. */
+    colagem: [],
+    /* O sorriso completo, o mesmo último quadro da animação da abertura — de
+       propósito: é o que faz a arcada parecer ter vindo de lá e parado aqui.
+       Renderizada com a máscara `.video-fundido`, porque o fundo verde do arquivo é
+       mais claro que o `--ink` do bloco e sem ela desenharia um retângulo, que foi
+       exatamente a borda reprovada na abertura. */
+    arcada: {
+      src: "/imagens/arcada/etapa-6.webp",
+      alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo. Ilustração técnica, não é registro de paciente.",
+      largura: 2048,
+      altura: 1152,
+      semFundo: false,
+    },
     // ⚠️ TRÊS NÚMEROS, TODOS VERIFICÁVEIS, e é essa a regra desta fileira.
     //   5,0  — nota real do perfil da clínica no Google, a mesma que alimenta a
     //          seção de avaliações (`depoimentos.resumo.nota`).

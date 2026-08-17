@@ -49,14 +49,14 @@ import type { ArcadaContent, ArcadaEtapa } from "@/content/types";
  * peça fica mais lenta; se o vídeo cresce e o trilho não, fica mais rápida — que foi
  * a reclamação de 17/08.
  *
- * Histórico: 300vh para 20s, 560vh quando o vídeo foi para 50s, e 380vh agora que
- * ele voltou para ~30s (duas etapas foram cortadas a pedido). A taxa fica em
- * ~0,107 s/vh nas três, que é o ritmo aprovado.
+ * Histórico: 300vh para 20s, 560vh quando o vídeo foi para 50s, 380vh quando voltou a
+ * ~30s, e 280vh agora que o usuário pediu "o vídeo precisa ser curto" e a sequência
+ * ficou em dois clipes (~20s). A taxa fica em ~0,11 s/vh em todas, que é o ritmo
+ * aprovado — o número anda junto com a duração, sempre.
  *
- * Custo: a abertura ocupa 3,8 telas de rolagem. É o preço de "um por um, sem pular"
- * — sequência comandada por rolagem gasta distância por definição.
+ * Custo: a abertura ocupa 2,8 telas de rolagem.
  */
-export const ARCADA_TRILHO_VH = 380;
+export const ARCADA_TRILHO_VH = 280;
 
 /**
  * Fração do curso em que a marca grande do centro termina de sair.
@@ -186,6 +186,18 @@ export function ArcadaHero({
   const largura = inicioL + (fimL - inicioL) * suave;
   const altura = largura / (16 / 9);
 
+  /* O GIRO do fecho, pedido em 17/08: "ao terminar arcada 100%, quero que faça ela
+     em movimento giratório e que ela pare no lugar onde estão as fotos".
+     Uma volta completa nos últimos 18% do trilho, e a peça encolhe junto — é o que
+     entrega a leitura de que ela sai desta seção e vai aterrissar no hero de baixo,
+     onde a arcada agora ocupa o lugar que era das três fotos.
+     A volta é 360° e não 180°: parando de cabeça para baixo, a arcada superior
+     viraria a inferior e a peça leria como erro. */
+  const giroInicio = 0.82;
+  const giroFrac = Math.min(1, Math.max(0, (p - giroInicio) / (1 - giroInicio)));
+  const giro = giroFrac * 360;
+  const encolhe = 1 - 0.28 * giroFrac;
+
   const primeira = data.etapas[0];
   const ultima = data.etapas[data.etapas.length - 1];
 
@@ -246,7 +258,10 @@ export function ArcadaHero({
                  tela em 1440×700 e a caixa é cortada pelo palco. */
               maxHeight: "84svh",
               opacity: midiaEntra,
-              scale: `${0.92 + 0.08 * midiaEntra}`,
+              /* Duas escalas multiplicadas de propósito: `midiaEntra` é a entrada no
+                 começo e `encolhe` é a saída no fim. */
+              scale: `${(0.92 + 0.08 * midiaEntra) * encolhe}`,
+              rotate: `${giro}deg`,
               /* ⚠️ SEM `borderRadius`, SEM `overflow: hidden` e SEM `boxShadow`, a
                  pedido do usuário em 17/08: "não quero aquela borda que está no
                  vídeo". O cartão arredondado com sombra desenhava um retângulo
