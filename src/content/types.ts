@@ -385,10 +385,14 @@ export type TratamentosContent = {
  *   controle.
  */
 export type ArcadaEtapa = {
-  /** Nome da etapa. Aparece na régua ao lado da mídia. */
+  /**
+   * Nome da etapa. NÃO aparece na tela quando há imagem: a seção é só a animação,
+   * sem legenda, por decisão do usuário em 17/08 ("não é para mostrar os
+   * elementos"). Serve para o rótulo do slot enquanto o arquivo não existe, e
+   * para documentar a ORDEM aqui no conteúdo — que é a ordem do procedimento e a
+   * única coisa que não pode ser trocada por engano.
+   */
   rotulo: string;
-  /** Uma linha dizendo o que acontece. Descreve PROCEDIMENTO, nunca resultado. */
-  descricao: string;
   /**
    * O quadro desta etapa. `null` enquanto o arquivo não estiver no repo, e a
    * etapa cai no slot nomeado — mesmo padrão da Estrutura. Caixa cinza lisa lê
@@ -399,12 +403,19 @@ export type ArcadaEtapa = {
   alt: string;
 };
 
+/**
+ * A abertura da página: a arcada se formando pela rolagem.
+ *
+ * SEM `titulo` e SEM `descricao`, e os campos não ficaram como opcionais. O
+ * usuário pediu a seção sem nenhum texto de explicação, e neste projeto campo
+ * morto no tipo é o que faz o padrão removido voltar — foi assim que a tabela de
+ * preços sobreviveu três semanas em `TratamentosContent`. A única palavra que
+ * fica na tela é o `aviso`, e ele é exigência legal, não copy.
+ */
 export type ArcadaContent = {
-  titulo: string;
-  descricao: string;
   /** Rótulo do slot enquanto faltam os arquivos. Nome, não número. */
   slotRotulo: string;
-  /** As etapas na ordem da rolagem. O primeiro quadro é o estado de repouso. */
+  /** As etapas na ordem da rolagem. O primeiro quadro abre a página. */
   etapas: ArcadaEtapa[];
   /**
    * ⚠️ Obrigatório na tela, não é rodapé de cortesia. A peça é um modelo

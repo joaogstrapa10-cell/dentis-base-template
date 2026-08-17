@@ -129,7 +129,7 @@ export function Header({
           valor já contínuo e daria atraso na resposta. `pointer-events` cai
           junto, senão sobra um link invisível capturando clique no topo. */}
       <a
-        href="#top"
+        href="#arcada"
         aria-label={data.wordmark}
         // `top` calculado para o CENTRO da marca cair no centro da pílula, não
         // escolhido a olho: a pílula em `top-4`/`md:top-8` fecha 58px/66px de
