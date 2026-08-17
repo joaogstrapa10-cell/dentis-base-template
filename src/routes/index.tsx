@@ -86,7 +86,11 @@ function Landing() {
             1024px, já paga duas vezes (12/08, quando "Home" entrou e a folga caiu
             de 44px para 9px). Em vez disso, "Home" passou a apontar para
             `#arcada`, porque o topo da página agora é aqui. */}
-        <ArcadaHero data={clinica.arcada} />
+        <ArcadaHero
+          data={clinica.arcada}
+          logo={clinica.brand.logo}
+          logoAlt={clinica.brand.logoAlt}
+        />
         <HeroSection data={clinica.hero} />
         <CasosSection data={clinica.casos} />
         <AreasSection data={clinica.areas} />

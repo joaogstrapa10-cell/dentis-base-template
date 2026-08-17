@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import type { HeaderContent, NavLink } from "@/content/types";
 import { PillButton } from "@/components/Primitives";
-import { ARCADA_TRILHO_VH } from "@/components/sections/ArcadaHero";
+import { ARCADA_INTRO_ATE, ARCADA_TRILHO_VH } from "@/components/sections/ArcadaHero";
 import { cn } from "@/lib/utils";
 
 /**
@@ -98,7 +98,11 @@ export function Header({
 }) {
   const [open, setOpen] = useState(false);
   const [redondo, setRedondo] = useState(true);
-  const [opacidadeMarca, setOpacidadeMarca] = useState(1);
+  /* Nasce ESCONDIDA quando há arcada na frente: a abertura tem a marca grande no
+     centro, e as duas juntas leem como defeito de render. Medido: no primeiro quadro
+     do desktop a do canto vinha com opacidade 1 antes de a primeira medição rodar.
+     Como `esperarArcada` é conhecido na renderização, o SSR já manda escondida. */
+  const [opacidadeMarca, setOpacidadeMarca] = useState(esperarArcada ? 0 : 1);
   /* Nasce escondida quando há arcada na frente, e é isso que evita o PISCA-PISCA:
      começando revelada, a pílula aparecia por ~600ms no carregamento e só então se
      escondia — medido em 0,62 de opacidade no primeiro quadro. Como `esperarArcada`
@@ -126,11 +130,21 @@ export function Header({
            da animação — justamente o que o usuário pediu para não acontecer. Ela
            fica inteira durante a abertura e começa a sair quando o hero de colagem
            entra, que é a mesma relação de antes. */
-        const fim = esperarArcada
+        const curso = esperarArcada
           ? ((ARCADA_TRILHO_VH - 100) / 100) * window.innerHeight
           : 0;
-        const passou = window.scrollY - fim;
-        setOpacidadeMarca(Math.max(0, Math.min(1, 1 - passou / 180)));
+        const passou = window.scrollY - curso;
+        /* ⚠️ Enquanto a MARCA GRANDE do centro da arcada está na tela, esta do canto
+           fica ESCONDIDA — a mesma logo em dois tamanhos ao mesmo tempo lê como
+           defeito de render. Ela entra quando a grande termina de sair, o que dá a
+           impressão de a marca ter ido para o seu lugar definitivo, e só começa a se
+           apagar depois do fim da arcada. */
+        const introFim = curso * ARCADA_INTRO_ATE;
+        setOpacidadeMarca(
+          esperarArcada && window.scrollY < introFim
+            ? 0
+            : Math.max(0, Math.min(1, 1 - passou / 180)),
+        );
         /* A navegação entra quando a arcada termina. Uma vez revelada, NÃO volta a
            esconder ao subir a página: menu que pisca ao rolar para cima lê como
            defeito, e quem já viu o site inteiro não deveria perder o menu por

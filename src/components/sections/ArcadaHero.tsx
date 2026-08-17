@@ -2,78 +2,55 @@ import { useEffect, useRef, useState } from "react";
 import type { ArcadaContent, ArcadaEtapa } from "@/content/types";
 
 /**
- * ArcadaHero: abertura da página. Uma arcada se formando conforme a rolagem
- * avança — gengiva com os leitos, implantes, coroas — dentro de uma mídia que
- * começa pequena e em retrato e termina larga, quase ocupando a janela. Quando
- * ela acaba de abrir, o site começa embaixo.
+ * ArcadaHero: abertura da página. Começa com a marca grande no centro; ao rolar, ela
+ * cede lugar à arcada, que se FORMA — gengiva, implantes, coroas — até ficar
+ * completa. Terminada a abertura, o site começa embaixo.
  *
- * É o template `scroll-expansion-hero` que o usuário mandou (duas vezes, em
- * 17/08). Sem título, sem legenda, sem régua de etapas: ele foi explícito —
- * "não quero que tenha essa seção de explicação", "não é para mostrar os
- * elementos". A peça é só a animação.
+ * Do template `scroll-expansion-hero` que o usuário mandou vem o gesto: mídia que
+ * cresce com a rolagem e conteúdo que só aparece depois. Sem texto nenhum na seção
+ * — ele foi explícito, "sem nada de escrita".
  *
- * O QUE VEIO DO TEMPLATE
- * - a mídia crescendo com a rolagem, de caixa pequena a quase a janela inteira;
- * - a mudança de PROPORÇÃO junto com o tamanho (lá 300×400 → 1550×800). É o que
- *   dá a sensação de abrir: começa em retrato, mostrando o miolo da arcada, e ao
- *   alargar revela a arcada inteira de molar a molar;
- * - o véu escuro sobre a mídia, clareando conforme ela expande;
- * - o conteúdo do site aparecendo depois que ela termina de abrir.
+ * ⚠️ POR QUE É VÍDEO ESCRUBADO E NÃO MAIS PILHA DE QUADROS
+ * A primeira versão trocava cinco imagens por opacidade. O usuário reprovou com a
+ * razão exata: "não tá fluido, não tá animado, apenas frame a frame". E estava
+ * certo — cinco estados são cinco estados, e nenhuma transição de opacidade
+ * inventa os quadros que faltam no meio.
  *
- * ⚠️ O QUE NÃO VEIO, E É A ÚNICA DIVERGÊNCIA
- * O template comanda o progresso sequestrando a rolagem: `wheel` e `touchmove`
- * com `preventDefault`, mais um handler de `scroll` que chama `window.scrollTo(0,0)`
- * enquanto a mídia não terminou. Três coisas quebram nesta página, e nenhuma é
- * detalhe:
- * - a pílula de navegação é FIXA e tem âncoras. Clicar em "Áreas" antes de a
- *   animação acabar cairia no `scrollTo(0,0)` e voltaria para o topo — navegação
- *   morta justamente no primeiro contato;
- * - teclado não dispara `wheel`. Espaço, Page Down e as setas rolariam a página
- *   enquanto o progresso ficaria em 0, e o `scrollTo(0,0)` empurraria de volta:
- *   o site fica inalcançável para quem não usa roda de mouse;
- * - arrastar a barra de rolagem, idem.
+ * Agora os cinco quadros são as PONTAS de quatro clipes gerados por interpolação
+ * (1→2, 2→3, 3→4, 4→5), concatenados num vídeo só, e a rolagem controla o
+ * `currentTime` dele. Isso resolve dois problemas de uma vez: a fluidez, e a
+ * inconsistência de enquadramento entre os quadros — o modelo interpola entre duas
+ * pontas fixas, então a câmera não pula mais.
  *
- * No lugar: TRILHO com palco `sticky`, e o progresso é a fração que o trilho já
- * rolou por dentro de si, lida em `requestAnimationFrame`. O visual é o mesmo. A
- * única diferença perceptível é que a barra de rolagem anda durante a abertura —
- * o que, a rigor, é mais honesto: diz que a página tem fim.
+ * Os cinco quadros CONTINUAM no conteúdo e não são resíduo: o primeiro é o `poster`
+ * do vídeo (o que aparece antes de o arquivo carregar) e o último é o estado
+ * mostrado sob `prefers-reduced-motion`, onde não há animação nenhuma.
  *
- * ⚠️ `sticky` exige que NENHUM ancestral tenha `overflow` diferente de `visible`,
- * senão o ancestral vira o contêiner de rolagem e o palco não gruda. Foi o que
- * obrigou o bloco da Bio a perder o `overflow-hidden` em 13/08. Aqui a seção e o
- * trilho ficam sem overflow de propósito.
+ * ⚠️ O QUE NÃO VEIO DO TEMPLATE, E CONTINUA FORA
+ * Ele comanda o progresso sequestrando a rolagem: `preventDefault` em `wheel` e
+ * `touchmove` mais `window.scrollTo(0,0)` a cada evento. Três quebras concretas
+ * aqui: a pílula de navegação é fixa e tem âncoras, então clicar em "Áreas" durante
+ * a animação voltaria ao topo; teclado não dispara `wheel`, então Espaço e Page Down
+ * deixariam o site inalcançável para quem não usa roda; e arrastar a barra, idem.
+ * O progresso vem da fração que o TRILHO desta seção já rolou, em
+ * `requestAnimationFrame`.
  *
- * Fundo: o template usa uma `bgImageSrc` que desbota. Aqui não entra imagem de
- * fundo nenhuma — os cinco quadros já são renderizados sobre verde-petróleo
- * (hex 013435, que é o nosso `--ink`), então o chão da seção é o próprio token e
- * a mídia se dissolve nele sem costura. Uma imagem a mais seria peso por nada.
- *
- * São QUADROS e não vídeo: ver a nota do tipo `ArcadaEtapa`. Em resumo, "os dentes
- * surgindo um após o outro, começando de um lado" é ordem — e ordem em array é
- * exata, enquanto modelo de vídeo acende vários dentes juntos e fora de sequência.
+ * ⚠️ `sticky` exige que nenhum ancestral tenha `overflow` diferente de `visible`,
+ * senão o ancestral vira o contêiner de rolagem e o palco não gruda — foi o que
+ * obrigou o bloco da Bio a perder o `overflow-hidden` em 13/08.
  */
 
-/**
- * Altura do trilho, em vh. Exportada porque o HEADER precisa dela: a pílula de
- * navegação só aparece depois de a arcada terminar de abrir (pedido do usuário em
- * 17/08), e para saber quando isso acontece ele tem de conhecer o curso.
- *
- * O curso é `TRILHO - 100vh`, porque a última tela do trilho é a que o palco
- * `sticky` ocupa parado. Um número só, num lugar só — duplicar 300 no Header faria
- * a navegação aparecer no momento errado no dia em que este valor mudasse.
- */
+/** Altura do trilho, em vh. O Header importa: é ele que precisa saber quando a
+ *  abertura acaba para revelar a navegação. Um número, num lugar só. */
 export const ARCADA_TRILHO_VH = 300;
 
-/** Um quadro, ou o slot nomeado enquanto o arquivo não existe. */
-function Quadro({
-  etapa,
-  slotRotulo,
-  prioridade,
-}: {
-  etapa: ArcadaEtapa;
-  slotRotulo: string;
-  prioridade: boolean;
-}) {
+/** Fração do curso em que a marca grande do centro termina de sair. O Header também
+ *  usa: enquanto ela está na tela, a marca pequena do canto fica escondida, senão
+ *  a mesma logo apareceria duas vezes ao mesmo tempo. */
+export const ARCADA_INTRO_ATE = 0.22;
+
+/** Estado de repouso e fallback: o quadro, ou o slot nomeado se o arquivo faltar. */
+function Quadro({ etapa, slotRotulo }: { etapa: ArcadaEtapa; slotRotulo: string }) {
   if (!etapa.src) {
     return (
       <div
@@ -87,26 +64,23 @@ function Quadro({
       </div>
     );
   }
-  return (
-    <img
-      src={etapa.src}
-      alt={etapa.alt}
-      /* O primeiro quadro abre a PÁGINA, então nem lazy nem preguiça: é a
-         primeira coisa que o visitante vê. Os outros quatro só existem depois de
-         a rolagem avançar. */
-      loading={prioridade ? "eager" : "lazy"}
-      fetchPriority={prioridade ? "high" : undefined}
-      className="h-full w-full object-cover"
-    />
-  );
+  return <img src={etapa.src} alt={etapa.alt} className="h-full w-full object-cover" />;
 }
 
-export function ArcadaHero({ data }: { data: ArcadaContent }) {
+export function ArcadaHero({
+  data,
+  logo,
+  logoAlt,
+}: {
+  data: ArcadaContent;
+  /** Marca CLARA. É a mesma do header — não é asset novo. `null` cai no wordmark. */
+  logo?: string | null;
+  logoAlt?: string;
+}) {
   const trilhoRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [p, setP] = useState(0);
   const [semAnimacao, setSemAnimacao] = useState(false);
-  /* Tela estreita. O template chama de `isMobileState` e usa para os mesmos fins:
-     os números de partida da caixa. Ver a nota em `inicioL`. */
   const [compacto, setCompacto] = useState(false);
 
   useEffect(() => {
@@ -138,7 +112,22 @@ export function ArcadaHero({ data }: { data: ArcadaContent }) {
         return;
       }
       const bruto = -r.top / curso;
-      setP(bruto < 0 ? 0 : bruto > 1 ? 1 : bruto);
+      const fr = bruto < 0 ? 0 : bruto > 1 ? 1 : bruto;
+      setP(fr);
+
+      /* ESCRUBAGEM: a rolagem define o instante do vídeo. O trecho útil começa
+         quando a marca sai (`ARCADA_INTRO_ATE`) e termina no fim do trilho.
+         `readyState >= 1` garante que a duração já é conhecida; sem isso o
+         `currentTime` é descartado em silêncio. O limiar de 1/50s evita mandar
+         `currentTime` a cada quadro para o mesmo instante, o que engasga a
+         decodificação em vídeo longo. */
+      const v = videoRef.current;
+      if (v && v.readyState >= 1 && Number.isFinite(v.duration) && v.duration > 0) {
+        const t =
+          Math.min(1, Math.max(0, (fr - ARCADA_INTRO_ATE) / (1 - ARCADA_INTRO_ATE))) *
+          v.duration;
+        if (Math.abs(v.currentTime - t) > 0.02) v.currentTime = t;
+      }
     };
     const agendar = () => {
       if (!raf) raf = requestAnimationFrame(medir);
@@ -153,71 +142,44 @@ export function ArcadaHero({ data }: { data: ArcadaContent }) {
     };
   }, [semAnimacao]);
 
-  const total = data.etapas.length;
+  /* A INTRO: a marca grande no centro sai nos primeiros 22% do curso, e a mídia
+     entra atrás dela. As duas curvas se cruzam de propósito — a mídia começa a
+     aparecer antes de a marca terminar de sair, senão há um instante de tela vazia
+     entre as duas, que lê como falha de carregamento. */
+  const intro = Math.min(1, p / ARCADA_INTRO_ATE);
+  const marcaEscala = 1 - 0.5 * intro;
+  const marcaOpacidade = Math.max(0, 1 - intro / 0.8);
+  const midiaEntra = Math.min(1, Math.max(0, (p - ARCADA_INTRO_ATE * 0.35) / (ARCADA_INTRO_ATE * 0.9)));
 
-  /* A ABERTURA termina cedo, em 28% do trilho. Os 72% restantes passam os cinco
-     quadros com a mídia já grande — que é o que interessa, porque é onde a arcada
-     se forma. Se a expansão durasse todo o trilho, a gengiva e os implantes
-     aconteceriam num quadro pequeno. */
-  const abertura = Math.min(1, p / 0.28);
+  /* A EXPANSÃO fecha em 45% do curso; o resto passa a arcada se formando em tamanho
+     cheio, que é onde o interesse está.
+
+     ⚠️ Os tetos são MENORES que na versão anterior, a pedido: "tá muito grande a
+     gengiva, diminua o tamanho para que fique proporcional tanto na versão de
+     desktop quanto na versão de celular". Antes a caixa terminava em 100vw — no
+     desktop isso dava 1440×810 e a gengiva enchia a tela. Agora fecha em 66vw
+     (950×535 em 1440) e 88vw no celular (343×193 em 390), sempre em 16:9, que é a
+     proporção nativa dos arquivos: recorte ZERO em qualquer ponto da abertura. */
+  const abertura = Math.min(1, p / 0.45);
   const suave = 1 - (1 - abertura) * (1 - abertura);
+  const inicioL = compacto ? 60 : 40;
+  const fimL = compacto ? 88 : 66;
+  const largura = inicioL + (fimL - inicioL) * suave;
+  const altura = largura / (16 / 9);
+  const raio = 24 - 12 * suave;
 
-  /* A SEQUÊNCIA começa em 18%, ou seja um pouco antes de a abertura terminar, e
-     vai até o fim. O `min` é obrigatório: em p=1, `floor(1 * 5)` daria 5, um
-     índice além do array. */
-  const seq = Math.min(1, Math.max(0, (p - 0.18) / 0.82));
-  const ativa = Math.min(total - 1, Math.floor(seq * total));
+  const primeira = data.etapas[0];
+  const ultima = data.etapas[data.etapas.length - 1];
 
-  /* LARGURA e ALTURA interpoladas em separado, e não uma proporção com teto de
-     altura. A primeira versão usava `aspectRatio` mais `maxHeight: 88svh`, e em
-     1440×900 o teto vencia: a caixa saía 893×792, quase quadrada, e o estado em
-     RETRATO — que é o que faz a abertura ler como abertura — nunca aparecia.
-     Medido: 1,13:1 no início, contra os 0,8 pedidos.
-
-     Com os dois eixos explícitos, a caixa vai de retrato a paisagem e termina
-     sangrando a janela inteira, que é o gesto do template (lá 300×400 → 1550×800).
-     O `object-cover` recorta no caminho, e aqui o recorte é INTENCIONAL, ao
-     contrário do resto do site: em retrato aparece o miolo da arcada e, ao alargar,
-     ela se revela de molar a molar.
-
-     Números separados para tela estreita porque fração de viewport não se traduz:
-     34vw são 490px em 1440 e 133px em 390 — um cartão, e uma tira.
-
-     ⚠️ A ALTURA sai da PROPORÇÃO, e o estado final é 16:9 de propósito — não a
-     janela inteira. Interpolar os dois eixos até 100% dava 390×844 no celular, uma
-     caixa 0,46:1 para um quadro 16:9: `object-cover` mostraria ~26% da largura, ou
-     seja um talho vertical no meio da arcada. É exatamente a armadilha de 12/08,
-     quando um arquivo 3,6:1 foi posto numa faixa 0,83:1 e o usuário reprovou
-     ("cortada, muito para a direita"). Terminando em 16:9, o recorte no estado
-     final — o que a pessoa fica olhando — é ZERO nas duas larguras.
-
-     Altura em `vw` e não em `svh`: assim ela deriva da mesma unidade da largura e a
-     proporção fecha sozinha, sem depender de saber a altura da janela em px. */
-  const inicioL = compacto ? 66 : 34;
-  const propInicio = compacto ? 0.85 : 0.82;
-  const propFim = 16 / 9;
-  const largura = inicioL + (100 - inicioL) * suave;
-  const proporcao = propInicio + (propFim - propInicio) * suave;
-  const altura = largura / proporcao;
-  const raio = 24 * (1 - suave);
-  /* O quadro nasce um pouco ABAIXO do centro, a pedido do usuário em 17/08
-     ("um pouco para baixo ali da seção inicial"), e volta ao centro conforme
-     abre — em tela cheia não há para onde deslocar sem cortar. O valor é em
-     `svh` e não em px porque é posição na JANELA, não tamanho de peça. */
-  const descida = 7 * (1 - suave);
-  /* Véu clareando, como no template (lá 0.7 → 0.4). Aqui é mais fraco porque os
-     quadros já são escuros: sobre verde-petróleo, 50% viraria um borrão. */
-  const veu = 0.42 - 0.34 * suave;
-
-  /* ── Sem animação: um quadro só, o último, em tamanho cheio. A abertura é
-     decoração; o estado final é a informação. Nada de trilho, nada de sticky. ── */
+  /* ── Sem animação: um quadro só, o estado final, em tamanho contido. Nada de
+     trilho, nada de sticky, nada de vídeo — animação comandada por rolagem é o caso
+     que a WCAG 2.3.3 pede para poder desligar. ── */
   if (semAnimacao) {
-    const ultima = data.etapas[total - 1];
     return (
-      <section id="arcada" className="relative bg-ink">
-        <div className="mx-auto w-full max-w-[1600px]">
-          <div className="aspect-video w-full">
-            <Quadro etapa={ultima} slotRotulo={data.slotRotulo} prioridade />
+      <section id="arcada" className="relative bg-ink py-16">
+        <div className="mx-auto w-full max-w-[1000px] px-5 md:px-10">
+          <div className="aspect-video w-full overflow-hidden rounded-2xl">
+            <Quadro etapa={ultima} slotRotulo={data.slotRotulo} />
           </div>
         </div>
       </section>
@@ -225,79 +187,85 @@ export function ArcadaHero({ data }: { data: ArcadaContent }) {
   }
 
   return (
-    /* Sangra até a borda da janela, sem goteira e sem canto arredondado: é a
-       abertura da página, e o hero de colagem que vem embaixo também sangra. As
-       duas faixas escuras encostam de propósito e leem como uma abertura só. */
     <section id="arcada" className="relative bg-ink">
-      {/* Trilho de 300vh, ou seja 200vh de curso: ~56vh para a abertura e ~29vh
-          por quadro depois dela. Menos que isso e a etapa passa antes de o olho
-          registrar o que mudou. */}
-      <div ref={trilhoRef} className="relative" style={{ height: `${ARCADA_TRILHO_VH}vh` }}>
+      <div
+        ref={trilhoRef}
+        className="relative"
+        style={{ height: `${ARCADA_TRILHO_VH}vh` }}
+      >
         <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden">
-          {/* Caixa da mídia. Largura em % da janela e altura derivada da
-              proporção, que é o que faz a caixa mudar de retrato para paisagem. */}
+          {/* MARCA GRANDE, centralizada — a abertura pedida em 17/08. Encolhe e sai
+              conforme a rolagem começa. `pointer-events-none` porque depois de
+              invisível ela continuaria interceptando clique no meio da tela. */}
+          <div
+            aria-hidden={marcaOpacidade < 0.02 || undefined}
+            className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-8"
+            style={{ opacity: marcaOpacidade }}
+          >
+            {logo ? (
+              <img
+                src={logo}
+                alt={logoAlt ?? ""}
+                /* Grande de verdade: metade da largura da janela no desktop, quase
+                   toda no celular. Teto em `rem` para não virar um cartaz em
+                   monitor ultralargo. */
+                className="w-[min(50vw,34rem)] max-w-[86vw]"
+                style={{ scale: `${marcaEscala}` }}
+              />
+            ) : null}
+          </div>
+
+          {/* A MÍDIA. Aparece atrás da marca e cresce. */}
           <div
             className="relative"
             style={{
               width: `${largura}vw`,
               height: `${altura}vw`,
-              marginTop: `${descida}svh`,
-              /* Guarda para janela baixa e larga (1440×700, por exemplo), onde
-                 56vw de altura passariam da tela. Clampar ali volta a recortar,
-                 e nesse caso recortar é o comportamento certo. */
-              maxHeight: "92svh",
+              /* Guarda para janela baixa e larga: sem ela, 37vw de altura passam da
+                 tela em 1440×700 e a caixa é cortada pelo palco. */
+              maxHeight: "84svh",
               borderRadius: `${raio}px`,
               overflow: "hidden",
+              opacity: midiaEntra,
+              scale: `${0.92 + 0.08 * midiaEntra}`,
               boxShadow: "0 0 60px oklch(0 0 0 / 0.35)",
             }}
           >
-            {data.etapas.map((e, i) => (
-              <div
-                key={e.rotulo}
-                aria-hidden={i !== ativa || undefined}
-                /* Os cinco empilhados e trocados por opacidade. Trocar o `src` de
-                   um único <img> pisca na primeira vez que cada quadro entra,
-                   porque o arquivo novo só decodifica quando é pedido.
-                   A escala mínima no quadro que sai dá o empurrão que faz a troca
-                   ler como algo se formando, e não como slide trocando. */
-                className="absolute inset-0 transition-[opacity,scale] duration-700 ease-out"
-                style={{
-                  opacity: i === ativa ? 1 : 0,
-                  scale: i === ativa ? "1" : "1.03",
-                }}
+            {data.video ? (
+              <video
+                ref={videoRef}
+                /* `poster` é o primeiro quadro: sem ele há um retângulo preto até o
+                   vídeo ter dados, e este é o topo da página. */
+                poster={primeira.src ?? undefined}
+                aria-label={primeira.alt}
+                muted
+                playsInline
+                preload="auto"
+                /* SEM `autoplay` e SEM `loop`: quem controla o tempo é a rolagem.
+                   `controls={false}` e os dois `disable*` para o navegador não
+                   oferecer UI de reprodução numa peça que não é para ser tocada. */
+                controls={false}
+                disablePictureInPicture
+                disableRemotePlayback
+                className="h-full w-full object-cover"
               >
-                <Quadro
-                  etapa={e}
-                  slotRotulo={data.slotRotulo}
-                  prioridade={i === 0}
-                />
-              </div>
-            ))}
-            {/* Véu do template, clareando com a abertura. `pointer-events-none`
-                para não roubar clique de nada que venha a existir por cima. */}
-            <div
-              className="pointer-events-none absolute inset-0 bg-ink"
-              style={{ opacity: veu }}
-            />
+                {/* WebM primeiro: menor, e é o que o Chromium deste ambiente
+                    decodifica — o mp4 é o par universal para Safari e o resto. */}
+                {data.videoWebm ? (
+                  <source src={data.videoWebm} type="video/webm" />
+                ) : null}
+                <source src={data.video} type="video/mp4" />
+              </video>
+            ) : (
+              <Quadro etapa={primeira} slotRotulo={data.slotRotulo} />
+            )}
           </div>
 
-          {/* Fio de progresso rente à base da janela. Não é explicação — é o
-              antídoto para a suspeita que o template de fato merece: faixa que
-              não rola junto lê como página travada. */}
+          {/* Fio de progresso rente à base. Não é escrita — é o que diz que a seção
+              tem fim; faixa que não rola junto lê como página travada. */}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-ink-border">
             <div className="h-px bg-gold" style={{ width: `${p * 100}%` }} />
           </div>
-
-          {/* ⚠️ SEM UMA PALAVRA nesta seção, por pedido explícito do usuário em
-              17/08 — "sem nada de escrita", dito duas vezes na mesma mensagem.
-              O aviso da CFO-196/2019 que ficava aqui NÃO foi apagado: ele passou
-              para o bloco legal do rodapé, junto do CRO do responsável técnico e
-              do CNPJ, que é onde aviso legal pertence numa página. O campo segue
-              em `clinica.arcada.aviso`.
-
-              Isso continua sendo exposição a discutir com o jurídico da clínica:
-              a peça abre a página mostrando uma arcada ficar perfeita, e o aviso
-              agora está a doze seções de distância de quem a vê. */}
         </div>
       </div>
     </section>

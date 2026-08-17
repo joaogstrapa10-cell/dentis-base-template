@@ -413,6 +413,32 @@ export type ArcadaEtapa = {
  * fica na tela é o `aviso`, e ele é exigência legal, não copy.
  */
 export type ArcadaContent = {
+  /**
+   * Vídeo da sequência, com o tempo controlado pela ROLAGEM (não é autoplay).
+   *
+   * É o que substituiu a pilha de cinco imagens em 17/08, depois de o usuário
+   * reprovar aquela versão com a razão certa: "não tá fluido, não tá animado,
+   * apenas frame a frame". Cinco estados são cinco estados — transição de opacidade
+   * não inventa os quadros do meio. Este arquivo é a concatenação de quatro clipes
+   * interpolados entre os quadros (1→2, 2→3, 3→4, 4→5), então o meio existe.
+   *
+   * `null` faz a seção cair no primeiro quadro parado, sem buraco no layout.
+   */
+  video: string | null;
+  /**
+   * Mesma sequência em WebM/VP9, oferecida ANTES do mp4 no `<video>`.
+   *
+   * Não é redundância: além de ser menor, é o formato que este ambiente de
+   * desenvolvimento consegue decodificar — o Chromium empacotado aqui não tem
+   * decodificador H.264 (`canPlayType('avc1')` volta vazio, o demuxer responde
+   * "no supported streams"), então sem o WebM nenhuma verificação de escrubagem
+   * é possível daqui. O mp4 fica como par universal.
+   *
+   * Foi gerado com keyframe a cada segundo (`-g 24`), e isso é REQUISITO: procurar
+   * um instante entre keyframes distantes faz o vídeo saltar para o anterior, e a
+   * animação comandada por rolagem andaria aos pulos.
+   */
+  videoWebm: string | null;
   /** Rótulo do slot enquanto faltam os arquivos. Nome, não número. */
   slotRotulo: string;
   /** As etapas na ordem da rolagem. O primeiro quadro abre a página. */

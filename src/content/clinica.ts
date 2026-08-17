@@ -596,6 +596,17 @@ export const clinica: Clinica = {
     ],
   },
   arcada: {
+    /* Concatenação dos quatro clipes interpolados entre os cinco quadros. 20,2s,
+       1280×720, 5,8MB. É o `currentTime` dele que a rolagem controla.
+       ⚠️ 5,8MB no topo da home é peso real. Fica porque a peça É a abertura e o
+       arquivo carrega com `preload="auto"` de propósito — escrubar vídeo que não
+       tem buffer engasga. Se virar problema de LCP, o caminho é 480p para telas
+       estreitas, não trocar a mecânica. */
+    video: "/imagens/arcada/arcada.mp4",
+    // WebM/VP9 com keyframe por segundo, oferecido primeiro. Ver a nota do tipo:
+    // além de menor, é o único formato decodificável no ambiente de
+    // desenvolvimento, então é o que torna a escrubagem verificável.
+    videoWebm: "/imagens/arcada/arcada.webm",
     slotRotulo: "[QUADRO DA ARCADA — 3D]",
     /* CINCO etapas, na ordem que o usuário definiu em 17/08: gengiva → implantes
        da inferior → superior surgindo já com os implantes → dentes da superior →
