@@ -9,6 +9,7 @@ import { AreasSection } from "@/components/sections/Areas";
 import { CasosSection } from "@/components/sections/Casos";
 import { DepoimentosSection } from "@/components/sections/Depoimentos";
 import { TratamentosSection } from "@/components/sections/Tratamentos";
+import { ArcadaSection } from "@/components/sections/Arcada";
 import { BioSection } from "@/components/sections/Bio";
 import { FaqSection } from "@/components/sections/Faq";
 import { ChamadaFinalSection } from "@/components/sections/ChamadaFinal";
@@ -77,6 +78,16 @@ function Landing() {
         <DiferenciaisSection data={clinica.diferenciais} />
         <EstruturaSection data={clinica.estrutura} />
         <TratamentosSection data={clinica.tratamentos} />
+        {/* Arcada entrou em 17/08, depois de Tratamentos de propósito: Tratamentos
+            é o "como funciona" da lista do usuário, e esta seção é o mesmo assunto
+            em imagem — a sequência do procedimento. Ler a política de orçamento e
+            então ver as etapas acontecerem é a ordem que faz sentido.
+
+            Não entrou no menu (`header.nav`). Item novo na pílula recria a colisão
+            com a marca em 1024px, que já foi paga duas vezes (12/08, quando "Home"
+            entrou e a folga caiu de 44px para 9px), e o usuário não pediu link.
+            A seção tem `id="arcada"` para link direto. */}
+        <ArcadaSection data={clinica.arcada} />
         <DepoimentosSection
           data={clinica.depoimentos}
           logo={clinica.brand.logoEscuro}

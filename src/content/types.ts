@@ -368,6 +368,52 @@ export type TratamentosContent = {
    */
 };
 
+/**
+ * Uma etapa da reabilitação, com o quadro que a mostra.
+ *
+ * A animação é uma SEQUÊNCIA DE QUADROS trocada pela rolagem, não um vídeo. Foi
+ * decisão de 17/08 e tem três motivos, nenhum de gosto:
+ *
+ * - a ordem passa a ser CÓDIGO. O usuário pediu "um dente após o outro,
+ *   começando de um lado, sem aparecer aleatoriamente", e ordenar objeto um a um
+ *   é exatamente o que modelo de vídeo não faz — ele acende vários juntos ou fora
+ *   de ordem. Aqui a ordem é o índice do array;
+ * - peso: cinco imagens em WebP custam uma fração de um mp4 de 10s em 1080p, num
+ *   bloco que abre no meio da home;
+ * - custo de crédito: os quadros são o início e o fim de qualquer clipe, então
+ *   existem de todo jeito. Os clipes seriam gasto adicional para entregar menos
+ *   controle.
+ */
+export type ArcadaEtapa = {
+  /** Nome da etapa. Aparece na régua ao lado da mídia. */
+  rotulo: string;
+  /** Uma linha dizendo o que acontece. Descreve PROCEDIMENTO, nunca resultado. */
+  descricao: string;
+  /**
+   * O quadro desta etapa. `null` enquanto o arquivo não estiver no repo, e a
+   * etapa cai no slot nomeado — mesmo padrão da Estrutura. Caixa cinza lisa lê
+   * como site quebrado; slot com textura e rótulo lê como deliberado.
+   */
+  src: string | null;
+  /** O que a imagem É. Nunca afirmar que é caso de paciente. */
+  alt: string;
+};
+
+export type ArcadaContent = {
+  titulo: string;
+  descricao: string;
+  /** Rótulo do slot enquanto faltam os arquivos. Nome, não número. */
+  slotRotulo: string;
+  /** As etapas na ordem da rolagem. O primeiro quadro é o estado de repouso. */
+  etapas: ArcadaEtapa[];
+  /**
+   * ⚠️ Obrigatório na tela, não é rodapé de cortesia. A peça é um modelo
+   * anatômico em 3D e o aviso é o que impede que ela seja lida como registro de
+   * paciente — mesmo tratamento dado às cinco imagens de Casos em 13/08.
+   */
+  aviso: string;
+};
+
 export type BioMembro = {
   nome: string;
   /**
@@ -465,6 +511,7 @@ export type Clinica = {
   casos: CasosContent;
   depoimentos: DepoimentosContent;
   tratamentos: TratamentosContent;
+  arcada: ArcadaContent;
   bio: BioContent;
   faq: FaqContent;
   chamadaFinal: ChamadaFinalContent;

@@ -592,6 +592,70 @@ export const clinica: Clinica = {
       },
     ],
   },
+  arcada: {
+    titulo: "Reabilitação, etapa por etapa.",
+    descricao:
+      "Uma reabilitação sobre implantes não acontece de uma vez: cada etapa depende de a anterior cicatrizar e ser conferida. Role para acompanhar a sequência, na ordem em que ela é conduzida.",
+    slotRotulo: "[QUADRO DA ARCADA — 3D]",
+    /* CINCO etapas, na ordem que o usuário definiu em 17/08: gengiva → implantes
+       da inferior → superior surgindo já com os implantes → dentes da superior →
+       dentes da inferior.
+
+       Os dentes são DUAS etapas, e é o que atende "um após o outro, começando de
+       um lado": ele falou dos dentes da parte de cima, e a arcada só fecha com a
+       de baixo também — separar em dois quadros deixa a ordem explícita em vez de
+       implícita.
+
+       Cada descrição fala de PROCEDIMENTO, nunca de desfecho. É a mesma régua da
+       galeria de casos, e aqui ela pesa mais: a peça é bonita e é justamente onde
+       um verbo a mais viraria promessa de resultado.
+
+       ⚠️ `src: null` nos cinco não é pendência esquecida. Os quadros FORAM
+       gerados em 17/08 e estão na conta do Magnific; o CDN deles é 403 nesta
+       rede, então quem baixa é o agente do Lovable ou o usuário — o mesmo
+       caminho das 12 fotos de estrutura em 29/07. Ver
+       public/imagens/arcada/LEIA-ME.txt para as URLs e a ordem. Quando os
+       arquivos entrarem, são cinco linhas aqui e nada de componente muda. */
+    etapas: [
+      {
+        rotulo: "Gengiva e leitos",
+        descricao:
+          "O osso é avaliado por imagem e os leitos dos implantes são preparados na crista, um para cada dente.",
+        src: null,
+        alt: "Modelo 3D de arcada inferior sem dentes, com os leitos dos implantes preparados na crista da gengiva.",
+      },
+      {
+        rotulo: "Implantes na inferior",
+        descricao:
+          "Cada implante de titânio é rosqueado no seu leito, com o torque conferido um a um.",
+        src: null,
+        alt: "Modelo 3D da arcada inferior com os implantes de titânio assentados na crista, ainda sem nenhum dente.",
+      },
+      {
+        rotulo: "Arcada superior",
+        descricao:
+          "Quando o caso envolve as duas arcadas, a superior recebe o mesmo protocolo, planejada junto com a inferior.",
+        src: null,
+        alt: "Modelo 3D das duas arcadas, ambas com os implantes assentados e ambas ainda sem dentes.",
+      },
+      {
+        rotulo: "Coroas da superior",
+        descricao:
+          "Cumprido o tempo de cicatrização, as coroas definitivas em cerâmica são instaladas na sequência, dente por dente.",
+        src: null,
+        alt: "Modelo 3D com a arcada superior já restaurada em coroas de cerâmica e a inferior ainda sem dentes.",
+      },
+      {
+        rotulo: "Coroas da inferior",
+        descricao:
+          "A inferior segue a mesma ordem, e o ajuste final é feito com as duas arcadas em função.",
+        src: null,
+        alt: "Modelo 3D das duas arcadas completas, restauradas em coroas de cerâmica, sem nenhuma peça metálica aparente.",
+      },
+    ],
+    aviso:
+      "Ilustração técnica em 3D de um modelo anatômico, produzida para explicar a sequência do procedimento. Não é registro clínico de paciente, não representa um caso real e não constitui promessa de resultado. Cada caso depende de diagnóstico individual.",
+  },
   bio: {
     eyebrow: "Responsável técnico",
     nome: "Dr. Dalton Suzuki",

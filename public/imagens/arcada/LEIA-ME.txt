@@ -1,0 +1,81 @@
+QUADROS DA ANIMAÇÃO DA ARCADA — proveniência e como baixar
+===========================================================
+
+O que é
+-------
+Cinco quadros de uma sequência de reabilitação sobre implantes, um por etapa,
+trocados pela rolagem na seção `#arcada` da home (`src/components/sections/
+Arcada.tsx`). NÃO é vídeo — a decisão e o porquê estão na nota do tipo
+`ArcadaEtapa` em `src/content/types.ts`.
+
+⚠️ NÃO É REGISTRO CLÍNICO
+-------------------------
+São renders 3D de um MODELO ANATÔMICO, gerados por IA em 17/08/2026. Não há
+paciente, não há rosto, não há boca. É essa escolha que mantém a peça como
+ilustração técnica e fora da restrição de imagem comparativa da Resolução
+CFO-196/2019 — e é por isso que o modelo isolado no vazio foi pedido de propósito
+no prompt, em vez de um "sorriso" ou uma arcada dentro de uma boca.
+
+O aviso em `clinica.arcada.aviso` diz isso ao visitante e é OBRIGATÓRIO na tela.
+Não remover, não encurtar para caber no layout.
+
+Como foram gerados
+------------------
+Serviço: Magnific (modelo automático, 16:9, 75 créditos por imagem).
+Motivo de não ser Higgsfield, que vinha sendo usado: o MCP dele caiu no meio da
+sessão e o usuário estava com 251 créditos, pedindo para economizar. O Magnific
+faz o mesmo trabalho em outra conta.
+
+O pacote completo de prompts — os cinco quadros e os três clipes de vídeo que
+NÃO foram gerados — está descrito no CLAUDE.md §9 e foi montado com um bloco BASE
+repetido palavra por palavra em todos, que é o que mantém luz, matéria e
+enquadramento idênticos entre as etapas. Sem esse bloco, cada quadro vira um
+render diferente e a sequência pisca a cada troca.
+
+Os cinco, NA ORDEM (é a ordem do array `etapas`, e é o que o usuário ditou)
+--------------------------------------------------------------------------
+ 1. Gengiva e leitos      https://www.magnific.com/app/creation/MBo3mTHDCm
+    arcada inferior sem dentes, alvéolos preparados na crista, nada inserido
+ 2. Implantes na inferior https://www.magnific.com/app/creation/XmhGEk7Bfo
+    os implantes assentados, ainda sem dente nenhum
+ 3. Arcada superior       https://www.magnific.com/app/creation/nVMyXU4YQD
+    as duas arcadas, ambas com implantes, ambas sem dentes
+ 4. Coroas da superior    https://www.magnific.com/app/creation/8afYHsDIrU
+    superior restaurada, inferior ainda sem dentes — é o quadro que torna a
+    ordem "superior primeiro" explícita em vez de depender do modelo acertar
+ 5. Coroas da inferior    https://www.magnific.com/app/creation/tCEcbc4mZJ
+    as duas completas, e nenhuma peça metálica aparente em lugar nenhum
+
+Por que os arquivos ainda não estão aqui
+----------------------------------------
+O CDN do Magnific (`pikaso.cdnpk.net`) responde 403 nesta rede, como o site
+antigo e a referência de layout — ver CLAUDE.md §7. Então Claude não baixa.
+
+Quem baixa: o usuário, ou o agente do Lovable, que tem rede própria. É o mesmo
+caminho das 12 fotos de estrutura em 29/07.
+
+Ao trazer os arquivos
+---------------------
+ 1. Salvar como `etapa-1.webp` … `etapa-5.webp` nesta pasta, NA ORDEM acima.
+    A ordem é o conteúdo: trocar dois arquivos de nome inverte a sequência do
+    procedimento na tela.
+ 2. Preencher os cinco `src` em `clinica.arcada.etapas` — cinco linhas, e nenhum
+    componente muda.
+ 3. Largura útil: o quadro exibe até 752px em 1440 e 326px em 390. 1600px de
+    largura basta e sobra; acima disso é peso morto em cinco arquivos.
+ 4. WebP, não JPG: são cinco imagens no meio da home e as quatro últimas são
+    `loading="lazy"`.
+
+Só o PRIMEIRO quadro é `eager` — é o que aparece em repouso, antes de a rolagem
+começar. Os outros quatro são lazy de propósito.
+
+O que NÃO fazer com estas imagens
+---------------------------------
+ - Não usar como "antes e depois". O quadro 1 e o quadro 5 lado a lado são
+   exatamente a comparação que a CFO-196/2019 restringe, e o fato de ser 3D não
+   muda o que a montagem comunica. Foi por isso que uma imagem de dente meio
+   limpo / meio com cálculo foi descartada da galeria de casos em 13/08.
+ - Não escrever copy que prometa desfecho ao lado delas. As descrições das etapas
+   falam de PROCEDIMENTO de propósito.
+ - Não reaproveitar no hero. Sorriso reabilitado no topo da página lê como
+   promessa de resultado — decisão registrada em 13/08.
