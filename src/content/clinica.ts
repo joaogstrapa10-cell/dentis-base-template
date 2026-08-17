@@ -610,36 +610,41 @@ export const clinica: Clinica = {
        galeria de casos, e aqui ela pesa mais: a peça é bonita e é justamente onde
        um verbo a mais viraria promessa de resultado.
 
-       ⚠️ `src: null` nos cinco não é pendência esquecida. Os quadros FORAM
-       gerados em 17/08 e estão na conta do Magnific; o CDN deles é 403 nesta
-       rede, então quem baixa é o agente do Lovable ou o usuário — o mesmo
-       caminho das 12 fotos de estrutura em 29/07. Ver
-       public/imagens/arcada/LEIA-ME.txt para as URLs e a ordem. Quando os
-       arquivos entrarem, são cinco linhas aqui e nada de componente muda. */
+       Os arquivos entraram em 17/08, 2048×1152 (16:9), baixados pelo agente do
+       Lovable — o CDN do Magnific é 403 nesta rede, mesmo caminho das 12 fotos de
+       estrutura em 29/07. Proveniência, URLs e o que NÃO fazer com estas imagens
+       em public/imagens/arcada/LEIA-ME.txt.
+
+       ⚠️ O ENQUADRAMENTO dos cinco NÃO é consistente, e isso se vê na troca: 1 e 2
+       são planos fechados só da arcada inferior, 4 é plano aberto com as duas, e 5
+       é mais fechado que 4. Cada quadro foi gerado em chamada separada, então a
+       câmera não se manteve. A sequência funciona, mas lê mais como cinco fotos do
+       que como uma coisa se formando. O conserto é regerar 1, 2, 3 e 5 usando o
+       quadro 4 como REFERÊNCIA de imagem, o que trava composição e escala. */
     etapas: [
       {
         rotulo: "Gengiva e leitos",
-        src: null,
+        src: "/imagens/arcada/etapa-1.webp",
         alt: "Modelo 3D de arcada inferior sem dentes, com os leitos dos implantes preparados na crista da gengiva.",
       },
       {
         rotulo: "Implantes na inferior",
-        src: null,
+        src: "/imagens/arcada/etapa-2.webp",
         alt: "Modelo 3D da arcada inferior com os implantes de titânio assentados na crista, ainda sem nenhum dente.",
       },
       {
         rotulo: "Arcada superior",
-        src: null,
+        src: "/imagens/arcada/etapa-3.webp",
         alt: "Modelo 3D das duas arcadas, ambas com os implantes assentados e ambas ainda sem dentes.",
       },
       {
         rotulo: "Coroas da superior",
-        src: null,
+        src: "/imagens/arcada/etapa-4.webp",
         alt: "Modelo 3D com a arcada superior já restaurada em coroas de cerâmica e a inferior ainda sem dentes.",
       },
       {
         rotulo: "Coroas da inferior",
-        src: null,
+        src: "/imagens/arcada/etapa-5.webp",
         alt: "Modelo 3D das duas arcadas completas, restauradas em coroas de cerâmica, sem nenhuma peça metálica aparente.",
       },
     ],
