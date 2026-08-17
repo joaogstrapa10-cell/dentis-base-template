@@ -49,6 +49,9 @@ function Landing() {
         data={clinica.header}
         logo={clinica.brand.logo}
         logoAlt={clinica.brand.logoAlt}
+        /* Só aqui: a home abre pela arcada, e a navegação espera a animação
+           terminar. Ver a nota da prop em Header.tsx. */
+        esperarArcada
       />
       {/* ORDEM DAS SEÇÕES — ditada pelo usuário em 13/08, nesta sequência:
           hero, casos, especialidades, corpo clínico, experiência aplicada,
@@ -104,6 +107,9 @@ function Landing() {
         data={clinica.footer}
         brand={clinica.brand}
         contato={clinica.contato}
+        /* O aviso da arcada mora no bloco legal do rodapé desde 17/08, quando a
+           abertura passou a ser "sem nada de escrita". */
+        avisoArcada={clinica.arcada.aviso}
       />
     </div>
   );

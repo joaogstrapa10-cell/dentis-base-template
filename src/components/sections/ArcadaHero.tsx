@@ -53,6 +53,17 @@ import type { ArcadaContent, ArcadaEtapa } from "@/content/types";
  * exata, enquanto modelo de vídeo acende vários dentes juntos e fora de sequência.
  */
 
+/**
+ * Altura do trilho, em vh. Exportada porque o HEADER precisa dela: a pílula de
+ * navegação só aparece depois de a arcada terminar de abrir (pedido do usuário em
+ * 17/08), e para saber quando isso acontece ele tem de conhecer o curso.
+ *
+ * O curso é `TRILHO - 100vh`, porque a última tela do trilho é a que o palco
+ * `sticky` ocupa parado. Um número só, num lugar só — duplicar 300 no Header faria
+ * a navegação aparecer no momento errado no dia em que este valor mudasse.
+ */
+export const ARCADA_TRILHO_VH = 300;
+
 /** Um quadro, ou o slot nomeado enquanto o arquivo não existe. */
 function Quadro({
   etapa,
@@ -189,6 +200,11 @@ export function ArcadaHero({ data }: { data: ArcadaContent }) {
   const proporcao = propInicio + (propFim - propInicio) * suave;
   const altura = largura / proporcao;
   const raio = 24 * (1 - suave);
+  /* O quadro nasce um pouco ABAIXO do centro, a pedido do usuário em 17/08
+     ("um pouco para baixo ali da seção inicial"), e volta ao centro conforme
+     abre — em tela cheia não há para onde deslocar sem cortar. O valor é em
+     `svh` e não em px porque é posição na JANELA, não tamanho de peça. */
+  const descida = 7 * (1 - suave);
   /* Véu clareando, como no template (lá 0.7 → 0.4). Aqui é mais fraco porque os
      quadros já são escuros: sobre verde-petróleo, 50% viraria um borrão. */
   const veu = 0.42 - 0.34 * suave;
@@ -204,9 +220,6 @@ export function ArcadaHero({ data }: { data: ArcadaContent }) {
             <Quadro etapa={ultima} slotRotulo={data.slotRotulo} prioridade />
           </div>
         </div>
-        <p className="mx-auto max-w-[52rem] px-5 pb-8 pt-5 text-small leading-[1.55] text-ink-muted md:px-10">
-          {data.aviso}
-        </p>
       </section>
     );
   }
@@ -219,7 +232,7 @@ export function ArcadaHero({ data }: { data: ArcadaContent }) {
       {/* Trilho de 300vh, ou seja 200vh de curso: ~56vh para a abertura e ~29vh
           por quadro depois dela. Menos que isso e a etapa passa antes de o olho
           registrar o que mudou. */}
-      <div ref={trilhoRef} className="relative h-[300vh]">
+      <div ref={trilhoRef} className="relative" style={{ height: `${ARCADA_TRILHO_VH}vh` }}>
         <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden">
           {/* Caixa da mídia. Largura em % da janela e altura derivada da
               proporção, que é o que faz a caixa mudar de retrato para paisagem. */}
@@ -228,6 +241,7 @@ export function ArcadaHero({ data }: { data: ArcadaContent }) {
             style={{
               width: `${largura}vw`,
               height: `${altura}vw`,
+              marginTop: `${descida}svh`,
               /* Guarda para janela baixa e larga (1440×700, por exemplo), onde
                  56vw de altura passariam da tela. Clampar ali volta a recortar,
                  e nesse caso recortar é o comportamento certo. */
@@ -274,18 +288,16 @@ export function ArcadaHero({ data }: { data: ArcadaContent }) {
             <div className="h-px bg-gold" style={{ width: `${p * 100}%` }} />
           </div>
 
-          {/* ⚠️ Aviso da CFO-196/2019. Discreto, e permanente de propósito: a peça
-              abre a página mostrando uma arcada ficar perfeita, e sem esta linha
-              ela pode ser lida como caso real e como promessa de resultado. É a
-              única palavra na seção, e some junto com o véu para não competir com
-              a mídia enquanto ela abre. Não remover sem falar com o jurídico da
-              clínica. */}
-          <p
-            className="pointer-events-none absolute inset-x-0 bottom-4 mx-auto max-w-[46rem] px-5 text-center text-small leading-[1.45] text-ink-muted/70 transition-opacity duration-500 md:px-10"
-            style={{ opacity: suave < 0.9 ? 0 : 1 }}
-          >
-            {data.aviso}
-          </p>
+          {/* ⚠️ SEM UMA PALAVRA nesta seção, por pedido explícito do usuário em
+              17/08 — "sem nada de escrita", dito duas vezes na mesma mensagem.
+              O aviso da CFO-196/2019 que ficava aqui NÃO foi apagado: ele passou
+              para o bloco legal do rodapé, junto do CRO do responsável técnico e
+              do CNPJ, que é onde aviso legal pertence numa página. O campo segue
+              em `clinica.arcada.aviso`.
+
+              Isso continua sendo exposição a discutir com o jurídico da clínica:
+              a peça abre a página mostrando uma arcada ficar perfeita, e o aviso
+              agora está a doze seções de distância de quem a vê. */}
         </div>
       </div>
     </section>

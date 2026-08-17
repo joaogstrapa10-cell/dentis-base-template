@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import type { HeaderContent, NavLink } from "@/content/types";
 import { PillButton } from "@/components/Primitives";
+import { ARCADA_TRILHO_VH } from "@/components/sections/ArcadaHero";
 import { cn } from "@/lib/utils";
 
 /**
@@ -32,10 +33,23 @@ import { cn } from "@/lib/utils";
  * cada cópia visível. Com `h-10` no empilhamento e `-translate-y-5`, o
  * deslocamento é sempre exatamente uma linha.
  */
-function AnimatedNavLink({ href, children }: { href: string; children: string }) {
+function AnimatedNavLink({
+  href,
+  children,
+  foraDoTab,
+}: {
+  href: string;
+  children: string;
+  /* `inert` no contêiner não funcionou — React não serializa o atributo booleano
+     vazio, e a medição confirmou (`hasAttribute("inert")` false). Então cada link
+     sai do Tab por conta: pílula opaca a 0 que ainda recebe foco manda quem navega
+     por teclado para destinos que ele não vê. */
+  foraDoTab?: boolean;
+}) {
   return (
     <a
       href={href}
+      tabIndex={foraDoTab ? -1 : undefined}
       className="group inline-flex h-5 shrink-0 items-start overflow-hidden text-base"
     >
       <span
@@ -61,15 +75,39 @@ export function Header({
   data,
   logo,
   logoAlt,
+  esperarArcada = false,
 }: {
   data: HeaderContent;
   /** Logo branco. `null` cai no wordmark em texto. */
   logo?: string | null;
   logoAlt?: string;
+  /**
+   * `true` só na home, onde a página abre pela arcada. A pílula de navegação fica
+   * ESCONDIDA até a animação terminar de abrir — pedido do usuário em 17/08: "a
+   * aba de navegação ali só vai aparecer após a gente terminar de rolar e aparecer
+   * todo o vídeo completo".
+   *
+   * A MARCA não: ele disse que "a Suzuki pode deixar o logo". Então ela fica de pé
+   * durante toda a abertura e só então volta a se apagar.
+   *
+   * As outras rotas (`/casos`, `/estrutura`) não passam a prop e seguem com a
+   * navegação de saída — lá não existe arcada, e esconder o menu numa página
+   * interna deixaria o visitante sem como voltar.
+   */
+  esperarArcada?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [redondo, setRedondo] = useState(true);
   const [opacidadeMarca, setOpacidadeMarca] = useState(1);
+  /* Nasce escondida quando há arcada na frente, e é isso que evita o PISCA-PISCA:
+     começando revelada, a pílula aparecia por ~600ms no carregamento e só então se
+     escondia — medido em 0,62 de opacidade no primeiro quadro. Como `esperarArcada`
+     é conhecido na renderização, o SSR já manda o HTML com ela escondida.
+
+     O caso sem JS está coberto pelo <noscript> lá embaixo: sem script não há
+     animação nem rolagem para revelar nada, então a pílula tem de voltar a
+     aparecer — senão a home fica sem navegação para quem chega assim. */
+  const [navRevelada, setNavRevelada] = useState(!esperarArcada);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* A marca se apaga ao longo dos primeiros 180px de scroll.
@@ -82,7 +120,22 @@ export function Header({
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        setOpacidadeMarca(Math.max(0, Math.min(1, 1 - window.scrollY / 180)));
+        /* Sem arcada na frente, a marca se apaga nos primeiros 180px, como sempre.
+           COM arcada, o zero se desloca para o fim dela: a abertura tem ~200vh de
+           curso, e apagar a marca aos 180px a faria desaparecer nos primeiros 9%
+           da animação — justamente o que o usuário pediu para não acontecer. Ela
+           fica inteira durante a abertura e começa a sair quando o hero de colagem
+           entra, que é a mesma relação de antes. */
+        const fim = esperarArcada
+          ? ((ARCADA_TRILHO_VH - 100) / 100) * window.innerHeight
+          : 0;
+        const passou = window.scrollY - fim;
+        setOpacidadeMarca(Math.max(0, Math.min(1, 1 - passou / 180)));
+        /* A navegação entra quando a arcada termina. Uma vez revelada, NÃO volta a
+           esconder ao subir a página: menu que pisca ao rolar para cima lê como
+           defeito, e quem já viu o site inteiro não deveria perder o menu por
+           voltar ao topo. */
+        if (esperarArcada && passou >= 0) setNavRevelada(true);
       });
     };
     aoRolar();
@@ -91,7 +144,7 @@ export function Header({
       window.removeEventListener("scroll", aoRolar);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [esperarArcada]);
 
   useEffect(() => {
     if (timer.current) clearTimeout(timer.current);
@@ -189,7 +242,18 @@ export function Header({
           // 95%. O `backdrop-blur` continua, pela borda de vidro.
           "border border-ink-border bg-ink/95 px-5 py-3 backdrop-blur-md",
           redondo ? "rounded-full" : "rounded-2xl",
+          /* Entrada da pílula quando a arcada termina. Sobe 8px junto com o fade
+             para ler como algo que chega, e não como algo que estava ali apagado.
+             `duration-500` porque a abertura da arcada é lenta: entrada rápida
+             depois dela pareceria um sobressalto. */
+          "transition-[opacity,translate] duration-500 ease-out motion-reduce:transition-none",
+          navRevelada ? "opacity-100" : "-translate-y-2 opacity-0",
         )}
+        /* Fora da árvore de acessibilidade e fora do Tab enquanto invisível: menu
+           opaco a 0 que ainda recebe foco manda quem navega por teclado para links
+           que ele não vê. */
+        aria-hidden={!navRevelada || undefined}
+        style={!navRevelada ? { pointerEvents: "none" } : undefined}
       >
         {/* Os vãos apertam na faixa `lg` e voltam em `xl`, pela mesma colisão
             descrita na marca: como a pílula é centralizada, cada pixel que ela
@@ -198,13 +262,20 @@ export function Header({
         <div className="flex w-full items-center justify-end gap-x-8 md:justify-between lg:gap-x-6 xl:gap-x-10">
           <nav className="hidden items-center gap-5 lg:flex xl:gap-8">
             {data.nav.map((item: NavLink) => (
-              <AnimatedNavLink key={item.href + item.label} href={item.href}>
+              <AnimatedNavLink
+                key={item.href + item.label}
+                href={item.href}
+                foraDoTab={!navRevelada}
+              >
                 {item.label}
               </AnimatedNavLink>
             ))}
           </nav>
 
-          <div className="hidden shrink-0 lg:block">
+          {/* `hidden` de verdade enquanto a pílula está invisível: `PillButton` é um
+              <a>, e um link opaco a 0 continua no Tab. Não dá para resolver com
+              tabIndex aqui sem furar a API do primitivo. */}
+          <div className={cn("shrink-0", navRevelada ? "hidden lg:block" : "hidden")}>
             <PillButton
               label={data.cta.label}
               href={data.cta.href}
@@ -215,6 +286,7 @@ export function Header({
 
           <button
             type="button"
+            tabIndex={navRevelada ? undefined : -1}
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? data.ariaFecharMenu : data.ariaAbrirMenu}
             aria-expanded={open}
@@ -254,6 +326,14 @@ export function Header({
             />
           </div>
         </div>
+        {/* Sem JavaScript não existe rolagem que revele nada — e a pílula nasce
+            escondida na home para não piscar. Este bloco devolve a navegação nesse
+            caso: sem ele, quem chega sem script fica sem menu na home. */}
+        {esperarArcada ? (
+          <noscript>
+            <style>{`header[aria-hidden="true"]{opacity:1!important;translate:none!important;pointer-events:auto!important}`}</style>
+          </noscript>
+        ) : null}
       </header>
     </>
   );

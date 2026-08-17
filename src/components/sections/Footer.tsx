@@ -57,10 +57,14 @@ export function FooterSection({
   data,
   brand,
   contato,
+  avisoArcada,
 }: {
   data: FooterContent;
   brand: BrandContent;
   contato: ContatoContent;
+  /** Aviso legal da animação da arcada. Opcional porque só a home tem a peça —
+   *  `/casos` e `/estrutura` usam o mesmo rodapé e não a exibem. */
+  avisoArcada?: string;
 }) {
   return (
     <footer className="px-3 pb-3 pt-6 md:px-4 md:pb-4 md:pt-8">
@@ -168,6 +172,19 @@ export function FooterSection({
               dourado brilhando no meio do nada. Encolhido junto. */}
           <div className="mt-20 border-t border-ink-border pb-10 pt-7 md:pb-12">
             <p className="text-small leading-[1.7] text-ink-muted">{brand.copyright}</p>
+            {/* ⚠️ Aviso da CFO-196/2019 sobre a animação da arcada. Ele ficava DENTRO
+                da seção da arcada e veio para cá em 17/08, quando o usuário pediu a
+                abertura "sem nada de escrita". Aqui é o bloco legal da página — CRO
+                do responsável técnico, CNPJ —, que é onde aviso legal pertence.
+
+                Fica a doze seções de distância de quem vê a animação, e isso é
+                exposição a discutir com o jurídico da clínica: não é o mesmo que
+                estar ao lado da peça. Está registrado no CLAUDE.md. */}
+            {avisoArcada ? (
+              <p className="mt-4 max-w-[60rem] text-small leading-[1.7] text-ink-muted/80">
+                {avisoArcada}
+              </p>
+            ) : null}
           </div>
         </div>
 
