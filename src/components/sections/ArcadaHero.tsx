@@ -261,11 +261,12 @@ export function ArcadaHero({
             )}
           </div>
 
-          {/* Fio de progresso rente à base. Não é escrita — é o que diz que a seção
-              tem fim; faixa que não rola junto lê como página travada. */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-ink-border">
-            <div className="h-px bg-gold" style={{ width: `${p * 100}%` }} />
-          </div>
+          {/* Sem fio de progresso: removido a pedido do usuário em 17/08. Ele existia
+              como pista de que a seção tem fim — faixa que não rola junto pode ler
+              como página travada. Aqui o risco é menor do que no template original,
+              porque a barra de rolagem do navegador continua andando durante a
+              abertura (é o trilho que rola, não um sequestro de scroll). Não
+              reintroduzir sem pedido. */}
         </div>
       </div>
     </section>
