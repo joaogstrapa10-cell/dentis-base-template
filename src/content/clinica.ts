@@ -122,7 +122,7 @@ export const clinica: Clinica = {
        medido) é mais ESCURO que o `--ink` do bloco e sem ela desenharia um retângulo —
        a borda que foi reprovada duas vezes na abertura. */
     arcada: {
-      src: "https://pikaso.cdnpk.net/private/production/5188738596/end_frame.jpg?token=exp=1787184000~hmac=061e4df88f639faaefa5ae00739966209dfdfef349fa310cc32138ed36cc17b9",
+      src: "/imagens/arcada/arcada-fim.webp",
       alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo. Ilustração técnica, não é registro de paciente.",
       largura: 1280,
       altura: 720,
@@ -577,56 +577,48 @@ export const clinica: Clinica = {
     ],
   },
   arcada: {
-    /* UM clipe só, 10,04s, 1280×720, 24fps. É o `currentTime` dele que a rolagem
-       controla, e ele é o conteúdo inteiro da abertura.
+    /* UM clipe só, 8,04s, 1280×720, 24fps, E DENTRO DO REPO. É o `currentTime` dele
+       que a rolagem controla, e ele é o conteúdo inteiro da abertura.
 
-       O clipe foi gerado por INTERPOLAÇÃO entre os dois quadros de `etapas`, que são
-       exatamente as suas pontas: começa nas duas gengivas já implantadas e termina no
-       sorriso completo. É isso que faz a câmera ficar parada — o modelo não escolhe
-       enquadramento, ele preenche o meio entre duas imagens fixas. A inconsistência de
-       enquadramento das versões de cinco e seis quadros morreu aqui.
+       ✅ ACABOU A DEPENDÊNCIA DE URL EXTERNA. Até 17/08 o vídeo e os dois quadros
+       vinham do CDN do gerador, com token vencendo em 20/08, porque o CDN é 403 nesta
+       rede e o Lovable ficou sem crédito. O usuário mandou os arquivos pelo chat
+       ("faca tudo voce, eu nao consigo subir nada" virou ele subindo), e com arquivo em
+       disco a ponte deixou de ser necessária. Não voltar a apontar para URL assinada.
+
+       O clipe veio do Higgsfield, um de quatro que ele mandou. Os outros TRÊS ficaram
+       fora, e não por descuido — são redundantes com este:
+         · 4,04s, as duas gengivas só com implantes → é o quadro 0 deste clipe;
+         · 5,04s, sorriso completo de frente        → é o quadro final deste clipe;
+         · 6,04s, sorriso completo girando          → o giro foi trocado pela DESCIDA
+           em CSS, que aterrissa no sorriso do hero. Somar 6s aqui dobraria o scroll.
+       Proveniência dos quatro em public/imagens/arcada/LEIA-ME.txt.
 
        ⚠️ QUEM COLOCA OS DENTES É O VÍDEO, e isso foi uma correção do usuário: "quero
-       você colocando os dentes ao scrollar, você apenas colocou uma imagem em cima,
-       quero algo intuitivo e profissional". A tentativa anterior empilhava um quadro
-       com dentes sobre o quadro com implantes e descobria por `clip-path`; entregava a
-       ordem certa e foi reprovada na hora, porque é sobreposição e não animação. Não
-       reintroduzir.
+       você colocando os dentes ao scrollar, você apenas colocou uma imagem em cima".
+       Houve uma tentativa de empilhar um quadro com dentes sobre o quadro com
+       implantes e descobrir por `clip-path`; entregava a ordem certa e foi reprovada na
+       hora, porque é sobreposição e não animação. Não reintroduzir.
 
-       MEDIDO no próprio arquivo (contagem de pixels de esmalte por quadro, 4 amostras
-       por segundo), e é a primeira vez neste projeto que uma dessas propriedades foi
-       verificada em vez de pedida ao modelo e aceita no escuro:
+       CONFERIDO quadro a quadro no arquivo, a 2 amostras por segundo, e é a primeira
+       vez que este clipe atende o pedido inteiro sem ressalva:
+         · a arcada de CIMA enche da esquerda para a direita, um dente por vez, e só
+           quando fecha é que a de BAIXO começa, também da esquerda;
+         · os implantes são o pino achatado da foto de referência que ele mandou, sem
+           cabeça e sem fenda, e nenhum aparece depois que a coroa assenta;
+         · a câmera não mexe: o enquadramento é o mesmo do primeiro ao último quadro.
 
-         · os dentes entram em DEGRAUS, ~8 saltos de 350 a 500px de esmalte, com
-           ~0,75s de patamar entre eles — ou seja um a um, não em bloco;
-         · a arcada de CIMA vai de 0,0 a 5,75s e a de BAIXO só começa em 5,75s, então
-           a ordem "primeiro em cima, depois embaixo" está no arquivo;
-         · o centro dos pixels NOVOS caminha de 0,35 para 0,64 da largura na de cima e
-           de 0,34 para 0,68 na de baixo — esquerda para a direita nas duas;
-         · a caixa do assunto anda 2px em 10s, ou seja a câmera está travada.
+       PESO: 597KB no WebM e 907KB no mp4, contra 4,5MB do clipe anterior. O WebM é o
+       que Chrome, Firefox e Edge baixam; o mp4 existe para o Safari. Recodificado de
+       1920×1080 para 1280×720 porque a caixa fecha em 950px no desktop.
 
-       ⚠️ ~4,5MB no topo da home é peso real. Fica porque a peça É a abertura e o
-       arquivo carrega com `preload="auto"` de propósito — escrubar vídeo sem buffer
-       engasga. Se virar problema de LCP, o caminho é uma versão 480p para telas
-       estreitas, não trocar a mecânica.
-
-       ⚠️ O `src` do vídeo e os dois quadros apontam para URLs EXTERNAS, e isso é
-       ponte, não solução: o CDN do gerador é 403 nesta rede e o workspace do Lovable,
-       que era o caminho de download, ficou sem crédito. O navegador do usuário
-       carrega; o meu não. Os tokens EXPIRAM EM 20/08/2026 — antes disso os três
-       arquivos têm de ser baixados para `public/imagens/arcada/` e os `src` trocados,
-       senão a abertura para de carregar. As URLs se renovam do lado do gerador (a
-       criação é permanente, só a assinatura vence), então isso não depende do usuário.
-
-       ⚠️ SEM WebM. O par WebM/VP9 existia para o Chromium deste ambiente, que não
-       decodifica H.264 — era ele que tornava a escrubagem verificável localmente. Como
-       o arquivo novo não pode ser baixado para cá, não há o que converter, e o `null`
-       é honesto: o mp4 serve todo navegador real. Quando os arquivos entrarem no repo,
-       gerar o WebM com `-g 24` (keyframe por segundo) — sem isso, procurar um instante
-       entre keyframes distantes salta para o anterior e a animação anda aos pulos. */
-    video:
-      "https://pikaso.cdnpk.net/private/production/5188738384/ae7c9ee0-8622-43c7-839d-41ff312f3c93-0.mp4?token=exp=1787184000~hmac=82a64af1622c1c889ae4101a77847b461da0db7a2bc842002d24e42676e83136",
-    videoWebm: null,
+       ⚠️ `-g 24`, KEYFRAME POR SEGUNDO, nos dois arquivos — 9 cada. Não é ajuste fino:
+       o arquivo que o usuário mandou tinha UM keyframe em 8s, e procurar um instante
+       longe do keyframe obriga o navegador a decodificar tudo desde o começo. Animação
+       comandada por rolagem com um keyframe só anda aos pulos. Ao trocar o clipe,
+       reencodar com `-g` igual ao fps. */
+    video: "/imagens/arcada/arcada.mp4",
+    videoWebm: "/imagens/arcada/arcada.webm",
     slotRotulo: "[QUADRO DA ARCADA — 3D]",
     /* DOIS quadros, e eles não são ilustração à parte: são o primeiro e o último
        quadro EXTRAÍDOS do próprio clipe. O primeiro é o `poster` do vídeo e o último é
@@ -641,12 +633,12 @@ export const clinica: Clinica = {
     etapas: [
       {
         rotulo: "Gengivas com os implantes",
-        src: "https://pikaso.cdnpk.net/private/production/5188738583/start_frame.jpg?token=exp=1787184000~hmac=2fcb1c103b305f2ce6f41f3151c489dbc7daf1c680eeb3d18ffe01eee46a53ae",
+        src: "/imagens/arcada/arcada-inicio.webp",
         alt: "Modelo 3D das duas arcadas sem dentes, a de cima espelhada acima da de baixo, ambas com os implantes de titânio assentados na crista da gengiva.",
       },
       {
         rotulo: "Dentes instalados",
-        src: "https://pikaso.cdnpk.net/private/production/5188738596/end_frame.jpg?token=exp=1787184000~hmac=061e4df88f639faaefa5ae00739966209dfdfef349fa310cc32138ed36cc17b9",
+        src: "/imagens/arcada/arcada-fim.webp",
         alt: "Modelo 3D das duas arcadas com as coroas de cerâmica instaladas sobre todos os implantes, sem nenhuma peça metálica aparente.",
       },
     ],

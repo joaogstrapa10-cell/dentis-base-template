@@ -1,81 +1,106 @@
-QUADROS DA ANIMAÇÃO DA ARCADA — proveniência e como baixar
-===========================================================
+ARCADA — a animação de abertura da home
+=======================================
 
-O que é
--------
-Cinco quadros de uma sequência de reabilitação sobre implantes, um por etapa,
-trocados pela rolagem na seção `#arcada` da home (`src/components/sections/
-Arcada.tsx`). NÃO é vídeo — a decisão e o porquê estão na nota do tipo
-`ArcadaEtapa` em `src/content/types.ts`.
+O que está aqui, e é só isto:
 
-⚠️ NÃO É REGISTRO CLÍNICO
--------------------------
-São renders 3D de um MODELO ANATÔMICO, gerados por IA em 17/08/2026. Não há
-paciente, não há rosto, não há boca. É essa escolha que mantém a peça como
-ilustração técnica e fora da restrição de imagem comparativa da Resolução
-CFO-196/2019 — e é por isso que o modelo isolado no vazio foi pedido de propósito
-no prompt, em vez de um "sorriso" ou uma arcada dentro de uma boca.
+  arcada.webm         597KB  VP9, 1280×720, 24fps, 8,042s, 9 keyframes
+  arcada.mp4          907KB  H.264, mesmas dimensões e duração, 9 keyframes
+  arcada-inicio.webp    7KB  o quadro 0 do clipe — é o `poster` do vídeo
+  arcada-fim.webp       6KB  o último quadro — é o sorriso do hero e o estado
+                             exibido sob prefers-reduced-motion
 
-O aviso em `clinica.arcada.aviso` diz isso ao visitante e é OBRIGATÓRIO na tela.
-Não remover, não encurtar para caber no layout.
+Os quatro saem de `clinica.arcada` e de `clinica.hero.arcada`. Nada aqui é registro
+clínico de paciente: é modelo anatômico em 3D, sem rosto, sem lábios e sem boca, e é
+isso que o mantém ilustração técnica sob a CFO-196/2019. O aviso vive em
+`clinica.arcada.aviso` e é exibido no bloco legal do rodapé.
 
-Como foram gerados
-------------------
-Serviço: Magnific (modelo automático, 16:9, 75 créditos por imagem).
-Motivo de não ser Higgsfield, que vinha sendo usado: o MCP dele caiu no meio da
-sessão e o usuário estava com 251 créditos, pedindo para economizar. O Magnific
-faz o mesmo trabalho em outra conta.
 
-O pacote completo de prompts — os cinco quadros e os três clipes de vídeo que
-NÃO foram gerados — está descrito no CLAUDE.md §9 e foi montado com um bloco BASE
-repetido palavra por palavra em todos, que é o que mantém luz, matéria e
-enquadramento idênticos entre as etapas. Sem esse bloco, cada quadro vira um
-render diferente e a sequência pisca a cada troca.
+DE ONDE VEIO
+------------
 
-Os cinco, NA ORDEM (é a ordem do array `etapas`, e é o que o usuário ditou)
---------------------------------------------------------------------------
- 1. Gengiva e leitos      https://www.magnific.com/app/creation/MBo3mTHDCm
-    arcada inferior sem dentes, alvéolos preparados na crista, nada inserido
- 2. Implantes na inferior https://www.magnific.com/app/creation/XmhGEk7Bfo
-    os implantes assentados, ainda sem dente nenhum
- 3. Arcada superior       https://www.magnific.com/app/creation/nVMyXU4YQD
-    as duas arcadas, ambas com implantes, ambas sem dentes
- 4. Coroas da superior    https://www.magnific.com/app/creation/8afYHsDIrU
-    superior restaurada, inferior ainda sem dentes — é o quadro que torna a
-    ordem "superior primeiro" explícita em vez de depender do modelo acertar
- 5. Coroas da inferior    https://www.magnific.com/app/creation/tCEcbc4mZJ
-    as duas completas, e nenhuma peça metálica aparente em lugar nenhum
+O usuário gerou quatro clipes no Higgsfield em 17/08 e mandou os arquivos pelo chat.
+Isso encerrou uma dependência ruim: até então o vídeo e os quadros vinham do CDN do
+gerador, com token assinado vencendo em 20/08/2026, porque o CDN é 403 nesta rede e o
+workspace do Lovable — que era o caminho de download — ficou sem crédito.
 
-Por que os arquivos ainda não estão aqui
-----------------------------------------
-O CDN do Magnific (`pikaso.cdnpk.net`) responde 403 nesta rede, como o site
-antigo e a referência de layout — ver CLAUDE.md §7. Então Claude não baixa.
+Os quatro, todos 1920×1080 / 24fps:
 
-Quem baixa: o usuário, ou o agente do Lovable, que tem rede própria. É o mesmo
-caminho das 12 fotos de estrutura em 29/07.
+  edf2d020…  8,04s  implantes → dentes surgindo um a um     ← É ESTE que está no repo
+  49ae2b2b…  4,04s  as duas gengivas só com os implantes
+  3a34c868…  5,04s  sorriso completo, de frente
+  8ca70ed4…  6,04s  sorriso completo girando
 
-Ao trazer os arquivos
----------------------
- 1. Salvar como `etapa-1.webp` … `etapa-5.webp` nesta pasta, NA ORDEM acima.
-    A ordem é o conteúdo: trocar dois arquivos de nome inverte a sequência do
-    procedimento na tela.
- 2. Preencher os cinco `src` em `clinica.arcada.etapas` — cinco linhas, e nenhum
-    componente muda.
- 3. Largura útil: o quadro exibe até 752px em 1440 e 326px em 390. 1600px de
-    largura basta e sobra; acima disso é peso morto em cinco arquivos.
- 4. WebP, não JPG: são cinco imagens no meio da home e as quatro últimas são
-    `loading="lazy"`.
+Os outros TRÊS ficaram fora de propósito, porque são redundantes com o escolhido:
 
-Só o PRIMEIRO quadro é `eager` — é o que aparece em repouso, antes de a rolagem
-começar. Os outros quatro são lazy de propósito.
+  · o de 4,04s é, quadro por quadro, o QUADRO 0 do de 8,04s;
+  · o de 5,04s é o QUADRO FINAL do de 8,04s;
+  · o de 6,04s é o giro do fecho, e o giro foi trocado pela DESCIDA em CSS, que
+    encolhe a arcada e a leva até o lugar exato do sorriso do hero. Somar 6s de vídeo
+    aqui dobraria o scroll da abertura, contra o pedido de "o vídeo precisa ser curto"
+    e de a seção não exigir muita rolagem.
 
-O que NÃO fazer com estas imagens
+Se algum dia um deles for necessário, os arquivos originais NÃO estão no repo — 10MB
+para um clipe usado não se paga. Pedir ao usuário de novo.
+
+
+O QUE FOI CONFERIDO NO ARQUIVO
+------------------------------
+
+Amostrado a 2 quadros por segundo, e é o pedido inteiro atendido:
+
+  · a arcada de CIMA enche da esquerda para a direita, um dente por vez;
+  · a de BAIXO só começa depois de a de cima fechar, e também da esquerda;
+  · os implantes são o pino achatado da foto de referência que ele mandou — sem
+    cabeça, sem fenda — e nenhum aparece depois que a coroa assenta;
+  · a câmera não mexe: mesmo enquadramento do primeiro ao último quadro.
+
+Fundo do clipe: #001518, medido nos quatro cantos. É MAIS ESCURO que o `--ink` da
+página (~#013435), e é por isso que a máscara `.video-fundido` existe e não pode sair —
+sem ela os cantos desenham um retângulo, que é a "borda" reprovada duas vezes.
+
+
+COMO FORAM GERADOS OS ARQUIVOS DAQUI
+------------------------------------
+
+Não há ffmpeg neste ambiente; o binário estático foi baixado do GitHub (liberado) para
+o scratchpad. Os comandos, para refazer quando o clipe mudar:
+
+  ffmpeg -i FONTE.mp4 -vf scale=1280:720 -c:v libvpx-vp9 -crf 33 -b:v 0 \
+         -g 24 -row-mt 1 -deadline good -cpu-used 2 -an arcada.webm
+
+  ffmpeg -i FONTE.mp4 -vf scale=1280:720 -c:v libx264 -crf 23 -preset slow \
+         -g 24 -keyint_min 24 -sc_threshold 0 -pix_fmt yuv420p \
+         -movflags +faststart -an arcada.mp4
+
+  ffmpeg -i FONTE.mp4 -vf "select=eq(n\,0),scale=1280:720" -frames:v 1 \
+         -c:v libwebp -quality 88 arcada-inicio.webp
+  ffmpeg -sseof -0.1 -i FONTE.mp4 -vf scale=1280:720 -frames:v 1 \
+         -c:v libwebp -quality 88 -update 1 arcada-fim.webp
+
+⚠️ O `-g 24` NÃO É AJUSTE FINO. O arquivo que o usuário mandou tinha UM keyframe em
+8 segundos, e procurar um instante longe do keyframe obriga o navegador a decodificar
+tudo desde o começo — animação comandada por rolagem com um keyframe só anda aos
+pulos. Keyframe por segundo (fps = 24, logo -g 24) é o mínimo. Ao trocar o clipe,
+reencodar; não apontar o `<video>` para o arquivo cru.
+
+⚠️ 1280×720 e não 1080p: a caixa da abertura fecha em 950px no desktop e 343px no
+celular, então 720p já sobra, e 1080p dobraria o peso no topo da página.
+
+⚠️ Este Chromium não decodifica H.264 — daí o WebM ser a primeira `<source>`. Além de
+menor, é o único formato que permite VERIFICAR a escrubagem aqui. O mp4 existe para o
+Safari, que não toca VP9 em todas as versões.
+
+
+O QUE JÁ EXISTIU AQUI E NÃO VOLTA
 ---------------------------------
- - Não usar como "antes e depois". O quadro 1 e o quadro 5 lado a lado são
-   exatamente a comparação que a CFO-196/2019 restringe, e o fato de ser 3D não
-   muda o que a montagem comunica. Foi por isso que uma imagem de dente meio
-   limpo / meio com cálculo foi descartada da galeria de casos em 13/08.
- - Não escrever copy que prometa desfecho ao lado delas. As descrições das etapas
-   falam de PROCEDIMENTO de propósito.
- - Não reaproveitar no hero. Sorriso reabilitado no topo da página lê como
-   promessa de resultado — decisão registrada em 13/08.
+
+`etapa-1.webp` a `etapa-6.webp`, seis quadros gerados no Magnific em 17/08, apagados
+quando este clipe entrou. Eram as pontas de uma versão em PILHA DE QUADROS, trocados
+por opacidade, e o usuário reprovou com a razão exata: "não tá fluido, não tá animado,
+apenas frame a frame". Cinco estados são cinco estados; transição de opacidade não
+inventa o meio.
+
+Também houve uma tentativa de empilhar o quadro com dentes sobre o quadro com
+implantes e revelar por `clip-path`, em faixas quantizadas em posições de dente. Ela
+entregava a ordem certa e foi reprovada na hora: "você apenas colocou uma imagem em
+cima, quero algo intuitivo e profissional". Quem coloca os dentes é o vídeo.

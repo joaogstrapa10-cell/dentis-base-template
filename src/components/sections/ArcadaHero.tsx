@@ -51,17 +51,18 @@ import type { ArcadaContent, ArcadaEtapa } from "@/content/types";
  * a reclamação de 17/08.
  *
  * Histórico: 300vh para 20s, 560vh quando o vídeo foi para 50s, 380vh quando voltou a
- * ~30s, 280vh quando ficou em dois clipes (~20s) e 240vh agora, com o clipe único de
- * 10s. A taxa fica em ~0,12 s/vh em todas, que é o ritmo aprovado — o número anda
- * junto com a duração, sempre.
+ * ~30s, 280vh com dois clipes (~20s), 240vh com um clipe de 10s, e 210vh agora, com o
+ * clipe de 8,04s que o usuário mandou. A taxa fica em ~0,12 s/vh em todas, que é o
+ * ritmo aprovado — o número anda junto com a duração, sempre.
  *
  * A conta, para a próxima vez que o clipe mudar: o trecho escrubado é
  * `ARCADA_DESCIDA_INICIO - ARCADA_INTRO_ATE` do curso, e o curso é `trilho - 100vh`.
- * Aqui: 0,60 × 140vh = 84vh de rolagem para 10,04s, ou seja 0,120 s/vh.
+ * Aqui: 0,60 × 110vh = 66vh de rolagem para 8,04s, ou seja 0,122 s/vh.
  *
- * Custo: a abertura ocupa 2,4 telas de rolagem.
+ * Custo: a abertura ocupa 2,1 telas de rolagem — o menor que já teve. Encurtar mais
+ * significa passar dente antes de dar para ver, porque a duração do clipe é o piso.
  */
-export const ARCADA_TRILHO_VH = 240;
+export const ARCADA_TRILHO_VH = 210;
 
 /**
  * Fração do curso em que a marca grande do centro termina de sair.
