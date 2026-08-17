@@ -589,11 +589,17 @@ export const clinica: Clinica = {
        arquivo carrega com `preload="auto"` de propósito — escrubar vídeo sem buffer
        engasga. Se virar problema de LCP, o caminho é uma versão 480p para telas
        estreitas, não trocar a mecânica. */
-    video: "/imagens/arcada/arcada.mp4",
+    /* ⚠️ DESLIGADO em 17/08. O arquivo que está no repo é a versão anterior, que
+       ainda contém as duas partes que o usuário mandou remover (a colocação dos
+       implantes de baixo e a de cima). Com `null` a seção mostra o primeiro quadro
+       parado, que é exatamente o que ele pediu como passo 1: "depois de scrollar a
+       logo da Suzuki, já apareça as gengivas de cima e de baixo com os implantes".
+       Voltar a ligar é uma linha, quando o vídeo novo existir. */
+    video: null,
     // WebM/VP9 com keyframe por segundo, oferecido primeiro. Ver a nota do tipo:
     // além de menor, é o único formato decodificável no ambiente de
     // desenvolvimento, então é o que torna a escrubagem verificável.
-    videoWebm: "/imagens/arcada/arcada.webm",
+    videoWebm: null,
     slotRotulo: "[QUADRO DA ARCADA — 3D]",
     /* CINCO etapas, na ordem que o usuário definiu em 17/08: gengiva → implantes
        da inferior → superior surgindo já com os implantes → dentes da superior →
@@ -650,26 +656,31 @@ export const clinica: Clinica = {
 
        ⚠️ A ordem dos arquivos É o conteúdo: trocar dois nomes inverte a ordem de um
        procedimento clínico na tela. */
+    /* PASSO 1 do que o usuário pediu em 17/08, e por enquanto é só isso: depois da
+       logo, as duas gengivas com os implantes. O primeiro quadro é o que a seção
+       exibe em repouso.
+
+       ⚠️ O `src` do primeiro aponta para uma URL EXTERNA, e isso é temporário. O
+       arquivo está na conta do Magnific; o CDN deles é 403 nesta rede e o workspace
+       do Lovable — que era como eu baixava — ficou sem crédito no meio da rodada.
+       O navegador do usuário carrega, o meu não. O token da URL EXPIRA EM 20/08/2026:
+       antes disso o arquivo tem de ser baixado para
+       `public/imagens/arcada/etapa-implantes.webp` e o `src` trocado, senão a imagem
+       simplesmente para de carregar.
+
+       ⚠️ Eu NÃO consegui ver este quadro (mesma rede bloqueada). Se a arcada de cima
+       vier curvando para o mesmo lado da de baixo, é o defeito de espelhamento que já
+       apareceu duas vezes, e o conserto é regerar este quadro. */
     etapas: [
       {
-        rotulo: "Implantes na inferior",
-        src: "/imagens/arcada/etapa-2.webp",
-        alt: "Modelo 3D da arcada inferior com os implantes de titânio já assentados na crista, ainda sem nenhum dente.",
-      },
-      {
-        rotulo: "Coroas da inferior",
-        src: "/imagens/arcada/etapa-3.webp",
-        alt: "Modelo 3D da arcada inferior restaurada, com a fileira completa de coroas de cerâmica e nenhuma peça metálica aparente.",
-      },
-      {
-        rotulo: "Superior implantada",
-        src: "/imagens/arcada/etapa-5.webp",
-        alt: "Modelo 3D com a arcada inferior restaurada e a superior espelhada acima dela, com os implantes rentes à gengiva e ainda sem coroas.",
+        rotulo: "Gengivas com os implantes",
+        src: "https://pikaso.cdnpk.net/private/production/5188491522/render.jpg?token=exp=1787184000~hmac=15fd15c012de9c1ddd75232095285ee022f3aec175c203f437ecd14647ada0f8",
+        alt: "Modelo 3D das duas arcadas sem dentes, a de cima espelhada acima da de baixo, ambas com os implantes de titânio assentados na crista da gengiva.",
       },
       {
         rotulo: "Sorriso completo",
         src: "/imagens/arcada/etapa-6.webp",
-        alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo centralizado, sem nenhuma peça metálica aparente.",
+        alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo. Ilustração técnica, não é registro de paciente.",
       },
     ],
     aviso:
