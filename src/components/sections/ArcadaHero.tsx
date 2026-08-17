@@ -44,19 +44,19 @@ import type { ArcadaContent, ArcadaEtapa } from "@/content/types";
  * Altura do trilho, em vh. O Header importa: é ele que precisa saber quando a
  * abertura acaba para revelar a navegação. Um número, num lugar só.
  *
- * ⚠️ Subiu de 300 para 560 em 17/08, e é ISSO que responde "está muito rápido".
- * A velocidade percebida é segundos de vídeo por pixel de rolagem: o vídeo passou
- * de 20s para 50s (cinco etapas de 10s, para cada implante ter o seu momento), e
- * sem alongar o trilho na mesma proporção cada pixel passaria 2,5× mais conteúdo —
- * ou seja ficaria MAIS rápido, não menos. Com 560vh o curso é 460vh e a taxa fica
- * em ~0,107 s/vh, um pouco mais lenta que os 0,1 de antes, e cada implante consome
- * 2,5× mais distância de rolagem.
+ * ⚠️ Este número acompanha a DURAÇÃO do vídeo, e não é gosto. A velocidade percebida
+ * é segundos de vídeo por pixel de rolagem: se o vídeo encurta e o trilho não, a
+ * peça fica mais lenta; se o vídeo cresce e o trilho não, fica mais rápida — que foi
+ * a reclamação de 17/08.
  *
- * Custo: a abertura ocupa 5,6 telas de rolagem. É o preço de "um por um, sem
- * pular" — sequência comandada por rolagem gasta distância por definição. Se ficar
- * demais, é este número.
+ * Histórico: 300vh para 20s, 560vh quando o vídeo foi para 50s, e 380vh agora que
+ * ele voltou para ~30s (duas etapas foram cortadas a pedido). A taxa fica em
+ * ~0,107 s/vh nas três, que é o ritmo aprovado.
+ *
+ * Custo: a abertura ocupa 3,8 telas de rolagem. É o preço de "um por um, sem pular"
+ * — sequência comandada por rolagem gasta distância por definição.
  */
-export const ARCADA_TRILHO_VH = 560;
+export const ARCADA_TRILHO_VH = 380;
 
 /**
  * Fração do curso em que a marca grande do centro termina de sair.

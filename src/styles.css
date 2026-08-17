@@ -417,10 +417,15 @@
    Fade mais largo que o do `.retrato-fundido` porque aqui não há assunto perto da
    borda: a arcada ocupa ~60% do quadro e sobra vazio nos quatro lados. */
 .video-fundido {
-  --vf-esq: linear-gradient(to right, transparent, #fff 14%);
-  --vf-dir: linear-gradient(to left, transparent, #fff 14%);
-  --vf-topo: linear-gradient(to bottom, transparent, #fff 12%);
-  --vf-base: linear-gradient(to top, transparent, #fff 12%);
+  /* Dissolução LARGA de propósito. Com 12–14% ainda sobrava a leitura de "o vídeo
+     está dentro de um quadrado" — o degrau some no meio da altura, mas perto dos
+     cantos a soma dos dois gradientes deixa uma quina perceptível. Com 26% de cada
+     lado a transição é longa o bastante para não haver quina nenhuma, e não custa
+     assunto: a arcada ocupa ~60% do quadro e as bordas são vazio. */
+  --vf-esq: linear-gradient(to right, transparent, #fff 26%);
+  --vf-dir: linear-gradient(to left, transparent, #fff 26%);
+  --vf-topo: linear-gradient(to bottom, transparent, #fff 22%);
+  --vf-base: linear-gradient(to top, transparent, #fff 22%);
 
   -webkit-mask-image: var(--vf-esq), var(--vf-dir), var(--vf-topo), var(--vf-base);
   mask-image: var(--vf-esq), var(--vf-dir), var(--vf-topo), var(--vf-base);
