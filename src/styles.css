@@ -407,6 +407,29 @@
    luminância zero e esconde. Branco opaco revela nos dois. Escrevi com `#000` na
    primeira tentativa e a foto simplesmente não apareceu — sem erro de build, sem
    aviso no console, com a caixa medindo 400×386 e a imagem carregada. */
+/* Dissolve as quatro bordas do VÍDEO da abertura no fundo da seção.
+   ⚠️ Existe porque tirar o `border-radius` e o `box-shadow` NÃO removeu a borda que
+   o usuário apontou em 17/08: o verde-petróleo renderizado dentro do vídeo é um
+   pouco mais CLARO que o `--ink` da página, então a mídia continuava desenhando um
+   retângulo visível no meio da tela. Medido no render: raio 0px e sombra `none`, e
+   a aresta ainda lá. Casar a cor exata seria frágil — cada regeração do vídeo
+   mudaria o tom. A máscara resolve independente da cor.
+   Fade mais largo que o do `.retrato-fundido` porque aqui não há assunto perto da
+   borda: a arcada ocupa ~60% do quadro e sobra vazio nos quatro lados. */
+.video-fundido {
+  --vf-esq: linear-gradient(to right, transparent, #fff 14%);
+  --vf-dir: linear-gradient(to left, transparent, #fff 14%);
+  --vf-topo: linear-gradient(to bottom, transparent, #fff 12%);
+  --vf-base: linear-gradient(to top, transparent, #fff 12%);
+
+  -webkit-mask-image: var(--vf-esq), var(--vf-dir), var(--vf-topo), var(--vf-base);
+  mask-image: var(--vf-esq), var(--vf-dir), var(--vf-topo), var(--vf-base);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
 .retrato-fundido {
   --borda-esq: linear-gradient(to right, transparent, #fff 18%);
   --borda-topo: linear-gradient(to bottom, transparent, #fff 10%);

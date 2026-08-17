@@ -40,14 +40,33 @@ import type { ArcadaContent, ArcadaEtapa } from "@/content/types";
  * obrigou o bloco da Bio a perder o `overflow-hidden` em 13/08.
  */
 
-/** Altura do trilho, em vh. O Header importa: é ele que precisa saber quando a
- *  abertura acaba para revelar a navegação. Um número, num lugar só. */
-export const ARCADA_TRILHO_VH = 300;
+/**
+ * Altura do trilho, em vh. O Header importa: é ele que precisa saber quando a
+ * abertura acaba para revelar a navegação. Um número, num lugar só.
+ *
+ * ⚠️ Subiu de 300 para 560 em 17/08, e é ISSO que responde "está muito rápido".
+ * A velocidade percebida é segundos de vídeo por pixel de rolagem: o vídeo passou
+ * de 20s para 50s (cinco etapas de 10s, para cada implante ter o seu momento), e
+ * sem alongar o trilho na mesma proporção cada pixel passaria 2,5× mais conteúdo —
+ * ou seja ficaria MAIS rápido, não menos. Com 560vh o curso é 460vh e a taxa fica
+ * em ~0,107 s/vh, um pouco mais lenta que os 0,1 de antes, e cada implante consome
+ * 2,5× mais distância de rolagem.
+ *
+ * Custo: a abertura ocupa 5,6 telas de rolagem. É o preço de "um por um, sem
+ * pular" — sequência comandada por rolagem gasta distância por definição. Se ficar
+ * demais, é este número.
+ */
+export const ARCADA_TRILHO_VH = 560;
 
-/** Fração do curso em que a marca grande do centro termina de sair. O Header também
- *  usa: enquanto ela está na tela, a marca pequena do canto fica escondida, senão
- *  a mesma logo apareceria duas vezes ao mesmo tempo. */
-export const ARCADA_INTRO_ATE = 0.22;
+/**
+ * Fração do curso em que a marca grande do centro termina de sair.
+ *
+ * Caiu de 0,22 para 0,10 quando o trilho foi para 560vh: 22% de um curso de 460vh
+ * seriam ~101vh de rolagem só para a logo encolher, ou seja uma tela inteira antes
+ * de a arcada começar. Em fração de curso, este número tem de ser relido a cada
+ * mudança do trilho.
+ */
+export const ARCADA_INTRO_ATE = 0.1;
 
 /** Estado de repouso e fallback: o quadro, ou o slot nomeado se o arquivo faltar. */
 function Quadro({ etapa, slotRotulo }: { etapa: ArcadaEtapa; slotRotulo: string }) {
@@ -166,7 +185,6 @@ export function ArcadaHero({
   const fimL = compacto ? 88 : 66;
   const largura = inicioL + (fimL - inicioL) * suave;
   const altura = largura / (16 / 9);
-  const raio = 24 - 12 * suave;
 
   const primeira = data.etapas[0];
   const ultima = data.etapas[data.etapas.length - 1];
@@ -217,18 +235,24 @@ export function ArcadaHero({
 
           {/* A MÍDIA. Aparece atrás da marca e cresce. */}
           <div
-            className="relative"
+            /* `video-fundido`: dissolve as quatro bordas no fundo. Ver a nota da
+               classe no styles.css — tirar raio e sombra não bastou, porque o verde
+               de dentro do vídeo não é exatamente o `--ink` da página. */
+            className="video-fundido relative"
             style={{
               width: `${largura}vw`,
               height: `${altura}vw`,
               /* Guarda para janela baixa e larga: sem ela, 37vw de altura passam da
                  tela em 1440×700 e a caixa é cortada pelo palco. */
               maxHeight: "84svh",
-              borderRadius: `${raio}px`,
-              overflow: "hidden",
               opacity: midiaEntra,
               scale: `${0.92 + 0.08 * midiaEntra}`,
-              boxShadow: "0 0 60px oklch(0 0 0 / 0.35)",
+              /* ⚠️ SEM `borderRadius`, SEM `overflow: hidden` e SEM `boxShadow`, a
+                 pedido do usuário em 17/08: "não quero aquela borda que está no
+                 vídeo". O cartão arredondado com sombra desenhava um retângulo
+                 visível em volta da animação. Sem ele, e como o fundo do vídeo é o
+                 mesmo verde-petróleo da seção (hex 013435 = `--ink`), a mídia se
+                 dissolve no fundo e não há aresta nenhuma. */
             }}
           >
             {data.video ? (

@@ -596,11 +596,17 @@ export const clinica: Clinica = {
     ],
   },
   arcada: {
-    /* Concatenação dos quatro clipes interpolados entre os cinco quadros. 20,2s,
-       1280×720, 5,8MB. É o `currentTime` dele que a rolagem controla.
-       ⚠️ 5,8MB no topo da home é peso real. Fica porque a peça É a abertura e o
-       arquivo carrega com `preload="auto"` de propósito — escrubar vídeo que não
-       tem buffer engasga. Se virar problema de LCP, o caminho é 480p para telas
+    /* Concatenação dos CINCO clipes interpolados entre os seis quadros. 50,2s,
+       1280×720, 7,1MB. É o `currentTime` dele que a rolagem controla.
+
+       Passou de 20,2s para 50,2s em 17/08 porque o usuário disse que estava muito
+       rápido: dez segundos por etapa em vez de cinco dão ~1s por implante, o que é
+       o que permite ver um por um em vez de um borrão. O trilho da seção cresceu na
+       mesma proporção — ver `ARCADA_TRILHO_VH`.
+
+       ⚠️ 7,1MB no topo da home é peso real. Fica porque a peça É a abertura e o
+       arquivo carrega com `preload="auto"` de propósito — escrubar vídeo sem buffer
+       engasga. Se virar problema de LCP, o caminho é uma versão 480p para telas
        estreitas, não trocar a mecânica. */
     video: "/imagens/arcada/arcada.mp4",
     // WebM/VP9 com keyframe por segundo, oferecido primeiro. Ver a nota do tipo:
@@ -632,6 +638,19 @@ export const clinica: Clinica = {
        câmera não se manteve. A sequência funciona, mas lê mais como cinco fotos do
        que como uma coisa se formando. O conserto é regerar 1, 2, 3 e 5 usando o
        quadro 4 como REFERÊNCIA de imagem, o que trava composição e escala. */
+    /* SEIS etapas, na ordem que o usuário definiu em 17/08 — e a mudança em relação
+       à versão anterior é que a arcada SUPERIOR repete o processo inteiro em vez de
+       aparecer já com os implantes: "e na parte de cima, fazer a mesma coisa,
+       replicar todo o processo". São dois ciclos de gengiva → implantes → coroas,
+       primeiro embaixo e depois em cima, e o sexto quadro é o fecho com a dentição
+       completa centralizada.
+
+       Os quadros são as PONTAS dos cinco clipes que formam o vídeo. O primeiro é o
+       `poster` e o sexto é o estado exibido sob `prefers-reduced-motion` — só esses
+       dois vão para a tela como imagem; o resto do tempo quem aparece é o vídeo.
+
+       ⚠️ A ordem dos arquivos É o conteúdo: trocar dois nomes inverte a ordem de um
+       procedimento clínico na tela. */
     etapas: [
       {
         rotulo: "Gengiva e leitos",
@@ -641,22 +660,27 @@ export const clinica: Clinica = {
       {
         rotulo: "Implantes na inferior",
         src: "/imagens/arcada/etapa-2.webp",
-        alt: "Modelo 3D da arcada inferior com os implantes de titânio assentados na crista, ainda sem nenhum dente.",
-      },
-      {
-        rotulo: "Arcada superior",
-        src: "/imagens/arcada/etapa-3.webp",
-        alt: "Modelo 3D das duas arcadas, ambas com os implantes assentados e ambas ainda sem dentes.",
-      },
-      {
-        rotulo: "Coroas da superior",
-        src: "/imagens/arcada/etapa-4.webp",
-        alt: "Modelo 3D com a arcada superior já restaurada em coroas de cerâmica e a inferior ainda sem dentes.",
+        alt: "Modelo 3D da arcada inferior com os implantes de titânio assentados rentes à crista, ainda sem nenhum dente.",
       },
       {
         rotulo: "Coroas da inferior",
+        src: "/imagens/arcada/etapa-3.webp",
+        alt: "Modelo 3D da arcada inferior restaurada, com a fileira completa de coroas de cerâmica e nenhuma peça metálica aparente.",
+      },
+      {
+        rotulo: "Gengiva da superior",
+        src: "/imagens/arcada/etapa-4.webp",
+        alt: "Modelo 3D das duas arcadas: a inferior já restaurada e a superior recém-preparada, sem dentes e com os leitos dos implantes abertos.",
+      },
+      {
+        rotulo: "Implantes na superior",
         src: "/imagens/arcada/etapa-5.webp",
-        alt: "Modelo 3D das duas arcadas completas, restauradas em coroas de cerâmica, sem nenhuma peça metálica aparente.",
+        alt: "Modelo 3D com a arcada inferior restaurada e a superior com os implantes de titânio assentados, ainda sem coroas.",
+      },
+      {
+        rotulo: "Arcada completa",
+        src: "/imagens/arcada/etapa-6.webp",
+        alt: "Modelo 3D das duas arcadas completas, restauradas em coroas de cerâmica, centralizado e sem nenhuma peça metálica aparente.",
       },
     ],
     aviso:

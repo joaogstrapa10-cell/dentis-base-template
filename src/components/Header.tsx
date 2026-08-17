@@ -133,11 +133,16 @@ export function Header({
         /* Só nas rotas SEM arcada. Na home a marca do canto não existe (ver o
            `esperarArcada ? null` no render), então este valor não é usado lá. */
         setOpacidadeMarca(Math.max(0, Math.min(1, 1 - passou / 180)));
-        /* A navegação entra quando a arcada termina. Uma vez revelada, NÃO volta a
-           esconder ao subir a página: menu que pisca ao rolar para cima lê como
-           defeito, e quem já viu o site inteiro não deveria perder o menu por
-           voltar ao topo. */
-        if (esperarArcada && passou >= 0) setNavRevelada(true);
+        /* A navegação segue a POSIÇÃO, e volta a esconder ao subir — pedido do
+           usuário em 17/08: "a aba de navegação precisa sumir ao voltar no início do
+           site, ela só aparece quando chega na seção Odontologia de alta
+           complexidade". Essa seção é o hero de colagem, que começa exatamente onde
+           o trilho da arcada termina, então o limiar é o mesmo.
+           ⚠️ Isso REVOGA a decisão anterior de manter a pílula revelada para sempre
+           depois da primeira vez. Se voltar a piscar em rolagem rápida, o conserto é
+           histerese (revelar em `passou >= 0`, esconder só abaixo de -80px), não
+           voltar ao comportamento fixo. */
+        if (esperarArcada) setNavRevelada(passou >= 0);
       });
     };
     aoRolar();
