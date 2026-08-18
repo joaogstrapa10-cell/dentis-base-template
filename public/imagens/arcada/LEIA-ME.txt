@@ -79,8 +79,16 @@ o scratchpad. Os comandos, para refazer quando o clipe mudar:
          -g 8 -keyint_min 8 -row-mt 1 -deadline good -cpu-used 2 arcada.webm
 
   ffmpeg -i FONTE.mp4 -an -vf "scale=1920:-2" -c:v libx264 -profile:v high \
-         -crf 20 -preset slow -g 8 -keyint_min 8 -sc_threshold 0 \
+         -level 4.0 -crf 20 -preset slow -g 8 -keyint_min 8 -sc_threshold 0 \
          -pix_fmt yuv420p -movflags +faststart arcada.mp4
+
+⚠️ O `-level 4.0` É AMARRADO AO CÓDIGO. O `<source>` do mp4 declara
+`type='video/mp4; codecs="avc1.640028"'` em ArcadaHero.tsx, e o `0028` É esse nível
+(0x28 = 40 = 4.0). Sem o codec na string o `canPlayType` responde "maybe" e o navegador
+BAIXA os 4,9MB só para descobrir que não decodifica — foi o download duplicado medido em
+18/08. Com a string, ele pula sem pedir. Trocar de perfil ou nível aqui sem trocar a
+string lá faz TODO navegador pular o mp4, inclusive o Safari, que é a única razão de ele
+existir.
 
   ffmpeg -i FONTE.mp4 -vf "select=eq(n\,0)" -frames:v 1 \
          -c:v libwebp -quality 90 arcada-inicio.webp

@@ -280,6 +280,12 @@ export function HeroSection({ data }: { data: HeroContent }) {
                     alt={arcada.alt}
                     width={arcada.largura}
                     height={arcada.altura}
+                    /* ⚠️ `data-arcada-slot` é o ALVO da viagem da abertura, medido em
+                       runtime por `getBoundingClientRect()` no ArcadaHero. Não remover
+                       nem renomear: sem ele a arcada não sabe para onde ir e a viagem
+                       cai num destino neutro. Substituiu uma cópia da geometria desta
+                       coluna dentro do ArcadaHero, que era duplicação e já errou o alvo. */
+                    data-arcada-slot=""
                     className="w-full"
                     style={{ aspectRatio: `${arcada.largura} / ${arcada.altura}` }}
                   />
