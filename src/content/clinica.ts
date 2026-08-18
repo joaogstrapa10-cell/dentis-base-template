@@ -118,9 +118,21 @@ export const clinica: Clinica = {
        É o ÚLTIMO QUADRO DO CLIPE, extraído do próprio arquivo, e é a mesma URL de
        `arcada.etapas[1].src`. Não duplicar por descuido de cópia: se as duas
        divergirem, a arcada muda de imagem no instante em que aterrissa.
-       Renderizada com a máscara `.video-fundido`, porque o fundo do arquivo (`#001518`,
-       medido) é mais ESCURO que o `--ink` do bloco e sem ela desenharia um retângulo —
-       a borda que foi reprovada duas vezes na abertura. */
+       ⚠️ ESTE ARQUIVO TEM ALPHA, e é o único do projeto assim. Recortado do quadro em
+       18/08, localmente e sem crédito: flood fill do escuro conectado à borda (para as
+       sombras interdentais, que são escuras e ficam DENTRO do objeto, não virarem
+       buraco), rampa de alpha entre luminância 35 e 60 — o meio do vale vazio do
+       histograma — e descontaminação de cor nos 57 mil pixels de borda, senão o teal do
+       fundo apareceria como halo escuro sobre fundo claro. Medido depois: 92% dos
+       pixels de borda compõem entre 224 e 255 sobre branco, e nenhum halo.
+
+       Por ter alpha, ele NÃO usa a máscara `.video-fundido` — ver a nota em Hero.tsx.
+       A franja ciano na silhueta é a luz de contorno do próprio render, não artefato.
+
+       ⚠️ O quadro NÃO é recortado justo, e isso é requisito: são 16:9 inteiros com ~55%
+       de pixels transparentes, porque a descida da abertura aterrissa o vídeo (16:9
+       cheio) exatamente sobre esta imagem. Recorte justo faria a arcada saltar de
+       tamanho no instante da entrega. */
     arcada: {
       src: "/imagens/arcada/arcada-fim.webp",
       alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo. Ilustração técnica, não é registro de paciente.",

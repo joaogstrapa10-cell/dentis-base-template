@@ -6,8 +6,8 @@ O que está aqui, e é só isto:
   arcada.webm        1354KB  VP9, 1920×1080, 24fps, 8,042s, 9 keyframes, CRF 28
   arcada.mp4         2395KB  H.264, mesmas dimensões e duração, 9 keyframes, CRF 21
   arcada-inicio.webp   13KB  o quadro 0 do clipe — é o `poster` do vídeo
-  arcada-fim.webp      11KB  o último quadro — é o sorriso do hero e o estado
-                             exibido sob prefers-reduced-motion
+  arcada-fim.webp     164KB  o último quadro, COM ALPHA — é o sorriso do hero e o
+                             estado exibido sob prefers-reduced-motion
 
 Os quatro saem de `clinica.arcada` e de `clinica.hero.arcada`. Nada aqui é registro
 clínico de paciente: é modelo anatômico em 3D, sem rosto, sem lábios e sem boca, e é
@@ -136,3 +136,55 @@ Também houve uma tentativa de empilhar o quadro com dentes sobre o quadro com
 implantes e revelar por `clip-path`, em faixas quantizadas em posições de dente. Ela
 entregava a ordem certa e foi reprovada na hora: "você apenas colocou uma imagem em
 cima, quero algo intuitivo e profissional". Quem coloca os dentes é o vídeo.
+
+
+O RECORTE COM ALPHA DE arcada-fim.webp (18/08)
+----------------------------------------------
+
+É o único arquivo do projeto com canal alpha. Antes era um retângulo opaco escondido
+pela máscara CSS `.video-fundido`, e isso tinha dois preços: só funcionava sobre fundo
+escuro e uniforme, e — medido — a rampa da máscara começa a 26% da largura enquanto o
+assunto começa a 15,6%, então OS MOLARES DAS DUAS PONTAS eram renderizados a 60% de
+opacidade. Tirar a máscara devolveu as pontas da arcada.
+
+Feito LOCALMENTE, e o método saiu da medição do histograma:
+
+  1. flood fill do escuro CONECTADO à borda do quadro — não limite global. As sombras
+     interdentais são escuras e ficam DENTRO do objeto; limite global as perfuraria.
+  2. rampa de alpha entre luminância 35 e 60, o meio do vale vazio do histograma (o
+     fundo vai até ~39, o assunto começa em ~70, e entre 40 e 69 quase não há pixel).
+     Rampa estreita de propósito: a transição medida tem 1–2px.
+  3. descontaminação de cor nos 57 mil pixels de borda: Cfg = (Cobs - (1-a)*Cbg) / a,
+     com Cbg medido no próprio arquivo (rgb 11,9 / 17,3 / 23,2). Sem isso o teal do
+     fundo aparece como HALO ESCURO sobre fundo claro.
+  4. cwebp -q 92 -alpha_q 100 -m 6, sem redimensionar. 164KB.
+
+Verificado: histograma de alpha bimodal (53,8% em 0, 45,0% em 255, 1,2% na borda),
+composto sobre BRANCO 92% dos pixels de borda caem entre 224 e 255 e só 1,7% abaixo de
+192, e o WebP preserva o alpha idêntico ao PNG.
+
+⚠️ O QUADRO NÃO É RECORTADO JUSTO. São 16:9 inteiros com ~55% de pixels transparentes,
+porque a descida da abertura aterrissa o vídeo (16:9 cheio) exatamente sobre esta
+imagem. Recorte justo faria a arcada saltar de tamanho no instante da entrega.
+
+⚠️ A franja ciano na silhueta é a LUZ DE CONTORNO do render, não artefato do recorte —
+o prompt do clipe pedia "cool cyan rim light". Sobre o bloco escuro é o que ela deve
+ser. Não tentar removê-la.
+
+O `images_remove_background` do Magnific foi testado para comparar, por 3 créditos, e
+PERDEU nos dois eixos que importam aqui:
+
+                              local        Magnific
+  pixels opacos               45,04%       44,51%   (comeu ~11 mil px do assunto)
+  pixels de borda suavizados  57.086       13.550   (4x mais duro -> serrilha)
+  borda >=224 sobre branco    92%          29,5%
+  borda <192 sobre branco     1,7%         25,4%    (15x mais halo)
+  pior pixel sobre branco     lum 103      lum 83
+
+A causa é que ele não descontamina a cor da borda e entrega um matte quase binário.
+Não repetir; se precisar refazer, o script é scratchpad/recorta.mjs.
+
+⚠️ `ffmpeg -c:v libwebp` IGNORA `-quality` neste build (50, 75, 90 e 100 dão o mesmo
+arquivo) e não faz alpha bem. Usar `cwebp`, baixado de
+storage.googleapis.com/downloads.webmproject.org (o release do GitHub para linux-x86-64
+é 404).

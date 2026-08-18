@@ -259,11 +259,16 @@ export function HeroSection({ data }: { data: HeroContent }) {
 
             {/* ---------------- Coluna da figura ---------------- */}
             {arcada ? (
-              /* A ARCADA. Sem cartão, sem sombra e sem canto: `.video-fundido`
-                 dissolve as quatro bordas no bloco escuro. O arquivo é renderizado
-                 sobre verde-petróleo, mais claro que o `--ink` daqui, e sem a
-                 máscara ele desenharia o mesmo retângulo que o usuário reprovou na
-                 abertura.
+              /* A ARCADA. Sem cartão, sem sombra, sem canto e — desde 18/08 — SEM
+                 MÁSCARA: o arquivo tem ALPHA DE VERDADE, então a silhueta é a própria
+                 arcada e não um retângulo dissolvido nas bordas.
+
+                 ⚠️ NÃO devolver `.video-fundido` aqui. Ela existia para esconder o
+                 retângulo enquanto o arquivo era opaco, e o preço era alto: a rampa da
+                 máscara começa a 26% da largura e o assunto começa a 15,6%, então os
+                 molares das DUAS pontas eram renderizados a 60% de opacidade. Com
+                 alpha a máscara só comeria a borda da gengiva. Ela continua no
+                 `<video>` da abertura, que segue sendo um retângulo opaco.
 
                  A proporção vem do arquivo (`largura`/`altura`), não cravada: é a
                  lição de 12/08, quando uma proporção fixa recortou 78% de uma foto
@@ -275,7 +280,7 @@ export function HeroSection({ data }: { data: HeroContent }) {
                     alt={arcada.alt}
                     width={arcada.largura}
                     height={arcada.altura}
-                    className="video-fundido w-full"
+                    className="w-full"
                     style={{ aspectRatio: `${arcada.largura} / ${arcada.altura}` }}
                   />
                 </Reveal>

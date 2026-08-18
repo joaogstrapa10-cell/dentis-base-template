@@ -414,14 +414,21 @@
    retângulo visível no meio da tela. Medido no render: raio 0px e sombra `none`, e
    a aresta ainda lá. Casar a cor exata seria frágil — cada regeração do vídeo
    mudaria o tom. A máscara resolve independente da cor.
-   Fade mais largo que o do `.retrato-fundido` porque aqui não há assunto perto da
-   borda: a arcada ocupa ~60% do quadro e sobra vazio nos quatro lados. */
+   ⚠️ SÓ NO `<video>` da abertura, desde 18/08. Ela ficou fora da imagem estática do
+   hero, que passou a ter ALPHA de verdade — com alpha, a máscara comeria a borda da
+   gengiva em vez de esconder um retângulo que já não existe.
+
+   ⚠️ E ela NÃO É de graça, ao contrário do que este comentário afirmava: medido, o
+   assunto vai de 15,6% a 84,4% da largura, e a rampa começa a 26%, então os molares
+   das DUAS pontas são renderizados a 60% de opacidade. No vídeo isso é aceitável
+   porque a arcada está crescendo e em movimento; numa imagem parada que a pessoa
+   encara não é. Não usar em imagem que tenha alpha. */
 .video-fundido {
   /* Dissolução LARGA de propósito. Com 12–14% ainda sobrava a leitura de "o vídeo
      está dentro de um quadrado" — o degrau some no meio da altura, mas perto dos
      cantos a soma dos dois gradientes deixa uma quina perceptível. Com 26% de cada
-     lado a transição é longa o bastante para não haver quina nenhuma, e não custa
-     assunto: a arcada ocupa ~60% do quadro e as bordas são vazio. */
+     lado a transição é longa o bastante para não haver quina nenhuma. O preço está
+     na nota acima: as pontas da arcada perdem opacidade. */
   --vf-esq: linear-gradient(to right, transparent, #fff 26%);
   --vf-dir: linear-gradient(to left, transparent, #fff 26%);
   --vf-topo: linear-gradient(to bottom, transparent, #fff 22%);

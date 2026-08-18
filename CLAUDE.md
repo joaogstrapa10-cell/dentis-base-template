@@ -789,11 +789,13 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
   antes de acreditar que algo não foi pintado**.
 - **Print de um botão que se repete não identifica qual é** — amostrar a cor computada antes
   de apagar. Cinco "Agendar" na página, quatro visualmente iguais.
-- **`window.scrollTo` num script de medição precisa ser CONFERIDO.** A restauração de
-  rolagem do TanStack zera a posição durante a hidratação, então a amostra sai do estado
-  de REPOUSO e o script reporta que a animação não acontece. Rolar em laço até
-  `window.scrollY` parar no alvo (`Math.abs(scrollY - alvo) <= 2`) antes de ler qualquer
-  coisa. Aconteceu três vezes em 17–18/08, e nas três a peça estava certa.
+- **`window.scrollTo` num script de medição precisa ser CONFERIDO, E DEPOIS DE ESPERAR.**
+  Medido em 18/08: a restauração de rolagem do TanStack zera o scroll **~600ms depois do
+  load** — o script rola, a amostra sai certa por 400ms, e então volta para 0. Confirmar
+  em laço que `window.scrollY` parou no alvo NÃO basta, porque ela desfaz depois. Esperar
+  ~3,5s após o load ANTES de rolar. Aconteceu quatro vezes em 17–18/08 e nas quatro a
+  peça estava certa; uma delas parecia "o Reveal não dispara" e o Reveal estava correto
+  (o elemento simplesmente não estava na tela).
 - **Para julgar perda de compressão em vídeo, VMAF — nunca SSIM.** O encode 720p da
   abertura marcava SSIM 0,988 contra o master, que parece ótimo, e tinha apagado os
   capilares da gengiva. O VMAF separou os candidatos por 5,6 pontos onde o SSIM separou
