@@ -34,3 +34,14 @@ dist-ssr
 # HTML congelado por scripts/congelar-html.mjs — alguns MB de imagens embutidas,
 # não entra no repo nem no sync do Lovable.
 snapshots/
+
+# Masters 1080p dos quatro clipes da arcada, como saíram do Higgsfield (Seedance 2.0,
+# 17/08). NÃO são asset do site: o que o site serve está em public/imagens/arcada/,
+# recodificado para 720p com keyframe por segundo. Estes são a FONTE para refazer esse
+# encode — e são os originais bit por bit, md5 conferido contra o CDN.
+#
+# Fora do repo por ora (10MB, e o repo sincroniza com o Lovable e vai ser replicado
+# para três clínicas). ⚠️ A contrapartida é que eles vivem só nesta máquina: se a
+# sessão morrer, refazer o encode depende de o usuário mandar os arquivos de novo ou de
+# o CDN do Higgsfield seguir de pé. Decisão do usuário, levantada em 18/08.
+assets-originais/
