@@ -3,8 +3,8 @@ ARCADA — a animação de abertura da home
 
 O que está aqui, e é só isto:
 
-  arcada.webm        1354KB  VP9, 1920×1080, 24fps, 8,042s, 9 keyframes, CRF 28
-  arcada.mp4         2395KB  H.264, mesmas dimensões e duração, 9 keyframes, CRF 21
+  arcada.webm        3,27MB  VP9, 1920×1080, 24fps, 8,042s, CRF 28, keyframe a cada 8
+  arcada.mp4         4,67MB  H.264 High, mesmas dimensões e duração, CRF 20, idem
   arcada-inicio.webp   13KB  o quadro 0 do clipe — é o `poster` do vídeo
   arcada-fim.webp     164KB  o último quadro, COM ALPHA — é o sorriso do hero e o
                              estado exibido sob prefers-reduced-motion
@@ -75,12 +75,12 @@ COMO FORAM GERADOS OS ARQUIVOS DAQUI
 Não há ffmpeg neste ambiente; o binário estático foi baixado do GitHub (liberado) para
 o scratchpad. Os comandos, para refazer quando o clipe mudar:
 
-  ffmpeg -i FONTE.mp4 -c:v libvpx-vp9 -crf 28 -b:v 0 \
-         -g 24 -row-mt 1 -deadline good -cpu-used 2 -an arcada.webm
+  ffmpeg -i FONTE.mp4 -an -vf "scale=1920:-2" -c:v libvpx-vp9 -crf 28 -b:v 0 \
+         -g 8 -keyint_min 8 -row-mt 1 -deadline good -cpu-used 2 arcada.webm
 
-  ffmpeg -i FONTE.mp4 -c:v libx264 -crf 21 -preset slow \
-         -g 24 -keyint_min 24 -sc_threshold 0 -pix_fmt yuv420p \
-         -movflags +faststart -an arcada.mp4
+  ffmpeg -i FONTE.mp4 -an -vf "scale=1920:-2" -c:v libx264 -profile:v high \
+         -crf 20 -preset slow -g 8 -keyint_min 8 -sc_threshold 0 \
+         -pix_fmt yuv420p -movflags +faststart arcada.mp4
 
   ffmpeg -i FONTE.mp4 -vf "select=eq(n\,0)" -frames:v 1 \
          -c:v libwebp -quality 90 arcada-inicio.webp
@@ -90,8 +90,31 @@ o scratchpad. Os comandos, para refazer quando o clipe mudar:
 ⚠️ O `-g 24` NÃO É AJUSTE FINO. O arquivo que o usuário mandou tinha UM keyframe em
 8 segundos, e procurar um instante longe do keyframe obriga o navegador a decodificar
 tudo desde o começo — animação comandada por rolagem com um keyframe só anda aos
-pulos. Keyframe por segundo (fps = 24, logo -g 24) é o mínimo. Ao trocar o clipe,
-reencodar; não apontar o `<video>` para o arquivo cru.
+pulos. Ao trocar o clipe, reencodar; não apontar o `<video>` para o arquivo cru.
+
+⚠️ ESTÁ EM `-g 8`, keyframe a cada 8 quadros (1 a cada 1/3 de segundo), e o número saiu
+de medição em 18/08. Foi pedido `-g 1` — todo quadro um keyframe — e ele NÃO CABE:
+
+  -g 1  , 30fps   16,52MB   241 keyframes    ← 3× o teto de 8MB pedido
+  -g 1  , 24fps   14,39MB   193 keyframes
+  -g 4  , 30fps    8,45MB    61 keyframes
+  -g 8  , 30fps    5,27MB    31 keyframes
+  -g 8  , 24fps    4,67MB    25 keyframes    ← este
+  -g 24 , 30fps    2,91MB    11 keyframes
+
+No final de 12s (com o clipe de giro), `-g 1` projeta 24,7MB e `-g 8` projeta 7,0MB.
+
+E `-g 1` não compra responsividade proporcional ao preço: com `-g 8` o decodificador
+precisa de no máximo SETE quadros P para chegar a um instante arbitrário, o que são
+poucos milissegundos a 1080p. O engasgo que `-g 1` existe para resolver aparece com
+keyframe a cada 2–3 segundos, ou seja 60 a 90 quadros — não a cada 8.
+
+⚠️ 24fps, A TAXA NATIVA DO MASTER. Foi pedido `fps=30`, e converter 24→30 duplica 1 em
+cada 5 quadros: +13% de bytes, zero informação nova, e o padrão de quadro repetido pode
+LER como engasgo justamente na escrubagem. Não subir para 30.
+
+⚠️ O poster ficou em WebP e não em JPEG: mesmo quadro, 13,7KB contra 128KB do
+`-q:v 3`. Nove vezes menor pela mesma imagem.
 
 ⚠️ 1080p, A RESOLUÇÃO NATIVA DO MASTER. Houve uma versão 720p aqui e era ERRO — 597KB
 a 594 kbps, e o usuário reclamou com razão em 18/08 que estava "apagando o detalhe da
