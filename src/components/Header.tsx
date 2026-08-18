@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import type { HeaderContent, NavLink } from "@/content/types";
 import { PillButton } from "@/components/Primitives";
-import { ARCADA_TRILHO_VH } from "@/components/sections/ArcadaHero";
+import { ABERTURA_VH } from "@/components/sections/AberturaMarca";
 import { cn } from "@/lib/utils";
 
 /**
@@ -127,7 +127,7 @@ export function Header({
            fica inteira durante a abertura e começa a sair quando o hero de colagem
            entra, que é a mesma relação de antes. */
         const curso = esperarArcada
-          ? ((ARCADA_TRILHO_VH - 100) / 100) * window.innerHeight
+          ? (ABERTURA_VH / 100) * window.innerHeight * 0.7
           : 0;
         const passou = window.scrollY - curso;
         /* Só nas rotas SEM arcada. Na home a marca do canto não existe (ver o

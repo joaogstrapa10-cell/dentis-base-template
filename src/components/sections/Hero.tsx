@@ -1,171 +1,53 @@
-import { GraduationCap, LayoutGrid, Star } from "lucide-react";
-import type { HeroContent, HeroImagem, HeroStatIcone } from "@/content/types";
+import type { HeroContent } from "@/content/types";
 import { PillButton, TextLink } from "@/components/Primitives";
 import { Reveal } from "@/components/Reveal";
-import { cn } from "@/lib/utils";
 
 /**
- * Estrutura: bloco escuro sangrando na largura da janela, DUAS COLUNAS — texto e
- * fileira de números à esquerda, COLAGEM de três fotos à direita.
+ * HERO no estilo apple.com, pedido em 18/08: "quero um hero estilo da apple.com, do
+ * site americano". Bloco escuro sangrando na largura da janela, TUDO CENTRALIZADO —
+ * headline, uma frase, duas ações — e a ARCADA 3D grande no meio, como o produto.
  *
  * ---------------------------------------------------------------------------
- * DE ONDE VEM ESTA ANATOMIA
+ * O QUE A REFERÊNCIA DEFINIU, E O QUE NÃO
  * ---------------------------------------------------------------------------
- * Do template que o usuário trouxe em 13/08. O que veio dele, e é o que define a
- * seção: duas colunas, os números ao pé do texto com ícone em disco, e três fotos
- * sobrepostas em cartões arredondados com sombra — a maior ao centro no topo, a
- * média à direita no terço de cima, a menor embaixo à esquerda. As formas
- * pequenas que flutuam atrás também são dele.
+ * Veio dela a COMPOSIÇÃO: centralização, o produto como protagonista e grande, texto
+ * curto e restrito, muito respiro em volta, e duas ações lado a lado no lugar de uma
+ * barra de botões.
  *
- * Antes disso o hero tinha UMA foto, `absolute`, sangrando até a borda da janela.
- * Ela saiu junto com a máquina que a sustentava: o `lg:pr-[42vw]` do container e o
- * `right` negativo calculado sobre `50vw - 600px`. Com a colagem dentro de uma
- * coluna, a grade resolve o mesmo problema sem nada disso.
- *
- * ---------------------------------------------------------------------------
- * O QUE FOI TROCADO DO TEMPLATE
- * ---------------------------------------------------------------------------
- * - `framer-motion` não está no projeto, e não entra por uma seção. As três
- *   variantes dele (stagger do container, subida dos itens, escala das imagens)
- *   viram `Reveal` com atraso crescente, que é o mecanismo que o resto da página
- *   já usa. A flutuação vira `.retrato-flutua`, keyframe que já existia.
- * - O template é uma seção CLARA (`bg-background`). Aqui o hero é o bloco escuro
- *   que abre a página — é ele que sustenta a alternância verde/branco que fechou
- *   a paleta em 30/07. Trocar por claro não é adaptar o template, é refazer a
- *   decisão de paleta.
- * - `bg-muted` do template NÃO serve: neste projeto `--color-muted` é a cor do
- *   TEXTO secundário (o `@theme` mapeia `--color-muted` para `--muted`), então
- *   `bg-muted` pintaria o passe-partout com a cor de texto. Os cartões usam
- *   `bg-surface`.
- * - As formas decorativas eram azul-claro, roxo e verde pastel, com variante
- *   `dark:`. O projeto não tem modo escuro por classe, e azul-claro de
- *   consultório é um dos clichês proibidos na §4 do CLAUDE.md. Viraram dourado e
- *   petróleo em opacidade baixa — atmosfera, não confete.
- * - `text-4xl sm:text-6xl`, `text-lg`, `text-xl` e `text-sm` do template saem
- *   pela escala fechada de cinco degraus: `.display-1`, `text-base`, `.display-3`
- *   e `text-small`.
- * - Os botões do template são `<Button onClick>`. Aqui a chamada é um LINK para o
- *   WhatsApp — clique que não navega em CTA de clínica é botão morto —, então
- *   ficam `PillButton` e `TextLink`, que carregam o glifo do WhatsApp e o
- *   sublinhado da identidade.
+ * NÃO veio o fundo branco. O hero é o bloco escuro que abre a página, e é ele que
+ * sustenta a alternância verde/branco que fechou a paleta em 30/07 (ver
+ * docs/referencia-layout.md §9). Além disso a luz de contorno ciano da arcada foi
+ * renderizada para fundo escuro. Trocar por claro não é adaptar a referência, é
+ * refazer a decisão de paleta.
  *
  * ---------------------------------------------------------------------------
- * LARGURA DA COLUNA DA COLAGEM: 26rem, E É REQUISITO
+ * O QUE ESTA SEÇÃO PERDEU, E ONDE FOI PARAR
  * ---------------------------------------------------------------------------
- * A coluna da direita tem largura em `rem`, não em fração. Em fração ela rouba
- * largura da headline conforme a janela encolhe, e a linha "complexidade,
- * conduzida" QUEBRA — foi esse defeito que, em 12/08, levou a foto a sangrar para
- * fora do container. Com `min(38vw, 26rem)` sobram 672px de texto em 1440 e 523px
- * em 1024, contra 644px e 508px da linha mais longa. Medido, e a medição é por
- * contagem de RETÂNGULOS de cada linha (`getClientRects`), não por comparar
- * larguras: os spans esticam até o container e a comparação sempre "passa".
+ * ⚠️ A GRADE DE DUAS COLUNAS saiu inteira — texto à esquerda, figura à direita era o
+ * oposto da composição pedida. Com ela saíram a COLAGEM de três fotos (do template de
+ * 13/08), os cartões, as formas flutuantes e a fileira de NÚMEROS.
+ *
+ * Nada disso se perdeu de informação: `hero.colagem` e `hero.stats` continuam no
+ * conteúdo e no tipo, e o código da colagem está no histórico do git. Os três números
+ * também vivem em outras seções — a nota do Google nas avaliações, as 8 especialidades
+ * em Áreas, os 9 do corpo clínico na Bio. Devolver é reexibir, não recoletar.
+ *
+ * ⚠️ Se `hero.colagem` voltar a ter itens, ELA NÃO RENDERIZA MAIS. O componente só
+ * desenha `hero.arcada`. Para as variantes de Rogério e Décio que quiserem fotos, o
+ * caminho é recuperar o bloco da colagem do git, não escrevê-lo de novo.
+ *
+ * ---------------------------------------------------------------------------
+ * A LINHA DO RESPONSÁVEL TÉCNICO FICA
+ * ---------------------------------------------------------------------------
+ * A Apple não põe nada parecido no hero, e ela fica de todo jeito: nome e número de
+ * inscrição na divulgação são exigência da Resolução CFO-196/2019, não decoração.
  */
 
-const ICONES: Record<HeroStatIcone, React.ReactElement> = {
-  nota: <Star size={18} strokeWidth={1.75} aria-hidden="true" />,
-  especialidades: <LayoutGrid size={18} strokeWidth={1.75} aria-hidden="true" />,
-  corpoClinico: <GraduationCap size={18} strokeWidth={1.75} aria-hidden="true" />,
-};
-
-/**
- * Uma peça da colagem, e `semFundo` decide se ela é FIGURA ou CARTÃO. São dois
- * acabamentos diferentes, não uma variação de estilo:
- *
- * FIGURA (`semFundo: true`, a equipe recortada) — sem fundo, sem sombra, sem
- * canto arredondado. A imagem fica direto sobre o bloco verde, com
- * `.figura-recortada` dissolvendo as bordas onde a moldura da foto original
- * cortou gente. Foi o pedido do usuário em 13/08: "essa foto eu quero que fique
- * em relação ao site, condizente". Antes ela vinha num passe-partout CLARO, e o
- * retângulo branco era a coisa mais acesa do hero — lia como print colado no
- * bloco, não como parte dele. Também usa a proporção nativa do arquivo, então
- * `object-cover` não tem o que cortar: GENTE não se corta, e no recorte da
- * equipe as pessoas das duas pontas já estão na borda.
- *
- * CARTÃO (`semFundo: false`, as fotos) — fundo, sombra, canto arredondado e
- * FLUTUAÇÃO, também a pedido ("faça essas outras duas em movimento"). Fica
- * quadrado, como no template, e aí o corte é de ~33% da largura: em foto de
- * ambiente ou plano fechado isso é enquadramento, não perda de assunto, e o
- * `foco` corrige quando o assunto não está no meio do arquivo.
- *
- * ⚠️ A flutuação NÃO pode ir para a figura da equipe: o keyframe escreve a
- * propriedade `translate`, e o cartão do centro é posicionado com
- * `-translate-x-1/2` — a animação zeraria a centralização e a figura pularia meia
- * largura para a direita.
- */
-function CartaColagem({
-  imagem,
-  className,
-  atraso,
-  atrasoFlutuacao,
-}: {
-  imagem: HeroImagem;
-  /** Só LARGURA quando a imagem é recortada (a altura sai da proporção), largura
-   *  e altura quando é foto de ambiente. */
-  className?: string;
-  atraso: number;
-  /** Defasagem da flutuação, em ms. Sem ela as duas fotos sobem e descem juntas,
-   *  o que lê como a página inteira respirando em vez de duas peças soltas. */
-  atrasoFlutuacao?: number;
-}) {
-  const figura = imagem.semFundo;
-  return (
-    <Reveal
-      delay={atraso}
-      className={cn(
-        "absolute",
-        figura
-          ? null
-          : "carta-flutua overflow-hidden rounded-2xl bg-ink-elevated shadow-[0_28px_70px_-22px_oklch(0_0_0/0.55)]",
-        className,
-      )}
-      style={{
-        ...(figura ? { aspectRatio: `${imagem.largura} / ${imagem.altura}` } : null),
-        ...(atrasoFlutuacao ? { animationDelay: `${atrasoFlutuacao}ms` } : null),
-      }}
-    >
-      <img
-        src={imagem.src}
-        alt={imagem.alt}
-        width={imagem.largura}
-        height={imagem.altura}
-        className={cn(
-          "h-full w-full object-cover",
-          figura ? "figura-recortada" : "rounded-xl",
-          imagem.foco === "esquerda"
-            ? "object-left"
-            : imagem.foco === "direita"
-              ? "object-right"
-              : "object-center",
-        )}
-      />
-    </Reveal>
-  );
-}
-
-/**
- * Forma que flutua atrás da colagem. Dourado e petróleo em opacidade baixa, no
- * lugar do azul-claro, roxo e verde pastel do template — azul-claro de consultório
- * é um dos clichês proibidos na §4 do CLAUDE.md, e os três juntos punham uma
- * quarta paleta na página.
- *
- * `hidden sm:block`: em 390px os cartões já estão em 208, 144 e 128px, e três
- * formas soltas em volta deles competem com as fotos em vez de ambientá-las.
- */
-function FormaFlutuante({ className }: { className: string }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={cn("retrato-flutua pointer-events-none absolute hidden sm:block", className)}
-    />
-  );
-}
 
 export function HeroSection({ data }: { data: HeroContent }) {
-  const temColagem = data.colagem.length > 0;
-  /* A ARCADA no lugar das fotos, pedida em 17/08. Ela e a colagem são exclusivas: a
-     coluna direita mostra uma ou a outra. Ver a nota do campo em `types.ts`. */
+  /* A ARCADA é a única figura desta seção desde 18/08 — ver a nota do cabeçalho sobre
+     o que a recomposição no estilo apple.com levou embora. */
   const arcada = data.arcada;
-  const temFigura = temColagem || arcada !== null;
 
   return (
     <section id="top">
@@ -183,194 +65,108 @@ export function HeroSection({ data }: { data: HeroContent }) {
           className="ink-arc pointer-events-none absolute inset-0 opacity-[0.28]"
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pb-20 pt-28 md:px-10 md:pb-24 md:pt-32">
-          <div
-            className={cn(
-              "grid items-center gap-14",
-              /* Largura fixa na coluna da colagem, não fração — ver a nota no
-                 topo do arquivo. */
-              temFigura && "lg:grid-cols-[1fr_min(38vw,26rem)] lg:gap-10",
-            )}
-          >
-            {/* ---------------- Coluna do texto ---------------- */}
-            <div>
-              <h1 className="display-1 text-ink-foreground">
-                {data.headline.map((linha, i) => (
-                  <span key={i} className="line-mask">
-                    <span
-                      className="line-rise"
-                      style={{ animationDelay: `${120 + i * 110}ms` }}
-                    >
-                      {linha}
-                    </span>
-                  </span>
-                ))}
-              </h1>
+        {/* ── COMPOSIÇÃO NO ESTILO APPLE.COM, pedida em 18/08 ──────────────────
+            "quero um hero estilo da apple.com, do site americano".
 
-              <Reveal delay={220}>
-                <p className="mt-7 max-w-[52ch] text-base leading-[1.65] text-ink-muted">
-                  {data.subheadline}
-                </p>
-              </Reveal>
+            O que caracteriza aquele hero, e é o que foi aplicado aqui: TUDO
+            CENTRALIZADO, o produto como protagonista e grande no meio da tela,
+            tipografia curta e restrita, e muito respiro em volta. A grade de duas
+            colunas (texto à esquerda, figura à direita) saiu junto — era o oposto
+            dessa composição.
 
-              <Reveal delay={300}>
-                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-                  <PillButton
-                    label={data.ctaPrimario.label}
-                    href={data.ctaPrimario.href}
-                    tone="light"
-                    external
-                  />
-                  <TextLink
-                    label={data.ctaSecundario.label}
-                    href={data.ctaSecundario.href}
-                    tone="light"
-                  />
-                </div>
-              </Reveal>
+            ⚠️ O QUE FOI DELIBERADAMENTE OMITIDO, porque a Apple não põe no hero:
+            a fileira de números (5,0 / 8 / 9) e o eyebrow. Nenhuma informação se
+            perde — a nota vive na seção de avaliações, as 8 especialidades em Áreas
+            e os 9 do corpo clínico na Bio. Os campos CONTINUAM no conteúdo
+            (`hero.stats`, `hero.eyebrow`), então devolver é reexibir, não recoletar.
 
-              {/* Fileira de números do template. Separada por um fio, e não por
-                  cartões: cartão com fundo próprio é o padrão que a repaginação
-                  de 03/08 tirou da página inteira. */}
-              {data.stats.length > 0 ? (
-                <Reveal delay={380}>
-                  <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-6 border-t border-ink-border pt-8">
-                    {data.stats.map((stat) => (
-                      <div key={stat.rotulo} className="flex items-center gap-3">
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink-elevated text-gold">
-                          {ICONES[stat.icone]}
-                        </span>
-                        <div>
-                          <dd className="display-3 text-ink-foreground">{stat.valor}</dd>
-                          <dt className="text-small text-ink-muted">{stat.rotulo}</dt>
-                        </div>
-                      </div>
-                    ))}
-                  </dl>
-                </Reveal>
-              ) : null}
+            ⚠️ O FUNDO CONTINUA O BLOCO ESCURO da identidade, não o branco da Apple.
+            A referência é de COMPOSIÇÃO; virar a página para branco aqui trocaria a
+            identidade medida da Suzuki (ver docs/referencia-layout.md §9) por outra,
+            e a luz de contorno ciano da arcada foi renderizada para fundo escuro.
 
-              <Reveal delay={460}>
-                <p className="mt-8 text-small text-ink-muted">
-                  {data.responsavelLinha}
-                </p>
-              </Reveal>
+            ⚠️ A linha do responsável técnico FICA. Ela é exigência da CFO-196/2019
+            (nome e número de inscrição na divulgação), não decoração de hero. */}
+        <div className="relative z-10 mx-auto w-full max-w-[1100px] px-5 pb-12 pt-24 text-center md:px-10 md:pb-16 md:pt-28">
+          <h1 className="display-1 mx-auto max-w-[20ch] text-ink-foreground">
+            {data.headline.map((linha, i) => (
+              <span key={i} className="line-mask">
+                <span
+                  className="line-rise"
+                  style={{ animationDelay: `${120 + i * 110}ms` }}
+                >
+                  {linha}
+                </span>
+              </span>
+            ))}
+          </h1>
+
+          <Reveal delay={220}>
+            {/* Uma frase curta e centrada, no lugar do parágrafo de três linhas
+                alinhado à esquerda. `44rem` e não `ch`: `ch` resolve contra a fonte
+                do elemento onde está, e já estrangulou bloco neste projeto. */}
+            <p className="mx-auto mt-6 max-w-[44rem] text-base leading-[1.6] text-ink-muted">
+              {data.subheadline}
+            </p>
+          </Reveal>
+
+          <Reveal delay={300}>
+            {/* Duas ações lado a lado e centradas, como o par "Learn more / Buy".
+                A primária continua pílula em vez de link de texto: é o CTA de
+                WhatsApp da clínica, e conversão já era decisão tomada. */}
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+              <PillButton
+                label={data.ctaPrimario.label}
+                href={data.ctaPrimario.href}
+                tone="light"
+                external
+              />
+              <TextLink
+                label={data.ctaSecundario.label}
+                href={data.ctaSecundario.href}
+                tone="light"
+              />
             </div>
+          </Reveal>
 
-            {/* ---------------- Coluna da figura ---------------- */}
-            {arcada ? (
-              /* A ARCADA. Sem cartão, sem sombra, sem canto e — desde 18/08 — SEM
-                 MÁSCARA: o arquivo tem ALPHA DE VERDADE, então a silhueta é a própria
-                 arcada e não um retângulo dissolvido nas bordas.
+          {/* ---------------- O PRODUTO ---------------- */}
+          {arcada ? (
+            /* A ARCADA, centralizada e GRANDE — é a peça que a composição existe
+               para mostrar. Sem cartão, sem sombra, sem canto e sem máscara: o
+               arquivo tem alpha de verdade e a silhueta é a própria arcada.
 
-                 ⚠️ NÃO devolver `.video-fundido` aqui. Ela existia para esconder o
-                 retângulo enquanto o arquivo era opaco, e o preço era alto: a rampa da
-                 máscara começa a 26% da largura e o assunto começa a 15,6%, então os
-                 molares das DUAS pontas eram renderizados a 60% de opacidade. Com
-                 alpha a máscara só comeria a borda da gengiva. Ela continua no
-                 `<video>` da abertura, que segue sendo um retângulo opaco.
+               ⚠️ NÃO devolver `.video-fundido` aqui: ela mascararia a borda da
+               gengiva. Ver a nota do arquivo em clinica.hero.arcada.
 
-                 A proporção vem do arquivo (`largura`/`altura`), não cravada: é a
-                 lição de 12/08, quando uma proporção fixa recortou 78% de uma foto
-                 panorâmica. */
-              <div className="lg:mr-[calc(-1*min(12rem,max(0px,50vw_-_600px)+2rem))]">
-                <Reveal delay={200}>
-                  <img
-                    src={arcada.src}
-                    alt={arcada.alt}
-                    width={arcada.largura}
-                    height={arcada.altura}
-                    /* ⚠️ `data-arcada-slot` é o ALVO da viagem da abertura, medido em
-                       runtime por `getBoundingClientRect()` no ArcadaHero. Não remover
-                       nem renomear: sem ele a arcada não sabe para onde ir e a viagem
-                       cai num destino neutro. Substituiu uma cópia da geometria desta
-                       coluna dentro do ArcadaHero, que era duplicação e já errou o alvo. */
-                    data-arcada-slot=""
-                    className="w-full"
-                    style={{ aspectRatio: `${arcada.largura} / ${arcada.altura}` }}
-                  />
-                </Reveal>
-              </div>
-            ) : null}
-            {temColagem ? (
-              /* Altura fixa porque os cartões são `absolute` e não empurram nada:
-                 sem ela a coluna colapsa e a colagem sai por cima do texto.
-                 Os tamanhos são os do template reduzidos um degrau — os 256px do
-                 cartão maior foram desenhados para uma coluna de ~600px, e nesta,
-                 de 416px, três cartões daquele tamanho viram uma pilha sem
-                 respiro. */
-              /* AUMENTAR A COLAGEM foi pedido duas vezes em 13/08, e o espaço
-                 nunca pôde vir da largura do TEXTO. A conta que fecha isso:
-                 a `.display-1` tem teto de 3rem, então a linha mais longa da
-                 headline mede ~644px de 1280px para cima, e a trilha do texto na
-                 grade é `1120 - 40 (gap) - 416 (colagem)` = 664px. Sobram 20px.
-                 Ou seja a TRILHA da colagem está no limite e não pode crescer.
+               A proporção vem do arquivo (`largura`/`altura`), não cravada: é a
+               lição de 12/08, quando uma proporção fixa recortou 78% de uma foto
+               panorâmica. */
+            <Reveal delay={380}>
+              <img
+                src={arcada.src}
+                alt={arcada.alt}
+                width={arcada.largura}
+                height={arcada.altura}
+                className="mx-auto mt-10 h-auto w-full max-w-[min(92vw,60rem)] object-contain md:mt-12"
+                style={{
+                  aspectRatio: `${arcada.largura} / ${arcada.altura}`,
+                  /* ⚠️ TETO DE ALTURA, e não é enfeite: com a arcada só limitada pela
+                     LARGURA ela ficava 960×667 em 1440 e a dobra da tela cortava os
+                     dentes no meio — a primeira impressão virava uma gengiva gigante
+                     sem contexto. A referência da Apple cabe o produto na dobra. Com
+                     teto em `svh` a peça encolhe pela altura e a proporção se mantém.
+                     Não trocar por altura fixa em px: em janela baixa volta o corte. */
+                  maxHeight: "52svh",
+                }}
+              />
+            </Reveal>
+          ) : null}
 
-                 Todo o crescimento vem da MARGEM DO BLOCO: o container para em
-                 1200px, o bloco sangra até a janela, e entre um e outro há 40px de
-                 padding mais metade do excedente da janela. A margem direita
-                 negativa leva a colagem para dentro dessa faixa sem tocar na
-                 coluna do texto.
-
-                 Uma expressão em vez de uma escada de breakpoints:
-                 `min(12rem, max(0px, 50vw - 600px) + 2rem)`
-                 — `max(0px, 50vw - 600px)` é a folga de um lado (0 até 1200px de
-                   janela, metade do excedente depois);
-                 — `+ 2rem` são 32px dos 40px de padding, deixando 8px de ar para o
-                   cartão não encostar na janela;
-                 — o teto de 12rem existe porque sem ele, em 1920, a colagem iria a
-                   808px e ficaria maior que a coluna de texto.
-                 Resultado medido: 421px de colagem em 1024, 488 em 1280, 568 em
-                 1440 e 608 de 1600 para cima. */
-              /* Sem `w-full`, e é isso que faz a margem negativa funcionar: item
-                 de grade com largura AUTO estica para a trilha MENOS as margens,
-                 então margem negativa o alarga. Com `width: 100%` a largura fica
-                 presa na trilha e a margem negativa não alarga nada — só desloca
-                 o que vem depois. */
-              <div className="relative h-[24rem] sm:h-[28rem] lg:mr-[calc(-1*min(12rem,max(0px,50vw_-_600px)+2rem))] lg:h-[27rem] xl:h-[30rem] 2xl:h-[33rem]">
-                <FormaFlutuante className="left-[18%] top-2 h-16 w-16 rounded-full bg-gold/15" />
-                <FormaFlutuante className="bottom-6 right-[22%] h-12 w-12 rounded-xl bg-accent/25 [animation-delay:1.4s]" />
-                <FormaFlutuante className="bottom-[26%] left-1 h-6 w-6 rounded-full bg-gold/25 [animation-delay:2.6s]" />
-
-                {/* Só largura: a altura vem da proporção do arquivo. */}
-                {data.colagem[0] ? (
-                  <CartaColagem
-                    imagem={data.colagem[0]}
-                    atraso={120}
-                    className="left-1/2 top-0 w-64 -translate-x-1/2 sm:w-72 lg:w-[20rem] xl:w-[22.5rem] 2xl:w-[24rem]"
-                  />
-                ) : null}
-                {/* AS DUAS POSIÇÕES ESTÃO TROCADAS em relação ao template, a
-                    pedido do usuário em 13/08: "a outra imagem do sorriso quero
-                    ela mais à esquerda da seção". O sorriso é `colagem[1]` e
-                    passou a ocupar o canto de BAIXO À ESQUERDA, que é o ponto mais
-                    à esquerda que a colagem alcança sem invadir a coluna do texto;
-                    o atendimento assumiu a faixa da direita.
-                    Os TAMANHOS não foram trocados junto: o sorriso continua sendo
-                    o maior dos dois, agora à esquerda. */}
-                {data.colagem[1] ? (
-                  <CartaColagem
-                    imagem={data.colagem[1]}
-                    atraso={260}
-                    atrasoFlutuacao={0}
-                    className="bottom-0 left-0 h-44 w-44 sm:h-52 sm:w-52 lg:h-60 lg:w-60 xl:h-[17rem] xl:w-[17rem] 2xl:h-72 2xl:w-72"
-                  />
-                ) : null}
-                {/* `top-[42%]` e não `top-1/3` como no template: a um terço, este
-                    cartão cobria 77px da altura da figura da equipe, entrando no
-                    corpo das pessoas da ponta direita. A 42% a sobreposição cai
-                    para ~40px, que é o encaixe do template sem comer gente. */}
-                {data.colagem[2] ? (
-                  <CartaColagem
-                    imagem={data.colagem[2]}
-                    atraso={400}
-                    atrasoFlutuacao={1800}
-                    className="right-0 top-[42%] h-40 w-40 sm:h-48 sm:w-48 lg:h-52 lg:w-52 xl:h-56 xl:w-56 2xl:h-64 2xl:w-64"
-                  />
-                ) : null}
-              </div>
-            ) : null}
-          </div>
+          <Reveal delay={460}>
+            <p className="mt-10 text-small text-ink-muted">
+              {data.responsavelLinha}
+            </p>
+          </Reveal>
         </div>
       </div>
     </section>

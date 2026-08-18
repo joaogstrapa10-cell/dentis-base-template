@@ -58,10 +58,11 @@ export const clinica: Clinica = {
     // link que sobe a página quando o de baixo desce lê como link errado, e o
     // menu é a única pista de ordem que o visitante tem antes de rolar.
     nav: [
-      // Aponta para `#arcada`, e não mais para `#top`: desde 17/08 a página abre
-      // pela arcada, e o hero de colagem (`#top`) é a SEGUNDA seção. "Home"
-      // levando para a segunda seção pularia a abertura sem avisar.
-      { label: "Home", href: "#arcada" },
+      // Aponta para `#abertura`, a tela da marca que abre a página desde 18/08. Não é
+      // `#top` (o hero, segunda seção) nem `#arcada`, que deixou de existir quando a
+      // abertura em vídeo foi apagada. Âncora para seção inexistente rola para o topo
+      // sem avisar, e o visitante não tem como saber que o destino sumiu.
+      { label: "Home", href: "#abertura" },
       { label: "Áreas", href: "#areas" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "Tratamentos", href: "#tratamentos" },
@@ -111,13 +112,17 @@ export const clinica: Clinica = {
        `arcada: null` — nenhum componente muda. A proveniência e as marcas de IA da
        foto da equipe estão em public/imagens/hero/LEIA-ME.txt. */
     colagem: [],
-    /* O sorriso do hero é EXATAMENTE a mesma imagem em que a descida da abertura
-       termina, e isso não é economia de asset: é o que faz a aterrissagem ler como o
-       mesmo objeto tendo vindo de lá. Trocar por uma imagem parecida quebra o efeito,
-       porque o olho percebe a substituição.
-       É o ÚLTIMO QUADRO DO CLIPE, extraído do próprio arquivo, e é a mesma URL de
-       `arcada.etapas[1].src`. Não duplicar por descuido de cópia: se as duas
-       divergirem, a arcada muda de imagem no instante em que aterrissa.
+    /* A ARCADA 3D DO HERO, ao lado do texto. É o último quadro do clipe da arcada,
+       recortado do próprio arquivo.
+
+       ⚠️ RECORTADA JUSTO NO ASSUNTO desde 18/08, 1373×954, e isso só foi possível
+       porque a abertura em VÍDEO saiu. Enquanto ela existia, esta imagem tinha de ser o
+       quadro 16:9 INTEIRO — com 15,6% de vazio em cada lado — para a descida do vídeo
+       aterrissar sobre ela sem salto de tamanho. Sem o vídeo, esse vazio era só espaço
+       desperdiçado na coluna: recortando, a arcada ficou 40% MAIOR na mesma largura, que
+       foi o pedido ("faça ela maior"). Se a abertura em vídeo voltar, esta imagem tem de
+       voltar ao quadro cheio junto.
+
        ⚠️ ESTE ARQUIVO TEM ALPHA, e é o único do projeto assim. Recortado do quadro em
        18/08, localmente e sem crédito: flood fill do escuro conectado à borda (para as
        sombras interdentais, que são escuras e ficam DENTRO do objeto, não virarem
@@ -127,17 +132,12 @@ export const clinica: Clinica = {
        pixels de borda compõem entre 224 e 255 sobre branco, e nenhum halo.
 
        Por ter alpha, ele NÃO usa a máscara `.video-fundido` — ver a nota em Hero.tsx.
-       A franja ciano na silhueta é a luz de contorno do próprio render, não artefato.
-
-       ⚠️ O quadro NÃO é recortado justo, e isso é requisito: são 16:9 inteiros com ~55%
-       de pixels transparentes, porque a descida da abertura aterrissa o vídeo (16:9
-       cheio) exatamente sobre esta imagem. Recorte justo faria a arcada saltar de
-       tamanho no instante da entrega. */
+       A franja ciano na silhueta é a luz de contorno do próprio render, não artefato. */
     arcada: {
       src: "/imagens/arcada/arcada-fim.webp",
       alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo. Ilustração técnica, não é registro de paciente.",
-      largura: 1920,
-      altura: 1080,
+      largura: 1373,
+      altura: 954,
       semFundo: false,
     },
     // ⚠️ TRÊS NÚMEROS, TODOS VERIFICÁVEIS, e é essa a regra desta fileira.

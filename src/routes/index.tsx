@@ -9,7 +9,7 @@ import { AreasSection } from "@/components/sections/Areas";
 import { CasosSection } from "@/components/sections/Casos";
 import { DepoimentosSection } from "@/components/sections/Depoimentos";
 import { TratamentosSection } from "@/components/sections/Tratamentos";
-import { ArcadaHero } from "@/components/sections/ArcadaHero";
+import { AberturaMarca } from "@/components/sections/AberturaMarca";
 import { BioSection } from "@/components/sections/Bio";
 import { FaqSection } from "@/components/sections/Faq";
 import { ChamadaFinalSection } from "@/components/sections/ChamadaFinal";
@@ -74,22 +74,25 @@ function Landing() {
           esta mesma sequência — âncora que sobe a página em vez de descer lê como
           link errado. */}
       <main>
-        {/* ABERTURA DA PÁGINA, decidida pelo usuário em 17/08: "é apenas o hero e,
-            abaixo, vai mostrar a seção inicial que já tem no site". A arcada se
-            forma pela rolagem e, quando termina de abrir, o hero de colagem entra
-            — que é o hero que a página já tinha e continua tendo.
+        {/* ⚠️ ABERTURA SÓ COM A MARCA desde 18/08. A abertura em VÍDEO escrubado pela
+            rolagem foi APAGADA a pedido do usuário: "desisti de fazer isso, manter o
+            hero no início do site, mas talvez manter a ideia da sessão inicial com a
+            logo da Suzuki ao meio e ao scrollar aparecer o hero".
 
-            Sem texto nenhum: ele pediu a peça sem seção de explicação. A única
-            palavra ali é o aviso da CFO-196/2019, que é exigência legal.
+            O que saiu: trilho de 210vh com palco sticky, escrubagem do vídeo pelo
+            currentTime, viagem da arcada até o slot do hero e a troca por crossfade.
+            O histórico está no git e os arquivos de vídeo continuam em
+            public/imagens/arcada/ — voltar atrás é revert, não refazer.
 
-            Não entrou no menu. Item novo na pílula recria a colisão com a marca em
-            1024px, já paga duas vezes (12/08, quando "Home" entrou e a folga caiu
-            de 44px para 9px). Em vez disso, "Home" passou a apontar para
-            `#arcada`, porque o topo da página agora é aqui. */}
-        <ArcadaHero
-          data={clinica.arcada}
+            A arcada NÃO saiu do site: é a figura do hero, ao lado do texto, e ficou
+            40% maior porque o vídeo era o que obrigava a imagem a ser o quadro 16:9
+            inteiro. Ver a nota em clinica.hero.arcada.
+
+            "Home" aponta para `#abertura`, que é o topo da página. */}
+        <AberturaMarca
           logo={clinica.brand.logo}
           logoAlt={clinica.brand.logoAlt}
+          wordmark={clinica.brand.wordmark}
         />
         <HeroSection data={clinica.hero} />
         <CasosSection data={clinica.casos} />
