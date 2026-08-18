@@ -3,10 +3,10 @@ ARCADA — a animação de abertura da home
 
 O que está aqui, e é só isto:
 
-  arcada.webm         597KB  VP9, 1280×720, 24fps, 8,042s, 9 keyframes
-  arcada.mp4          907KB  H.264, mesmas dimensões e duração, 9 keyframes
-  arcada-inicio.webp    7KB  o quadro 0 do clipe — é o `poster` do vídeo
-  arcada-fim.webp       6KB  o último quadro — é o sorriso do hero e o estado
+  arcada.webm        1354KB  VP9, 1920×1080, 24fps, 8,042s, 9 keyframes, CRF 28
+  arcada.mp4         2395KB  H.264, mesmas dimensões e duração, 9 keyframes, CRF 21
+  arcada-inicio.webp   13KB  o quadro 0 do clipe — é o `poster` do vídeo
+  arcada-fim.webp      11KB  o último quadro — é o sorriso do hero e o estado
                              exibido sob prefers-reduced-motion
 
 Os quatro saem de `clinica.arcada` e de `clinica.hero.arcada`. Nada aqui é registro
@@ -39,8 +39,18 @@ Os outros TRÊS ficaram fora de propósito, porque são redundantes com o escolh
     aqui dobraria o scroll da abertura, contra o pedido de "o vídeo precisa ser curto"
     e de a seção não exigir muita rolagem.
 
-Se algum dia um deles for necessário, os arquivos originais NÃO estão no repo — 10MB
-para um clipe usado não se paga. Pedir ao usuário de novo.
+Os quatro masters vivem em `assets-originais/` na raiz, FORA do git (ver .gitignore).
+São os originais bit por bit: em 18/08 baixei os quatro do CDN dentro do sandbox do
+Higgsfield e o md5 bateu com os arquivos que o usuário mandou pelo chat — o upload não
+recomprimiu nada. É de lá que se refaz o encode.
+
+⚠️ Estando fora do git, eles vivem só na máquina da sessão. Se a sessão morrer, refazer
+o encode depende de o usuário mandar os arquivos outra vez ou de o CDN seguir de pé.
+Commitá-los é decisão do usuário, levantada em 18/08 e ainda aberta.
+
+Bitrate de cada master, e vale saber qual é o mais fraco: 3497 kbps o de 4s, 2755 o de
+8s (o que está no site), 3922 o de 5s e 4353 o de 6s. O do site é o MENOR do conjunto,
+porque é o mais longo e o modelo distribui o orçamento por clipe.
 
 
 O QUE FOI CONFERIDO NO ARQUIVO
@@ -65,17 +75,17 @@ COMO FORAM GERADOS OS ARQUIVOS DAQUI
 Não há ffmpeg neste ambiente; o binário estático foi baixado do GitHub (liberado) para
 o scratchpad. Os comandos, para refazer quando o clipe mudar:
 
-  ffmpeg -i FONTE.mp4 -vf scale=1280:720 -c:v libvpx-vp9 -crf 33 -b:v 0 \
+  ffmpeg -i FONTE.mp4 -c:v libvpx-vp9 -crf 28 -b:v 0 \
          -g 24 -row-mt 1 -deadline good -cpu-used 2 -an arcada.webm
 
-  ffmpeg -i FONTE.mp4 -vf scale=1280:720 -c:v libx264 -crf 23 -preset slow \
+  ffmpeg -i FONTE.mp4 -c:v libx264 -crf 21 -preset slow \
          -g 24 -keyint_min 24 -sc_threshold 0 -pix_fmt yuv420p \
          -movflags +faststart -an arcada.mp4
 
-  ffmpeg -i FONTE.mp4 -vf "select=eq(n\,0),scale=1280:720" -frames:v 1 \
-         -c:v libwebp -quality 88 arcada-inicio.webp
-  ffmpeg -sseof -0.1 -i FONTE.mp4 -vf scale=1280:720 -frames:v 1 \
-         -c:v libwebp -quality 88 -update 1 arcada-fim.webp
+  ffmpeg -i FONTE.mp4 -vf "select=eq(n\,0)" -frames:v 1 \
+         -c:v libwebp -quality 90 arcada-inicio.webp
+  ffmpeg -sseof -0.1 -i FONTE.mp4 -frames:v 1 \
+         -c:v libwebp -quality 90 -update 1 arcada-fim.webp
 
 ⚠️ O `-g 24` NÃO É AJUSTE FINO. O arquivo que o usuário mandou tinha UM keyframe em
 8 segundos, e procurar um instante longe do keyframe obriga o navegador a decodificar
@@ -83,8 +93,30 @@ tudo desde o começo — animação comandada por rolagem com um keyframe só an
 pulos. Keyframe por segundo (fps = 24, logo -g 24) é o mínimo. Ao trocar o clipe,
 reencodar; não apontar o `<video>` para o arquivo cru.
 
-⚠️ 1280×720 e não 1080p: a caixa da abertura fecha em 950px no desktop e 343px no
-celular, então 720p já sobra, e 1080p dobraria o peso no topo da página.
+⚠️ 1080p, A RESOLUÇÃO NATIVA DO MASTER. Houve uma versão 720p aqui e era ERRO — 597KB
+a 594 kbps, e o usuário reclamou com razão em 18/08 que estava "apagando o detalhe da
+gengiva e do esmalte". Medido com libvmaf contra o master:
+
+    720p CRF33   582KB   VMAF 89,8   ← o que esteve no site
+    720p CRF26   880KB   VMAF 92,1
+    720p CRF22  1078KB   VMAF 92,5
+   1080p CRF28  1354KB   VMAF 95,4   ← este
+   1080p CRF24  1796KB   VMAF 95,8
+
+A 720p a qualidade SATURA em ~92,5 por mais bits que se jogue: a resolução é o teto, e
+não o bitrate. Não voltar para 720p para economizar peso. Se o peso incomodar, o caminho
+é servir 720p SÓ para tela estreita por `<source media>`, onde a caixa exibe 343px.
+
+⚠️ SSIM NÃO SERVE para julgar este material: o 720p marcava 0,988 contra o master, o que
+parece ótimo, enquanto o recorte 1:1 na gengiva mostrava os capilares virados em borrão.
+Onde o SSIM separou os candidatos por 0,007 o VMAF separou por 5,6 pontos. Usar VMAF.
+
+⚠️ NÃO FAZER UPSCALE POR IA. Cogitado em 18/08 e recusado por três motivos medidos: o
+master já é 1080p e a caixa exibe 950px, que num retina são 1900px reais, ou seja
+encaixe 1:1; custaria ~3.500 créditos do Magnific POR CLIPE para cobrir um déficit de
+1,32× que só existe em monitor grande a 2×; e num render 3D de gradiente liso o Topaz
+inventa micro-textura na gengiva e serrilha a borda do dente — numa peça apresentada
+como ilustração técnica, isso é inventar detalhe anatômico. O gargalo era o encode.
 
 ⚠️ Este Chromium não decodifica H.264 — daí o WebM ser a primeira `<source>`. Além de
 menor, é o único formato que permite VERIFICAR a escrubagem aqui. O mp4 existe para o

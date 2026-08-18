@@ -124,8 +124,8 @@ export const clinica: Clinica = {
     arcada: {
       src: "/imagens/arcada/arcada-fim.webp",
       alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo. Ilustração técnica, não é registro de paciente.",
-      largura: 1280,
-      altura: 720,
+      largura: 1920,
+      altura: 1080,
       semFundo: false,
     },
     // ⚠️ TRÊS NÚMEROS, TODOS VERIFICÁVEIS, e é essa a regra desta fileira.
@@ -577,7 +577,7 @@ export const clinica: Clinica = {
     ],
   },
   arcada: {
-    /* UM clipe só, 8,04s, 1280×720, 24fps, E DENTRO DO REPO. É o `currentTime` dele
+    /* UM clipe só, 8,04s, 1920×1080, 24fps, E DENTRO DO REPO. É o `currentTime` dele
        que a rolagem controla, e ele é o conteúdo inteiro da abertura.
 
        ✅ ACABOU A DEPENDÊNCIA DE URL EXTERNA. Até 17/08 o vídeo e os dois quadros
@@ -608,9 +608,32 @@ export const clinica: Clinica = {
            cabeça e sem fenda, e nenhum aparece depois que a coroa assenta;
          · a câmera não mexe: o enquadramento é o mesmo do primeiro ao último quadro.
 
-       PESO: 597KB no WebM e 907KB no mp4, contra 4,5MB do clipe anterior. O WebM é o
-       que Chrome, Firefox e Edge baixam; o mp4 existe para o Safari. Recodificado de
-       1920×1080 para 1280×720 porque a caixa fecha em 950px no desktop.
+       PESO: 1354KB no WebM e 2395KB no mp4. O WebM é o que Chrome, Firefox e Edge
+       baixam; o mp4 existe para o Safari, que não decodifica VP9 em toda versão.
+
+       ⚠️ FICOU EM 1080p, A RESOLUÇÃO NATIVA DO MASTER, e a versão 720p que existiu aqui
+       foi um ERRO MEU. Ela pesava 597KB a 594 kbps e o usuário reclamou com razão:
+       "está apagando o detalhe da gengiva e do esmalte". Medido com libvmaf contra o
+       master, e a tabela é o que fecha o assunto:
+
+         720p CRF33   582KB   VMAF 89,8   ← o que estava no site
+         720p CRF26   880KB   VMAF 92,1
+         720p CRF22  1078KB   VMAF 92,5
+        1080p CRF28  1354KB   VMAF 95,4   ← este
+        1080p CRF24  1796KB   VMAF 95,8
+
+       A 720p a qualidade SATURA em ~92,5 por mais bits que se jogue: a resolução é o
+       teto, não o bitrate. Não voltar para 720p tentando economizar peso — o caminho,
+       se o peso incomodar, é servir 720p só para tela estreita por `<source media>`,
+       onde a caixa exibe 343px e 1080p é três vezes mais do que cabe.
+
+       ⚠️ E NÃO FAZER UPSCALE POR IA. Foi cogitado em 18/08 e recusado por três motivos:
+       o master já é 1080p e a caixa exibe 950px, que num retina são 1900px reais, ou
+       seja encaixe 1:1; custaria ~3.500 créditos do Magnific por clipe para resolver um
+       déficit de 1,32× que só existe em monitor grande a 2×; e num render 3D de
+       gradiente liso o Topaz inventa micro-textura na gengiva e serrilha a borda do
+       dente — numa peça apresentada como ilustração técnica, isso é inventar detalhe
+       anatômico. O gargalo era o encode, não a fonte.
 
        ⚠️ `-g 24`, KEYFRAME POR SEGUNDO, nos dois arquivos — 9 cada. Não é ajuste fino:
        o arquivo que o usuário mandou tinha UM keyframe em 8s, e procurar um instante

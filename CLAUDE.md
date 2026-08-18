@@ -789,6 +789,16 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
   antes de acreditar que algo não foi pintado**.
 - **Print de um botão que se repete não identifica qual é** — amostrar a cor computada antes
   de apagar. Cinco "Agendar" na página, quatro visualmente iguais.
+- **`window.scrollTo` num script de medição precisa ser CONFERIDO.** A restauração de
+  rolagem do TanStack zera a posição durante a hidratação, então a amostra sai do estado
+  de REPOUSO e o script reporta que a animação não acontece. Rolar em laço até
+  `window.scrollY` parar no alvo (`Math.abs(scrollY - alvo) <= 2`) antes de ler qualquer
+  coisa. Aconteceu três vezes em 17–18/08, e nas três a peça estava certa.
+- **Para julgar perda de compressão em vídeo, VMAF — nunca SSIM.** O encode 720p da
+  abertura marcava SSIM 0,988 contra o master, que parece ótimo, e tinha apagado os
+  capilares da gengiva. O VMAF separou os candidatos por 5,6 pontos onde o SSIM separou
+  por 0,007. Há `libvmaf` no ffmpeg estático baixado do GitHub. ⚠️ E o `-v error` do
+  ffmpeg ESCONDE a linha do score: o filtro loga em nível info.
 - **Imagem anexada pelo usuário não existe como arquivo no disco.** O base64 está no
   transcript da sessão (`/root/.claude/projects/.../<sessão>.jsonl`); é de lá que se extrai
   para poder processar os pixels. Script em `scratchpad/extrai-anexo.mjs`.
