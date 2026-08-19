@@ -155,11 +155,14 @@ servir uma quarta.
 **Última sessão: 19/08.** O último commit da `main` é o da abertura em `hero-scrub`. Nada
 pendente no working tree, nada esperando OK.
 
-⚠️ **A HOME ABRE PELA ABERTURA (`#abertura`), que é o template do Ferrari Amalfi**
-aplicado em 19/08: lockup da Suzuki em cima, a arcada se formando no meio, "ODONTOLOGIA
-ESPECIALIZADA" embaixo, as três peças se afastando pela rolagem enquanto o quadro toma
-a tela. Custa **3,6 telas** de rolagem, e esse número é `TRILHO_MULT` em
-`AberturaArcada.tsx` — um lugar só. O hero estilo apple.com veio logo abaixo, de 18/08.
+⚠️ **A HOME ABRE PELA ABERTURA (`#abertura`)**, que é o template do Ferrari Amalfi
+aplicado em 19/08 e depois **despido do movimento dele no mesmo dia**: a marca completa
+em cima, a arcada se formando no meio, "ODONTOLOGIA ESPECIALIZADA" embaixo — as três
+peças PARADAS, e a rolagem só comanda o tempo do vídeo. O zoom e o afastamento lateral
+das pontas saíram a pedido do usuário ("é para ela manter do mesmo tamanho que inicia,
+sem o efeito de aproximação"), e tudo diminuiu de tamanho na mesma rodada. Custa
+**2,6 telas** de rolagem, e esse número é `TRILHO_MULT` em `AberturaArcada.tsx` — um
+lugar só. O hero estilo apple.com veio logo abaixo, de 18/08.
 O histórico das três aberturas anteriores (vídeo com viagem até o hero, tela só com a
 logo, e esta) está no §9; **não reconstruir nenhuma de memória, está tudo no git.**
 
@@ -228,7 +231,7 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 
 | Anatomia | Seções |
 |---|---|
-| Palco `sticky`: lockup + quadro + assinatura, as pontas se afastando e o quadro tomando a tela pela rolagem | Abertura |
+| Palco `sticky`: marca + quadro + assinatura PARADOS, e a rolagem só comanda o tempo do vídeo | Abertura |
 | Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
 | Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Áreas (4 col.), Diferenciais (4 col.), **Tratamentos (3 col.)** |
 | Esteira contínua | Estrutura, Depoimentos, **corpo clínico da Bio** |
@@ -873,3 +876,10 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-08-19 — O limiar da navegação virou **`ABERTURA_NAV_VH`, derivado** (`TRILHO_MULT × IMERSAO_ATE`, o ponto em que a arcada fica completa), no lugar de `ABERTURA_VH × 0,7`. Aquele 0,7 era um chute que só por acaso caía perto do fim da animação — mudar o ritmo da abertura o desalinhava sem avisar. Atende o pedido de 17/08 ao pé da letra: o menu aparece quando o vídeo completa, e os 22% finais rolam com ele na tela.
 - 2026-08-19 — Nas rotas internas a marca do canto apontava para **`#arcada`, âncora morta desde 18/08** — rola para o topo sem avisar, que é o defeito registrado em 12/08 no link "Como conduzimos" do rodapé. Passou a apontar para `/`. Defeito antigo, achado ao mexer no Header.
 - 2026-08-19 — Custo de página: a abertura foi de 1 tela (`AberturaMarca`) para **3,6 telas** (1 parada + 2,6 de curso). É a seção mais alta do site e é inerente ao pedido — sequência comandada por rolagem gasta distância de rolagem. O template pede 4,2; 2,6 de curso dá ~184px de rolagem por segundo de vídeo (~7,7px por quadro a 24fps), folgado para a escrubagem ler contínua. Abaixo de ~2,0 os dentes passam mais rápido do que se lê. **Se incomodar, é UM número: `TRILHO_MULT` no `AberturaArcada.tsx`.**
+
+- 2026-08-19 — **O ZOOM DA ABERTURA SAIU no mesmo dia em que entrou**, a pedido: "a arcada tá muito grande no final, é para ela manter do mesmo tamanho que inicia, sem o efeito de aproximação". O quadro passou a ter UM tamanho do começo ao fim, e a rolagem comanda só o `currentTime` do vídeo. Morreram com ele a escala em três curvas, o teto de imersão derivado do assunto dentro do quadro, e a convergência do quadro para o centro do palco — a última só existia PORQUE `scale` cresce em volta do próprio centro. Versão com zoom em `98bf5e7`.
+- 2026-08-19 — **O afastamento lateral das pontas saiu JUNTO com o zoom, e é decisão de composição, não conserto.** No template ele existe para abrir espaço para o quadro que cresce; sem o crescimento, mandar a marca e a assinatura para fora deixaria o miolo da seção com um quadro PEQUENO sozinho num campo escuro vazio. ⚠️ Voltar a ter o afastamento sem o zoom é possível — está no git — mas é escolha dele, não um bug a corrigir.
+- 2026-08-19 — Com o zoom fora, `TRILHO_MULT` caiu de 2,6 para **1,6**, e o ritmo da escrubagem ficou praticamente igual: sem a imersão, o curso INTEIRO carrega os 8,04s do clipe em vez de só 63% dele — ~180px de rolagem por segundo de vídeo contra ~184px antes. A seção foi de 3,6 para **2,6 telas**. A escrubagem começa aos 5% e acaba aos 95% do curso: as sobras seguram o primeiro e o último quadro, senão a arcada completa aparece no mesmo pixel em que a seção acaba.
+- 2026-08-19 — **O LOCKUP DA MARCA FOI UM ERRO MEU, e o arquivo foi apagado.** Eu tinha recortado os 12 traços da linha "odontologia" do SVG para a palavra não aparecer duas vezes empilhada com a assinatura de baixo; o usuário reprovou na hora — "a logo da Suzuki não tá completa". **A marca da clínica não se recorta para resolver repetição de palavra: quem cede é o layout.** A abertura passou a usar o mesmo `brand.logo` do header, agora por uma constante única (`BRAND_LOGO`) para os dois caminhos não divergirem, e a repetição da palavra ficou registrada como deliberada no tipo.
+- 2026-08-19 — Tudo da abertura diminuiu, a pedido ("diminua o tamanho de tudo dessa sessão, tá muito grande"): quadro de 691×389 para **547×308** em 1440 (−21%), marca de 480 para **304px** (−37%), assinatura de 78px para **36px** (−54%). O teto da assinatura ficou em 2,25rem, que é **exatamente o degrau `.display-2`** — no desktop, portanto, nenhum tamanho novo entra na página, e a parte fluida em vw existe só porque 25 caracteres em caixa alta não cabem num celular com tamanho fixo da escala.
+- 2026-08-19 — Medido depois, em 1920/1440/1024/390: proporção travada em 1,78 (recorte zero) e o quadro no MESMO tamanho nos seis pontos do curso, vídeo escrubando 0 → 8,03s e sempre pausado, marca e assinatura em opacidade 1 do começo ao fim, folgas iguais em cima e embaixo (233/233, 194/194, 183/183, 257/257), assinatura em uma linha em todas as larguras, UMA requisição de vídeo, zero overflow.

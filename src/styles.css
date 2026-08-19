@@ -630,8 +630,19 @@
    O teto é geométrico, e o número saiu de MEDIÇÃO e não de estimativa: nesta fonte,
    em caixa alta e com este tracking, cada caractere avança **0,664em** — constante em
    sete larguras de janela, de 360 a 1920px. "ODONTOLOGIA ESPECIALIZADA" tem 25
-   caracteres, ou seja 16,6em. Para a linha ocupar no máximo 92% da janela:
-   `0,92 / 16,6 = 5,54vw`, e 5,4vw fecha com ~10% de folga em toda largura testada.
+   caracteres, ou seja 16,6em.
+
+   ⚠️ DIMINUIU EM 19/08, a pedido do usuário ("diminua o tamanho da fonte de odontologia
+   especializada"): era `clamp(1.1rem, 5.4vw, 5.5rem)`, ou seja 88px de teto e 78px numa
+   janela de 1440. Agora o teto é **2,25rem = 36px, que é exatamente o degrau
+   `.display-2` da escala** — no desktop, portanto, nenhum tamanho novo entra na página.
+   A parte fluida (3,2vw) e o piso (0,9rem) existem só porque uma linha de 25 caracteres
+   em caixa alta não cabe num celular com nenhum tamanho fixo da escala: a 36px ela
+   mediria 598px numa tela de 390.
+
+   Larguras resultantes, medidas: 598px em 1440 e em 1920 (contra 547 e 730 do quadro da
+   arcada, então a assinatura fica no mesmo campo visual dele), 531px em 1024, 239px em
+   390. Cabe em todas.
 
    ⚠️ MINHA PRIMEIRA CONTA USOU 0,58em/caractere, DE CABEÇA, e deu 6,2vw — com isso a
    linha media 1461px numa janela de 1440 e ficava CORTADA nas duas bordas. O defeito
@@ -651,8 +662,8 @@
    seletor tem o nome da seção justamente para não ser reaproveitada. */
 .abertura-linha {
   font-weight: 700;
-  font-size: clamp(1.1rem, 5.4vw, 5.5rem);
-  line-height: 0.95;
+  font-size: clamp(0.9rem, 3.2vw, 2.25rem);
+  line-height: 1.05;
   /* Tracking NEGATIVO, não largo. Rótulo em caixa alta com tracking largo é um dos
      quatro dispositivos removidos em 03/08 por carregar "cara de IA"; aqui a caixa
      alta se justifica pelo tamanho, e o tracking apertado é o que a faz ler como

@@ -93,13 +93,14 @@ export type EstruturaContent = {
  */
 export type AberturaContent = {
   /**
-   * Lockup CLARO da marca: o símbolo mais "SUZUKI", SEM a linha "odontologia".
+   * A marca CLARA e COMPLETA — o mesmo arquivo do `brand.logo`, não uma variante.
    *
-   * ⚠️ É um arquivo à parte do `brand.logo` de propósito, e não redundância: o logo
-   * horizontal completo já traz "odontologia" no traço, e com a linha de baixo
-   * dizendo "ODONTOLOGIA ESPECIALIZADA" a palavra apareceria duas vezes empilhada,
-   * o que lê como erro. Mesma arte, os 12 traços da segunda linha removidos e o
-   * viewBox justo no que restou. `null` cai no wordmark em texto.
+   * ⚠️ Em 19/08 este campo apontou por algumas horas para um "lockup" com os 12
+   * traços da linha "odontologia" removidos, para a palavra não aparecer duas vezes
+   * empilhada com a assinatura de baixo. O usuário reprovou na hora: "a logo da
+   * Suzuki não tá completa". A marca da clínica não se recorta para resolver
+   * repetição de palavra — quem cede é o layout, e a assinatura diminuiu de tamanho
+   * na mesma rodada. **Não recriar o lockup.** `null` cai no wordmark em texto.
    */
   marca: string | null;
   marcaAlt: string;
@@ -108,6 +109,9 @@ export type AberturaContent = {
   /**
    * A linha de baixo, em caixa alta. UMA linha: em duas, o bloco inferior ganha
    * mais massa que a marca de cima e a composição desequilibra.
+   *
+   * Ela repete a palavra "odontologia", que também está no traço da marca logo acima,
+   * e isso é DELIBERADO desde 19/08 — ver a nota do campo `marca`.
    *
    * ⚠️ Ela NÃO usa a escala tipográfica fechada — ver `.abertura-linha` no
    * styles.css, que documenta por que este é o único texto do site fora dos cinco

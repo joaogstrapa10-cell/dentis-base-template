@@ -11,11 +11,17 @@ const TELEFONE_NUMERO = "(41) 99206-1073";
 const WHATSAPP_NUMERO = "(41) 99206-1073";
 const WHATSAPP_HREF = whatsappHref(WHATSAPP_NUMERO);
 
+// A marca CLARA, em um lugar só. Aparece em `brand.logo` (header, rodapé, cartão de
+// avaliações) e em `abertura.marca`, e as duas TÊM de ser o mesmo arquivo: a abertura
+// chegou a ter uma versão recortada dele e o usuário reprovou em 19/08 ("a logo da
+// Suzuki não tá completa"). Caminho repetido é caminho que divergirá.
+const BRAND_LOGO = "/imagens/marca/logo-horizontal-branco.svg";
+
 export const clinica: Clinica = {
   brand: {
     nome: "[NOME DA CLÍNICA]",
     wordmark: "Suzuki Odontologia",
-    logo: "/imagens/marca/logo-horizontal-branco.svg",
+    logo: BRAND_LOGO,
     // Mesma arte do logo branco, recolorida no traço para a cor de texto da
     // página (`--foreground`, #1b222c). Gerada em 30/07 porque a clínica só
     // tinha a versão branca, e o cartão de avaliações fica em fundo claro.
@@ -76,9 +82,14 @@ export const clinica: Clinica = {
      Forma pedida pelo usuário em 19/08 a partir do template do Ferrari Amalfi.
      O vídeo e o aviso legal NÃO estão aqui: vivem em `arcada`, mais abaixo. */
   abertura: {
-    /* Lockup sem a linha "odontologia" — ver a nota do campo em types.ts. O
-       `brand.logo` (com ela) continua sendo o do header e do rodapé. */
-    marca: "/imagens/marca/logo-lockup-branco.svg",
+    /* ⚠️ A LOGO COMPLETA, a mesma do header e do rodapé — e é o `brand.logo`, não um
+       arquivo próprio. Em 19/08 eu tinha criado um "lockup" com os 12 traços da linha
+       "odontologia" removidos, para a palavra não aparecer duas vezes empilhada com a
+       assinatura de baixo. O usuário reprovou na hora: "a logo da Suzuki não tá
+       completa". A marca da clínica não se recorta para resolver repetição de palavra —
+       quem cede é o layout. O arquivo do lockup foi apagado para não sobrar asset órfão
+       convidando a voltar atrás. */
+    marca: BRAND_LOGO,
     marcaAlt: "Suzuki Odontologia",
     wordmark: "SUZUKI",
     /* Texto ditado pelo usuário. Caixa alta no conteúdo e não no CSS: é como ele
