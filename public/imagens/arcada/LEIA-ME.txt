@@ -219,3 +219,71 @@ Não repetir; se precisar refazer, o script é scratchpad/recorta.mjs.
 arquivo) e não faz alpha bem. Usar `cwebp`, baixado de
 storage.googleapis.com/downloads.webmproject.org (o release do GitHub para linux-x86-64
 é 404).
+
+================================================================================
+19/08 — O CLIPE TROCOU: DA FORMAÇÃO PARA A ROTAÇÃO DE TRÊS QUARTOS
+================================================================================
+
+Pedido do usuário: "faça a arcada em 3D meio de lado, bem diferente e alto nível de
+3D, em 4K", junto de "sem estar em um placeholder, como se ela fizesse parte do site,
+sem sombras".
+
+ARQUIVOS AGORA (o que o site serve):
+  arcada-giro.webm         1,60 MB  VP9 CRF 24, -g 24, 1500x1080
+  arcada-giro.mp4          1,82 MB  H.264 High level 4.0, CRF 19, -g 24, faststart
+  arcada-giro-inicio.webp    34 KB  primeiro quadro, 1200px — poster e estado sob
+                                    prefers-reduced-motion
+  arcada-fim.webp           173 KB  NÃO é da abertura: é a figura do HERO. Não apagar.
+
+ARQUIVOS QUE SAÍRAM (estão no git, recuperáveis por `git show`):
+  arcada.webm / arcada.mp4          a SEQUÊNCIA DE FORMAÇÃO, 8,04s — os dentes
+                                    entrando um por vez, de cima e depois de baixo
+  arcada-inicio.webp                poster daquele clipe (gengivas com implantes)
+
+⚠️ O CUSTO DA TROCA É DE CONTEÚDO, e vale registrar: o clipe que saiu era a formação,
+pedida explicitamente em 17/08 ("quero você colocando os dentes ao scrollar"). O que
+entrou é a arcada JÁ COMPLETA girando. Nenhum dos quatro masters que o usuário mandou
+tem as duas coisas juntas (vista de lado + dentes entrando) — isso exige geração nova.
+
+PROVENIÊNCIA: é o master `4-giro-hero.mp4` (assets-originais/, gitignored), 1920x1080,
+6,04s, 24fps, do Higgsfield, um dos quatro que ele mandou pelo chat em 18/08. Estava
+sem uso desde então: em 17/08 ficou de fora porque o giro havia sido trocado pela
+descida em CSS.
+
+DOIS TRATAMENTOS NO ENCODE, os dois medidos:
+
+1. RECORTE `crop=1500:1080:420:0`. A arcada NÃO é centrada no master — varredura de
+   luminância em cinco instantes dá x de 24,6% a 97,2% da largura, ou seja ela encosta
+   na borda direita e sobra 25% de vazio à esquerda. O recorte tira 420px da esquerda,
+   o que deixa a união dos limites com 53px de margem de cada lado. A altura fica
+   inteira: a arcada chega a 92,9% dela em t=6s e recortar cortaria gengiva.
+   ⚠️ Por isso a proporção do arquivo é 1,389:1 e NÃO 16:9. Ela vive em
+   `clinica.arcada.videoLargura/videoAltura` — trocar o clipe sem atualizar os dois
+   números faz o object-cover recortar, em silêncio.
+
+2. PONTO DE PRETO ZERADO, `colorlevels=rimin=0.105:gimin=0.105:bimin=0.105`. É o que
+   permite tirar o placeholder: o vídeo é composto com `mix-blend-mode: screen`, então
+   um fundo preto some e o petróleo da página atravessa. O fundo do master NÃO era
+   preto puro — os cantos ficavam em rgb(0-3, 2-4, 7-11) e o centro-topo em
+   rgb(13,22,24), e sob `screen` isso soma luz e desenha um retângulo MAIS CLARO que a
+   página. Com o corte, oito pontos de fundo medem 0 ou 1 em três instantes do clipe.
+   Verificado no render: cruzando a borda do quadro pixel a pixel em 390x844, o degrau
+   é de 2 níveis em 255 e cai 3px DENTRO do quadro (resíduo do VP9), não na fronteira.
+
+QUALIDADE: VMAF 96,3 contra o master, medido CONTRA UM ENCODE LOSSLESS do mesmo
+recorte — e essa ressalva importa. Comparar direto com o mp4 do master dá 79, e o
+número é falso: o mesmo comparador dá 35,8 dB de PSNR para um encode LOSSLESS, que
+deveria ser infinito. O frame 0 do lossless é byte-idêntico ao do master, então não é o
+encode: é o comparador desalinhando dois contêineres de timebase diferente. A escada
+real, contra o lossless — CRF 28: 95,5 / CRF 24: 96,3 / CRF 20: 96,8 / CRF 16: 97,2.
+⚠️ Num clipe de câmera PARADA um desalinhamento de um quadro quase não pesa; num clipe
+de ROTAÇÃO pesa muito. Foi isso que fez o número parecer catastrófico.
+
+NÃO ESTÁ EM 4K, apesar do pedido. O master é 1080p, e o quadro exibe 605px no desktop
+(1210px numa tela retina): o arquivo de 1500px já entrega mais do que a tela mostra.
+Chegar a 4K só por upscale de IA, que num render 3D de gradiente liso inventa
+micro-textura na gengiva e serrilha a borda do dente — em peça apresentada como
+ilustração técnica isso é inventar detalhe anatômico. Recusado pelo mesmo motivo em
+18/08, quando o gargalo se mostrou ser o encode e não a fonte.
+
+PESO NO REPO: a pasta caiu de 8,3 MB para 3,7 MB.

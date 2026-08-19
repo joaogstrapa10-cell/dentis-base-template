@@ -2,14 +2,33 @@ import { useEffect, useRef, useState } from "react";
 import type { AberturaContent, ArcadaContent } from "@/content/types";
 
 /**
- * ABERTURA DA HOME: a marca em cima, a arcada se formando no meio, a assinatura
- * embaixo. A composição fica PARADA e a rolagem só comanda o tempo do vídeo — os
- * dentes entram um por vez, primeiro na arcada de cima, depois na de baixo.
+ * ABERTURA DA HOME: a marca em cima, e a arcada em 3D girando embaixo dela. A
+ * composição fica PARADA e a rolagem só comanda o tempo do vídeo — a arcada gira
+ * numa vista de três quartos conforme a página desce.
  *
  * A forma veio do template `hero-scrub` (o hero escrubado do Ferrari Amalfi) que o
- * usuário mandou em 19/08, com o mapeamento que ele ditou: a logo da Suzuki onde
- * estava "FERRARI", "ODONTOLOGIA ESPECIALIZADA" onde estava "AMALFI", e a arcada onde
- * estava o 3D do carro.
+ * usuário mandou em 19/08, e foi despida em duas rodadas do mesmo dia: primeiro o zoom
+ * e o afastamento das pontas, depois a assinatura de texto.
+ *
+ * ═══ ⚠️ TRÊS MUDANÇAS DE 19/08, TODAS PEDIDAS, E O QUE CADA UMA CUSTOU ═══
+ *
+ * 1. "tire o odontologia especializada" — a assinatura embaixo do quadro saiu, e com
+ *    ela a classe `.abertura-linha`, que era a ÚNICA exceção à escala tipográfica
+ *    fechada de cinco degraus. A abertura hoje não tem texto nenhum na tela.
+ *
+ * 2. "faça a arcada em 3D meio de lado, bem diferente e alto nível de 3D" — o clipe
+ *    trocou. ⚠️ E A TROCA TEM UM CUSTO DE CONTEÚDO: o clipe anterior era a SEQUÊNCIA
+ *    DE FORMAÇÃO (os dentes entrando um por vez, de cima e depois de baixo, que foi
+ *    pedido explícito em 17/08). O novo é a arcada COMPLETA girando — de três quartos,
+ *    que é o que ele pediu agora. Os dois são clipes DIFERENTES, e ter as duas coisas
+ *    juntas (vista de lado + dentes entrando) exige geração nova: nenhum dos quatro
+ *    masters que ele mandou tem isso. O de formação está no git e em
+ *    `assets-originais/2-dentes-um-a-um.mp4`.
+ *
+ * 3. "sem estar em um placeholder, como se ela fizesse parte do site, sem sombras" —
+ *    o cartão saiu inteiro: sem raio, sem fio, sem sombra e sem fundo. O que faz o
+ *    retângulo do vídeo desaparecer é `mix-blend-mode: screen`; ver a nota no `<video>`,
+ *    porque isso impõe uma condição ao DOM em volta.
  *
  * ═══ ⚠️ O ZOOM DO TEMPLATE SAIU, e com ele o afastamento das pontas ═══
  *
@@ -43,11 +62,18 @@ import type { AberturaContent, ArcadaContent } from "@/content/types";
  *   3. o projeto não tem nenhuma dependência de animação.
  *
  * ⚠️ SEM SEQUÊNCIA DE QUADROS EM `<canvas>`. O template baixa 300 WebP e desenha o
- * quadro correspondente ao scroll. Aqui a mídia é VÍDEO, e a decisão foi MEDIDA:
- * exportar os 193 quadros deste clipe a 1280px em WebP q72 dá **6,3 MB em 193
- * requisições**, contra **3,4 MB do WebM a 1920×1080** que já está no repo. A câmera é
- * travada e a diferença entre quadros vizinhos é um dente — o melhor caso possível para
- * compressão interframe e o pior para uma pilha de imagens independentes.
+ * quadro correspondente ao scroll. Aqui a mídia é VÍDEO, e a decisão foi MEDIDA no
+ * clipe anterior: 193 quadros a 1280px em WebP q72 davam 6,3 MB em 193 requisições
+ * contra 3,4 MB do WebM em 1080p. Com o clipe de ROTAÇÃO a conta fica ainda mais
+ * desfavorável à pilha de imagens: a câmera se move, então cada quadro é novo e
+ * nenhuma imagem se parece com a vizinha o bastante para o WebP aproveitar.
+ *
+ * ⚠️ E NÃO EM 4K, apesar de "em 4K" estar no pedido. O master é 1080p e o quadro exibe
+ * 490px no desktop — 980px numa tela retina, ou seja o arquivo de 1500px já entrega
+ * 1,5× mais do que a tela mostra. Chegar a 4K só por upscale de IA, que num render 3D
+ * de gradiente liso inventa micro-textura na gengiva e serrilha a borda do dente: numa
+ * peça apresentada como ilustração técnica isso é inventar detalhe anatômico. Recusado
+ * pelo mesmo motivo em 18/08.
  *
  * ⚠️ E o azul-claro `#3a9b8a` do template não entra em lugar nenhum: a paleta é a
  * medida da Suzuki, e azul-claro de consultório é clichê proibido no §4 do CLAUDE.md.
@@ -76,22 +102,42 @@ const TRILHO_MULT = 1.6;
 const SCRUB_DE = 0.05;
 const SCRUB_ATE = 0.95;
 
-/** 16:9, a proporção nativa do clipe. Recorte zero: `object-cover` não corta nada. */
-const ASPECTO = 16 / 9;
-
 /**
  * Largura do quadro, como fração da largura do palco.
  *
- * ⚠️ Diminuiu a pedido do usuário em 19/08 ("diminua o tamanho de tudo dessa sessão, tá
- * muito grande"): era 0,48 no desktop, com o quadro em 691px numa janela de 1440.
+ * ⚠️ Este número mediu 0,48, depois 0,38 ("diminua o tamanho de tudo dessa sessão"),
+ * depois 0,34, e voltou a 0,42 — e a subida NÃO desfaz o pedido dele. Enquanto havia
+ * CARTÃO, o que a pessoa via era a moldura inteira; sem cartão, o que se vê é só a
+ * arcada, que ocupa 72% da largura e ~76% da altura do quadro. A 0,34 ela media 353px de
+ * largura numa janela de 1440 — menor do que era com o cartão, não maior. A 0,42 o
+ * quadro fecha em 605px e a arcada em ~436px, que é a mesma presença de antes sem a
+ * caixa em volta.
  */
-const LARGURA_DESKTOP = 0.38;
+const LARGURA_DESKTOP = 0.42;
 const LARGURA_COMPACTA = 0.8;
 /**
  * Teto pela ALTURA do palco. É a guarda de janela baixa e larga: sem ele, num monitor
- * 21:9 o quadro de 0,38 de largura passaria da altura da tela.
+ * 21:9 o quadro passaria da altura da tela.
  */
-const ALTURA_MAX = 0.4;
+const ALTURA_MAX = 0.5;
+
+/**
+ * Distância, em px, entre a base da marca e o topo do quadro. ⚠️ É AQUI que se sobe ou
+ * desce a marca, e é o único lugar — era o `gap` de 16px da coluna até 19/08, quando o
+ * usuário pediu "suba um pouco a logo da Suzuki".
+ *
+ * A coluna é CENTRADA como um grupo, e não o quadro sozinho no meio do palco. Tentei o
+ * quadro centrado primeiro, porque com ele no centro exato "subir a logo" mexe só na
+ * logo — e o render mostrou o problema: com nada abaixo da arcada, o grupo fica acima do
+ * centro e sobram 330px de vazio embaixo contra 55px acima. Centrando o grupo, os dois
+ * vazios ficam iguais.
+ *
+ * O desvio que isso introduz é desprezível AQUI, e vale conferir se o clipe trocar: o
+ * quadro tem margem vazia de 10,3% em cima e 13,8% embaixo, então centrar a CAIXA em vez
+ * do assunto desloca a arcada só ~7px em 1440.
+ */
+const VAO_MARCA = 64;
+const VAO_MARCA_COMPACTO = 40;
 
 /**
  * Altura total da seção, em vh. Exportada porque o Header precisa saber onde a
@@ -173,13 +219,20 @@ export function AberturaArcada({
 
   const compacto = palco.w < 768;
   const fracao = compacto ? LARGURA_COMPACTA : LARGURA_DESKTOP;
+  /* Proporção do CONTEÚDO, não cravada aqui. Ver a nota de `videoLargura` no types.ts:
+     a do hero ficou cravada no componente e passou a recortar no dia em que o arquivo
+     mudou. O `|| 16/9` é só a guarda de conteúdo incompleto. */
+  const aspecto =
+    arcada.videoLargura && arcada.videoAltura
+      ? arcada.videoLargura / arcada.videoAltura
+      : 16 / 9;
   /* UM tamanho, do começo ao fim da rolagem. Não há mais escala de repouso nem de
      abertura — o pedido foi o quadro manter o tamanho com que começa. */
   const quadroW = Math.max(
     1,
-    Math.round(Math.min(fracao * palco.w, ALTURA_MAX * palco.h * ASPECTO)),
+    Math.round(Math.min(fracao * palco.w, ALTURA_MAX * palco.h * aspecto)),
   );
-  const quadroH = Math.max(1, Math.round(quadroW / ASPECTO));
+  const quadroH = Math.max(1, Math.round(quadroW / aspecto));
 
   /* DESTRAVAMENTO DO iOS. O Safari do iPhone recusa `currentTime` antes de o vídeo ter
      sido tocado por gesto: sem isto a escrubagem não anda no iPhone, e o sintoma
@@ -259,7 +312,7 @@ export function AberturaArcada({
       className="w-[min(58vw,15rem)] md:w-[min(26vw,19rem)]"
     />
   ) : (
-    <span className="abertura-linha text-ink-foreground">{data.wordmark}</span>
+    <span className="display-2 text-ink-foreground">{data.wordmark}</span>
   );
 
   /* ── SEM ANIMAÇÃO: uma tela curta, o estado FINAL da arcada, e nada de trilho.
@@ -272,16 +325,15 @@ export function AberturaArcada({
         id="abertura"
         className="relative bg-ink px-6 py-20 md:py-24"
       >
-        <div className="mx-auto flex max-w-[64rem] flex-col items-center gap-6 text-center">
+        <div className="mx-auto flex max-w-[64rem] flex-col items-center gap-10 text-center">
           {marcaEl}
           {ultima?.src ? (
             <img
               src={ultima.src}
               alt={ultima.alt}
-              className="h-auto w-full max-w-[34rem]"
+              className="h-auto w-full max-w-[30rem]"
             />
           ) : null}
-          <p className="abertura-linha text-ink-foreground">{data.linha}</p>
         </div>
       </section>
     );
@@ -302,17 +354,23 @@ export function AberturaArcada({
     >
       <div
         ref={palcoRef}
-        className="sticky top-0 flex h-[100svh] w-full flex-col items-center justify-center overflow-hidden"
+        /* ⚠️ `bg-ink` AQUI e não só na seção, e é REQUISITO do `mix-blend-mode` do
+           vídeo: `position: sticky` cria um contexto de empilhamento, então o vídeo
+           mistura contra o que está pintado DENTRO deste palco, não contra o fundo da
+           seção atrás dele. Sem esta cor, o `screen` misturaria contra transparência e
+           o retângulo preto do clipe continuaria preto. */
+        className="sticky top-0 h-[100svh] w-full overflow-hidden bg-ink"
       >
         {/* Atmosfera. Duas camadas e não quatro: o template pinta um accent claro e
             escurece com `black/30` por cima. Aqui o fundo já É o petróleo da paleta,
-            então sobra o realce e a vinheta. */}
+            então sobra o realce e a vinheta. As duas são pintadas ANTES do vídeo, então
+            fazem parte do fundo com que ele se mistura. */}
         <div
           aria-hidden
           className="absolute inset-0 z-0"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 34%, oklch(1 0 0 / 0.07) 0%, transparent 58%)",
+              "radial-gradient(ellipse at 50% 38%, oklch(1 0 0 / 0.07) 0%, transparent 58%)",
           }}
         />
         <div
@@ -324,80 +382,90 @@ export function AberturaArcada({
           }}
         />
 
-        <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-5 md:gap-4">
+        {/* ⚠️ COLUNA CENTRADA COMO GRUPO — marca em cima, quadro embaixo, e o vão
+            entre os dois é `VAO_MARCA`. Ver a nota da constante: o quadro centrado
+            sozinho no palco também funciona e foi tentado, mas deixa 330px de vazio
+            abaixo da arcada contra 55px acima da marca, porque não há nada embaixo dela
+            para equilibrar.
+
+            ⚠️ SEM `z-index` NESTA COLUNA, e não é descuido: `z-index` num elemento
+            posicionado cria contexto de empilhamento, e isso ISOLA o
+            `mix-blend-mode: screen` do vídeo — o retângulo do clipe volta a aparecer.
+            Medido: com `z-10` aqui, o interior do quadro fica em luminância 8 contra 26
+            do fundo da página. A ordem de pintura já vem da ordem no DOM (a atmosfera
+            está antes), então o z-index não fazia falta. */}
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center"
+          style={{ gap: compacto ? VAO_MARCA_COMPACTO : VAO_MARCA }}
+        >
           <div className="abertura-entra-marca">{marcaEl}</div>
 
-          <div className="abertura-entra-quadro">
-            <div
-              /* O quadro É um objeto: raio, fio e sombra. Isso resolve, de graça, o
-                 problema que a máscara `.video-fundido` existia para resolver na
-                 abertura em vídeo de 17/08 — o fundo do clipe é mais escuro que o
-                 `--ink` da página e desenhava um retângulo no meio da tela. Sendo um
-                 cartão declarado, o retângulo passa a ser a intenção. E sai de graça o
-                 que a máscara cobrava: ela apagava 26% de cada borda, então os molares
-                 das duas pontas renderizavam a 60% de opacidade.
-                 ⚠️ O FUNDO é a cor da vinheta, não `--ink-elevated`: o vídeo é 16:9
-                 exato e sobra meio pixel de arredondamento na borda — com um fundo mais
-                 CLARO que o clipe, esse meio pixel vira um fio visível. */
-              className="relative overflow-hidden rounded-xl shadow-[0_20px_80px_rgba(0,0,0,0.55)] ring-1 ring-ink-border md:rounded-2xl"
-              style={{
-                width: quadroW,
-                height: quadroH,
-                background: "var(--abertura-vinheta)",
-              }}
-            >
-              {arcada.video ? (
-                <video
-                  ref={videoRef}
-                  muted
-                  playsInline
-                  preload="auto"
-                  poster={primeira?.src ?? undefined}
-                  aria-label={ultima?.alt}
-                  /* SEM `autoplay` e SEM `loop`: quem controla o tempo é a rolagem.
-                     ⚠️ E SEM atributo `src` — com `src` e `<source>` juntos alguns
-                     navegadores buscam o arquivo duas vezes. */
-                  controls={false}
-                  disablePictureInPicture
-                  disableRemotePlayback
-                  className="absolute inset-0 h-full w-full object-cover"
-                >
-                  {/* ⚠️ O MP4 VEM PRIMEIRO, e a ordem é o conserto do iOS: o Safari
-                      escolhe a PRIMEIRA `<source>` que declara poder tocar, e há
-                      versões de iOS que aceitam VP9 no papel e escrubam mal na
-                      prática. Chrome, Firefox e Edge testam as duas e preferem o WebM,
-                      que é menor. */}
-                  <source src={arcada.video} type={TIPO_MP4} />
-                  {arcada.videoWebm ? (
-                    <source src={arcada.videoWebm} type={TIPO_WEBM} />
-                  ) : null}
-                </video>
-              ) : primeira?.src ? (
-                <img
-                  src={primeira.src}
-                  alt={primeira.alt}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-              ) : (
-                <div
-                  role="img"
-                  aria-label={primeira?.alt ?? data.marcaAlt}
-                  className="slot-grid-ink flex h-full w-full items-end p-4 md:p-6"
-                >
-                  <span className="rounded-md border border-ink-border bg-ink/80 px-2 py-1 text-small text-ink-muted backdrop-blur">
-                    {arcada.slotRotulo}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* `<p>` e não `<h1>`/`<h2>`: a headline da página é a do hero, logo abaixo, e
-              dois h1 quebram o esqueleto de títulos. É uma assinatura de posicionamento,
-              e o texto é real — não `aria-hidden` como no template, que esconde as duas
-              palavras do leitor de tela. */}
-          <div className="abertura-entra-linha">
-            <p className="abertura-linha text-ink-foreground">{data.linha}</p>
+          <div
+            /* SEM CARTÃO: sem raio, sem fio, sem sombra e sem fundo — pedido do usuário
+               em 19/08, "sem estar em um placeholder, como se ela fizesse parte do
+               site, sem sombras". Este `div` só existe para dar tamanho ao vídeo. */
+            style={{ width: quadroW, height: quadroH }}
+            className="relative"
+          >
+            {arcada.video ? (
+              <video
+                ref={videoRef}
+                muted
+                playsInline
+                preload="auto"
+                poster={primeira?.src ?? undefined}
+                aria-label={primeira?.alt}
+                /* SEM `autoplay` e SEM `loop`: quem controla o tempo é a rolagem.
+                   ⚠️ E SEM atributo `src` — com `src` e `<source>` juntos alguns
+                   navegadores buscam o arquivo duas vezes. */
+                controls={false}
+                disablePictureInPicture
+                disableRemotePlayback
+                /* ⚠️ `mix-blend-mode: screen` É O QUE FAZ O RETÂNGULO DESAPARECER, e
+                   substitui tanto o cartão quanto a máscara `.video-fundido`.
+                   O fundo deste clipe é praticamente PRETO — medido no arquivo, os
+                   quatro cantos ficam em rgb(0–3, 2–4, 7–11), luminância 6 a 8. Com
+                   `screen`, `1−(1−a)(1−b)`, um fundo nesse nível soma ~1% ao que está
+                   atrás: o petróleo da página atravessa intacto e a moldura do vídeo
+                   deixa de existir. A arcada, que é clara, passa por cima.
+                   Isso vale mais que a máscara de borda, que era a outra saída: a
+                   máscara apagava 26% de cada lado, e NESTE clipe a arcada chega a
+                   97,2% da largura do quadro — seria recortar dente.
+                   ⚠️ CONDIÇÃO: nenhum ancestral entre este vídeo e o fundo pode
+                   ISOLAR o grupo. `opacity` menor que 1, `filter`, `will-change` de
+                   opacidade e `isolation: isolate` todos isolam, e o efeito morre em
+                   silêncio — foi por isso que a animação de entrada saiu daqui e a cor
+                   de fundo entrou no palco. */
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ mixBlendMode: "screen" }}
+              >
+                {/* ⚠️ O MP4 VEM PRIMEIRO, e a ordem é o conserto do iOS: o Safari
+                    escolhe a PRIMEIRA `<source>` que declara poder tocar, e há versões
+                    de iOS que aceitam VP9 no papel e escrubam mal na prática. Chrome,
+                    Firefox e Edge testam as duas e preferem o WebM, que é menor. */}
+                <source src={arcada.video} type={TIPO_MP4} />
+                {arcada.videoWebm ? (
+                  <source src={arcada.videoWebm} type={TIPO_WEBM} />
+                ) : null}
+              </video>
+            ) : primeira?.src ? (
+              <img
+                src={primeira.src}
+                alt={primeira.alt}
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ mixBlendMode: "screen" }}
+              />
+            ) : (
+              <div
+                role="img"
+                aria-label={primeira?.alt ?? data.marcaAlt}
+                className="slot-grid-ink flex h-full w-full items-end rounded-xl p-4 md:p-6"
+              >
+                <span className="rounded-md border border-ink-border bg-ink/80 px-2 py-1 text-small text-ink-muted backdrop-blur">
+                  {arcada.slotRotulo}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

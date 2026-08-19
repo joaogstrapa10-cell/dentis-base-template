@@ -155,14 +155,24 @@ servir uma quarta.
 **Última sessão: 19/08.** O último commit da `main` é o da abertura em `hero-scrub`. Nada
 pendente no working tree, nada esperando OK.
 
-⚠️ **A HOME ABRE PELA ABERTURA (`#abertura`)**, que é o template do Ferrari Amalfi
-aplicado em 19/08 e depois **despido do movimento dele no mesmo dia**: a marca completa
-em cima, a arcada se formando no meio, "ODONTOLOGIA ESPECIALIZADA" embaixo — as três
-peças PARADAS, e a rolagem só comanda o tempo do vídeo. O zoom e o afastamento lateral
-das pontas saíram a pedido do usuário ("é para ela manter do mesmo tamanho que inicia,
-sem o efeito de aproximação"), e tudo diminuiu de tamanho na mesma rodada. Custa
-**2,6 telas** de rolagem, e esse número é `TRILHO_MULT` em `AberturaArcada.tsx` — um
-lugar só. O hero estilo apple.com veio logo abaixo, de 18/08.
+⚠️ **A HOME ABRE PELA ABERTURA (`#abertura`)**, que nasceu do template do Ferrari
+Amalfi em 19/08 e foi **despida em três rodadas do mesmo dia**. Hoje é: a marca completa
+da Suzuki em cima, e embaixo dela a arcada 3D **de três quartos, girando**, SEM moldura,
+sem sombra e sem uma palavra de texto. As duas peças estão PARADAS; a rolagem só comanda
+o `currentTime` do vídeo. Custa **2,6 telas**, e esse número é `TRILHO_MULT` em
+`AberturaArcada.tsx` — um lugar só.
+
+O que saiu, em ordem, tudo a pedido dele: o zoom e o afastamento das pontas ("é para ela
+manter do mesmo tamanho que inicia, sem o efeito de aproximação"), o lockup recortado da
+marca ("a logo da Suzuki não tá completa"), a assinatura "ODONTOLOGIA ESPECIALIZADA"
+("tire o odontologia especializada"), e o cartão em volta do vídeo ("como se ela fizesse
+parte do site, sem sombras").
+
+⚠️ **E O CLIPE TROCOU**: era a SEQUÊNCIA DE FORMAÇÃO (dentes entrando um por vez, de
+cima e depois de baixo — pedido explícito em 17/08) e virou a arcada COMPLETA girando,
+porque ele pediu "meio de lado". Nenhum dos quatro masters que ele mandou tem as duas
+coisas juntas; ter vista de lado COM os dentes entrando exige geração nova. O clipe da
+formação está no git e em `assets-originais/2-dentes-um-a-um.mp4`. O hero estilo apple.com veio logo abaixo, de 18/08.
 O histórico das três aberturas anteriores (vídeo com viagem até o hero, tela só com a
 logo, e esta) está no §9; **não reconstruir nenhuma de memória, está tudo no git.**
 
@@ -231,7 +241,7 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 
 | Anatomia | Seções |
 |---|---|
-| Palco `sticky`: marca + quadro + assinatura PARADOS, e a rolagem só comanda o tempo do vídeo | Abertura |
+| Palco `sticky`: marca e arcada 3D PARADAS, sem moldura, e a rolagem só comanda o tempo do vídeo | Abertura |
 | Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
 | Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Áreas (4 col.), Diferenciais (4 col.), **Tratamentos (3 col.)** |
 | Esteira contínua | Estrutura, Depoimentos, **corpo clínico da Bio** |
@@ -810,7 +820,15 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
   ~3,5s após o load ANTES de rolar. Aconteceu quatro vezes em 17–18/08 e nas quatro a
   peça estava certa; uma delas parecia "o Reveal não dispara" e o Reveal estava correto
   (o elemento simplesmente não estava na tela).
-- **Para julgar perda de compressão em vídeo, VMAF — nunca SSIM.** O encode 720p da
+- **`mix-blend-mode` morre em silêncio se algum ancestral ISOLAR o grupo.** `position:
+  sticky`, `z-index` em elemento posicionado, `opacity` < 1, `filter` e `will-change` de
+  opacidade todos criam contexto de empilhamento, e aí o elemento mistura contra
+  transparência em vez do fundo. Paguei duas dessas na abertura de 19/08.
+- **Para julgar perda de compressão em vídeo, VMAF — nunca SSIM**, e **sempre contra um
+  encode LOSSLESS do mesmo pipeline**, nunca contra o master em outro contêiner: o
+  comparador desalinha timebases e o número despenca. Conferir sempre medindo o lossless
+  primeiro — ele tem de dar ~100, e se não der, o defeito é do teste. Num clipe de câmera
+  parada o erro passa quase invisível; num de rotação vira 17 pontos de VMAF. O encode 720p da
   abertura marcava SSIM 0,988 contra o master, que parece ótimo, e tinha apagado os
   capilares da gengiva. O VMAF separou os candidatos por 5,6 pontos onde o SSIM separou
   por 0,007. Há `libvmaf` no ffmpeg estático baixado do GitHub. ⚠️ E o `-v error` do
@@ -883,3 +901,16 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-08-19 — **O LOCKUP DA MARCA FOI UM ERRO MEU, e o arquivo foi apagado.** Eu tinha recortado os 12 traços da linha "odontologia" do SVG para a palavra não aparecer duas vezes empilhada com a assinatura de baixo; o usuário reprovou na hora — "a logo da Suzuki não tá completa". **A marca da clínica não se recorta para resolver repetição de palavra: quem cede é o layout.** A abertura passou a usar o mesmo `brand.logo` do header, agora por uma constante única (`BRAND_LOGO`) para os dois caminhos não divergirem, e a repetição da palavra ficou registrada como deliberada no tipo.
 - 2026-08-19 — Tudo da abertura diminuiu, a pedido ("diminua o tamanho de tudo dessa sessão, tá muito grande"): quadro de 691×389 para **547×308** em 1440 (−21%), marca de 480 para **304px** (−37%), assinatura de 78px para **36px** (−54%). O teto da assinatura ficou em 2,25rem, que é **exatamente o degrau `.display-2`** — no desktop, portanto, nenhum tamanho novo entra na página, e a parte fluida em vw existe só porque 25 caracteres em caixa alta não cabem num celular com tamanho fixo da escala.
 - 2026-08-19 — Medido depois, em 1920/1440/1024/390: proporção travada em 1,78 (recorte zero) e o quadro no MESMO tamanho nos seis pontos do curso, vídeo escrubando 0 → 8,03s e sempre pausado, marca e assinatura em opacidade 1 do começo ao fim, folgas iguais em cima e embaixo (233/233, 194/194, 183/183, 257/257), assinatura em uma linha em todas as larguras, UMA requisição de vídeo, zero overflow.
+
+- 2026-08-19 — **A ABERTURA PERDEU A ASSINATURA DE TEXTO** ("tire o odontologia especializada"), e com ela morreu a classe `.abertura-linha` — a ÚNICA exceção à escala tipográfica fechada de cinco degraus, criada horas antes para a linha ter massa embaixo do quadro. A abertura hoje não tem texto nenhum na tela: só o alt da marca. Campo `linha` saiu do TIPO, não virou opcional. **Se voltar a haver assinatura, tentar `.display-1`/`.display-2` antes de recriar a classe** — o que tornava a exceção necessária era o tamanho gigante que o gesto do template pedia, e esse gesto também já saiu.
+- 2026-08-19 — **O CLIPE DA ABERTURA TROCOU: da FORMAÇÃO para a ROTAÇÃO de três quartos**, a pedido ("faça a arcada em 3D meio de lado, bem diferente e alto nível de 3D"). É o master `4-giro-hero.mp4`, um dos quatro que o usuário mandou em 18/08 e o único que nunca tinha sido usado — em 17/08 ficou de fora porque o giro havia sido trocado pela descida em CSS. ⚠️ **O custo é de CONTEÚDO**: a formação (dentes entrando um por vez) era pedido explícito de 17/08 e não existe em vista de três quartos em nenhum dos quatro masters. Ter as duas coisas juntas exige geração nova.
+- 2026-08-19 — **A ARCADA NÃO É CENTRADA NO MASTER**, e isso decidiu o recorte: varredura de luminância em cinco instantes dá x de 24,6% a 97,2% da largura — ela encosta na borda direita e sobra 25% de vazio à esquerda. `crop=1500:1080:420:0` deixa 53px de margem de cada lado; a altura fica INTEIRA porque a arcada chega a 92,9% dela. ⚠️ Por isso o arquivo é **1,389:1 e não 16:9**, e a proporção foi para o CONTEÚDO (`arcada.videoLargura/videoAltura`) — cravada no componente, ela recortaria em silêncio na próxima troca de clipe, que é exatamente o defeito de 13/08 no hero.
+- 2026-08-19 — **O PLACEHOLDER SAIU E O QUE O SUBSTITUI É `mix-blend-mode: screen`** ("sem estar em um placeholder, como se ela fizesse parte do site, sem sombras"). O fundo do clipe é praticamente preto, e sob `screen` um fundo nesse nível soma ~1% ao que está atrás: o petróleo da página atravessa e a moldura deixa de existir. Escolhido em vez da máscara de borda (`.video-fundido`) porque a máscara apaga 26% de cada lado, e NESTE clipe a arcada chega a 97,2% da largura — seria recortar dente.
+- 2026-08-19 — ⚠️ **`screen` exigiu ZERAR o ponto de preto no encode.** O fundo do master não era preto puro (cantos em rgb 0–3/2–4/7–11, centro-topo em rgb 13,22,24), e sob `screen` isso somava luz e desenhava um retângulo **MAIS CLARO** que a página — o defeito inverteu de sinal em vez de sumir. `colorlevels=rimin=0.105:gimin=0.105:bimin=0.105` põe oito pontos de fundo em 0 ou 1, em três instantes do clipe.
+- 2026-08-19 — ⚠️ **DUAS CONDIÇÕES DE DOM que matam o `mix-blend-mode` em silêncio, e paguei as duas.** (a) `position: sticky` cria contexto de empilhamento, então o vídeo mistura contra o que está pintado DENTRO do palco — foi preciso pôr `bg-ink` no palco, não só na seção. (b) `z-index` num elemento posicionado também cria contexto: com `z-10` no contêiner do quadro, o interior media luminância 8 contra 26 da página, ou seja o retângulo preto voltava. Qualquer `opacity` < 1, `filter` ou `will-change` de opacidade no caminho faz o mesmo — foi por isso que a animação de entrada saiu do quadro.
+- 2026-08-19 — **VMAF contra o master deu 79 e o número era FALSO.** O mesmo comparador dá PSNR 35,8 dB para um encode LOSSLESS, que deveria ser infinito, e o quadro 0 do lossless é byte-idêntico ao do master — então não é o encode, é o comparador desalinhando dois contêineres de timebase diferente. Medindo contra o lossless, a escada real aparece: CRF 28 → 95,5 / CRF 24 → 96,3 / CRF 20 → 96,8 / CRF 16 → 97,2. Ficou CRF 24, 1,60 MB. ⚠️ **Num clipe de câmera parada um desalinhamento de um quadro quase não pesa; num de ROTAÇÃO pesa muito** — foi isso que fez o número parecer catastrófico. Regra nova: **VMAF sempre contra um lossless do mesmo pipeline**, nunca contra o master em outro contêiner.
+- 2026-08-19 — **NÃO foi para 4K**, apesar de "em 4K" estar no pedido: o master é 1080p e o quadro exibe 605px no desktop (1210px em retina), então o arquivo de 1500px já entrega mais do que a tela mostra. Chegar a 4K só por upscale de IA, que num render 3D de gradiente liso inventa micro-textura na gengiva e serrilha a borda do dente — em peça apresentada como ilustração técnica isso é inventar detalhe anatômico. Mesma recusa de 18/08.
+- 2026-08-19 — A marca subiu ("suba um pouco a logo da Suzuki"): o vão marca→quadro foi de 16 para **64px**, num único número (`VAO_MARCA`). ⚠️ Tentei primeiro centrar o QUADRO no palco e pôr a marca acima dele, porque assim "subir a logo" mexe só na logo — e o render reprovou: com nada abaixo da arcada, sobravam **330px de vazio embaixo contra 55px acima**. Voltou a coluna centrada como GRUPO, e aí os dois vazios ficam iguais (171/171 em 1920, 133/133 em 1440, 138/138 em 1024, 240/240 em 390).
+- 2026-08-19 — A largura do quadro **subiu** de 0,34 para 0,42 da tela, e isso NÃO desfaz o "diminua o tamanho de tudo" dele: com cartão, o que a pessoa via era a moldura inteira; sem cartão, vê-se só a arcada, que ocupa 72% da largura do quadro. A 0,34 ela media 353px em 1440 — MENOR do que era com o cartão. A 0,42 fecha em ~436px, a mesma presença de antes sem a caixa.
+- 2026-08-19 — ⚠️ **Sétimo falso positivo de medição desta memória:** meu teste de "moldura invisível" acusou 4 níveis de diferença em 390px. Cruzando a fronteira pixel a pixel, o degrau é de **2 níveis em 255** e cai 3px DENTRO do quadro (resíduo do VP9) — os 4 níveis eram a vinheta radial mudando nos 20px entre os meus dois pontos de amostra, que numa tela estreita é um gradiente rápido. **Ao comparar dois lados de uma borda, amostrar pixels ADJACENTES, não pontos afastados.**
+- 2026-08-19 — Peso: a pasta `public/imagens/arcada/` caiu de **8,3 MB para 3,7 MB** com a troca (o clipe de rotação tem 6,04s contra 8,04s e é mais fácil de comprimir).

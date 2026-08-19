@@ -106,19 +106,15 @@ export type AberturaContent = {
   marcaAlt: string;
   /** Reserva em texto quando não há arquivo de marca. */
   wordmark: string;
-  /**
-   * A linha de baixo, em caixa alta. UMA linha: em duas, o bloco inferior ganha
-   * mais massa que a marca de cima e a composição desequilibra.
-   *
-   * Ela repete a palavra "odontologia", que também está no traço da marca logo acima,
-   * e isso é DELIBERADO desde 19/08 — ver a nota do campo `marca`.
-   *
-   * ⚠️ Ela NÃO usa a escala tipográfica fechada — ver `.abertura-linha` no
-   * styles.css, que documenta por que este é o único texto do site fora dos cinco
-   * degraus.
-   */
-  linha: string;
 };
+
+/* ⚠️ NÃO EXISTE MAIS o campo `linha` ("ODONTOLOGIA ESPECIALIZADA", que ficava embaixo
+   do quadro): removido a pedido do usuário em 19/08, "tire o odontologia
+   especializada". Saiu do tipo em vez de virar opcional, e a classe `.abertura-linha`
+   saiu do styles.css junto — com ela morreu a ÚNICA exceção à escala tipográfica
+   fechada de cinco degraus, então a abertura hoje não tem texto nenhum além do alt da
+   marca. Campo morto no tipo é o que sustentou a tabela de preços de Tratamentos por
+   três semanas neste projeto. */
 
 export type HeroContent = {
   eyebrow: string;
@@ -493,6 +489,18 @@ export type ArcadaContent = {
    * animação comandada por rolagem andaria aos pulos.
    */
   videoWebm: string | null;
+  /**
+   * Proporção NATIVA do arquivo de vídeo, em px. Vive no conteúdo e não no
+   * componente, e é a lição de 13/08: a proporção do hero estava cravada no
+   * componente, servia enquanto o arquivo era um, e passou a recortar no dia em que
+   * ele virou outro — que foi literalmente o que aconteceu.
+   *
+   * ⚠️ Trocar o clipe SEM atualizar estes dois números faz o `object-cover` recortar
+   * a arcada, e o defeito é silencioso. O clipe atual é 1500×1080 (1,389:1), que é o
+   * master de 1920×1080 recortado para centrar o assunto — ver o LEIA-ME da pasta.
+   */
+  videoLargura: number;
+  videoAltura: number;
   /** Rótulo do slot enquanto faltam os arquivos. Nome, não número. */
   slotRotulo: string;
   /** As etapas na ordem da rolagem. O primeiro quadro abre a página. */

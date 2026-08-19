@@ -92,9 +92,6 @@ export const clinica: Clinica = {
     marca: BRAND_LOGO,
     marcaAlt: "Suzuki Odontologia",
     wordmark: "SUZUKI",
-    /* Texto ditado pelo usuário. Caixa alta no conteúdo e não no CSS: é como ele
-       escreveu, e `text-transform` esconderia do leitor de tela a forma real. */
-    linha: "ODONTOLOGIA ESPECIALIZADA",
   },
   hero: {
     eyebrow: "Curitiba · Alto da XV",
@@ -676,29 +673,29 @@ export const clinica: Clinica = {
        longe do keyframe obriga o navegador a decodificar tudo desde o começo. Animação
        comandada por rolagem com um keyframe só anda aos pulos. Ao trocar o clipe,
        reencodar com `-g` igual ao fps. */
-    video: "/imagens/arcada/arcada.mp4",
-    videoWebm: "/imagens/arcada/arcada.webm",
+    video: "/imagens/arcada/arcada-giro.mp4",
+    videoWebm: "/imagens/arcada/arcada-giro.webm",
+    /* 1500×1080, que é o master de 1920×1080 recortado na horizontal para centrar a
+       arcada — ela vive fora do centro no arquivo original, chegando a 97,2% da
+       largura. Ver o LEIA-ME da pasta. */
+    videoLargura: 1500,
+    videoAltura: 1080,
     slotRotulo: "[QUADRO DA ARCADA — 3D]",
-    /* DOIS quadros, e eles não são ilustração à parte: são o primeiro e o último
-       quadro EXTRAÍDOS do próprio clipe. O primeiro é o `poster` do vídeo e o último é
-       o estado exibido sob `prefers-reduced-motion` — só esses dois chegam à tela como
-       imagem, o resto do tempo quem aparece é o vídeo.
+    /* UM quadro, e não é ilustração à parte: é o PRIMEIRO quadro extraído do próprio
+       clipe, já com o mesmo recorte. Serve de `poster` do vídeo e de estado exibido sob
+       `prefers-reduced-motion`. Vindo do próprio arquivo, a troca de poster para vídeo
+       não salta um pixel.
 
-       Vindo do próprio arquivo, a troca de poster para vídeo não salta um pixel. Antes
-       eram gerações separadas, e é de lá que vinha o pulo no primeiro quadro.
-
-       ⚠️ A ordem dos dois É o conteúdo: trocá-los inverte a ordem de um procedimento
-       clínico na tela. */
+       ⚠️ ERAM DOIS até 19/08 (gengivas com implantes → dentes instalados), porque o
+       clipe de então era a SEQUÊNCIA DE FORMAÇÃO e os dois quadros eram as pontas
+       dela. Com o clipe de rotação a arcada já está completa do primeiro ao último
+       quadro, então há um estado só. Se a formação voltar, voltam os dois — e a ORDEM
+       deles é conteúdo, porque inverter é inverter um procedimento clínico na tela. */
     etapas: [
       {
-        rotulo: "Gengivas com os implantes",
-        src: "/imagens/arcada/arcada-inicio.webp",
-        alt: "Modelo 3D das duas arcadas sem dentes, a de cima espelhada acima da de baixo, ambas com os implantes de titânio assentados na crista da gengiva.",
-      },
-      {
-        rotulo: "Dentes instalados",
-        src: "/imagens/arcada/arcada-fim.webp",
-        alt: "Modelo 3D das duas arcadas com as coroas de cerâmica instaladas sobre todos os implantes, sem nenhuma peça metálica aparente.",
+        rotulo: "Arcada reabilitada, vista de três quartos",
+        src: "/imagens/arcada/arcada-giro-inicio.webp",
+        alt: "Modelo 3D das duas arcadas completas, vistas de três quartos, com as coroas de cerâmica instaladas sobre todos os implantes e nenhuma peça metálica aparente.",
       },
     ],
     aviso:
