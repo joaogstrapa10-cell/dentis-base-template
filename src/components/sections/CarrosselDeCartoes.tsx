@@ -82,8 +82,19 @@ export type CartaoCarrossel = {
  *   degraus em 03/08. Rótulo e descrição são `text-base`, o nome é `.display-3`.
  */
 
-/** Altura de um slot da lista. É o passo do deslocamento vertical. */
+/**
+ * Altura de um slot da lista, e o passo do deslocamento vertical.
+ *
+ * ⚠️ SÃO DOIS VALORES, e o segundo não é capricho: o rótulo mais longo do projeto
+ * ("Planejamento antes de execução", em Diferenciais) mede 323px com ícone e recuo,
+ * e a coluna escura tem 320px numa janela de 360 e 280 numa de 320 — ou seja ele
+ * ESTOURA o painel em telas que existem. Numa linha só não há tamanho de fonte que
+ * resolva sem sair da escala. Abaixo de 420px o rótulo passa a quebrar em duas
+ * linhas, e o slot cresce para caber — sem isso a segunda linha vazaria por cima do
+ * item de baixo, porque a posição de cada um é calculada a partir deste número.
+ */
 const ITEM_H = 56;
+const ITEM_H_ESTREITO = 76;
 
 /**
  * Quantos slots a janela mostra. SETE, e o número não é estético: com oito itens
@@ -140,10 +151,12 @@ export function CarrosselDeCartoes({
   const [ativo, setAtivo] = useState(0);
   const [pausado, setPausado] = useState(false);
   const [semMovimento, setSemMovimento] = useState(false);
+  const [estreito, setEstreito] = useState(false);
   const idBase = useId();
   const botoes = useRef<Array<HTMLButtonElement | null>>([]);
   const n = itens.length;
   const laco = usaLaco(n, JANELA);
+  const itemH = estreito ? ITEM_H_ESTREITO : ITEM_H;
 
   /* `prefers-reduced-motion` lido em efeito, não na renderização: no servidor não
      existe `matchMedia`, e o estado inicial `false` é o que o SSR emite. Quem pede
@@ -152,6 +165,18 @@ export function CarrosselDeCartoes({
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const aplica = () => setSemMovimento(mq.matches);
+    aplica();
+    mq.addEventListener("change", aplica);
+    return () => mq.removeEventListener("change", aplica);
+  }, []);
+
+  /* Mesma leitura por `matchMedia` do movimento reduzido, e pelo mesmo motivo: o
+     valor entra em conta de posição, então precisa ser um número em JS e não um
+     breakpoint de CSS. No servidor não existe `matchMedia`; o estado inicial `false`
+     é o que o SSR emite, e o efeito corrige na hidratação. */
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 420px)");
+    const aplica = () => setEstreito(mq.matches);
     aplica();
     mq.addEventListener("change", aplica);
     return () => mq.removeEventListener("change", aplica);
@@ -208,7 +233,7 @@ export function CarrosselDeCartoes({
           aria-label={rotuloLista}
           onKeyDown={aoTeclado}
           className="relative"
-          style={{ height: ITEM_H * (laco ? JANELA : n) }}
+          style={{ height: itemH * (laco ? JANELA : n) }}
         >
           {itens.map((item, i) => {
             /* Com laço, a posição é a distância circular até o ativo e a lista gira.
@@ -221,9 +246,9 @@ export function CarrosselDeCartoes({
                 key={item.chave}
                 className="absolute left-0 flex items-center"
                 style={{
-                  height: ITEM_H,
-                  top: `calc(50% - ${ITEM_H / 2}px)`,
-                  transform: `translateY(${d * ITEM_H}px)`,
+                  height: itemH,
+                  top: `calc(50% - ${itemH / 2}px)`,
+                  transform: `translateY(${d * itemH}px)`,
                   opacity: foraDaJanela ? 0 : ativa ? 1 : 0.72,
                   transition: semMovimento
                     ? "none"
@@ -280,7 +305,12 @@ export function CarrosselDeCartoes({
                       abertura, e o único teste que pega é medir a LARGURA do elemento
                       contra a do contêiner. `text-small` é um dos degraus da escala,
                       não um tamanho novo. */}
-                  <span className="whitespace-nowrap text-small md:text-base">
+                  <span
+                    className={cn(
+                      "text-small md:text-base",
+                      estreito ? "leading-[1.25]" : "whitespace-nowrap",
+                    )}
+                  >
                     {item.titulo}
                   </span>
                 </button>
