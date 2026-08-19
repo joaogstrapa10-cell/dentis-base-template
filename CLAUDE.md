@@ -157,9 +157,11 @@ pendente no working tree, nada esperando OK.
 
 ⚠️ **A HOME ABRE PELA ABERTURA (`#abertura`)**, que nasceu do template do Ferrari
 Amalfi em 19/08 e foi **despida em três rodadas do mesmo dia**. Hoje é: a marca completa
-da Suzuki em cima, e embaixo dela a arcada 3D **de três quartos, girando**, SEM moldura,
+da Suzuki em cima, e embaixo dela a arcada 3D **se formando** — gengivas com os
+implantes de titânio, e as coroas entrando uma a uma, primeiro a de cima e depois a de
+baixo. SEM moldura,
 sem sombra e sem uma palavra de texto. As duas peças estão PARADAS; a rolagem só comanda
-o `currentTime` do vídeo. Custa **2,6 telas**, e esse número é `TRILHO_MULT` em
+o `currentTime` do vídeo. Custa **2,4 telas**, e esse número é `TRILHO_MULT` em
 `AberturaArcada.tsx` — um lugar só.
 
 O que saiu, em ordem, tudo a pedido dele: o zoom e o afastamento das pontas ("é para ela
@@ -168,7 +170,23 @@ marca ("a logo da Suzuki não tá completa"), a assinatura "ODONTOLOGIA ESPECIAL
 ("tire o odontologia especializada"), e o cartão em volta do vídeo ("como se ela fizesse
 parte do site, sem sombras").
 
-⚠️ **E O CLIPE TROCOU**: era a SEQUÊNCIA DE FORMAÇÃO (dentes entrando um por vez, de
+⚠️ **O CLIPE VOLTOU A SER A FORMAÇÃO** em 19/08, a pedido dele ("aparecer a gengiva →
+depois os implantes de ferro → e por fim os dentes brancos"). O giro de três quartos,
+que ficou no ar por algumas horas do mesmo dia, saiu — está no git, em `e56679a`.
+
+⚠️ **O QUE ELE PEDIU E NÃO EXISTE: as duas coisas JUNTAS** — a arcada girando de lado
+ENQUANTO os ferros e os dentes entram. Não é recorte nem encode, é geração nova em 3D, e
+em 19/08 os dois caminhos fecharam no mesmo dia: **Claude não tem ferramenta de geração
+nesta sessão** e **ele está sem crédito no Higgsfield**. O prompt pronto para gerar foi
+entregue a ele no chat. Enquanto isso o site serve a formação, que entrega dois dos três
+tempos do pedido — falta a gengiva VAZIA antes dos implantes, porque no quadro 0 os pinos
+já estão instalados.
+
+⚠️ **`assets-originais/` NÃO SOBREVIVE a contêiner novo** — é gitignored, e os quatro
+masters de 18/08 já se perderam uma vez. Recuperável é só o que foi COMITADO: os encodes
+da formação em `38f8b02` e os 6 quadros de etapa em `70e56cb`.
+
+O histórico: era a SEQUÊNCIA DE FORMAÇÃO (dentes entrando um por vez, de
 cima e depois de baixo — pedido explícito em 17/08) e virou a arcada COMPLETA girando,
 porque ele pediu "meio de lado". Nenhum dos quatro masters que ele mandou tem as duas
 coisas juntas; ter vista de lado COM os dentes entrando exige geração nova. O clipe da
@@ -939,6 +957,15 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-08-19 — ⚠️ **O RECORTE DO CLIPE ESTAVA ERRADO E A CULPA FOI DA MINHA MEDIÇÃO.** Eu centrei em x=1170 e a arcada aparecia deslocada para a direita no render. O limiar que usei (máximo de luminância por coluna, fundo+16) pegava o BRILHO DE FUNDO como se fosse gengiva e dava o assunto começando em x=473, quando ele começa em ~731. Com limiar alto e por CONTAGEM (≥6 pixels acima de 60 por coluna), a união é x 731..1868 e y 189..1002 → centro (1300, 596), e o recorte virou `1180:900:710:146`. **Ao medir onde um objeto está num quadro, contar pixels acima de um limiar alto — o máximo por coluna acha o brilho, não o objeto.**
 - 2026-08-19 — **A arcada SE DESLOCA enquanto gira** — 115px na horizontal e 144px na vertical ao longo do clipe — e a compensação é por **CSS, não por encode**. Fazer o recorte acompanhar o objeto com expressão de tempo no `crop` do ffmpeg funciona (desvio de 34px contra 215px), mas o conteúdo passa a se deslocar a cada quadro, a predição interframe piora e o arquivo vai de 1,9 para 3,2 MB: como o gargalo da seção é decodificar rápido, pagar 70% de peso para centrar seria trocar o problema pelo problema. A tabela `DERIVA` no componente desloca o ELEMENTO pelo oposto do caminho, e isso o compositor faz de graça. ⚠️ Regerar o clipe obriga a remedir a tabela; errada, ela deriva para o lado oposto e nada avisa.
 - 2026-08-19 — `transform` no elemento que carrega `mix-blend-mode` é seguro, e vale saber para não hesitar: o que mata o blend é ANCESTRAL isolando o grupo, não o próprio elemento — ele já cria contexto de empilhamento por causa do blend. Conferido no render.
+- 2026-08-19 — **A ABERTURA VOLTOU PARA A SEQUÊNCIA DE FORMAÇÃO**, a pedido ("volte com a ideia do scroll, aparecer a gengiva → depois os implantes de ferro → e por fim os dentes brancos e centralizar"). O clipe do giro saiu depois de meio dia no ar. Nada foi reconstruído de memória: o encode da formação foi RECUPERADO do git (`38f8b02`), como o §8 manda.
+- 2026-08-19 — ⚠️ **O pedido COMPLETO dele não é entregável com o material que existe**, e os dois caminhos fecharam no mesmo dia: ele refinou para "em movimento de um lado para o outro, mostrando os dois lados da boca, MAS adicione essa ação de ir adicionando os ferros e os dentes" — giro E formação juntos, o que exige geração nova; e então (a) esta sessão não tem MCP de geração e (b) ele respondeu "eu to sem crefito no higgsfield". Foi ao ar a formação sozinha: entrega implantes → dentes entrando um a um, e NÃO entrega o giro nem a gengiva vazia antes dos implantes.
+- 2026-08-19 — **A `DERIVA` FOI DELETADA, e a ausência é MEDIDA.** O giro caminhava 115px na horizontal e 144px na vertical, e sem a tabela terminava visivelmente deslocado. A formação não caminha: 32 amostras ao longo dos 8,04s dão o centro do assunto em x=960 num quadro de 1920 — o meio exato — e deriva de **1px na horizontal, 0 na vertical**. Mantida, a tabela do giro deslocaria este clipe para o lado errado. É isso que resolve o "centralizar" do pedido, e resolve no ARQUIVO (recorte `1400:1056:260:24`, centrado em 960,552), sem nada em runtime.
+- 2026-08-19 — ⚠️ **`colorlevels` e `lutrgb` TRIPLICAM o arquivo, e o culpado é a conversão para RGB.** O ponto de preto tem de ir a zero para o `mix-blend-mode: screen` não desenhar um retângulo mais claro que a página — o fundo deste master chega a 34 de 255 na faixa do topo. Medido no mesmo CRF: `colorlevels` 15.836 KB, `lutrgb` (corte seco, sem esticar) 15.303 KB, e **sem filtro nenhum 4.525 KB**. Ou seja não é o esticamento de faixa, é o dither da ida e volta para RGB. No domínio YUV (`lutyuv=y='if(lt(val,52),16,val)'`): **4.431 KB, VMAF 95,1**, fundo em 1 nos cantos e 2 na faixa do topo, pico do assunto intacto em 255.
+- 2026-08-19 — Minha primeira hipótese estava errada e a segunda medição desmentiu: culpei o esticamento de faixa e troquei por corte seco, que custou igual. Só testar SEM filtro nenhum mostrou que o custo é a conversão de espaço de cor, não a operação. **Isolar a variável antes de trocar a solução.**
+- 2026-08-19 — Resolução SUBIU: 1400×1056 contra 1180×900 do giro, +18,6% linear, sem redução depois do recorte. É o máximo REAL — o master é 1080p e não há 4K em nenhuma fonte, apesar de "em 4k" estar no pedido. Terceira vez que essa recusa aparece (18/08, 19/08, e agora): 4K só sairia de upscale por IA, que num render 3D de gradiente liso inventa micro-textura na gengiva. O quadro exibe 720px no desktop, 1440 num retina — 1400 é praticamente 1:1.
+- 2026-08-19 — `TRILHO_MULT` de 1,6 para **1,4**, atendendo "sem parecer lento a ação". O clipe é 33% mais longo que o do giro, então só a troca já acelerava; com o trilho menor o ritmo foi de 238 para **157px de rolagem por segundo de vídeo** (34% mais rápido) e a seção de 2,6 para **2,4 telas**.
+- 2026-08-19 — Voltaram os DOIS quadros-poster (gengivas com implantes → coroas instaladas), como o próprio `clinica.ts` previa: "se a formação voltar, voltam os dois — e a ORDEM deles é conteúdo, porque inverter é inverter um procedimento clínico na tela". Extraídos do próprio clipe já recortado, então a troca de poster para vídeo não salta um pixel.
+- 2026-08-19 — Medido em 1440×900 e 390×844: escrubagem de 0 a 8,04s acompanhando a rolagem em seis pontos, vídeo `paused` em todo o curso, caixa travada em **1,326 (recorte ZERO)** — 720×543 no desktop, 351×265 no celular —, zero overflow, e a moldura invisível (o fundo do clipe dissolve no petróleo da página). Única requisição falhada é o Google Fonts, bloqueado aqui.
 - 2026-08-19 — **ESPECIALIDADES virou CARROSSEL de duas metades**, de um template que o usuário mandou: painel petróleo com a lista das oito à esquerda, pilha de fotos à direita, e a descrição sobre a foto do item ativo. É a QUARTA forma desta seção (índice com hover → índice tipográfico → grade de células → carrossel), e a primeira que tem FOTO. ✅ Tirou a `GradeDeCelulas` de uma seção: servia três, agora serve duas.
 - 2026-08-19 — Do template ficaram fora TRÊS dependências e cinco gestos, todos por motivo já pago aqui: `motion/react` (o projeto não tem dep. de animação, e é o mesmo argumento que barrou o GSAP — essas libs escrevem `transform` e o Tailwind v4 escreve `translate`/`scale`/`rotate` separadas, e misturar falha em silêncio); `@hugeicons/react` + `@hugeicons/core-free-icons` (os oito ícones dentais já existem desenhados no projeto — instalar duas deps para ter pizza, nuvem e celular numa clínica não se sustenta); o azul `#62B2FE`; o "Live Session" em monoespaçada; a pill "1 • Nome"; e o `grayscale` nos inativos. A interpolação é `transition` de CSS sobre `transform` inline.
 - 2026-08-19 — ⚠️ **Defeito que só um teste de LARGURA pega, e é a segunda vez na memória:** a 320px o rótulo "Implantodontia e Cirurgia" (205px a 16px, numa coluna de 240px) era CORTADO. Não quebra em duas linhas, e o painel tem `overflow-hidden`, então também não gera rolagem — os dois testes padrão PASSAM. Resolvido com `text-small` até `sm` (degrau da escala, não tamanho novo): folga de 6px a 320 e 46px a 360.

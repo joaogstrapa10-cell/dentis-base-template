@@ -92,7 +92,7 @@ import type { AberturaContent, ArcadaContent } from "@/content/types";
  * marca. Se incomodar, é ESTE número, e mais nada — abaixo de ~1,2 os dentes começam a
  * aparecer mais rápido do que se lê.
  */
-const TRILHO_MULT = 1.6;
+const TRILHO_MULT = 1.4;
 
 /**
  * Onde a escrubagem começa e acaba, em fração do curso. As sobras nas duas pontas
@@ -113,49 +113,27 @@ const SCRUB_ATE = 0.95;
 const FPS = 24;
 
 /**
- * ⚠️ A ARCADA SE DESLOCA ENQUANTO GIRA, e esta tabela é o que a mantém no centro.
+ * ⚠️ NÃO HÁ TABELA DE DERIVA AQUI, e a ausência é medida — não é esquecimento.
  *
- * Medido no master, segundo a segundo, com limiar alto de luminância (contagem de
- * pixels acima de 60 por coluna — o limiar baixo que usei antes pegava o brilho de
- * fundo como se fosse gengiva e errou o centro por 130px): o centro do objeto caminha
- * de x=1270 para x=1385 e de y=548 para y=692, num quadro de 1920×1080. São 115px na
- * horizontal e 144px na vertical, ou seja a arcada termina visivelmente para a direita
- * e para baixo — foi o defeito visto no render.
+ * O clipe do GIRO (17–19/08) precisava de uma: a arcada caminhava 115px na horizontal
+ * e 144px na vertical ao longo dele, e sem compensar terminava visivelmente para a
+ * direita e para baixo. A tabela vivia aqui e está no git, em `e56679a`.
  *
- * Cada par é o deslocamento do centro do objeto em relação ao centro do QUADRO
- * RECORTADO (1180×900 a partir de 710,146), como FRAÇÃO da largura e da altura dele.
- * Sete amostras, uma por segundo, interpoladas linearmente pela fração da escrubagem.
+ * O clipe da FORMAÇÃO não precisa. Medido do mesmo jeito — limiar alto de luminância,
+ * contagem de pixels acima de 60 por coluna, 32 amostras ao longo dos 8,04s: o centro
+ * do objeto fica em x=960 num quadro de 1920 (o meio exato) e a deriva do começo ao
+ * fim é de **1px na horizontal e 0 na vertical**. A câmera não mexe e as duas gengivas
+ * estão em cena desde o primeiro quadro, então o que muda é só o que aparece DENTRO
+ * da silhueta.
  *
- * ⚠️ POR QUE AQUI E NÃO NO ENCODE: dá para fazer o recorte ACOMPANHAR o objeto com uma
- * expressão de tempo no `crop` do ffmpeg, e funciona — testado, desvio máximo de 34px
- * contra 215px. Mas aí o conteúdo se desloca a cada quadro, a predição interframe
- * piora e o arquivo vai de 1,9 MB para 3,2 MB. Como o gargalo desta seção é justamente
- * decodificar rápido o bastante para a rolagem, pagar 70% de peso para centrar seria
- * trocar o problema pelo problema. Deslocar o ELEMENTO é de graça: é o compositor.
+ * O recorte `1400:1056:260:24` é centrado no centro medido do assunto (960, 552), o
+ * que resolve o "centralizar" do pedido no ARQUIVO, sem nada em runtime.
  *
- * ⚠️ Se o clipe for regerado, esta tabela tem de ser remedida — com ela errada a arcada
- * passa a derivar para o lado oposto, e nada no build avisa.
+ * ⚠️ Ao trocar o clipe, REMEDIR antes de assumir que continua parado. Se o novo
+ * derivar, a tabela volta — está em `e56679a` e o mecanismo era interpolar por fração
+ * da escrubagem e deslocar o elemento pelo oposto (nunca o recorte no encode: fazer o
+ * `crop` seguir o objeto piora a predição interframe e o arquivo cresce ~70%).
  */
-const DERIVA: ReadonlyArray<readonly [number, number]> = [
-  [-0.0254, -0.0533],
-  [0.0008, -0.05],
-  [0.0263, -0.0244],
-  [0.0466, 0.0244],
-  [0.0678, 0.0744],
-  [0.072, 0.1056],
-  [0.072, 0.1067],
-];
-
-/** Interpola a tabela de deriva na fração `f` (0 a 1) da escrubagem. */
-function derivaEm(f: number): readonly [number, number] {
-  const n = DERIVA.length - 1;
-  const x = trava01(f) * n;
-  const i = Math.min(n - 1, Math.floor(x));
-  const r = x - i;
-  const a = DERIVA[i];
-  const b = DERIVA[i + 1];
-  return [a[0] + (b[0] - a[0]) * r, a[1] + (b[1] - a[1]) * r];
-}
 
 /**
  * Largura do quadro, como fração da largura do palco.
@@ -250,11 +228,6 @@ export function AberturaArcada({
   const suaveRef = useRef(0);
   /* Último instante pedido ao vídeo, já quantizado. Serve para não repetir o pedido. */
   const pedidoRef = useRef(-1);
-  /* Tamanho do quadro em px, espelhado em ref: o laço precisa dele para converter a
-     deriva (que é fração) em pixels, e ler do estado o obrigaria a recriar o efeito a
-     cada resize. */
-  const quadroWRef = useRef(0);
-  const quadroHRef = useRef(0);
 
   const [semAnimacao, setSemAnimacao] = useState(false);
   /* Medidas do PALCO, em px, e medidas de verdade: `getBoundingClientRect` do próprio
@@ -303,8 +276,6 @@ export function AberturaArcada({
     Math.round(Math.min(fracao * palco.w, ALTURA_MAX * palco.h * aspecto)),
   );
   const quadroH = Math.max(1, Math.round(quadroW / aspecto));
-  quadroWRef.current = quadroW;
-  quadroHRef.current = quadroH;
 
   /* DESTRAVAMENTO DO iOS. O Safari do iPhone recusa `currentTime` antes de o vídeo ter
      sido tocado por gesto: sem isto a escrubagem não anda no iPhone, e o sintoma
@@ -394,17 +365,6 @@ export function AberturaArcada({
           v.currentTime = quadroAlvo;
         }
       }
-
-      /* ── COMPENSAÇÃO DA DERIVA. Desloca o ELEMENTO pelo oposto do caminho que o
-            objeto faz dentro do quadro, então a arcada gira parada no centro. Usa o
-            tempo SUAVIZADO e não a fração crua, para o deslocamento acompanhar o quadro
-            que está de fato na tela. Ver a nota de `DERIVA`.
-            ⚠️ `transform` no elemento que tem `mix-blend-mode` é seguro: o que mata o
-            blend é ANCESTRAL isolando o grupo, não o próprio elemento — ele já cria
-            contexto de empilhamento por causa do blend. Conferido no render. */
-      const fSuave = v.duration > 0 ? suaveRef.current / v.duration : fracao;
-      const [dfx, dfy] = derivaEm(fSuave);
-      v.style.transform = `translate3d(${(-dfx * quadroWRef.current).toFixed(1)}px, ${(-dfy * quadroHRef.current).toFixed(1)}px, 0)`;
     };
     raf = requestAnimationFrame(quadro);
     return () => cancelAnimationFrame(raf);

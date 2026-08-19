@@ -649,8 +649,12 @@ export const clinica: Clinica = {
            cabeça e sem fenda, e nenhum aparece depois que a coroa assenta;
          · a câmera não mexe: o enquadramento é o mesmo do primeiro ao último quadro.
 
-       PESO: 1354KB no WebM e 2395KB no mp4. O WebM é o que Chrome, Firefox e Edge
+       PESO: 4432KB no WebM e 4573KB no mp4. O WebM é o que Chrome, Firefox e Edge
        baixam; o mp4 existe para o Safari, que não decodifica VP9 em toda versão.
+       É mais pesado que o clipe do giro (1,9MB) porque tem 8,04s contra 6,04s, 1400px
+       de largura contra 1180, e conteúdo mais caro: cada dente que entra é uma mudança
+       local grande, ao contrário de uma rotação rígida, que a predição interframe
+       acerta quase de graça.
 
        ⚠️ FICOU EM 1080p, A RESOLUÇÃO NATIVA DO MASTER, e a versão 720p que existiu aqui
        foi um ERRO MEU. Ela pesava 597KB a 594 kbps e o usuário reclamou com razão:
@@ -676,40 +680,57 @@ export const clinica: Clinica = {
        dente — numa peça apresentada como ilustração técnica, isso é inventar detalhe
        anatômico. O gargalo era o encode, não a fonte.
 
-       ⚠️ `-g 24`, KEYFRAME POR SEGUNDO, nos dois arquivos — 9 cada. Não é ajuste fino:
-       o arquivo que o usuário mandou tinha UM keyframe em 8s, e procurar um instante
-       longe do keyframe obriga o navegador a decodificar tudo desde o começo. Animação
-       comandada por rolagem com um keyframe só anda aos pulos. Ao trocar o clipe,
-       reencodar com `-g` igual ao fps. */
-    video: "/imagens/arcada/arcada-giro.mp4",
-    videoWebm: "/imagens/arcada/arcada-giro.webm",
-    /* 1280×1010: o master de 1920×1080 recortado na horizontal para CENTRAR a arcada e
-       depois reduzido. Ela vive bem fora do centro no arquivo — medida segundo a
-       segundo, fica entre x 599 e 1870 de 1920, ou seja centrada em ~1235. Por isso o
-       recorte é `1370:1080:550:0`, o mais justo que cabe com o centro certo: pedir 1500
-       de largura force o centro para 1170 e a arcada aparece deslocada para a direita,
-       que foi o defeito visto no render.
-       A redução para 1280 é de 19/08, junto com o `-g 4`, para a escrubagem ficar
-       fluida — o quadro exibe ~691px no desktop, então 1280 é quase exato num retina.
-       Ver o LEIA-ME da pasta. */
-    videoLargura: 1180,
-    videoAltura: 900,
-    slotRotulo: "[QUADRO DA ARCADA — 3D]",
-    /* UM quadro, e não é ilustração à parte: é o PRIMEIRO quadro extraído do próprio
-       clipe, já com o mesmo recorte. Serve de `poster` do vídeo e de estado exibido sob
-       `prefers-reduced-motion`. Vindo do próprio arquivo, a troca de poster para vídeo
-       não salta um pixel.
+       ⚠️ `-g 4` NOS DOIS ARQUIVOS, keyframe a cada 4 quadros. Não é ajuste fino: com
+       GOP longo, procurar um instante no meio dele obriga o navegador a decodificar até
+       23 quadros antes de mostrar um — e a rolagem pede um instante novo a cada quadro
+       de tela. Foi isso que o usuário viu como "travado, não tá fluido" em 19/08. Ao
+       trocar o clipe, reencodar com `-g 4`.
 
-       ⚠️ ERAM DOIS até 19/08 (gengivas com implantes → dentes instalados), porque o
-       clipe de então era a SEQUÊNCIA DE FORMAÇÃO e os dois quadros eram as pontas
-       dela. Com o clipe de rotação a arcada já está completa do primeiro ao último
-       quadro, então há um estado só. Se a formação voltar, voltam os dois — e a ORDEM
-       deles é conteúdo, porque inverter é inverter um procedimento clínico na tela. */
+       ⚠️ E O PONTO DE PRETO PRECISA IR A ZERO, senão sob `mix-blend-mode: screen` o
+       fundo do clipe SOMA luz e desenha um retângulo mais claro que a página. O fundo
+       deste master chega a 34 de 255 na faixa do topo (a vinheta é mais clara ali).
+       ⚠️ MAS NÃO COM `colorlevels` NEM `lutrgb`: os dois forçam a conversão para RGB, e
+       o dither dela TRIPLICA o arquivo — medido, 15,3MB contra 4,4MB no mesmo CRF, com
+       VMAF praticamente igual. O corte tem de ser no domínio YUV:
+       `lutyuv=y='if(lt(val,52),16,val)'`. Depois disso o fundo mede 1 nos cantos e 2 na
+       faixa do topo, e o pico do assunto continua em 255.
+
+       Qualidade: VMAF 95,1 contra um encode LOSSLESS do MESMO pipeline (nunca contra o
+       master em outro contêiner — o comparador desalinha timebases e o número despenca
+       sem motivo). CRF 34 no VP9, CRF 23 no H.264. */
+    video: "/imagens/arcada/arcada-formacao.mp4",
+    videoWebm: "/imagens/arcada/arcada-formacao.webm",
+    /* 1400×1056: o master de 1920×1080 recortado em `1400:1056:260:24`, sem redução.
+       O recorte é CENTRADO no centro medido do assunto — 32 amostras ao longo dos
+       8,04s dão a união do objeto em x 300..1620 e y 102..1002, ou seja centro
+       (960, 552) num quadro de 1920×1080. O 960 é o meio exato do quadro: esta arcada
+       já nasce centrada, ao contrário da do giro, que vivia deslocada para a direita.
+       É o que resolve o "centralizar" do pedido no ARQUIVO, sem nada em runtime, e é
+       por isso que a tabela `DERIVA` saiu do componente (ver a nota lá).
+
+       ⚠️ A PROPORÇÃO VIVE AQUI, NO CONTEÚDO, e não cravada no componente: cravada, ela
+       recortaria em silêncio na próxima troca de clipe — que é exatamente o defeito de
+       13/08 no hero. 1400/1056 = 1,326. */
+    videoLargura: 1400,
+    videoAltura: 1056,
+    slotRotulo: "[QUADRO DA ARCADA — 3D]",
+    /* DOIS quadros, e a ORDEM deles é conteúdo: são as pontas da formação, e inverter
+       é inverter um procedimento clínico na tela. Extraídos do próprio clipe, já com o
+       mesmo recorte, então a troca de poster para vídeo não salta um pixel.
+
+       O primeiro é o `poster` do vídeo; o último é o estado exibido sob
+       `prefers-reduced-motion` — desligar movimento não pode custar o assunto, e o
+       assunto é onde a sequência chega. */
     etapas: [
       {
-        rotulo: "Arcada reabilitada, vista de três quartos",
-        src: "/imagens/arcada/arcada-giro-inicio.webp",
-        alt: "Modelo 3D das duas arcadas completas, vistas de três quartos, com as coroas de cerâmica instaladas sobre todos os implantes e nenhuma peça metálica aparente.",
+        rotulo: "Gengivas com os implantes instalados",
+        src: "/imagens/arcada/arcada-formacao-inicio.webp",
+        alt: "Modelo 3D das duas arcadas em gengiva, com os pinos de titânio dos implantes instalados e nenhuma coroa.",
+      },
+      {
+        rotulo: "Arcada reabilitada, coroas instaladas",
+        src: "/imagens/arcada/arcada-formacao-fim.webp",
+        alt: "Modelo 3D das duas arcadas completas, com as coroas de cerâmica instaladas sobre todos os implantes e nenhuma peça metálica aparente.",
       },
     ],
     aviso:
