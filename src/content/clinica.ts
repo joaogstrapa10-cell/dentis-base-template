@@ -68,7 +68,12 @@ export const clinica: Clinica = {
       // formando e a linha de posicionamento. Não é `#top` (o hero, segunda seção) nem
       // `#arcada`, que deixou de existir em 18/08. Âncora para seção inexistente rola
       // para o topo sem avisar, e o visitante não tem como saber que o destino sumiu.
-      { label: "Home", href: "#abertura" },
+      // ⚠️ Aponta para `#portal`, a tela de ENTRADA, que passou a ser a primeira
+      // seção em 19/08. Era `#abertura` (a arcada) e antes disso `#arcada`, que
+      // deixou de existir — âncora que pula o começo da página lê como link errado,
+      // do mesmo jeito que âncora para seção inexistente. Ao mexer na ordem das
+      // seções, conferir este href e o da marca no Header.
+      { label: "Home", href: "#portal" },
       { label: "Áreas", href: "#areas" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "Tratamentos", href: "#tratamentos" },
@@ -90,6 +95,24 @@ export const clinica: Clinica = {
        quem cede é o layout. O arquivo do lockup foi apagado para não sobrar asset órfão
        convidando a voltar atrás. */
     marca: BRAND_LOGO,
+    /* Os três pontos da tela de entrada. A copy é a de `diferenciais.itens`,
+       encurtada para uma linha — não é texto novo, são as mesmas afirmações que a
+       seção "Experiência aplicada caso a caso" faz mais abaixo. Escrever coisa nova
+       aqui criaria promessa que nenhuma outra parte do site sustenta. */
+    pontos: [
+      {
+        titulo: "Corpo clínico de especialistas",
+        texto: "Cada área conduzida por quem se especializou nela.",
+      },
+      {
+        titulo: "Casos de alta complexidade",
+        texto: "Reabilitações extensas e planejamento multidisciplinar são a rotina.",
+      },
+      {
+        titulo: "Planejamento antes de execução",
+        texto: "Diagnóstico fechado e plano apresentado antes de começar.",
+      },
+    ],
     marcaAlt: "Suzuki Odontologia",
     wordmark: "SUZUKI",
   },

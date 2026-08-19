@@ -9,6 +9,7 @@ import { AreasSection } from "@/components/sections/Areas";
 import { CasosSection } from "@/components/sections/Casos";
 import { DepoimentosSection } from "@/components/sections/Depoimentos";
 import { TratamentosSection } from "@/components/sections/Tratamentos";
+import { AberturaPortal } from "@/components/sections/AberturaPortal";
 import { AberturaArcada } from "@/components/sections/AberturaArcada";
 import { BioSection } from "@/components/sections/Bio";
 import { FaqSection } from "@/components/sections/Faq";
@@ -91,6 +92,11 @@ function Landing() {
             e a linha, em `clinica.abertura`.
 
             "Home" no menu aponta para `#abertura`, que é o topo da página. */}
+        {/* TELA DE ENTRADA, antes da arcada, por escolha do usuário em 19/08 entre
+            três opções. Verde padrão, marca em cima e três pontos embaixo; ao rolar,
+            tudo se afasta e cresce, e a arcada aparece atrás. */}
+        <AberturaPortal data={clinica.abertura} />
+
         <AberturaArcada data={clinica.abertura} arcada={clinica.arcada} />
         <HeroSection data={clinica.hero} />
         <CasosSection data={clinica.casos} />

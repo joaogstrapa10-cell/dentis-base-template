@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import type { HeaderContent, NavLink } from "@/content/types";
 import { PillButton } from "@/components/Primitives";
 import { ABERTURA_NAV_VH } from "@/components/sections/AberturaArcada";
+import { PORTAL_VH } from "@/components/sections/AberturaPortal";
 import { cn } from "@/lib/utils";
 
 /**
@@ -126,8 +127,14 @@ export function Header({
            arcada fica completa), não `ABERTURA_VH × 0,7` como era até 19/08. Aquele
            0,7 era um chute que só por acaso caía perto do fim da animação; mudar o
            ritmo da abertura o desalinhava sem avisar. */
+        /* ⚠️ SOMA as duas aberturas. A arcada deixou de ser a primeira seção em
+           19/08 — a tela de entrada entrou antes dela —, então o ponto em que a arcada
+           completa está `PORTAL_VH` mais abaixo do que o próprio componente dela sabe.
+           Sem a soma, o menu aparece no meio da tela de entrada, que é justamente o que
+           o pedido de 17/08 mandou evitar. Os dois valores são DERIVADOS e exportados
+           por cada seção; nenhum número solto aqui. */
         const curso = esperarArcada
-          ? (ABERTURA_NAV_VH / 100) * window.innerHeight
+          ? ((PORTAL_VH + ABERTURA_NAV_VH) / 100) * window.innerHeight
           : 0;
         const passou = window.scrollY - curso;
         /* Só nas rotas SEM arcada. Na home a marca do canto não existe (ver o
