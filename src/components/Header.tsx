@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import type { HeaderContent, NavLink } from "@/content/types";
 import { PillButton } from "@/components/Primitives";
-import { ABERTURA_NAV_VH } from "@/components/sections/AberturaArcada";
 import { PORTAL_VH } from "@/components/sections/AberturaPortal";
 import { cn } from "@/lib/utils";
 
@@ -121,21 +120,13 @@ export function Header({
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        /* Sem arcada na frente, a marca se apaga nos primeiros 180px, como sempre.
-           COM arcada, o zero se desloca para o fim dela — e o limiar agora é um número
-           DERIVADO e exportado pela própria seção (`ABERTURA_NAV_VH`, o ponto em que a
-           arcada fica completa), não `ABERTURA_VH × 0,7` como era até 19/08. Aquele
-           0,7 era um chute que só por acaso caía perto do fim da animação; mudar o
-           ritmo da abertura o desalinhava sem avisar. */
-        /* ⚠️ SOMA as duas aberturas. A arcada deixou de ser a primeira seção em
-           19/08 — a tela de entrada entrou antes dela —, então o ponto em que a arcada
-           completa está `PORTAL_VH` mais abaixo do que o próprio componente dela sabe.
-           Sem a soma, o menu aparece no meio da tela de entrada, que é justamente o que
-           o pedido de 17/08 mandou evitar. Os dois valores são DERIVADOS e exportados
-           por cada seção; nenhum número solto aqui. */
-        const curso = esperarArcada
-          ? ((PORTAL_VH + ABERTURA_NAV_VH) / 100) * window.innerHeight
-          : 0;
+        /* Sem abertura na frente, a marca se apaga nos primeiros 180px, como
+           sempre. COM a tela de entrada, o zero se desloca para o fim dela — e o
+           limiar é um número DERIVADO e exportado pela própria seção (`PORTAL_VH`),
+           nunca um valor solto aqui: mudar o ritmo da abertura desalinharia o menu
+           sem avisar. Já foi `ABERTURA_VH × 0,7` (um chute) e depois a soma do portal
+           com a arcada; a arcada saiu em 19/08 e sobrou só o portal. */
+        const curso = esperarArcada ? (PORTAL_VH / 100) * window.innerHeight : 0;
         const passou = window.scrollY - curso;
         /* Só nas rotas SEM arcada. Na home a marca do canto não existe (ver o
            `esperarArcada ? null` no render), então este valor não é usado lá. */
@@ -197,13 +188,13 @@ export function Header({
           junto, senão sobra um link invisível capturando clique no topo. */}
       {/* ⚠️ A MARCA DO CANTO NÃO EXISTE NA HOME, e não é esquecimento. Pedido do
           usuário em 17/08: "não quero que a logo volte após o scroll do vídeo".
-          Na home a marca aparece UMA vez — grande, no centro, na abertura da arcada
+          Na home a marca aparece UMA vez — grande, no centro, na tela de entrada
           — e depois disso a página segue só com a pílula de navegação. Ela reaparecer
           no canto logo depois de sair do centro era exatamente o que ele viu como
           "a logo voltando".
 
           Nada se perde em navegação: a pílula tem o item "Home" apontando para
-          `#abertura`, então o caminho de volta ao topo continua existindo. Nas rotas
+          `#portal`, então o caminho de volta ao topo continua existindo. Nas rotas
           internas (`/casos`, `/estrutura`) a marca CONTINUA, porque lá não há
           abertura nenhuma e ela é a única marca da página — e lá ela aponta para `/`,
           não para uma âncora: `#arcada` ficou morto quando a abertura em vídeo foi

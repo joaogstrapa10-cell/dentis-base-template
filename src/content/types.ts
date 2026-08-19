@@ -480,100 +480,7 @@ export type TratamentosContent = {
    */
 };
 
-/**
- * Uma etapa da reabilitação, com o quadro que a mostra.
- *
- * A animação é uma SEQUÊNCIA DE QUADROS trocada pela rolagem, não um vídeo. Foi
- * decisão de 17/08 e tem três motivos, nenhum de gosto:
- *
- * - a ordem passa a ser CÓDIGO. O usuário pediu "um dente após o outro,
- *   começando de um lado, sem aparecer aleatoriamente", e ordenar objeto um a um
- *   é exatamente o que modelo de vídeo não faz — ele acende vários juntos ou fora
- *   de ordem. Aqui a ordem é o índice do array;
- * - peso: cinco imagens em WebP custam uma fração de um mp4 de 10s em 1080p, num
- *   bloco que abre no meio da home;
- * - custo de crédito: os quadros são o início e o fim de qualquer clipe, então
- *   existem de todo jeito. Os clipes seriam gasto adicional para entregar menos
- *   controle.
- */
-export type ArcadaEtapa = {
-  /**
-   * Nome da etapa. NÃO aparece na tela quando há imagem: a seção é só a animação,
-   * sem legenda, por decisão do usuário em 17/08 ("não é para mostrar os
-   * elementos"). Serve para o rótulo do slot enquanto o arquivo não existe, e
-   * para documentar a ORDEM aqui no conteúdo — que é a ordem do procedimento e a
-   * única coisa que não pode ser trocada por engano.
-   */
-  rotulo: string;
-  /**
-   * O quadro desta etapa. `null` enquanto o arquivo não estiver no repo, e a
-   * etapa cai no slot nomeado — mesmo padrão da Estrutura. Caixa cinza lisa lê
-   * como site quebrado; slot com textura e rótulo lê como deliberado.
-   */
-  src: string | null;
-  /** O que a imagem É. Nunca afirmar que é caso de paciente. */
-  alt: string;
-};
 
-/**
- * A abertura da página: a arcada se formando pela rolagem.
- *
- * SEM `titulo` e SEM `descricao`, e os campos não ficaram como opcionais. O
- * usuário pediu a seção sem nenhum texto de explicação, e neste projeto campo
- * morto no tipo é o que faz o padrão removido voltar — foi assim que a tabela de
- * preços sobreviveu três semanas em `TratamentosContent`. A única palavra que
- * fica na tela é o `aviso`, e ele é exigência legal, não copy.
- */
-export type ArcadaContent = {
-  /**
-   * Vídeo da sequência, com o tempo controlado pela ROLAGEM (não é autoplay).
-   *
-   * É o que substituiu a pilha de cinco imagens em 17/08, depois de o usuário
-   * reprovar aquela versão com a razão certa: "não tá fluido, não tá animado,
-   * apenas frame a frame". Cinco estados são cinco estados — transição de opacidade
-   * não inventa os quadros do meio. Este arquivo é a concatenação de quatro clipes
-   * interpolados entre os quadros (1→2, 2→3, 3→4, 4→5), então o meio existe.
-   *
-   * `null` faz a seção cair no primeiro quadro parado, sem buraco no layout.
-   */
-  video: string | null;
-  /**
-   * Mesma sequência em WebM/VP9, oferecida ANTES do mp4 no `<video>`.
-   *
-   * Não é redundância: além de ser menor, é o formato que este ambiente de
-   * desenvolvimento consegue decodificar — o Chromium empacotado aqui não tem
-   * decodificador H.264 (`canPlayType('avc1')` volta vazio, o demuxer responde
-   * "no supported streams"), então sem o WebM nenhuma verificação de escrubagem
-   * é possível daqui. O mp4 fica como par universal.
-   *
-   * Foi gerado com keyframe a cada segundo (`-g 24`), e isso é REQUISITO: procurar
-   * um instante entre keyframes distantes faz o vídeo saltar para o anterior, e a
-   * animação comandada por rolagem andaria aos pulos.
-   */
-  videoWebm: string | null;
-  /**
-   * Proporção NATIVA do arquivo de vídeo, em px. Vive no conteúdo e não no
-   * componente, e é a lição de 13/08: a proporção do hero estava cravada no
-   * componente, servia enquanto o arquivo era um, e passou a recortar no dia em que
-   * ele virou outro — que foi literalmente o que aconteceu.
-   *
-   * ⚠️ Trocar o clipe SEM atualizar estes dois números faz o `object-cover` recortar
-   * a arcada, e o defeito é silencioso. O clipe atual é 1500×1080 (1,389:1), que é o
-   * master de 1920×1080 recortado para centrar o assunto — ver o LEIA-ME da pasta.
-   */
-  videoLargura: number;
-  videoAltura: number;
-  /** Rótulo do slot enquanto faltam os arquivos. Nome, não número. */
-  slotRotulo: string;
-  /** As etapas na ordem da rolagem. O primeiro quadro abre a página. */
-  etapas: ArcadaEtapa[];
-  /**
-   * ⚠️ Obrigatório na tela, não é rodapé de cortesia. A peça é um modelo
-   * anatômico em 3D e o aviso é o que impede que ela seja lida como registro de
-   * paciente — mesmo tratamento dado às cinco imagens de Casos em 13/08.
-   */
-  aviso: string;
-};
 
 export type BioMembro = {
   nome: string;
@@ -673,7 +580,6 @@ export type Clinica = {
   casos: CasosContent;
   depoimentos: DepoimentosContent;
   tratamentos: TratamentosContent;
-  arcada: ArcadaContent;
   bio: BioContent;
   faq: FaqContent;
   chamadaFinal: ChamadaFinalContent;

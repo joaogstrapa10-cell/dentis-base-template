@@ -162,44 +162,25 @@ tudo cresce e se apaga — a página passa por dentro do grupo. Custa **1,75 tel
 esse número é `TRILHO_MULT` em `AberturaPortal.tsx`. A copy dos três pontos é a de
 `diferenciais.itens`, encurtada: não é texto novo.
 
-Depois dela vem a ABERTURA (`#abertura`), que nasceu do template do Ferrari
-Amalfi em 19/08 e foi **despida em três rodadas do mesmo dia**. Hoje é: a marca completa
-da Suzuki em cima, e embaixo dela a arcada 3D **se formando** — gengivas com os
-implantes de titânio, e as coroas entrando uma a uma, primeiro a de cima e depois a de
-baixo. SEM moldura,
-sem sombra e sem uma palavra de texto. As duas peças estão PARADAS; a rolagem só comanda
-o `currentTime` do vídeo. Custa **2,4 telas**, e esse número é `TRILHO_MULT` em
-`AberturaArcada.tsx` — um lugar só.
+⚠️ **A ARCADA 3D SAIU DO SITE** em 19/08, no fim da sessão: "tire a ideia dos dentes,
+a ideia da sessão do scroll com a logo tá boa, e após scrollar começa o hero". Ela foi
+a abertura por dois dias e passou por QUATRO formas — pilha de cinco quadros, vídeo
+escrubado, giro de três quartos, e a montagem formação+giro. Está tudo no git, em
+`b4292fc`: `AberturaArcada.tsx`, o bloco `arcada` do `clinica.ts`, os tipos e os
+9,2 MB de `public/imagens/arcada/`. Voltar é restaurar esses caminhos e uma linha no
+`index.tsx`.
 
-O que saiu, em ordem, tudo a pedido dele: o zoom e o afastamento das pontas ("é para ela
-manter do mesmo tamanho que inicia, sem o efeito de aproximação"), o lockup recortado da
-marca ("a logo da Suzuki não tá completa"), a assinatura "ODONTOLOGIA ESPECIALIZADA"
-("tire o odontologia especializada"), e o cartão em volta do vídeo ("como se ela fizesse
-parte do site, sem sombras").
+✅ **Isso encerra um dos dois alertas de compliance**: o aviso de que a arcada era
+modelo 3D e não registro de paciente morava no rodapé, a doze seções da animação. Sem
+a animação, o aviso saiu junto e a ressalva deixou de existir.
 
-⚠️ **O CLIPE VOLTOU A SER A FORMAÇÃO** em 19/08, a pedido dele ("aparecer a gengiva →
-depois os implantes de ferro → e por fim os dentes brancos"). O giro de três quartos,
-que ficou no ar por algumas horas do mesmo dia, saiu — está no git, em `e56679a`.
-
-⚠️ **O QUE ELE PEDIU E NÃO EXISTE: as duas coisas JUNTAS** — a arcada girando de lado
-ENQUANTO os ferros e os dentes entram. Não é recorte nem encode, é geração nova em 3D, e
-em 19/08 os dois caminhos fecharam no mesmo dia: **Claude não tem ferramenta de geração
-nesta sessão** e **ele está sem crédito no Higgsfield**. O prompt pronto para gerar foi
-entregue a ele no chat. Enquanto isso o site serve a formação, que entrega dois dos três
-tempos do pedido — falta a gengiva VAZIA antes dos implantes, porque no quadro 0 os pinos
-já estão instalados.
+⚠️ **O que ele pediu e nunca existiu: a arcada girando ENQUANTO os ferros e os dentes
+entram.** Não é recorte nem encode, é geração nova em 3D, e em 19/08 os dois caminhos
+fecharam no mesmo dia — Claude sem ferramenta de geração nesta sessão, ele sem crédito
+no Higgsfield. O prompt pronto foi entregue a ele no chat.
 
 ⚠️ **`assets-originais/` NÃO SOBREVIVE a contêiner novo** — é gitignored, e os quatro
-masters de 18/08 já se perderam uma vez. Recuperável é só o que foi COMITADO: os encodes
-da formação em `38f8b02` e os 6 quadros de etapa em `70e56cb`.
-
-O histórico: era a SEQUÊNCIA DE FORMAÇÃO (dentes entrando um por vez, de
-cima e depois de baixo — pedido explícito em 17/08) e virou a arcada COMPLETA girando,
-porque ele pediu "meio de lado". Nenhum dos quatro masters que ele mandou tem as duas
-coisas juntas; ter vista de lado COM os dentes entrando exige geração nova. O clipe da
-formação está no git e em `assets-originais/2-dentes-um-a-um.mp4`. O hero estilo apple.com veio logo abaixo, de 18/08.
-O histórico das três aberturas anteriores (vídeo com viagem até o hero, tela só com a
-logo, e esta) está no §9; **não reconstruir nenhuma de memória, está tudo no git.**
+masters de 18/08 já se perderam uma vez. Recuperável é só o que foi COMITADO.
 
 O que aconteceu nessa sessão, em uma linha cada — o log do §9 tem o detalhe e o
 porquê de cada decisão:
@@ -267,7 +248,6 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 | Anatomia | Seções |
 |---|---|
 | Palco `sticky`: marca em cima e três pontos com fio dourado, tudo se afastando e crescendo na rolagem | **Tela de entrada** |
-| Palco `sticky`: marca e arcada 3D PARADAS, sem moldura, e a rolagem só comanda o tempo do vídeo | Abertura |
 | Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
 | Painel escuro com a lista + pilha de fotos que troca (`CarrosselDeCartoes`) | **Áreas (8), Diferenciais (4), Tratamentos (3)** |
 | Esteira contínua | Estrutura, Depoimentos, **corpo clínico da Bio** |
@@ -487,8 +467,9 @@ src/components/IconesEspecialidade.tsx  8 ícones dentais desenhados aqui (o luc
                               não tem nenhum)
 
 src/components/sections/
-  AberturaArcada.tsx        a abertura: marca, arcada se formando, assinatura
-                            (exporta ABERTURA_VH e ABERTURA_NAV_VH, que o Header usa)
+  AberturaPortal.tsx        a ÚNICA abertura: marca em cima, três pontos embaixo, e
+                            tudo se afastando e crescendo na rolagem (exporta
+                            PORTAL_VH, que o Header usa para revelar o menu)
   Section.tsx                 wrapper de ritmo (--section-py) + SectionHeader + scroll-mt
   Hero.tsx                    colagem de 3 fotos + fileira de números
   Casos.tsx                   PilhaDeCasos (dossiê, /casos) + AvisoCasos + seção da home
@@ -516,7 +497,9 @@ scripts/congelar-html.mjs     gera o layout num .html avulso (ver §"Como valida
 ```
 
 ⚠️ **Seções e formas que EXISTIRAM e não voltam:** Selos, Acompanhamento ("Cada etapa,
-acompanhada."), Comparativo ("nós vs. o convencional"), a **GRADE DE CÉLULAS**
+acompanhada."), Comparativo ("nós vs. o convencional"), a **ARCADA 3D**
+(`AberturaArcada.tsx` + 9,2 MB de vídeo, apagada em 19/08 — está em `b4292fc`), a
+**GRADE DE CÉLULAS**
 (`GradeDeCelulas.tsx`, apagada em 19/08 por ficar sem uso — está em `bc92186`) e a **ÓRBITA do corpo clínico**
 (`CorpoClinicoOrbita.tsx`, 413 linhas, apagado). As quatro saíram com aprovação ou pedido
 explícito, cada uma por um motivo registrado no §9 — a órbita com as palavras "não quero
@@ -978,6 +961,11 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-08-19 — ⚠️ **OITAVO falso positivo de medição desta memória, e o mais caro em tempo:** o VMAF da montagem deu 82,7 a CRF 32 e SATUROU em 84 mesmo a CRF 21 com 8,7MB. Não era compressão — era o teste. O VP9 LOSSLESS contra a própria referência marcava 85,4, quando tem de dar ~100: as duas trilhas tinham timebase diferente (1/12288 contra 1/1000) e o comparador desalinhava os quadros. Com `settb=AVTB,setpts=PTS-STARTPTS,fps=24` nos dois lados, a sanidade sobe para 98,3 e o CRF 32 mostra o número real: **94,98**. **A regra do log salvou a rodada: medir o lossless PRIMEIRO, e se ele não der ~100, o defeito é do teste.**
 - 2026-08-19 — ⚠️ **A metade do giro tem uma geração de perda a mais**: ela é ampliada de 1180 para 1400 de largura, porque o master dela não existe mais (`assets-originais/`, gitignored, contêiner novo) e só há o encode comitado. Se o master reaparecer, refazer essa metade a partir dele.
 - 2026-08-19 — ⚠️ **CORTE SECO NO PRETO DEIXA MANCHA, e o usuário pegou antes de mim** ("tire essas manchas quando os dentes vão se encaixando, tá feio"). Com `if(lt(val,52),16,val)` os pontos do fundo que caíam LOGO ACIMA do limiar sobreviviam como blocos claros sobre preto puro — no vão entre as arcadas viravam manchas cinzas visíveis. A correção é uma curva, não um degrau: `16+(val-16)*pow(clip((val-16)/72,0,1),3)` leva o escuro a zero suavemente, sem sobra isolada. Fundo continua em 1–3 (o `screen` segue sem desenhar retângulo), VMAF 95,5, e o vão fica limpo — conferido em recorte ampliado, lado a lado com a versão anterior. **Ao crushar preto para blend, usar joelho suave; degrau produz mancha exatamente na faixa que se quer apagar.**
+- 2026-08-19 — 🗑️ **A ARCADA 3D FOI APAGADA DO SITE**, a pedido, no fim da sessão: "tire a ideia dos dentes, a ideia da sessão do scroll com a logo tá boa, e após scrollar começa o hero". Saiu inteira — componente, bloco de conteúdo, dois tipos e os 9,2 MB de vídeo — e a home passou a ser tela de entrada → hero. Está em `b4292fc`. Ela dominou dois dias de trabalho e quatro formas; se alguém reencontrar o material, o histórico das quatro está no log acima.
+- 2026-08-19 — ✅ **Isso encerra um dos dois alertas de compliance abertos.** O aviso de que a arcada era ilustração 3D e não registro de paciente morava no bloco legal do rodapé, a doze seções de distância da animação que abria a página — eu tinha marcado como pendente de confirmação com o jurídico. Sem a animação, o aviso saiu junto (`avisoArcada` deixou de ser passado) e a ressalva deixou de existir. Continua pendente o outro: o CRO dos oito profissionais.
+- 2026-08-19 — Ao remover a seção, o que saiu junto: o `import` e o uso no `index.tsx`, `ABERTURA_NAV_VH` do Header (o limiar do menu voltou a ser só `PORTAL_VH`), o bloco `arcada` do `clinica.ts` (140 linhas), os tipos `ArcadaContent` e `ArcadaEtapa`, o campo na raiz de `Clinica`, e o `avisoArcada` do rodapé. **Ao apagar seção, seguir a cadeia inteira** — o `tsc` pegou duas dessas, mas o aviso do rodapé só apareceu porque o campo de conteúdo sumiu junto.
+- 2026-08-19 — A prop `avisoArcada` FICOU no `Footer.tsx`, opcional e sem ninguém passando. É a exceção consciente à regra de campo morto: o bloco legal do rodapé é o lugar certo para um aviso futuro, e o componente não muda de forma por causa dela.
+- 2026-08-19 — Medido depois da remoção, em 1440×900 e 390×844: ordem `portal → top → casos → areas → responsavel`, nenhuma seção `#abertura`, portal em 1,75 tela, menu em opacidade 0 até o limiar (1575px no desktop) e revelando logo depois, zero overflow. A página caiu de ~14,3 para **11,9 telas** no desktop. Com o topo do hero na janela, o título passa 14px abaixo da pílula no desktop e 22px no celular — a sobreposição vista num print era posição intermediária de rolagem, não defeito.
 - 2026-08-19 — **TELA DE ENTRADA criada (`AberturaPortal.tsx`), ANTES da arcada**, a pedido: "uma tela no verde padrão, com o logo em cima e, embaixo, três pontos (...) ao rolar, esses elementos sejam afastados, você dá zoom neles (...) como se fosse uma tela de carregamento entre aspas". Ele escolheu, entre três opções, que ela viesse ANTES da arcada em vez de substituí-la ou absorvê-la.
 - 2026-08-19 — ⚠️ **O afastamento com zoom é a coreografia do Ferrari que ele mandou TIRAR da arcada na mesma manhã** ("é para ela manter do mesmo tamanho que inicia, sem o efeito de aproximação"). Voltou aqui por pedido explícito e numa peça diferente — lá disputava com um vídeo que precisa ser lido quadro a quadro, aqui ela É o conteúdo. Registrado no topo do componente: se pedirem para tirar de novo, é o portal, não a arcada.
 - 2026-08-19 — A marca aparece em DUAS telas seguidas, e é deliberado: no portal ela cresce e atravessa, na arcada está em repouso. O que o log registra como defeito é a mesma marca em DOIS TAMANHOS AO MESMO TEMPO, não em sequência.

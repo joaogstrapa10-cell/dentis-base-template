@@ -10,7 +10,6 @@ import { CasosSection } from "@/components/sections/Casos";
 import { DepoimentosSection } from "@/components/sections/Depoimentos";
 import { TratamentosSection } from "@/components/sections/Tratamentos";
 import { AberturaPortal } from "@/components/sections/AberturaPortal";
-import { AberturaArcada } from "@/components/sections/AberturaArcada";
 import { BioSection } from "@/components/sections/Bio";
 import { FaqSection } from "@/components/sections/Faq";
 import { ChamadaFinalSection } from "@/components/sections/ChamadaFinal";
@@ -75,29 +74,21 @@ function Landing() {
           esta mesma sequência — âncora que sobe a página em vez de descer lê como
           link errado. */}
       <main>
-        {/* ⚠️ ABERTURA COM A ARCADA SE FORMANDO, desde 19/08. É o template
-            `hero-scrub` do Ferrari Amalfi, mandado pelo usuário, com o mapeamento que
-            ele ditou: a logo da Suzuki no lugar de "FERRARI", "ODONTOLOGIA
-            ESPECIALIZADA" no lugar de "AMALFI", e a arcada se formando no lugar do 3D
-            do carro.
+        {/* TELA DE ENTRADA — a primeira coisa do site, e a única abertura que
+            sobrou. Verde padrão, marca em cima e três pontos embaixo; ao rolar, a
+            marca sobe, os pontos descem e se abrem para os lados, tudo cresce e se
+            apaga, e o HERO aparece atrás.
 
-            Isso REPÕE o vídeo escrubado que foi apagado em 18/08 ("desisti de fazer
-            isso") — mas não é o mesmo componente e não é revert: lá o vídeo VIAJAVA
-            até o slot do hero e trocava por crossfade; aqui ele cresce até tomar a
-            tela e volta à pose de abertura, e o hero segue independente logo abaixo.
-            A escrubagem, as strings de codec e o destravamento do iOS foram
-            recuperados do git, não reescritos de memória.
+            ⚠️ A ARCADA 3D SAIU em 19/08, a pedido do usuário ("tire a ideia dos
+            dentes, a ideia da sessão do scroll com a logo tá boa, e após scrollar
+            começa o hero"). Ela foi a abertura do site por dois dias e passou por
+            quatro formas — quadros, vídeo escrubado, giro de três quartos e a
+            montagem formação+giro. Está tudo no git, em `b4292fc`, junto com os
+            arquivos de vídeo: `AberturaArcada.tsx` e `public/imagens/arcada/`.
+            Voltar é restaurar os dois caminhos e uma linha aqui.
 
-            O vídeo continua sendo `clinica.arcada` — a abertura só acrescenta a marca
-            e a linha, em `clinica.abertura`.
-
-            "Home" no menu aponta para `#abertura`, que é o topo da página. */}
-        {/* TELA DE ENTRADA, antes da arcada, por escolha do usuário em 19/08 entre
-            três opções. Verde padrão, marca em cima e três pontos embaixo; ao rolar,
-            tudo se afasta e cresce, e a arcada aparece atrás. */}
+            "Home" no menu aponta para `#portal`, que é o topo da página. */}
         <AberturaPortal data={clinica.abertura} />
-
-        <AberturaArcada data={clinica.abertura} arcada={clinica.arcada} />
         <HeroSection data={clinica.hero} />
         <CasosSection data={clinica.casos} />
         <AreasSection data={clinica.areas} />
@@ -118,9 +109,6 @@ function Landing() {
         data={clinica.footer}
         brand={clinica.brand}
         contato={clinica.contato}
-        /* O aviso da arcada mora no bloco legal do rodapé desde 17/08, quando a
-           abertura passou a ser "sem nada de escrita". */
-        avisoArcada={clinica.arcada.aviso}
       />
     </div>
   );
