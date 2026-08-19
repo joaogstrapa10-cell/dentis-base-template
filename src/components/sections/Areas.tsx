@@ -1,6 +1,7 @@
 import type { AreasContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
-import { CarrosselEspecialidades } from "@/components/sections/CarrosselEspecialidades";
+import { CarrosselDeCartoes } from "@/components/sections/CarrosselDeCartoes";
+import { IconeEspecialidade } from "@/components/IconesEspecialidade";
 
 /**
  * Estrutura: CARROSSEL DE DUAS METADES — painel escuro com a lista das oito à
@@ -29,7 +30,17 @@ export function AreasSection({ data }: { data: AreasContent }) {
       <SectionHeader titulo={data.titulo} descricao={data.descricao} />
 
       <div className="mt-12 md:mt-14">
-        <CarrosselEspecialidades itens={data.itens} />
+        <CarrosselDeCartoes
+          rotuloLista="Especialidades"
+          itens={data.itens.map((area) => ({
+            chave: area.titulo,
+            titulo: area.titulo,
+            descricao: area.descricao,
+            icone: <IconeEspecialidade nome={area.icone} />,
+            imagem: area.imagem,
+            imagemAlt: area.imagemAlt,
+          }))}
+        />
       </div>
     </Section>
   );

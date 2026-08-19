@@ -1,8 +1,26 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import type { KeyboardEvent } from "react";
-import type { AreaAtuacao } from "@/content/types";
-import { IconeEspecialidade } from "@/components/IconesEspecialidade";
+import type { KeyboardEvent, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+
+/**
+ * Um cartão do carrossel. Mesma forma dos itens da `GradeDeCelulas`, de propósito:
+ * as duas recebem o ícone JÁ RENDERIZADO, então cada seção escolhe o seu conjunto —
+ * Áreas usa os oito dentais desenhados no projeto, Diferenciais e Tratamentos usam
+ * lucide. Trocar uma seção de uma para a outra é trocar o componente, não o dado.
+ */
+export type CartaoCarrossel = {
+  /** Chave de render. O título serve, desde que não se repita na mesma seção. */
+  chave: string;
+  titulo: string;
+  descricao: string;
+  icone: ReactNode;
+  /** `null` cai no slot nomeado — ver a nota no render. */
+  imagem: string | null;
+  imagemAlt: string;
+  /** Conteúdo opcional abaixo da descrição, no cartão. Existe para Tratamentos, onde
+   *  cada eixo lista o que envolve; as outras duas seções não passam nada. */
+  extra?: ReactNode;
+};
 
 /**
  * ESPECIALIDADES em carrossel de duas metades: painel escuro com a lista das oito
@@ -83,13 +101,36 @@ function distanciaCircular(i: number, ativo: number, n: number) {
   return d;
 }
 
-export function CarrosselEspecialidades({ itens }: { itens: AreaAtuacao[] }) {
+/**
+ * ⚠️ O LAÇO SÓ PODE EXISTIR SE HOUVER POSIÇÃO ESCONDIDA, e isso não é detalhe: no
+ * laço circular um item salta de uma ponta à outra quando a distância vira do
+ * sinal contrário, e esse salto precisa acontecer FORA da janela. Com oito itens e
+ * janela de sete sobra exatamente uma posição escondida, que é onde ele acontece.
+ *
+ * Com QUATRO itens (Diferenciais) ou TRÊS (Tratamentos) não sobra nenhuma: o salto
+ * cairia no meio da tela, à vista. Por isso, quando a lista não é maior que a
+ * janela, ela não gira — fica parada e centrada, e só o realce anda. É a mesma
+ * informação, sem um movimento que leria como defeito.
+ */
+function usaLaco(n: number, janela: number) {
+  return n > janela;
+}
+
+export function CarrosselDeCartoes({
+  itens,
+  rotuloLista,
+}: {
+  itens: CartaoCarrossel[];
+  /** Nome do grupo para leitor de tela. Cada seção tem o seu. */
+  rotuloLista: string;
+}) {
   const [ativo, setAtivo] = useState(0);
   const [pausado, setPausado] = useState(false);
   const [semMovimento, setSemMovimento] = useState(false);
   const idBase = useId();
   const botoes = useRef<Array<HTMLButtonElement | null>>([]);
   const n = itens.length;
+  const laco = usaLaco(n, JANELA);
 
   /* `prefers-reduced-motion` lido em efeito, não na renderização: no servidor não
      existe `matchMedia`, e o estado inicial `false` é o que o SSR emite. Quem pede
@@ -147,20 +188,20 @@ export function CarrosselEspecialidades({ itens }: { itens: AreaAtuacao[] }) {
         <div
           role="tablist"
           aria-orientation="vertical"
-          aria-label="Especialidades"
+          aria-label={rotuloLista}
           onKeyDown={aoTeclado}
           className="relative"
-          style={{ height: ITEM_H * JANELA }}
+          style={{ height: ITEM_H * (laco ? JANELA : n) }}
         >
           {itens.map((item, i) => {
-            const d = distanciaCircular(i, ativo, n);
-            const ativa = d === 0;
-            /* Fora da janela o item fica invisível — e é nessa posição que o laço
-               salta de uma ponta à outra. */
-            const foraDaJanela = Math.abs(d) > (JANELA - 1) / 2;
+            /* Com laço, a posição é a distância circular até o ativo e a lista gira.
+               Sem laço, a posição é FIXA (a pilha fica centrada) e só o realce anda. */
+            const d = laco ? distanciaCircular(i, ativo, n) : i - (n - 1) / 2;
+            const ativa = i === ativo;
+            const foraDaJanela = laco && Math.abs(d) > (JANELA - 1) / 2;
             return (
               <div
-                key={item.titulo}
+                key={item.chave}
                 className="absolute left-0 flex items-center"
                 style={{
                   height: ITEM_H,
@@ -202,7 +243,7 @@ export function CarrosselEspecialidades({ itens }: { itens: AreaAtuacao[] }) {
                       ativa ? "text-accent" : "text-ink-muted",
                     )}
                   >
-                    <IconeEspecialidade nome={item.icone} />
+                    {item.icone}
                   </span>
                   {/* ⚠️ O TAMANHO VIVE AQUI, no rótulo, e não no botão — e a razão é
                       uma armadilha nova: no botão a classe passa pelo `cn()`, e o
@@ -232,14 +273,18 @@ export function CarrosselEspecialidades({ itens }: { itens: AreaAtuacao[] }) {
 
           {/* Máscaras nas duas pontas, na cor do painel. É o que faz o item sair de
               cena em vez de ser cortado por uma aresta reta. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-ink via-ink/85 to-transparent"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-ink via-ink/85 to-transparent"
-          />
+          {laco ? (
+            <>
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-ink via-ink/85 to-transparent"
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-ink via-ink/85 to-transparent"
+              />
+            </>
+          ) : null}
         </div>
       </div>
 
@@ -267,7 +312,7 @@ export function CarrosselEspecialidades({ itens }: { itens: AreaAtuacao[] }) {
             const vizinha = Math.abs(d) === 1;
             return (
               <div
-                key={item.titulo}
+                key={item.chave}
                 aria-hidden={!ativa}
                 style={{
                   /* ⚠️ A ORDEM das funções decide o resultado: `translate3d` ANTES
@@ -329,6 +374,7 @@ export function CarrosselEspecialidades({ itens }: { itens: AreaAtuacao[] }) {
                   <p className="mt-2 text-base leading-[1.5] text-ink-foreground/85">
                     {item.descricao}
                   </p>
+                  {item.extra ? <div className="mt-3">{item.extra}</div> : null}
                 </div>
               </div>
             );
