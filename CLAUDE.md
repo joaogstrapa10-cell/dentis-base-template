@@ -243,7 +243,8 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 |---|---|
 | Palco `sticky`: marca e arcada 3D PARADAS, sem moldura, e a rolagem só comanda o tempo do vídeo | Abertura |
 | Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
-| Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Áreas (4 col.), Diferenciais (4 col.), **Tratamentos (3 col.)** |
+| Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Diferenciais (4 col.), **Tratamentos (3 col.)** |
+| Painel escuro com a lista das 8 + pilha de fotos que troca | **Áreas** |
 | Esteira contínua | Estrutura, Depoimentos, **corpo clínico da Bio** |
 | Pilha de cartões arrastável | Casos (na home) |
 | Pilha de dossiês alternando de lado | Casos (em `/casos`) |
@@ -257,10 +258,11 @@ Estrutura, Tratamentos, Depoimentos, FAQ, Localização, Chamada final, Footer. 
 acompanhada." foi removida em 12/08 e a chamada final saiu do rodapé e virou seção na mesma
 data.
 
-⚠️ **`GradeDeCelulas` já serve TRÊS seções**, e desde 13/08 a única coisa que
-distingue Tratamentos das outras duas é a contagem de colunas — a linha de fecho,
-que era a outra diferença, saiu a pedido do usuário. **Não usar essa grade numa
-quarta seção.** Seis das treze seções sendo o mesmo molde foi exatamente o que
+⚠️ **`GradeDeCelulas` serve DUAS seções** — servia TRÊS até 19/08, quando Áreas
+virou carrossel e saiu dela. A única coisa que distingue Tratamentos de
+Diferenciais é a contagem de colunas (a linha de fecho, que era a outra diferença,
+saiu em 13/08 a pedido do usuário). **Continuar tratando uma terceira seção nessa
+grade como decisão a justificar, não como default.** Seis das treze seções sendo o mesmo molde foi exatamente o que
 reprovou o layout como "cara de IA" em 25/07.
 
 **Quatro seções têm foto**: o hero (colagem de três — a equipe recortada, um sorriso
@@ -460,8 +462,10 @@ src/components/sections/
   Hero.tsx                    colagem de 3 fotos + fileira de números
   Casos.tsx                   PilhaDeCasos (dossiê, /casos) + AvisoCasos + seção da home
   GaleriaDeCasos.tsx          pilha arrastável de cartões (home)
-  Areas.tsx / Diferenciais.tsx / Tratamentos.tsx
-                              as três usam GradeDeCelulas — NÃO usar numa quarta
+  Areas.tsx                   as 8 especialidades, via CarrosselEspecialidades
+  CarrosselEspecialidades.tsx lista escura + pilha de fotos, sem dep. de animação
+  Diferenciais.tsx / Tratamentos.tsx
+                              as duas usam GradeDeCelulas
   GradeDeCelulas.tsx          grade de células com fio, ícone e realce no hover
   Bio.tsx                     faixa escura: responsável + corpo clínico
   CorpoClinicoEsteira.tsx     esteira de retratos em laço, uma forma para toda largura
@@ -856,6 +860,12 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
   celular o termo da altura domina e o `object-cover` mostra ~25% da largura — um talho
   vertical. Já custou três rodadas (12/08, 17/08, 19/08). O teto tem de sair de onde o
   ASSUNTO começa e acaba dentro do quadro, medido, não da caixa.
+- **`cn()` COME o `text-small` quando há classe de cor depois.** O tailwind-merge não
+  conhece esse token do projeto, classifica como cor de texto, e `text-ink` /
+  `text-ink-muted` na mesma mesclagem o descartam — o elemento renderiza a 16px sem
+  erro nenhum e a classe não chega ao DOM. Em string simples (como no `Footer.tsx`)
+  funciona. Custou uma rodada em 19/08 no carrossel: pôr o degrau no elemento que
+  NÃO tem classe de cor.
 - **`ch` em `max-width`** resolve contra a fonte do elemento onde está, não do filho.
   `max-w-[42ch]` num wrapper de 16px estrangula um `h2` de 52px. Aconteceu três vezes.
 - **`leading-[...]` com `text-[clamp(...)]`** não funciona no Tailwind v4: o utilitário de
@@ -929,4 +939,15 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-08-19 — ⚠️ **O RECORTE DO CLIPE ESTAVA ERRADO E A CULPA FOI DA MINHA MEDIÇÃO.** Eu centrei em x=1170 e a arcada aparecia deslocada para a direita no render. O limiar que usei (máximo de luminância por coluna, fundo+16) pegava o BRILHO DE FUNDO como se fosse gengiva e dava o assunto começando em x=473, quando ele começa em ~731. Com limiar alto e por CONTAGEM (≥6 pixels acima de 60 por coluna), a união é x 731..1868 e y 189..1002 → centro (1300, 596), e o recorte virou `1180:900:710:146`. **Ao medir onde um objeto está num quadro, contar pixels acima de um limiar alto — o máximo por coluna acha o brilho, não o objeto.**
 - 2026-08-19 — **A arcada SE DESLOCA enquanto gira** — 115px na horizontal e 144px na vertical ao longo do clipe — e a compensação é por **CSS, não por encode**. Fazer o recorte acompanhar o objeto com expressão de tempo no `crop` do ffmpeg funciona (desvio de 34px contra 215px), mas o conteúdo passa a se deslocar a cada quadro, a predição interframe piora e o arquivo vai de 1,9 para 3,2 MB: como o gargalo da seção é decodificar rápido, pagar 70% de peso para centrar seria trocar o problema pelo problema. A tabela `DERIVA` no componente desloca o ELEMENTO pelo oposto do caminho, e isso o compositor faz de graça. ⚠️ Regerar o clipe obriga a remedir a tabela; errada, ela deriva para o lado oposto e nada avisa.
 - 2026-08-19 — `transform` no elemento que carrega `mix-blend-mode` é seguro, e vale saber para não hesitar: o que mata o blend é ANCESTRAL isolando o grupo, não o próprio elemento — ele já cria contexto de empilhamento por causa do blend. Conferido no render.
+- 2026-08-19 — **ESPECIALIDADES virou CARROSSEL de duas metades**, de um template que o usuário mandou: painel petróleo com a lista das oito à esquerda, pilha de fotos à direita, e a descrição sobre a foto do item ativo. É a QUARTA forma desta seção (índice com hover → índice tipográfico → grade de células → carrossel), e a primeira que tem FOTO. ✅ Tirou a `GradeDeCelulas` de uma seção: servia três, agora serve duas.
+- 2026-08-19 — Do template ficaram fora TRÊS dependências e cinco gestos, todos por motivo já pago aqui: `motion/react` (o projeto não tem dep. de animação, e é o mesmo argumento que barrou o GSAP — essas libs escrevem `transform` e o Tailwind v4 escreve `translate`/`scale`/`rotate` separadas, e misturar falha em silêncio); `@hugeicons/react` + `@hugeicons/core-free-icons` (os oito ícones dentais já existem desenhados no projeto — instalar duas deps para ter pizza, nuvem e celular numa clínica não se sustenta); o azul `#62B2FE`; o "Live Session" em monoespaçada; a pill "1 • Nome"; e o `grayscale` nos inativos. A interpolação é `transition` de CSS sobre `transform` inline.
+- 2026-08-19 — ⚠️ **Defeito que só um teste de LARGURA pega, e é a segunda vez na memória:** a 320px o rótulo "Implantodontia e Cirurgia" (205px a 16px, numa coluna de 240px) era CORTADO. Não quebra em duas linhas, e o painel tem `overflow-hidden`, então também não gera rolagem — os dois testes padrão PASSAM. Resolvido com `text-small` até `sm` (degrau da escala, não tamanho novo): folga de 6px a 320 e 46px a 360.
+- 2026-08-19 — ⚠️ **E o `text-small` não chegava ao DOM.** O `cn()` (tailwind-merge) não conhece esse token, trata como cor de texto, e o `text-ink` que vem depois na mesma mesclagem o descarta — sem erro, e o elemento segue a 16px. Só apareceu ao medir `getComputedStyle().fontSize` em vez de confiar na classe escrita. O degrau foi para o `<span>` do rótulo, que não tem classe de cor. Registrado no §10.
+- 2026-08-19 — Cartão em **4:3 e não no 4:5 do template**, e é geometria medida: sete das oito imagens são 1,5:1 e uma é 1:1, então em retrato perderiam 47% da largura. Em 4:3 o recorte é de 11% da largura nas panorâmicas e 25% da altura na quadrada. Conferido nas oito num quadro de contato ANTES de entrar — é a quarta encarnação da armadilha de arquivo panorâmico em caixa vertical (12/08, 13/08, 17/08).
+- 2026-08-19 — **Primeiro render foi reprovado por mim antes de mostrar**, e o defeito era de contraste de token: o painel direito em `--surface-raised` (L 0.968) sobre `--background` (L 0.984) é 1,6% de diferença — o lado direito lia como página vazia e o bloco parecia cortado ao meio. Virou `bg-foreground/[0.055]`, petróleo a 5,5%, que amarra com o painel escuro em vez de introduzir um cinza que não é da paleta. Junto: cartão de 30 para 34rem, painel esquerdo de 42% para 38%, e o desfoque saiu dos vizinhos — sobre painel CLARO o borrão virava mancha cinza em vez de profundidade (no template o painel era escuro).
+- 2026-08-19 — Três imagens novas entraram do acervo do site antigo (harmonização, odontopediatria, reabilitação), e as escolhas foram por COMPLIANCE antes de estética: `asset-8.jpeg` ("close de sorriso com reabilitação total") ficou fora porque sorriso reabilitado como ilustração de especialidade lê como promessa de resultado — mesma razão de 13/08 no hero; e o bebê sorrindo da odontopediatria é o clichê de estoque que o §4 proíbe. Nenhuma das oito é registro clínico. Proveniência, descartadas e as duas ressalvas abertas em `public/imagens/especialidades/LEIA-ME.txt`.
+- 2026-08-19 — Medido no render: painel 480×360 (1,333 exato), **0% de recorte** na foto ativa, 7 dos 8 chips na tela (o oitavo é onde o laço salta, e por isso é invisível), zero overflow de 320 a 1920, troca automática a 4,2s parando no mouse E no foco, setas/Home/End andando na lista, `prefers-reduced-motion` desligando movimento sem esconder texto. Seção em 0,81 tela no desktop e 1,18 no celular.
+- 2026-08-19 — ⚠️ **O MCP do Lovable NÃO existe nesta sessão** (nem conector do Lovable na conta), e o sync do GitHub continua vivo — 14 commits do `gpt-engineer-app[bot]`, o último em 17/08. Consequência: o diagnóstico de 30 segundos do §8 (comparar `latest_commit_sha` dos dois projetos) fica pela metade, e não há como delegar download de host bloqueado ao agente do Lovable. Push na `main` continua chegando no projeto dele.
+- 2026-08-19 — ⚠️ **`assets-originais/` NÃO SOBREVIVE a contêiner novo** — é gitignored, e os quatro masters 1080p que o usuário mandou em 18/08 não estão mais em disco. Recuperável do git só o que foi COMITADO: os encodes da formação (`arcada.mp4` 1920×1080/8,04s e `arcada.webm`, em `38f8b02`) e os 6 quadros de etapa (2048×1152, em `70e56cb`). Ao pedir master novo, comitar ou avisar que se perde.
+- 2026-08-19 — O contêiner novo também **não tem ffmpeg nem playwright**. Os dois se resolvem: ffmpeg estático do BtbN (com `libvmaf`) e `playwright-core` do npm, usando o Chromium de `/opt/pw-browsers/chromium-1194/chrome-linux/chrome` — o caminho `chromium/` do enunciado do ambiente NÃO existe, é o sufixo `-1194`.
 - 2026-08-19 — Quadro maior e menos vazio, a pedido ("aumente o tamanho um pouco, não tão grande, mas tá sobrando muito espaço entre o final da sessão a logo da Suzuki"): de 0,42 para **0,50** da largura da tela, com o teto de altura em 0,62. Em 1440 o quadro fecha em 720×549 e as folgas caíram de 133 para **77px** em cima e embaixo.

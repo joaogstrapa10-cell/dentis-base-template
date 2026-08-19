@@ -306,48 +306,72 @@ export const clinica: Clinica = {
       {
         titulo: "Implantodontia e Cirurgia",
         icone: "implante",
+        imagem: "/imagens/especialidades/01-implantodontia.jpeg",
+        imagemAlt:
+          "Ilustração 3D de um implante de titânio rosqueado no osso, entre dois dentes naturais.",
         descricao:
           "Reposição de dentes ausentes com implantes e procedimentos cirúrgicos, do caso unitário à reabilitação total.",
       },
       {
         titulo: "Estética Dental",
         icone: "faceta",
+        imagem: "/imagens/especialidades/02-estetica-dental.jpeg",
+        imagemAlt:
+          "Seis facetas de cerâmica apoiadas sobre uma folha, fotografadas em fundo escuro.",
         descricao:
           "Facetas, coroas em cerâmica e clareamento, planejados a partir da proporção da face.",
       },
       {
         titulo: "Endodontia",
         icone: "canal",
+        imagem: "/imagens/especialidades/03-endodontia.jpeg",
+        imagemAlt:
+          "Ilustração 3D de um dente translúcido com os canais radiculares e o feixe nervoso destacados.",
         descricao:
           "Tratamento de canal com foco em preservar o dente natural sempre que houver condição para isso.",
       },
       {
         titulo: "Harmonização Facial",
         icone: "face",
+        imagem: "/imagens/especialidades/04-harmonizacao-facial.webp",
+        imagemAlt:
+          "Aplicação de preenchimento com seringa no lábio superior, por mão enluvada.",
         descricao:
           "Procedimentos faciais conduzidos em conjunto com o plano odontológico, respeitando as proporções individuais.",
       },
       {
         titulo: "Ortodontia",
         icone: "aparelho",
+        imagem: "/imagens/especialidades/05-ortodontia.jpeg",
+        imagemAlt:
+          "Close de uma boca com aparelho fixo metálico, bráquetes e fio.",
         descricao:
           "Correção de posicionamento dentário e de mordida, com aparelhos fixos e alinhadores.",
       },
       {
         titulo: "Odontopediatria",
         icone: "infantil",
+        imagem: "/imagens/especialidades/06-odontopediatria.webp",
+        imagemAlt:
+          "Dentista mostrando a escovação a um menino em um modelo de arcada, na cadeira.",
         descricao:
           "Atendimento infantil com condução adequada à idade e acompanhamento do desenvolvimento.",
       },
       {
         titulo: "Periodontia",
         icone: "gengiva",
+        imagem: "/imagens/especialidades/07-periodontia.jpeg",
+        imagemAlt:
+          "Raspagem periodontal com instrumento sob afastador, em close da gengiva.",
         descricao:
           "Tratamento da gengiva e do osso que sustentam o dente, base de qualquer reabilitação duradoura.",
       },
       {
         titulo: "Reabilitação Oral",
         icone: "arcada",
+        imagem: "/imagens/especialidades/08-reabilitacao-oral.webp",
+        imagemAlt:
+          "Prótese protocolo fixa sobre implantes, vista por baixo, em fundo escuro.",
         descricao:
           "Reconstrução da função mastigatória em casos extensos, integrando as demais especialidades.",
       },

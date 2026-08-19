@@ -262,6 +262,24 @@ export type AreaAtuacao = {
    */
   descricao: string;
   icone: AreaIcone;
+  /**
+   * Foto que REMETE à especialidade, exibida no cartão do carrossel. Entrou em
+   * 19/08, com o template que o usuário mandou.
+   *
+   * ⚠️ NENHUMA delas é registro clínico de paciente: são ilustração 3D, foto de
+   * dispositivo ou foto documental do procedimento, todas das páginas de
+   * especialidade do site antigo. É o que torna o uso possível — registro de
+   * paciente exige autorização de uso de imagem por escrito, e a CFO-196/2019
+   * restringe imagem comparativa. Por isso o `imagemAlt` descreve o que a imagem
+   * É, nunca "resultado de tratamento". Proveniência de cada arquivo em
+   * public/imagens/especialidades/LEIA-ME.txt.
+   *
+   * `null` cai no slot nomeado, com textura e rótulo — mesmo padrão da Estrutura.
+   * É o estado esperado nas variantes de Rogério e Décio, que não herdam este
+   * acervo: caixa cinza lisa lê como site quebrado, slot lê como deliberado.
+   */
+  imagem: string | null;
+  imagemAlt: string;
 };
 
 export type AreasContent = {

@@ -1,0 +1,106 @@
+IMAGENS DAS ESPECIALIDADES — proveniência e critério
+====================================================
+Criada em 19/08, quando o usuário mandou o template de carrossel para a seção de
+Especialidades e pediu "fotos que remetam a tal especialidade".
+
+Oito arquivos, um por item de `areas.itens` no clinica.ts, numerados NA ORDEM da
+lista — o número no nome do arquivo é a posição na seção, e serve para achar o
+arquivo errado depressa.
+
+
+⚠️ LEIA ISTO ANTES DE TROCAR QUALQUER ARQUIVO
+---------------------------------------------
+NENHUMA destas imagens é registro clínico de paciente. São ilustração 3D, foto de
+dispositivo, ou foto documental de procedimento — todas das páginas de
+especialidade do site antigo da Suzuki.
+
+É isso que torna o uso possível, e não é detalhe: registro clínico de paciente
+exige autorização de uso de imagem POR ESCRITO, e a Resolução CFO-196/2019
+restringe divulgação de imagem comparativa (antes e depois) em publicidade
+odontológica.
+
+Consequências práticas, todas já aplicadas:
+  · o `imagemAlt` de cada uma descreve o que a imagem É ("ilustração 3D de um
+    implante de titânio..."), nunca "resultado de tratamento" nem "caso da
+    clínica";
+  · não entra imagem comparativa, mesmo sendo ilustração — o gesto é o que a
+    resolução restringe, e ilustração comunica a mesma coisa;
+  · não entra foto de sorriso reabilitado como ilustração de especialidade: lê
+    como promessa de resultado. Foi por isso que `asset-8.jpeg` ("close de
+    sorriso adulto com reabilitação total superior") FICOU FORA de Reabilitação
+    Oral, embora fosse a imagem mais bonita das candidatas.
+
+
+OS OITO ARQUIVOS
+----------------
+| arquivo                        | especialidade          | origem                          | o que aparece |
+|--------------------------------|------------------------|---------------------------------|---------------|
+| 01-implantodontia.jpeg         | Implantodontia         | casos/01-implante-titanio.jpeg  | ilustração 3D de implante de titânio rosqueado entre dentes naturais |
+| 02-estetica-dental.jpeg        | Estética Dental        | casos/02-facetas-ceramica.jpeg  | seis facetas de cerâmica sobre folha verde, fundo preto |
+| 03-endodontia.jpeg             | Endodontia             | casos/04-canais-radiculares.jpeg| ilustração 3D de dente translúcido com canais e feixe nervoso |
+| 04-harmonizacao-facial.webp    | Harmonização Facial    | originais/asset-3-2.jpeg        | aplicação de preenchimento no lábio superior, mão enluvada |
+| 05-ortodontia.jpeg             | Ortodontia             | casos/03-aparelho-fixo.jpeg     | close de boca com bráquetes metálicos e fio |
+| 06-odontopediatria.webp        | Odontopediatria        | originais/asset-3-3.jpeg        | dentista mostrando escovação a um menino em modelo de arcada |
+| 07-periodontia.jpeg            | Periodontia            | casos/05-raspagem-periodontal.jpeg | raspagem com instrumento periodontal sob afastador |
+| 08-reabilitacao-oral.webp      | Reabilitação Oral      | originais/asset-8-4.jpeg        | prótese protocolo fixa sobre implantes, vista por baixo, fundo preto |
+
+Cinco são CÓPIA dos arquivos de `casos/`, byte a byte, sem reencodar. A pasta é
+própria de propósito: assim trocar a imagem de um Caso não muda a de uma
+Especialidade sem ninguém perceber. Custa 320KB no total.
+
+As três novas foram convertidas para webp a partir de `originais/`, mantendo a
+resolução nativa — sem upscale, sem recorte assado no arquivo. A proporção é
+decidida no CSS (ver abaixo).
+
+
+O FILTRO FOI O RECORTE, DEPOIS O ASSUNTO
+----------------------------------------
+O cartão do carrossel é 4:3 (medido: 480×360 no desktop, 310×233 no celular).
+Sete dos oito arquivos são 1,5:1 e um é 1:1, então:
+  · nas 1,5:1 o recorte é de 11% da largura;
+  · na quadrada (03-endodontia) é de 25% da altura.
+
+A caixa é 4:3 e NÃO o 4:5 do template original justamente por isso: em retrato,
+um arquivo 1,5:1 perde 47% da largura e vira um talho vertical sem assunto. É a
+mesma armadilha que já custou três rodadas neste projeto — 12/08 (arquivo 3,6:1
+numa faixa 0,83:1 no hero), 13/08 (a escolha das cinco de Casos) e 17/08 (o
+quadro 16:9 interpolado até 0,46:1 no celular).
+
+As oito foram conferidas com o recorte 4:3 aplicado, num quadro de contato, antes
+de entrar. Nenhuma perde o assunto.
+
+
+DESCARTADAS, E POR QUE
+----------------------
+Harmonização Facial (o acervo só tem três, e as três são de banco):
+  · asset-8-2.jpeg — 2560×500. Panorâmico em caixa 4:3 é impossível: mostraria
+    26% da largura. Mesma geometria do defeito de 12/08.
+  · asset-2-2.jpeg — injeção periorbital. Equivalente à escolhida; ficou como
+    alternativa se a do lábio incomodar. É UMA linha no clinica.ts.
+
+Odontopediatria:
+  · asset-2-3.jpeg — bebê loiro sorrindo mostrando os primeiros dentes. É o
+    clichê que o §4 do CLAUDE.md proíbe (sorriso genérico de estoque).
+  · asset-8-3.jpeg — 2560×500, banner panorâmico. Mesmo problema de recorte.
+
+Reabilitação Oral:
+  · asset-8.jpeg — close de sorriso com reabilitação total. Ver o aviso de
+    compliance acima: sorriso reabilitado como ilustração lê como promessa de
+    resultado.
+  · asset-6-3.jpeg — quatro coroas de cerâmica em fundo preto. Boa, mas fica
+    visualmente quase igual à de Estética Dental (02), e duas imagens iguais em
+    especialidades diferentes leem como erro de conteúdo.
+
+
+⚠️ DUAS RESSALVAS ABERTAS, PARA O USUÁRIO DECIDIR
+-------------------------------------------------
+1. A de Harmonização Facial (04) é a mais fraca das oito: imagem de banco, fundo
+   branco, modelo. O acervo não tem melhor para essa especialidade — as outras
+   duas opções estão na lista de descartadas acima. Se a clínica tiver foto
+   própria de procedimento facial, ela substitui bem.
+
+2. O FUNDO DAS OITO É MISTO: seis escuras (02, 03, 05, 07, 08 e parcialmente 01)
+   e duas claras (01 e 04). Num carrossel que mostra UMA por vez isso pesa muito
+   menos que numa grade — e é por isso que passou. Se a seção algum dia virar
+   grade, remedir: o que fazia os nove retratos do corpo clínico funcionarem como
+   série era o fundo idêntico do mesmo ensaio.
