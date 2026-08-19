@@ -133,34 +133,18 @@ export const clinica: Clinica = {
        `arcada: null` — nenhum componente muda. A proveniência e as marcas de IA da
        foto da equipe estão em public/imagens/hero/LEIA-ME.txt. */
     colagem: [],
-    /* A ARCADA 3D DO HERO, ao lado do texto. É o último quadro do clipe da arcada,
-       recortado do próprio arquivo.
+    /* ⚠️ `arcada: null` — A ARCADA SAIU DO HERO em 19/08, a pedido do usuário ("tire
+       essa arcada da sessão hero"). O motivo é evidente vendo a página inteira: ela
+       abre com a arcada 3D girando na ABERTURA, e o hero, logo abaixo, repetia a mesma
+       arcada em imagem parada. Duas arcadas seguidas leem como a página se repetindo.
 
-       ⚠️ RECORTADA JUSTO NO ASSUNTO desde 18/08, 1373×954, e isso só foi possível
-       porque a abertura em VÍDEO saiu. Enquanto ela existia, esta imagem tinha de ser o
-       quadro 16:9 INTEIRO — com 15,6% de vazio em cada lado — para a descida do vídeo
-       aterrissar sobre ela sem salto de tamanho. Sem o vídeo, esse vazio era só espaço
-       desperdiçado na coluna: recortando, a arcada ficou 40% MAIOR na mesma largura, que
-       foi o pedido ("faça ela maior"). Se a abertura em vídeo voltar, esta imagem tem de
-       voltar ao quadro cheio junto.
+       O campo é `HeroImagem | null` desde que existe, justamente para isso — trocar
+       para `null` não muda componente nenhum, o hero simplesmente não reserva a coluna.
+       Para as variantes de Rogério e Décio o campo aceita uma foto.
 
-       ⚠️ ESTE ARQUIVO TEM ALPHA, e é o único do projeto assim. Recortado do quadro em
-       18/08, localmente e sem crédito: flood fill do escuro conectado à borda (para as
-       sombras interdentais, que são escuras e ficam DENTRO do objeto, não virarem
-       buraco), rampa de alpha entre luminância 35 e 60 — o meio do vale vazio do
-       histograma — e descontaminação de cor nos 57 mil pixels de borda, senão o teal do
-       fundo apareceria como halo escuro sobre fundo claro. Medido depois: 92% dos
-       pixels de borda compõem entre 224 e 255 sobre branco, e nenhum halo.
-
-       Por ter alpha, ele NÃO usa a máscara `.video-fundido` — ver a nota em Hero.tsx.
-       A franja ciano na silhueta é a luz de contorno do próprio render, não artefato. */
-    arcada: {
-      src: "/imagens/arcada/arcada-fim.webp",
-      alt: "Modelo 3D das duas arcadas restauradas e fechadas em oclusão, formando um sorriso completo. Ilustração técnica, não é registro de paciente.",
-      largura: 1373,
-      altura: 954,
-      semFundo: false,
-    },
+       O arquivo `arcada-fim.webp` (o último quadro da sequência de formação, recortado
+       justo e com alpha) foi apagado da pasta porque ninguém mais o usa; está no git. */
+    arcada: null,
     // ⚠️ TRÊS NÚMEROS, TODOS VERIFICÁVEIS, e é essa a regra desta fileira.
     //   5,0  — nota real do perfil da clínica no Google, a mesma que alimenta a
     //          seção de avaliações (`depoimentos.resumo.nota`).
@@ -675,11 +659,17 @@ export const clinica: Clinica = {
        reencodar com `-g` igual ao fps. */
     video: "/imagens/arcada/arcada-giro.mp4",
     videoWebm: "/imagens/arcada/arcada-giro.webm",
-    /* 1500×1080, que é o master de 1920×1080 recortado na horizontal para centrar a
-       arcada — ela vive fora do centro no arquivo original, chegando a 97,2% da
-       largura. Ver o LEIA-ME da pasta. */
-    videoLargura: 1500,
-    videoAltura: 1080,
+    /* 1280×1010: o master de 1920×1080 recortado na horizontal para CENTRAR a arcada e
+       depois reduzido. Ela vive bem fora do centro no arquivo — medida segundo a
+       segundo, fica entre x 599 e 1870 de 1920, ou seja centrada em ~1235. Por isso o
+       recorte é `1370:1080:550:0`, o mais justo que cabe com o centro certo: pedir 1500
+       de largura force o centro para 1170 e a arcada aparece deslocada para a direita,
+       que foi o defeito visto no render.
+       A redução para 1280 é de 19/08, junto com o `-g 4`, para a escrubagem ficar
+       fluida — o quadro exibe ~691px no desktop, então 1280 é quase exato num retina.
+       Ver o LEIA-ME da pasta. */
+    videoLargura: 1180,
+    videoAltura: 900,
     slotRotulo: "[QUADRO DA ARCADA — 3D]",
     /* UM quadro, e não é ilustração à parte: é o PRIMEIRO quadro extraído do próprio
        clipe, já com o mesmo recorte. Serve de `poster` do vídeo e de estado exibido sob

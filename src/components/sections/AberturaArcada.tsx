@@ -103,6 +103,61 @@ const SCRUB_DE = 0.05;
 const SCRUB_ATE = 0.95;
 
 /**
+ * Quadros por segundo do clipe. Serve para QUANTIZAR o instante pedido ao vídeo: ver o
+ * cuidado nº 2 no laço de escrubagem.
+ *
+ * ⚠️ Está amarrado ao arquivo. Se o clipe vier com outra taxa, um valor MAIOR aqui só
+ * desperdiça seeks (pede instantes que caem no mesmo quadro) e um valor MENOR pula
+ * quadros de verdade. O clipe atual é 24fps — `ffprobe -show_entries stream=r_frame_rate`.
+ */
+const FPS = 24;
+
+/**
+ * ⚠️ A ARCADA SE DESLOCA ENQUANTO GIRA, e esta tabela é o que a mantém no centro.
+ *
+ * Medido no master, segundo a segundo, com limiar alto de luminância (contagem de
+ * pixels acima de 60 por coluna — o limiar baixo que usei antes pegava o brilho de
+ * fundo como se fosse gengiva e errou o centro por 130px): o centro do objeto caminha
+ * de x=1270 para x=1385 e de y=548 para y=692, num quadro de 1920×1080. São 115px na
+ * horizontal e 144px na vertical, ou seja a arcada termina visivelmente para a direita
+ * e para baixo — foi o defeito visto no render.
+ *
+ * Cada par é o deslocamento do centro do objeto em relação ao centro do QUADRO
+ * RECORTADO (1180×900 a partir de 710,146), como FRAÇÃO da largura e da altura dele.
+ * Sete amostras, uma por segundo, interpoladas linearmente pela fração da escrubagem.
+ *
+ * ⚠️ POR QUE AQUI E NÃO NO ENCODE: dá para fazer o recorte ACOMPANHAR o objeto com uma
+ * expressão de tempo no `crop` do ffmpeg, e funciona — testado, desvio máximo de 34px
+ * contra 215px. Mas aí o conteúdo se desloca a cada quadro, a predição interframe
+ * piora e o arquivo vai de 1,9 MB para 3,2 MB. Como o gargalo desta seção é justamente
+ * decodificar rápido o bastante para a rolagem, pagar 70% de peso para centrar seria
+ * trocar o problema pelo problema. Deslocar o ELEMENTO é de graça: é o compositor.
+ *
+ * ⚠️ Se o clipe for regerado, esta tabela tem de ser remedida — com ela errada a arcada
+ * passa a derivar para o lado oposto, e nada no build avisa.
+ */
+const DERIVA: ReadonlyArray<readonly [number, number]> = [
+  [-0.0254, -0.0533],
+  [0.0008, -0.05],
+  [0.0263, -0.0244],
+  [0.0466, 0.0244],
+  [0.0678, 0.0744],
+  [0.072, 0.1056],
+  [0.072, 0.1067],
+];
+
+/** Interpola a tabela de deriva na fração `f` (0 a 1) da escrubagem. */
+function derivaEm(f: number): readonly [number, number] {
+  const n = DERIVA.length - 1;
+  const x = trava01(f) * n;
+  const i = Math.min(n - 1, Math.floor(x));
+  const r = x - i;
+  const a = DERIVA[i];
+  const b = DERIVA[i + 1];
+  return [a[0] + (b[0] - a[0]) * r, a[1] + (b[1] - a[1]) * r];
+}
+
+/**
  * Largura do quadro, como fração da largura do palco.
  *
  * ⚠️ Este número mediu 0,48, depois 0,38 ("diminua o tamanho de tudo dessa sessão"),
@@ -111,15 +166,20 @@ const SCRUB_ATE = 0.95;
  * arcada, que ocupa 72% da largura e ~76% da altura do quadro. A 0,34 ela media 353px de
  * largura numa janela de 1440 — menor do que era com o cartão, não maior. A 0,42 o
  * quadro fecha em 605px e a arcada em ~436px, que é a mesma presença de antes sem a
- * caixa em volta.
+ * caixa em volta. Subiu de novo para 0,48 em 19/08 — "aumente o tamanho um pouco, não
+ * tão grande, mas tá sobrando muito espaço entre o final da sessão a logo da Suzuki".
+ * Com o quadro maior o grupo ocupa mais do palco e os dois vazios caem de 133 para
+ * ~102px em 1440.
  */
-const LARGURA_DESKTOP = 0.42;
-const LARGURA_COMPACTA = 0.8;
+const LARGURA_DESKTOP = 0.5;
+const LARGURA_COMPACTA = 0.9;
 /**
  * Teto pela ALTURA do palco. É a guarda de janela baixa e larga: sem ele, num monitor
- * 21:9 o quadro passaria da altura da tela.
+ * 21:9 o quadro passaria da altura da tela. Subiu de 0,5 para 0,62 quando o recorte do
+ * clipe ficou mais justo (1,27:1 em vez de 1,389:1): num quadro mais alto, o teto de
+ * antes é que passava a mandar, e a arcada encolhia em vez de crescer.
  */
-const ALTURA_MAX = 0.5;
+const ALTURA_MAX = 0.62;
 
 /**
  * Distância, em px, entre a base da marca e o topo do quadro. ⚠️ É AQUI que se sobe ou
@@ -185,6 +245,16 @@ export function AberturaArcada({
   const trilhoRef = useRef<HTMLElement | null>(null);
   const palcoRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  /* Tempo perseguido pela interpolação, em segundos. É NOSSO estado e não o do vídeo —
+     ver o cuidado nº 1 no laço. */
+  const suaveRef = useRef(0);
+  /* Último instante pedido ao vídeo, já quantizado. Serve para não repetir o pedido. */
+  const pedidoRef = useRef(-1);
+  /* Tamanho do quadro em px, espelhado em ref: o laço precisa dele para converter a
+     deriva (que é fração) em pixels, e ler do estado o obrigaria a recriar o efeito a
+     cada resize. */
+  const quadroWRef = useRef(0);
+  const quadroHRef = useRef(0);
 
   const [semAnimacao, setSemAnimacao] = useState(false);
   /* Medidas do PALCO, em px, e medidas de verdade: `getBoundingClientRect` do próprio
@@ -233,6 +303,8 @@ export function AberturaArcada({
     Math.round(Math.min(fracao * palco.w, ALTURA_MAX * palco.h * aspecto)),
   );
   const quadroH = Math.max(1, Math.round(quadroW / aspecto));
+  quadroWRef.current = quadroW;
+  quadroHRef.current = quadroH;
 
   /* DESTRAVAMENTO DO iOS. O Safari do iPhone recusa `currentTime` antes de o vídeo ter
      sido tocado por gesto: sem isto a escrubagem não anda no iPhone, e o sintoma
@@ -280,20 +352,59 @@ export function AberturaArcada({
       const curso = r.height - palco.h;
       const p = curso <= 0 ? 0 : trava01(-r.top / curso);
 
-      /* ── ESCRUBAGEM, com INTERPOLAÇÃO. É a única coisa que a rolagem comanda. ──
-         Setar `currentTime` direto no valor da rolagem produz movimento serrilhado,
-         porque a rolagem chega em degraus (a roda anda de 100 em 100px) — aqui o tempo
-         persegue o alvo movendo 18% da distância por quadro, o que fecha 90% dela em
-         ~200ms sem atraso perceptível.
+      /* ── ESCRUBAGEM. É a única coisa que a rolagem comanda, e a fluidez dela
+            depende de TRÊS cuidados — os três entraram em 19/08, depois de o usuário
+            reportar "tô sentindo muito travado o scroll, está meio que travando a
+            arcada, não tá fluido". Antes disso o laço pedia um `currentTime` novo a
+            cada quadro de tela e lia o tempo do próprio vídeo de volta como estado.
+
+         1. O ALVO É INTERPOLADO NUM VALOR PRÓPRIO (`suaveRef`), não em
+            `v.currentTime`. A rolagem chega em degraus — a roda do mouse anda de 100
+            em 100px — e sem suavização o movimento serrilha. Perseguir 18% da
+            distância por quadro fecha 90% dela em ~200ms, sem atraso perceptível.
+            ⚠️ O estado tem de ser NOSSO: `v.currentTime` volta quantizado no quadro
+            que o decodificador entregou, então usá-lo como estado do lerp faz a
+            interpolação brigar com o próprio arredondamento do vídeo.
+
+         2. O PEDIDO É QUANTIZADO NO QUADRO. Pedir um instante entre dois quadros faz o
+            navegador escolher o mais próximo de qualquer jeito, e cada pedido custa um
+            `seek` — a 60Hz de tela contra 24 quadros de vídeo, mais da metade dos
+            pedidos apontava para o quadro que já estava na tela. Quantizando, o número
+            de seeks cai para no máximo a taxa do clipe.
+
+         3. NADA É PEDIDO ENQUANTO O ANTERIOR NÃO TERMINOU (`v.seeking`). Empilhar
+            seeks num decodificador que ainda está trabalhando é exatamente o que
+            produz a sensação de travamento: a fila cresce, e o quadro que aparece é
+            sempre o de vários pedidos atrás.
+
+         O quarto cuidado não está aqui, está no encode: `-g 4` em vez de `-g 24`. Ver
+         o LEIA-ME da pasta — procurar um instante no meio de um GOP de 24 obriga a
+         decodificar até 23 quadros antes de mostrar um.
+
          `readyState >= 1` garante que a duração já é conhecida: sem isso o
          `currentTime` é descartado em silêncio e a peça parece travada. */
+      const fracao = trava01((p - SCRUB_DE) / (SCRUB_ATE - SCRUB_DE));
       if (v.readyState >= 1 && Number.isFinite(v.duration) && v.duration > 0) {
         if (!v.paused) v.pause();
-        const alvo =
-          trava01((p - SCRUB_DE) / (SCRUB_ATE - SCRUB_DE)) * v.duration;
-        const d = alvo - v.currentTime;
-        if (Math.abs(d) > 0.01) v.currentTime += d * 0.18;
+        const alvo = fracao * v.duration;
+        suaveRef.current += (alvo - suaveRef.current) * 0.18;
+        const quadroAlvo = Math.round(suaveRef.current * FPS) / FPS;
+        if (quadroAlvo !== pedidoRef.current && !v.seeking) {
+          pedidoRef.current = quadroAlvo;
+          v.currentTime = quadroAlvo;
+        }
       }
+
+      /* ── COMPENSAÇÃO DA DERIVA. Desloca o ELEMENTO pelo oposto do caminho que o
+            objeto faz dentro do quadro, então a arcada gira parada no centro. Usa o
+            tempo SUAVIZADO e não a fração crua, para o deslocamento acompanhar o quadro
+            que está de fato na tela. Ver a nota de `DERIVA`.
+            ⚠️ `transform` no elemento que tem `mix-blend-mode` é seguro: o que mata o
+            blend é ANCESTRAL isolando o grupo, não o próprio elemento — ele já cria
+            contexto de empilhamento por causa do blend. Conferido no render. */
+      const fSuave = v.duration > 0 ? suaveRef.current / v.duration : fracao;
+      const [dfx, dfy] = derivaEm(fSuave);
+      v.style.transform = `translate3d(${(-dfx * quadroWRef.current).toFixed(1)}px, ${(-dfy * quadroHRef.current).toFixed(1)}px, 0)`;
     };
     raf = requestAnimationFrame(quadro);
     return () => cancelAnimationFrame(raf);

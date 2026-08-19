@@ -287,3 +287,54 @@ ilustração técnica isso é inventar detalhe anatômico. Recusado pelo mesmo m
 18/08, quando o gargalo se mostrou ser o encode e não a fonte.
 
 PESO NO REPO: a pasta caiu de 8,3 MB para 3,7 MB.
+
+--------------------------------------------------------------------------------
+19/08, mesma noite — REENCODE PELA FLUIDEZ, E O RECORTE CORRIGIDO
+--------------------------------------------------------------------------------
+
+Usuário: "tô sentindo muito travado o scroll, está meio que travando a arcada, não tá
+fluido". Quatro coisas mudaram, três no encode e uma no componente.
+
+ARQUIVOS AGORA:
+  arcada-giro.webm  1,94 MB  VP9 CRF 33, -g 4, 1180x900
+  arcada-giro.mp4   1,48 MB  H.264 High level 4.0, CRF 25, -g 4, keyint_min 4
+  arcada-giro-inicio.webp  45 KB
+
+1. `-g 4` EM VEZ DE `-g 24`. É a causa principal do travamento: procurar um instante no
+   meio de um GOP de 24 obriga a decodificar até 23 quadros antes de mostrar um, e a
+   rolagem pede um instante novo a cada quadro de tela. Com -g 4 o pior caso é 3.
+   ⚠️ Todo-keyframe (-g 1) foi medido e é inviável: 7,9 MB a 1200px e 11,2 MB a 1500px.
+   Tabela a 1280px — -g 1: 7877KB / -g 2: 4377KB / -g 4: 2425KB / -g 6: 1819KB.
+
+2. RECORTE CORRIGIDO PARA `1180:900:710:146`. O recorte anterior (1500:1080:420:0)
+   centrava em x=1170 e a arcada aparecia deslocada para a direita — defeito visto no
+   render. ⚠️ A CAUSA FOI MEDIÇÃO MINHA ERRADA: o limiar de luminância que usei
+   (max por coluna, fundo+16) pegava o BRILHO DE FUNDO como se fosse gengiva, e dava o
+   assunto começando em x=473 quando ele começa em ~731. Com limiar alto e por CONTAGEM
+   (>=6 pixels acima de 60 por coluna), a união dos limites é x 731..1868 e y 189..1002,
+   ou seja centro em (1300, 596) — daí o recorte.
+
+3. CRF 33 em vez de 26. VMAF 95,2 contra um lossless do mesmo recorte, que é o mesmo
+   patamar já aceito no repo, com 1,94 MB em vez de 3,16 MB. Menos bits por quadro
+   também é menos trabalho de decodificação, ou seja ajuda a fluidez duas vezes.
+   Escada: CRF 26: 3162KB / 30: 2423KB (95,9) / 33: 1937KB (95,2) / 36: 1595KB (94,5).
+
+4. A DERIVA DA ARCADA É COMPENSADA POR CSS, NÃO PELO ENCODE. Medido segundo a segundo,
+   o centro do objeto caminha 115px na horizontal e 144px na vertical ao longo do clipe
+   — ela termina para a direita e para baixo. Dá para o recorte ACOMPANHAR o objeto com
+   uma expressão de tempo no crop do ffmpeg, e funciona (desvio máximo de 34px contra
+   215px), MAS o conteúdo passa a se deslocar a cada quadro, a predição interframe piora
+   e o arquivo vai de 1,9 para 3,2 MB. Como o gargalo da seção é decodificar rápido,
+   pagar 70% de peso para centrar seria trocar o problema pelo problema. A tabela
+   `DERIVA` no AberturaArcada.tsx desloca o ELEMENTO pelo oposto do caminho — o
+   compositor faz isso de graça.
+   ⚠️ Se o clipe for regerado, remedir a tabela. Errada, ela faz a arcada derivar para o
+   lado oposto, e nada no build avisa.
+
+MEDIDO DEPOIS, em 1440x900: rolagem contínua de 1440px em 120 passos — 108 seeks
+pedidos, 108 concluídos (nenhum empilhado), zero retrocessos, passo médio de 0,056s
+entre quadros entregues (1 quadro = 0,0417s) e maior salto de 0,167s.
+
+⚠️ arcada-fim.webp FOI APAGADO. Era a figura do hero, e a arcada saiu do hero em 19/08
+("tire essa arcada da sessão hero") porque a página abria com a arcada girando e o hero
+repetia a mesma arcada parada logo abaixo. Está no git.
