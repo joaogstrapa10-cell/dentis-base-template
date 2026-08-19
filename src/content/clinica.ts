@@ -618,7 +618,28 @@ export const clinica: Clinica = {
     ],
   },
   arcada: {
-    /* UM clipe só, 8,04s, 1920×1080, 24fps, E DENTRO DO REPO. É o `currentTime` dele
+    /* ⚠️ O CLIPE É UMA MONTAGEM DE DOIS, e a ordem é o pedido do usuário em 19/08:
+       "faça metade da boca com dentes já, e quero que mantenha aquele giro ao
+       scrollar a arcada de antes, mostrava todos os dentes".
+
+         · 0 a 3,2s  — FORMAÇÃO, a partir de 4,4s do master: a arcada de cima já está
+                       completa e a de baixo ainda em implantes, e as coroas de baixo
+                       entram uma a uma. É a "metade da boca com dentes já".
+         · 3,2 a 3,6s — passagem pelo PRETO. Ver a nota da emenda abaixo.
+         · 3,6 a 9,2s — GIRO, a arcada completa virando de frente para o três quartos,
+                       mostrando os dois lados. Recuperado do git em `e56679a`.
+
+       ⚠️ A EMENDA É PASSAGEM PELO PRETO, e não dissolve, porque o dissolve mostrava as
+       DUAS arcadas sobrepostas — a de mordida aberta da formação e a fechada do giro —
+       e ficava turvo. Com `mix-blend-mode: screen` o preto é ausência, então a arcada
+       some e volta em vez de fantasmar. Conferido em recorte ampliado nos dois casos.
+
+       ⚠️ O GIRO É AMPLIADO de 1180 para 1400 de largura, então a metade dele tem uma
+       geração de perda a mais que a da formação. O master dele NÃO EXISTE MAIS (era
+       `assets-originais/`, gitignored, e o contêiner é novo): só há o encode comitado.
+       Se ele voltar a existir, refazer esta metade a partir dele.
+
+       O ORIGINAL, antes da montagem: UM clipe só, 8,04s, 1920×1080, 24fps, E DENTRO DO REPO. É o `currentTime` dele
        que a rolagem controla, e ele é o conteúdo inteiro da abertura.
 
        ✅ ACABOU A DEPENDÊNCIA DE URL EXTERNA. Até 17/08 o vídeo e os dois quadros
@@ -723,14 +744,14 @@ export const clinica: Clinica = {
        assunto é onde a sequência chega. */
     etapas: [
       {
-        rotulo: "Gengivas com os implantes instalados",
+        rotulo: "Arcada de cima completa, a de baixo em implantes",
         src: "/imagens/arcada/arcada-formacao-inicio.webp",
-        alt: "Modelo 3D das duas arcadas em gengiva, com os pinos de titânio dos implantes instalados e nenhuma coroa.",
+        alt: "Modelo 3D das duas arcadas: a superior com todas as coroas de cerâmica instaladas e a inferior ainda com os pinos de titânio dos implantes à mostra.",
       },
       {
-        rotulo: "Arcada reabilitada, coroas instaladas",
+        rotulo: "Arcada reabilitada, vista de três quartos",
         src: "/imagens/arcada/arcada-formacao-fim.webp",
-        alt: "Modelo 3D das duas arcadas completas, com as coroas de cerâmica instaladas sobre todos os implantes e nenhuma peça metálica aparente.",
+        alt: "Modelo 3D das duas arcadas completas, vistas de três quartos, com as coroas de cerâmica instaladas sobre todos os implantes e nenhuma peça metálica aparente.",
       },
     ],
     aviso:
