@@ -152,8 +152,16 @@ servir uma quarta.
 
 ## 5.2 Ponto de retomada
 
-**Última sessão: 14/08.** Vinte e dois commits na `main`, o último `10a49b4`. Nada
+**Última sessão: 19/08.** O último commit da `main` é o da abertura em `hero-scrub`. Nada
 pendente no working tree, nada esperando OK.
+
+⚠️ **A HOME ABRE PELA ABERTURA (`#abertura`), que é o template do Ferrari Amalfi**
+aplicado em 19/08: lockup da Suzuki em cima, a arcada se formando no meio, "ODONTOLOGIA
+ESPECIALIZADA" embaixo, as três peças se afastando pela rolagem enquanto o quadro toma
+a tela. Custa **3,6 telas** de rolagem, e esse número é `TRILHO_MULT` em
+`AberturaArcada.tsx` — um lugar só. O hero estilo apple.com veio logo abaixo, de 18/08.
+O histórico das três aberturas anteriores (vídeo com viagem até o hero, tela só com a
+logo, e esta) está no §9; **não reconstruir nenhuma de memória, está tudo no git.**
 
 O que aconteceu nessa sessão, em uma linha cada — o log do §9 tem o detalhe e o
 porquê de cada decisão:
@@ -220,6 +228,7 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 
 | Anatomia | Seções |
 |---|---|
+| Palco `sticky`: lockup + quadro + assinatura, as pontas se afastando e o quadro tomando a tela pela rolagem | Abertura |
 | Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
 | Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Áreas (4 col.), Diferenciais (4 col.), **Tratamentos (3 col.)** |
 | Esteira contínua | Estrutura, Depoimentos, **corpo clínico da Bio** |
@@ -432,6 +441,8 @@ src/components/IconesEspecialidade.tsx  8 ícones dentais desenhados aqui (o luc
                               não tem nenhum)
 
 src/components/sections/
+  AberturaArcada.tsx        a abertura: marca, arcada se formando, assinatura
+                            (exporta ABERTURA_VH e ABERTURA_NAV_VH, que o Header usa)
   Section.tsx                 wrapper de ritmo (--section-py) + SectionHeader + scroll-mt
   Hero.tsx                    colagem de 3 fotos + fileira de números
   Casos.tsx                   PilhaDeCasos (dossiê, /casos) + AvisoCasos + seção da home
@@ -804,6 +815,19 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - **Imagem anexada pelo usuário não existe como arquivo no disco.** O base64 está no
   transcript da sessão (`/root/.claude/projects/.../<sessão>.jsonl`); é de lá que se extrai
   para poder processar os pixels. Script em `scratchpad/extrai-anexo.mjs`.
+- **"Não quebrou" não é "cabe".** Ao dimensionar texto por `clamp`, medir a LARGURA do
+  elemento contra a da janela. `getClientRects().length === 1` e `scrollWidth` os dois
+  PASSAM num texto cortado, se o contêiner tiver `overflow-hidden`. Nesta fonte, em caixa
+  alta com tracking -0,035em, cada caractere avança **0,664em** — medido em sete larguras.
+- **`scale` cresce em volta do centro do PRÓPRIO elemento.** Numa coluna `flex` centrada,
+  o que está no centro da tela é a PILHA, não cada peça: se os itens acima e abaixo têm
+  alturas diferentes, o item do meio cresce fora de eixo. Vale `(acima − abaixo) / 2`.
+- **`translate3d(...) scale(...)`** aplica a escala primeiro e o deslocamento depois, em px
+  não escalados. Invertida, a ordem multiplica o deslocamento pela escala.
+- **Fórmula de cobertura (`max(vw/w, vh/h)`) quebra em tela EM PÉ.** Com mídia 16:9 num
+  celular o termo da altura domina e o `object-cover` mostra ~25% da largura — um talho
+  vertical. Já custou três rodadas (12/08, 17/08, 19/08). O teto tem de sair de onde o
+  ASSUNTO começa e acaba dentro do quadro, medido, não da caixa.
 - **`ch` em `max-width`** resolve contra a fonte do elemento onde está, não do filho.
   `max-w-[42ch]` num wrapper de 16px estrangula um `h2` de 52px. Aconteceu três vezes.
 - **`leading-[...]` com `text-[clamp(...)]`** não funciona no Tailwind v4: o utilitário de
@@ -831,3 +855,21 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - **`bunx vite dev` reescreve `src/routeTree.gen.ts`** com um bloco `declare module` que a
   versão do plugin no Lovable não gera. É arquivo gerado: `git checkout --` nele antes de
   comitar, senão o diff briga com o sync a cada rodada.
+
+- 2026-08-19 — **A ABERTURA VIROU O TEMPLATE `hero-scrub` DO FERRARI AMALFI**, mandado pelo usuário, com o mapeamento que ele ditou: a logo da Suzuki onde estava "FERRARI", "ODONTOLOGIA ESPECIALIZADA" onde estava "AMALFI", e a arcada se formando onde estava o 3D do carro. A coreografia é a de lá, nas mesmas frações: as duas pontas se afastam para os lados enquanto o quadro cresce, o quadro toma a tela no miolo (é onde os dentes entram) e tudo volta à pose de abertura no fim. `AberturaMarca.tsx` (a tela só com a logo, de 18/08) foi deletada; `AberturaArcada.tsx` é o que está no lugar.
+- 2026-08-19 — Isso **RECOLOCA o vídeo escrubado apagado em 18/08** ("desisti de fazer isso"), e não é revert: lá o vídeo VIAJAVA até o slot do hero e trocava por crossfade; aqui ele cresce até tomar a tela e volta. A escrubagem, as duas strings de codec e o destravamento do iOS foram **recuperados do git** (`caa2962`), não reescritos de memória — que é o que o §8 manda fazer.
+- 2026-08-19 — **SEM GSAP, e a decisão não é preferência.** O template pede `gsap` + `ScrollTrigger` e não usa o `pin` dele: a mecânica é `sticky`, que este projeto já tem. Sobrava interpolar números, que é uma linha de conta. Somam-se dois motivos duros: `gsap.set/to` escreve a propriedade `transform` e o Tailwind v4 escreve `translate`/`scale`/`rotate` SEPARADAS — misturar as duas famílias no mesmo elemento é a armadilha já registrada aqui, e o sintoma é silencioso; e o projeto não tem nenhuma dependência de animação. O progresso sai da fração que o TRILHO da própria seção já rolou, em `requestAnimationFrame`, o mesmo mecanismo provado três vezes (órbita, abertura em vídeo, marca).
+- 2026-08-19 — **SEM a sequência de quadros em `<canvas>` do template, e o motivo foi MEDIDO.** Exportar os 193 quadros do clipe a 1280px em WebP q72 dá **6,3 MB em 193 requisições**, contra **3,4 MB do WebM a 1920×1080** que já está no repo. A razão é o material: a câmera é travada e a diferença entre quadros vizinhos é um dente — o melhor caso possível para compressão interframe e o pior para uma pilha de imagens independentes. A 12fps empata no peso e ainda perde resolução. Amostrado a q60/q72/q82 em nove quadros antes de decidir.
+- 2026-08-19 — **Logo em versão LOCKUP** (`logo-lockup-branco.svg`, 8,6KB): a mesma arte com os 12 traços da linha "odontologia" removidos e o viewBox justo no que ficou (`13 13 666 274`). Existe porque o logo horizontal completo já traz a palavra, e com a linha de baixo dizendo "ODONTOLOGIA ESPECIALIZADA" ela apareceria DUAS vezes empilhada — lê como erro. Os traços foram separados por `getBBox()` de cada um dos 21 elementos, não a olho: 0–2 é o símbolo, 3–8 é "SUZUKI", 9–20 é a segunda linha.
+- 2026-08-19 — ⚠️ **A linha ficou CORTADA nas duas bordas e minhas verificações não pegaram.** Dimensionei em 6,2vw a partir de 0,58em por caractere, de cabeça; o valor medido é **0,664em**, constante em sete larguras de janela. A 6,2vw a linha media 1461px numa janela de 1440. Passou nos dois testes que eu tinha: `getClientRects().length === 1` (não quebrou em duas linhas) e `scrollWidth` (o palco tem `overflow-hidden`, então o recorte não gera rolagem). **Ao dimensionar texto, medir a LARGURA do elemento contra a da janela — "não quebrou" não é "cabe".** Ficou `clamp(1.1rem, 5.4vw, 5.5rem)`, ~10% de folga de 360 a 1920px, e a conta está amarrada aos 25 caracteres desta assinatura: outra clínica recalcula por `vw = 92 / (0,664 × nº de caracteres)`.
+- 2026-08-19 — ⚠️ **A fórmula de imersão do template quebra em tela EM PÉ, e esse era o defeito grave.** `max(vw/w, vh/h)` levava o quadro a **1588px de largura** em 390×844: a tela mostraria 25% dele, um talho vertical no meio da arcada. Terceira encarnação da mesma armadilha (12/08, arquivo 3,6:1 em caixa 0,83:1; 17/08, 16:9 interpolado até 0,46:1). Consertado com um TETO medido: varredura de luminância nos quadros de 0s, 4s e 8s mostra que a arcada ocupa **69,1% da largura** e **83,9% da altura** do quadro, então o teto é o tamanho em que o assunto ainda cabe com 2% de folga. Celular fechou em 542px em vez de 1588, e o desktop segue coberto (a cobertura recorta só o vazio das laterais). Se o clipe for regerado, **remedir os dois números**.
+- 2026-08-19 — ⚠️ **O quadro não nascia no centro da tela, e `scale` cresce em volta do próprio centro.** A coluna `flex` centra a PILHA, e como a marca tem 197px de altura contra 74px da linha, o centro do quadro cai `(197−74)/2 ≈ 61px` abaixo do centro do palco: medido no render, a imersão subia fora de eixo e sobrava uma faixa de 29px de fundo no TOPO (luminância 14,5 contra 26 do clipe). O template tem a mesma geometria e não sofre porque as duas palavras dele têm a MESMA altura.
+- 2026-08-19 — Tentei consertar isso pondo as três peças em `absolute` em volta do centro, o que centra o quadro por construção. **Funcionou e ficou pior de olhar:** 42px de ar acima da marca contra 165px abaixo da linha, e a composição lia como se tivesse escorregado para cima — a assimetria vale `marca − linha` e nenhum tamanho de fonte a resolve sem encolher a marca a 180px. A saída foi o quadro CONVERGIR para o centro do palco enquanto cresce, com o desvio medido em runtime. Conserta o eixo e acrescenta um movimento que ajuda. Folgas medidas depois: iguais em cima e embaixo nos quatro tamanhos (150/150 em 1920, 104/104 em 1440, 91/91 em 1024, 233/233 em 390).
+- 2026-08-19 — O desvio é remedido sozinho, **sem listener de `load`/`resize`**: o laço o relê sempre que a página está parada no topo (`p < 0,02`), onde a escala é 1 e o `getBoundingClientRect` do quadro é a caixa de layout. Custa uma leitura por quadro só enquanto ninguém rolou, e se a fonte carregar depois e a linha mudar de altura, a próxima visita ao topo corrige. Calcular de cabeça a partir do CSS é o que errou o alvo por 131px na viagem do vídeo em 18/08.
+- 2026-08-19 — ⚠️ **A ORDEM da lista de `transform` importa:** `translate3d(...) scale(...)` aplica a escala primeiro e o deslocamento depois, em px NÃO escalados. Invertida, os 61px de convergência viriam multiplicados por 2,45 na imersão.
+- 2026-08-19 — Fundo do cartão é a cor da VINHETA (`--abertura-vinheta: #050b0f`, o pixel do canto do próprio clipe, amostrado com ffmpeg) e não `--ink-elevated`. A caixa fecha em 1694×954 e o vídeo em 16:9 exato, então sobra meio pixel de arredondamento na borda — com fundo mais CLARO que o clipe, esse meio pixel virava um fio de 2px visível a 2,45× de escala. Medido depois: linha 0 e linha 899 as duas em luminância 26, ou seja o clipe de ponta a ponta.
+- 2026-08-19 — O cartão com raio, fio e sombra **dispensa a máscara `.video-fundido`** na abertura, e isso é um ganho de graça: ela existia porque o fundo do clipe difere do `--ink` e desenhava um retângulo no meio da tela, mas cobrava 26% da borda em opacidade — os molares das duas pontas renderizavam a 60%. Sendo um cartão declarado, o retângulo passa a ser a intenção.
+- 2026-08-19 — Do template ficaram FORA, além do GSAP e do canvas: o `letterSpacing` animado (animar `letter-spacing` refaz o layout do texto a cada quadro, e o ganho é invisível ao lado do deslocamento de meia tela) e o `accentHex` `#3a9b8a` / o `#62B2FE` do outro template — azul-claro de consultório é clichê proibido no §4, e a paleta é a medida da Suzuki.
+- 2026-08-19 — O limiar da navegação virou **`ABERTURA_NAV_VH`, derivado** (`TRILHO_MULT × IMERSAO_ATE`, o ponto em que a arcada fica completa), no lugar de `ABERTURA_VH × 0,7`. Aquele 0,7 era um chute que só por acaso caía perto do fim da animação — mudar o ritmo da abertura o desalinhava sem avisar. Atende o pedido de 17/08 ao pé da letra: o menu aparece quando o vídeo completa, e os 22% finais rolam com ele na tela.
+- 2026-08-19 — Nas rotas internas a marca do canto apontava para **`#arcada`, âncora morta desde 18/08** — rola para o topo sem avisar, que é o defeito registrado em 12/08 no link "Como conduzimos" do rodapé. Passou a apontar para `/`. Defeito antigo, achado ao mexer no Header.
+- 2026-08-19 — Custo de página: a abertura foi de 1 tela (`AberturaMarca`) para **3,6 telas** (1 parada + 2,6 de curso). É a seção mais alta do site e é inerente ao pedido — sequência comandada por rolagem gasta distância de rolagem. O template pede 4,2; 2,6 de curso dá ~184px de rolagem por segundo de vídeo (~7,7px por quadro a 24fps), folgado para a escrubagem ler contínua. Abaixo de ~2,0 os dentes passam mais rápido do que se lê. **Se incomodar, é UM número: `TRILHO_MULT` no `AberturaArcada.tsx`.**

@@ -77,6 +77,45 @@ export type EstruturaContent = {
   imagens: EstruturaSlot[];
 };
 
+/**
+ * A ABERTURA da home: o lockup da marca em cima, a arcada se formando no meio, e a
+ * linha de posicionamento embaixo — as três peças se afastam pela rolagem enquanto o
+ * quadro cresce até tomar a tela, e voltam ao lugar no fim.
+ *
+ * A forma veio de um template que o usuário mandou em 19/08 (o hero escrubado do
+ * Ferrari Amalfi), com o mapeamento dito por ele: "no lugar da palavra 'FERRARI',
+ * colocar a logo da Suzuki", "no lugar da palavra 'AMALFI' colocar 'ODONTOLOGIA
+ * ESPECIALIZADA'", "no lugar do 3D do carro, colocar a arcada dentária se formando".
+ *
+ * ⚠️ O VÍDEO NÃO VIVE AQUI: é `clinica.arcada`, que já existia e não foi duplicado.
+ * A abertura só acrescenta a marca e a linha; a sequência, o aviso legal e a
+ * proveniência continuam num lugar só.
+ */
+export type AberturaContent = {
+  /**
+   * Lockup CLARO da marca: o símbolo mais "SUZUKI", SEM a linha "odontologia".
+   *
+   * ⚠️ É um arquivo à parte do `brand.logo` de propósito, e não redundância: o logo
+   * horizontal completo já traz "odontologia" no traço, e com a linha de baixo
+   * dizendo "ODONTOLOGIA ESPECIALIZADA" a palavra apareceria duas vezes empilhada,
+   * o que lê como erro. Mesma arte, os 12 traços da segunda linha removidos e o
+   * viewBox justo no que restou. `null` cai no wordmark em texto.
+   */
+  marca: string | null;
+  marcaAlt: string;
+  /** Reserva em texto quando não há arquivo de marca. */
+  wordmark: string;
+  /**
+   * A linha de baixo, em caixa alta. UMA linha: em duas, o bloco inferior ganha
+   * mais massa que a marca de cima e a composição desequilibra.
+   *
+   * ⚠️ Ela NÃO usa a escala tipográfica fechada — ver `.abertura-linha` no
+   * styles.css, que documenta por que este é o único texto do site fora dos cinco
+   * degraus.
+   */
+  linha: string;
+};
+
 export type HeroContent = {
   eyebrow: string;
   /** Uma entrada por linha renderizada. A quebra de linha é decisão editorial,
@@ -551,6 +590,7 @@ export type Clinica = {
   brand: BrandContent;
   contato: ContatoContent;
   header: HeaderContent;
+  abertura: AberturaContent;
   hero: HeroContent;
   diferenciais: DiferenciaisContent;
   localizacao: LocalizacaoContent;

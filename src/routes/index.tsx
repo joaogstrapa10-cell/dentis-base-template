@@ -9,7 +9,7 @@ import { AreasSection } from "@/components/sections/Areas";
 import { CasosSection } from "@/components/sections/Casos";
 import { DepoimentosSection } from "@/components/sections/Depoimentos";
 import { TratamentosSection } from "@/components/sections/Tratamentos";
-import { AberturaMarca } from "@/components/sections/AberturaMarca";
+import { AberturaArcada } from "@/components/sections/AberturaArcada";
 import { BioSection } from "@/components/sections/Bio";
 import { FaqSection } from "@/components/sections/Faq";
 import { ChamadaFinalSection } from "@/components/sections/ChamadaFinal";
@@ -74,26 +74,24 @@ function Landing() {
           esta mesma sequência — âncora que sobe a página em vez de descer lê como
           link errado. */}
       <main>
-        {/* ⚠️ ABERTURA SÓ COM A MARCA desde 18/08. A abertura em VÍDEO escrubado pela
-            rolagem foi APAGADA a pedido do usuário: "desisti de fazer isso, manter o
-            hero no início do site, mas talvez manter a ideia da sessão inicial com a
-            logo da Suzuki ao meio e ao scrollar aparecer o hero".
+        {/* ⚠️ ABERTURA COM A ARCADA SE FORMANDO, desde 19/08. É o template
+            `hero-scrub` do Ferrari Amalfi, mandado pelo usuário, com o mapeamento que
+            ele ditou: a logo da Suzuki no lugar de "FERRARI", "ODONTOLOGIA
+            ESPECIALIZADA" no lugar de "AMALFI", e a arcada se formando no lugar do 3D
+            do carro.
 
-            O que saiu: trilho de 210vh com palco sticky, escrubagem do vídeo pelo
-            currentTime, viagem da arcada até o slot do hero e a troca por crossfade.
-            O histórico está no git e os arquivos de vídeo continuam em
-            public/imagens/arcada/ — voltar atrás é revert, não refazer.
+            Isso REPÕE o vídeo escrubado que foi apagado em 18/08 ("desisti de fazer
+            isso") — mas não é o mesmo componente e não é revert: lá o vídeo VIAJAVA
+            até o slot do hero e trocava por crossfade; aqui ele cresce até tomar a
+            tela e volta à pose de abertura, e o hero segue independente logo abaixo.
+            A escrubagem, as strings de codec e o destravamento do iOS foram
+            recuperados do git, não reescritos de memória.
 
-            A arcada NÃO saiu do site: é a figura do hero, ao lado do texto, e ficou
-            40% maior porque o vídeo era o que obrigava a imagem a ser o quadro 16:9
-            inteiro. Ver a nota em clinica.hero.arcada.
+            O vídeo continua sendo `clinica.arcada` — a abertura só acrescenta a marca
+            e a linha, em `clinica.abertura`.
 
-            "Home" aponta para `#abertura`, que é o topo da página. */}
-        <AberturaMarca
-          logo={clinica.brand.logo}
-          logoAlt={clinica.brand.logoAlt}
-          wordmark={clinica.brand.wordmark}
-        />
+            "Home" no menu aponta para `#abertura`, que é o topo da página. */}
+        <AberturaArcada data={clinica.abertura} arcada={clinica.arcada} />
         <HeroSection data={clinica.hero} />
         <CasosSection data={clinica.casos} />
         <AreasSection data={clinica.areas} />

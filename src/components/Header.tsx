@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import type { HeaderContent, NavLink } from "@/content/types";
 import { PillButton } from "@/components/Primitives";
-import { ABERTURA_VH } from "@/components/sections/AberturaMarca";
+import { ABERTURA_NAV_VH } from "@/components/sections/AberturaArcada";
 import { cn } from "@/lib/utils";
 
 /**
@@ -121,13 +121,13 @@ export function Header({
       raf = requestAnimationFrame(() => {
         raf = 0;
         /* Sem arcada na frente, a marca se apaga nos primeiros 180px, como sempre.
-           COM arcada, o zero se desloca para o fim dela: a abertura tem ~200vh de
-           curso, e apagar a marca aos 180px a faria desaparecer nos primeiros 9%
-           da animação — justamente o que o usuário pediu para não acontecer. Ela
-           fica inteira durante a abertura e começa a sair quando o hero de colagem
-           entra, que é a mesma relação de antes. */
+           COM arcada, o zero se desloca para o fim dela — e o limiar agora é um número
+           DERIVADO e exportado pela própria seção (`ABERTURA_NAV_VH`, o ponto em que a
+           arcada fica completa), não `ABERTURA_VH × 0,7` como era até 19/08. Aquele
+           0,7 era um chute que só por acaso caía perto do fim da animação; mudar o
+           ritmo da abertura o desalinhava sem avisar. */
         const curso = esperarArcada
-          ? (ABERTURA_VH / 100) * window.innerHeight * 0.7
+          ? (ABERTURA_NAV_VH / 100) * window.innerHeight
           : 0;
         const passou = window.scrollY - curso;
         /* Só nas rotas SEM arcada. Na home a marca do canto não existe (ver o
@@ -196,15 +196,17 @@ export function Header({
           "a logo voltando".
 
           Nada se perde em navegação: a pílula tem o item "Home" apontando para
-          `#arcada`, então o caminho de volta ao topo continua existindo. Nas rotas
+          `#abertura`, então o caminho de volta ao topo continua existindo. Nas rotas
           internas (`/casos`, `/estrutura`) a marca CONTINUA, porque lá não há
-          abertura nenhuma e ela é a única marca da página.
+          abertura nenhuma e ela é a única marca da página — e lá ela aponta para `/`,
+          não para uma âncora: `#arcada` ficou morto quando a abertura em vídeo foi
+          apagada, e âncora inexistente rola para o topo sem avisar.
 
           Não renderizar é melhor que esconder por opacidade: link opaco a 0
           continua no Tab e continua sendo anunciado por leitor de tela. */}
       {esperarArcada ? null : (
       <a
-        href="#arcada"
+        href="/"
         aria-label={data.wordmark}
         // `top` calculado para o CENTRO da marca cair no centro da pílula, não
         // escolhido a olho: a pílula em `top-4`/`md:top-8` fecha 58px/66px de

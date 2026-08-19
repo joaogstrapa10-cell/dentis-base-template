@@ -58,10 +58,10 @@ export const clinica: Clinica = {
     // link que sobe a página quando o de baixo desce lê como link errado, e o
     // menu é a única pista de ordem que o visitante tem antes de rolar.
     nav: [
-      // Aponta para `#abertura`, a tela da marca que abre a página desde 18/08. Não é
-      // `#top` (o hero, segunda seção) nem `#arcada`, que deixou de existir quando a
-      // abertura em vídeo foi apagada. Âncora para seção inexistente rola para o topo
-      // sem avisar, e o visitante não tem como saber que o destino sumiu.
+      // Aponta para `#abertura`, a seção que abre a página — a marca, a arcada se
+      // formando e a linha de posicionamento. Não é `#top` (o hero, segunda seção) nem
+      // `#arcada`, que deixou de existir em 18/08. Âncora para seção inexistente rola
+      // para o topo sem avisar, e o visitante não tem como saber que o destino sumiu.
       { label: "Home", href: "#abertura" },
       { label: "Áreas", href: "#areas" },
       { label: "Estrutura", href: "#estrutura" },
@@ -71,6 +71,19 @@ export const clinica: Clinica = {
     cta: { label: "Agendar", href: WHATSAPP_HREF },
     ariaAbrirMenu: "Abrir menu",
     ariaFecharMenu: "Fechar menu",
+  },
+  /* ABERTURA — a marca em cima, a arcada se formando no meio, a linha embaixo.
+     Forma pedida pelo usuário em 19/08 a partir do template do Ferrari Amalfi.
+     O vídeo e o aviso legal NÃO estão aqui: vivem em `arcada`, mais abaixo. */
+  abertura: {
+    /* Lockup sem a linha "odontologia" — ver a nota do campo em types.ts. O
+       `brand.logo` (com ela) continua sendo o do header e do rodapé. */
+    marca: "/imagens/marca/logo-lockup-branco.svg",
+    marcaAlt: "Suzuki Odontologia",
+    wordmark: "SUZUKI",
+    /* Texto ditado pelo usuário. Caixa alta no conteúdo e não no CSS: é como ele
+       escreveu, e `text-transform` esconderia do leitor de tela a forma real. */
+    linha: "ODONTOLOGIA ESPECIALIZADA",
   },
   hero: {
     eyebrow: "Curitiba · Alto da XV",

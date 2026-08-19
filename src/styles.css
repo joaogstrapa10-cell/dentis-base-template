@@ -608,6 +608,84 @@
   background-size: 22px 22px;
 }
 
+/* ---------- ABERTURA DA HOME ----------
+   A marca, a arcada e a linha se afastam pela rolagem enquanto o quadro cresce até
+   tomar a tela. Só o que não cabe no componente vive aqui: a cor da vinheta, a
+   medida da linha, e a entrada. */
+
+/* Vinheta do palco. ⚠️ VALOR MEDIDO, não escolhido: é o pixel do CANTO do próprio
+   clipe (`rgb(5,11,15)`), amostrado com ffmpeg. O clipe traz vinheta própria e é
+   mais ESCURO que o `--ink` da página — casando os dois, o canto do quadro se
+   dissolve no canto da tela em vez de desenhar a aresta de um retângulo. Se o clipe
+   for regerado, remedir: `ffmpeg -i arcada.mp4 -frames:v 1 -vf crop=8:8:4:4 ...`. */
+:root {
+  --abertura-vinheta: #050b0f;
+}
+
+/* A ÚNICA medida de fonte do site fora dos cinco degraus da escala, e é deliberada.
+   O gesto do template depende de a linha ter MASSA — ela precisa ser larga o
+   bastante para que afastá-la meia tela signifique alguma coisa, e o topo da escala
+   (`.display-1`, 48px) não chega lá.
+
+   O teto é geométrico, e o número saiu de MEDIÇÃO e não de estimativa: nesta fonte,
+   em caixa alta e com este tracking, cada caractere avança **0,664em** — constante em
+   sete larguras de janela, de 360 a 1920px. "ODONTOLOGIA ESPECIALIZADA" tem 25
+   caracteres, ou seja 16,6em. Para a linha ocupar no máximo 92% da janela:
+   `0,92 / 16,6 = 5,54vw`, e 5,4vw fecha com ~10% de folga em toda largura testada.
+
+   ⚠️ MINHA PRIMEIRA CONTA USOU 0,58em/caractere, DE CABEÇA, e deu 6,2vw — com isso a
+   linha media 1461px numa janela de 1440 e ficava CORTADA nas duas bordas. O defeito
+   não apareceu nas verificações porque o palco tem `overflow-hidden`: o teste de
+   `getClientRects().length === 1` passava (não quebrou em duas linhas) e o de
+   `scrollWidth` também (o recorte não gera rolagem). Ao dimensionar texto, medir a
+   LARGURA do elemento contra a da janela — "não quebrou" não é o mesmo que "cabe".
+
+   ⚠️ A conta está amarrada aos 25 caracteres DESTA linha. Ao trocar de clínica com
+   outra assinatura, recalcular: `vw = 92 / (0,664 × nº de caracteres)`.
+
+   ⚠️ É classe e não `text-[...]` no componente pelo motivo já pago três vezes neste
+   projeto: `text-[clamp(...)]` reimpõe o line-height e o `leading-[...]` do mesmo
+   elemento é ignorado, sem erro. Aqui os três andam juntos.
+
+   ⚠️ NÃO é convite para um sexto degrau. Vale para ESTA linha, na abertura, e o
+   seletor tem o nome da seção justamente para não ser reaproveitada. */
+.abertura-linha {
+  font-weight: 700;
+  font-size: clamp(1.1rem, 5.4vw, 5.5rem);
+  line-height: 0.95;
+  /* Tracking NEGATIVO, não largo. Rótulo em caixa alta com tracking largo é um dos
+     quatro dispositivos removidos em 03/08 por carregar "cara de IA"; aqui a caixa
+     alta se justifica pelo tamanho, e o tracking apertado é o que a faz ler como
+     título e não como etiqueta. */
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+}
+
+/* Entrada, uma vez, no carregamento. Fica em WRAPPER e não no elemento animado pela
+   rolagem: são duas escritas na mesma propriedade `transform`, e a última a rodar
+   apagaria a outra. O componente move o filho; estas classes movem o pai. */
+@keyframes abertura-sobe {
+  from { opacity: 0; transform: translate3d(0, 1.875rem, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes abertura-desce {
+  from { opacity: 0; transform: translate3d(0, -1.875rem, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes abertura-acende {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.abertura-entra-marca {
+  animation: abertura-sobe 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+.abertura-entra-quadro {
+  animation: abertura-acende 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+}
+.abertura-entra-linha {
+  animation: abertura-desce 1s cubic-bezier(0.16, 1, 0.3, 1) 0.62s both;
+}
+
 /* Mapa: no tema claro o embed já combina, só suaviza a saturação */
 .map-tint {
   filter: saturate(0.75) contrast(1.02);
@@ -618,6 +696,9 @@
   .marquee-track, [data-marquee] { animation: none !important; }
   .esteira { animation: none !important; }
   .line-rise { animation: none !important; transform: none !important; }
+  .abertura-entra-marca,
+  .abertura-entra-quadro,
+  .abertura-entra-linha { animation: none !important; transform: none !important; }
   .lift:hover { transform: none; }
   .group:hover .nudge,
   .group:hover .tile-spin { transform: none; }
