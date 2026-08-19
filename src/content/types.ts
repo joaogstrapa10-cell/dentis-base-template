@@ -199,6 +199,17 @@ export type DiferencialItem = {
   titulo: string;
   descricao: string;
   icone: DiferencialIcone;
+  /**
+   * Foto do cartão do carrossel. Entrou em 19/08, quando o usuário pediu o mesmo
+   * template de Especialidades também aqui.
+   *
+   * ⚠️ NENHUMA é registro clínico de paciente. Ver a nota do mesmo campo em
+   * `AreaAtuacao` e a proveniência nos LEIA-ME.txt das pastas de imagem.
+   *
+   * `null` cai no slot nomeado — estado esperado nas variantes de Rogério e Décio.
+   */
+  imagem: string | null;
+  imagemAlt: string;
 };
 
 export type DiferenciaisContent = {
@@ -420,6 +431,17 @@ export type TratamentoEixo = {
   /** O que o eixo envolve. Renderiza em linha, separado por ponto médio. */
   inclui: string[];
   icone: TratamentoIcone;
+  /**
+   * Foto do cartão do carrossel. Entrou em 19/08, quando o usuário pediu o mesmo
+   * template de Especialidades também aqui.
+   *
+   * ⚠️ NENHUMA é registro clínico de paciente. Ver a nota do mesmo campo em
+   * `AreaAtuacao` e a proveniência nos LEIA-ME.txt das pastas de imagem.
+   *
+   * `null` cai no slot nomeado — estado esperado nas variantes de Rogério e Décio.
+   */
+  imagem: string | null;
+  imagemAlt: string;
 };
 
 export type TratamentosContent = {

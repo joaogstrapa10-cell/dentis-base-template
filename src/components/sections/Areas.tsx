@@ -20,9 +20,10 @@ import { IconeEspecialidade } from "@/components/IconesEspecialidade";
  *   continuam permanentes (agora sobre a foto do item ativo), e a seção passou a
  *   ter FOTO, que é o que ela nunca teve.
  *
- * ✅ Efeito colateral que vale registrar: a `GradeDeCelulas` servia TRÊS seções e
- * o §5.2 travava uma quarta. Com esta saída ela serve DUAS (Diferenciais e
- * Tratamentos), e a trava afrouxa.
+ * ⚠️ Em 19/08 o usuário pediu ESTE MESMO carrossel também em Diferenciais e em
+ * Tratamentos, e mandou seguir depois de ouvir a objeção — ver a nota no topo de
+ * `CarrosselDeCartoes.tsx`. Com isso a `GradeDeCelulas` ficou sem uso e foi
+ * apagada; ela está no git, em `bc92186`.
  */
 export function AreasSection({ data }: { data: AreasContent }) {
   return (

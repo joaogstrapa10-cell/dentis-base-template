@@ -1,13 +1,13 @@
 import { ClipboardList, Layers, ScanFace, Users } from "lucide-react";
 import type { DiferencialIcone, DiferenciaisContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
-import { GradeDeCelulas } from "@/components/sections/GradeDeCelulas";
+import { CarrosselDeCartoes } from "@/components/sections/CarrosselDeCartoes";
 import { Reveal } from "@/components/Reveal";
 
 /**
  * Estrutura: GRADE DE CÉLULAS, a mesma de Áreas — pedido do cliente em 12/08,
  * "o mesmo template que utilizamos para a seção de especialidades". O componente
- * vive em `GradeDeCelulas.tsx`, compartilhado pelas duas seções para não haver
+ * vive em `CarrosselDeCartoes.tsx`, compartilhado pelas três seções para não haver
  * duas cópias divergindo na primeira correção.
  *
  * O que havia antes: os quatro diferenciais numa fileira separada por fios
@@ -65,13 +65,16 @@ export function DiferenciaisSection({ data }: { data: DiferenciaisContent }) {
         <SectionHeader titulo={data.titulo} descricao={data.descricao} />
       )}
 
-      <div className="mt-14 md:mt-16">
-        <GradeDeCelulas
+      <div className="mt-12 md:mt-14">
+        <CarrosselDeCartoes
+          rotuloLista="Diferenciais da clínica"
           itens={data.itens.map((item) => ({
             chave: item.titulo,
             titulo: item.titulo,
             descricao: item.descricao,
             icone: ICONES[item.icone],
+            imagem: item.imagem,
+            imagemAlt: item.imagemAlt,
           }))}
         />
       </div>

@@ -261,8 +261,7 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 |---|---|
 | Palco `sticky`: marca e arcada 3D PARADAS, sem moldura, e a rolagem só comanda o tempo do vídeo | Abertura |
 | Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
-| Grade de células com fio, ícone e realce no hover (`GradeDeCelulas`) | Diferenciais (4 col.), **Tratamentos (3 col.)** |
-| Painel escuro com a lista das 8 + pilha de fotos que troca | **Áreas** |
+| Painel escuro com a lista + pilha de fotos que troca (`CarrosselDeCartoes`) | **Áreas (8), Diferenciais (4), Tratamentos (3)** |
 | Esteira contínua | Estrutura, Depoimentos, **corpo clínico da Bio** |
 | Pilha de cartões arrastável | Casos (na home) |
 | Pilha de dossiês alternando de lado | Casos (em `/casos`) |
@@ -276,11 +275,17 @@ Estrutura, Tratamentos, Depoimentos, FAQ, Localização, Chamada final, Footer. 
 acompanhada." foi removida em 12/08 e a chamada final saiu do rodapé e virou seção na mesma
 data.
 
-⚠️ **`GradeDeCelulas` serve DUAS seções** — servia TRÊS até 19/08, quando Áreas
-virou carrossel e saiu dela. A única coisa que distingue Tratamentos de
-Diferenciais é a contagem de colunas (a linha de fecho, que era a outra diferença,
-saiu em 13/08 a pedido do usuário). **Continuar tratando uma terceira seção nessa
-grade como decisão a justificar, não como default.** Seis das treze seções sendo o mesmo molde foi exatamente o que
+⚠️ **`CarrosselDeCartoes` SERVE TRÊS SEÇÕES, e isso foi DECISÃO DO USUÁRIO CONTRA
+UMA OBJEÇÃO EXPLÍCITA.** Não "corrigir" numa próxima sessão sem falar com ele — é o
+mesmo caso da exceção de Áreas em 12/08. A objeção que ele ouviu antes de mandar
+seguir está inteira no topo de `CarrosselDeCartoes.tsx`, em três pontos: seriam três
+seções com a mesma anatomia (a 3ª, a 5ª e a 7ª da home), que é o defeito que reprovou
+o layout como "cara de IA" em 25/07; Diferenciais e Tratamentos não têm foto própria;
+e as fotos de Tratamentos são REPETIDAS de Especialidades. Ele respondeu "mesmo assim,
+o carrossel nas duas".
+
+🗑️ **`GradeDeCelulas` foi APAGADA** — ficou sem uso nenhum quando a terceira seção
+saiu dela. Está no git, em `bc92186`. Seis das treze seções sendo o mesmo molde foi exatamente o que
 reprovou o layout como "cara de IA" em 25/07.
 
 **Quatro seções têm foto**: o hero (colagem de três — a equipe recortada, um sorriso
@@ -480,10 +485,10 @@ src/components/sections/
   Hero.tsx                    colagem de 3 fotos + fileira de números
   Casos.tsx                   PilhaDeCasos (dossiê, /casos) + AvisoCasos + seção da home
   GaleriaDeCasos.tsx          pilha arrastável de cartões (home)
-  Areas.tsx                   as 8 especialidades, via CarrosselEspecialidades
-  CarrosselEspecialidades.tsx lista escura + pilha de fotos, sem dep. de animação
-  Diferenciais.tsx / Tratamentos.tsx
-                              as duas usam GradeDeCelulas
+  Areas.tsx / Diferenciais.tsx / Tratamentos.tsx
+                              as TRÊS usam CarrosselDeCartoes — ver a objeção no
+                              topo dele antes de mudar isso
+  CarrosselDeCartoes.tsx      lista escura + pilha de fotos, sem dep. de animação
   GradeDeCelulas.tsx          grade de células com fio, ícone e realce no hover
   Bio.tsx                     faixa escura: responsável + corpo clínico
   CorpoClinicoEsteira.tsx     esteira de retratos em laço, uma forma para toda largura
@@ -503,7 +508,8 @@ scripts/congelar-html.mjs     gera o layout num .html avulso (ver §"Como valida
 ```
 
 ⚠️ **Seções e formas que EXISTIRAM e não voltam:** Selos, Acompanhamento ("Cada etapa,
-acompanhada."), Comparativo ("nós vs. o convencional") e a **ÓRBITA do corpo clínico**
+acompanhada."), Comparativo ("nós vs. o convencional"), a **GRADE DE CÉLULAS**
+(`GradeDeCelulas.tsx`, apagada em 19/08 por ficar sem uso — está em `bc92186`) e a **ÓRBITA do corpo clínico**
 (`CorpoClinicoOrbita.tsx`, 413 linhas, apagado). As quatro saíram com aprovação ou pedido
 explícito, cada uma por um motivo registrado no §9 — a órbita com as palavras "não quero
 mais a órbita". Se aparecerem numa
@@ -958,12 +964,18 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-08-19 — **A arcada SE DESLOCA enquanto gira** — 115px na horizontal e 144px na vertical ao longo do clipe — e a compensação é por **CSS, não por encode**. Fazer o recorte acompanhar o objeto com expressão de tempo no `crop` do ffmpeg funciona (desvio de 34px contra 215px), mas o conteúdo passa a se deslocar a cada quadro, a predição interframe piora e o arquivo vai de 1,9 para 3,2 MB: como o gargalo da seção é decodificar rápido, pagar 70% de peso para centrar seria trocar o problema pelo problema. A tabela `DERIVA` no componente desloca o ELEMENTO pelo oposto do caminho, e isso o compositor faz de graça. ⚠️ Regerar o clipe obriga a remedir a tabela; errada, ela deriva para o lado oposto e nada avisa.
 - 2026-08-19 — `transform` no elemento que carrega `mix-blend-mode` é seguro, e vale saber para não hesitar: o que mata o blend é ANCESTRAL isolando o grupo, não o próprio elemento — ele já cria contexto de empilhamento por causa do blend. Conferido no render.
 - 2026-08-19 — **O CLIPE VIROU UMA MONTAGEM DE DOIS**, a pedido ("faça metade da boca com dentes já, e quero que mantenha aquele giro ao scrollar a arcada de antes, mostrava todos os dentes"): formação a partir de 4,4s do master (a arcada de cima já completa, a de baixo entrando dente a dente) e, na sequência, o GIRO recuperado do git. 9,25s no total.
-- 2026-08-19 — **A emenda é passagem pelo PRETO, não dissolve.** O dissolve mostrava as DUAS arcadas sobrepostas — a de mordida aberta da formação e a fechada do giro — e ficava turvo; conferido em recorte ampliado nos dois casos. Com  o preto é ausência, então a arcada some e volta em vez de fantasmar.
+- 2026-08-19 — **A emenda é passagem pelo PRETO, não dissolve.** O dissolve mostrava as DUAS arcadas sobrepostas — a de mordida aberta da formação e a fechada do giro — e ficava turvo; conferido em recorte ampliado nos dois casos. Com `mix-blend-mode: screen` o preto é ausência, então a arcada some e volta em vez de fantasmar.
 - 2026-08-19 — ⚠️ **A  VOLTOU, e agora é METADE ZERO.** Juntar os dois clipes trouxe de volta o defeito que a tabela existia para resolver: a formação não deriva (1px), mas o giro deriva 115px na horizontal e 144px na vertical, e sem compensação a arcada descia para a direita na segunda metade — visto no render. A tabela nova tem 20 pares: (0,0) até ~3,2s e os valores medidos do giro depois disso, remapeados para a linha do tempo da montagem (o giro foi ampliado por fator uniforme, então a fração se preserva). Medido no pixel: centro do assunto em x=720 numa tela de 1440 nos três pontos do curso, desvio máximo de 3px.
 - 2026-08-19 — ⚠️ **Compensar no ENCODE não era possível aqui**, e o motivo é geométrico: o assunto ocupa 96% da largura do quadro, então deslocar o recorte para centrá-lo cortaria dente. Deslocar o ELEMENTO não tem esse limite.
-- 2026-08-19 — ⚠️ **OITAVO falso positivo de medição desta memória, e o mais caro em tempo:** o VMAF da montagem deu 82,7 a CRF 32 e SATUROU em 84 mesmo a CRF 21 com 8,7MB. Não era compressão — era o teste. O VP9 LOSSLESS contra a própria referência marcava 85,4, quando tem de dar ~100: as duas trilhas tinham timebase diferente (1/12288 contra 1/1000) e o comparador desalinhava os quadros. Com  nos dois lados, a sanidade sobe para 98,3 e o CRF 32 mostra o número real: **94,98**. **A regra do log salvou a rodada: medir o lossless PRIMEIRO, e se ele não der ~100, o defeito é do teste.**
-- 2026-08-19 — ⚠️ **A metade do giro tem uma geração de perda a mais**: ela é ampliada de 1180 para 1400 de largura, porque o master dela não existe mais (, gitignored, contêiner novo) e só há o encode comitado. Se o master reaparecer, refazer essa metade a partir dele.
+- 2026-08-19 — ⚠️ **OITAVO falso positivo de medição desta memória, e o mais caro em tempo:** o VMAF da montagem deu 82,7 a CRF 32 e SATUROU em 84 mesmo a CRF 21 com 8,7MB. Não era compressão — era o teste. O VP9 LOSSLESS contra a própria referência marcava 85,4, quando tem de dar ~100: as duas trilhas tinham timebase diferente (1/12288 contra 1/1000) e o comparador desalinhava os quadros. Com `settb=AVTB,setpts=PTS-STARTPTS,fps=24` nos dois lados, a sanidade sobe para 98,3 e o CRF 32 mostra o número real: **94,98**. **A regra do log salvou a rodada: medir o lossless PRIMEIRO, e se ele não der ~100, o defeito é do teste.**
+- 2026-08-19 — ⚠️ **A metade do giro tem uma geração de perda a mais**: ela é ampliada de 1180 para 1400 de largura, porque o master dela não existe mais (`assets-originais/`, gitignored, contêiner novo) e só há o encode comitado. Se o master reaparecer, refazer essa metade a partir dele.
 - 2026-08-19 — ⚠️ **CORTE SECO NO PRETO DEIXA MANCHA, e o usuário pegou antes de mim** ("tire essas manchas quando os dentes vão se encaixando, tá feio"). Com `if(lt(val,52),16,val)` os pontos do fundo que caíam LOGO ACIMA do limiar sobreviviam como blocos claros sobre preto puro — no vão entre as arcadas viravam manchas cinzas visíveis. A correção é uma curva, não um degrau: `16+(val-16)*pow(clip((val-16)/72,0,1),3)` leva o escuro a zero suavemente, sem sobra isolada. Fundo continua em 1–3 (o `screen` segue sem desenhar retângulo), VMAF 95,5, e o vão fica limpo — conferido em recorte ampliado, lado a lado com a versão anterior. **Ao crushar preto para blend, usar joelho suave; degrau produz mancha exatamente na faixa que se quer apagar.**
+- 2026-08-19 — **O CARROSSEL PASSOU A SERVIR TRÊS SEÇÕES**, a pedido ("colocar o mesmo template que colocou em especialidades em Experiência aplicada caso a caso e Orçamento após avaliação"). ⚠️ Foi decidido CONTRA uma objeção que ele ouviu inteira e recusou: (1) três seções com a mesma anatomia é o defeito que reprovou o layout em 25/07, e a razão da trava dos três na grade antiga; (2) o carrossel é componente de FOTO e essas duas não têm foto própria; (3) as de Tratamentos seriam repetidas de Especialidades. Ele respondeu "mesmo assim, o carrossel nas duas". Registrado no topo do componente e no §5.2 — não corrigir sem falar com ele.
+- 2026-08-19 — 🗑️ **`GradeDeCelulas` apagada**: com a terceira seção saindo dela, ficou sem uso nenhum. Componente sem uso é convite a reintroduzir o molde por engano, e a prática deste projeto é apagar e anotar o commit (foi assim com `CorpoClinicoOrbita.tsx`). Está em `bc92186`.
+- 2026-08-19 — ⚠️ **O laço da lista SÓ FUNCIONA COM MAIS ITENS QUE A JANELA**, e o defeito só apareceu ao generalizar. No laço circular um item salta de uma ponta à outra quando a distância troca de sinal, e esse salto precisa cair FORA da janela: com 8 itens e janela de 7 sobra exatamente uma posição escondida. Com 4 (Diferenciais) e 3 (Tratamentos) não sobra nenhuma — o salto aconteceria no meio da tela. Solução: quando a lista não é maior que a janela, ela não gira; fica parada e centrada, e só o realce anda.
+- 2026-08-19 — Painel da lista ganhou `items-center` pelo mesmo motivo: a lista tem altura fixa (um slot por item) e o painel tem a altura da coluna da foto. Com 8 itens as duas quase coincidem e o defeito não aparece; com 3 e 4 a lista encostava no topo e sobrava petróleo vazio embaixo.
+- 2026-08-19 — Imagens das duas seções novas: Diferenciais usa fotos do consultório (`estrutura/`) mais o **scanner intraoral**, que estava ÓRFÃO desde 12/08, quando saiu desta mesma seção — voltou como cartão de "planejamento antes de execução", que é o que ele mostra. Tratamentos repete duas de Especialidades, e a repetição está anotada no LEIA-ME: foi decisão, não descuido.
+- 2026-08-19 — ⚠️ **Duas armadilhas de shell que corromperam arquivo em silêncio nesta sessão.** (a) `node -e "..."` com aspas DUPLAS: as crases dentro do script viram substituição de comando do bash, e três termos entre crases sumiram do CLAUDE.md sem erro nenhum — usar heredoc `<<'EOF'` para script com crase. (b) Comentário de bloco que contém o caminho `public/imagens/*` seguido de barra fecha o comentário na hora e quebra o arquivo inteiro: `tsc` acusou 10 erros de sintaxe num tipo que eu não tinha tocado.
 - 2026-08-19 — **A ABERTURA VOLTOU PARA A SEQUÊNCIA DE FORMAÇÃO**, a pedido ("volte com a ideia do scroll, aparecer a gengiva → depois os implantes de ferro → e por fim os dentes brancos e centralizar"). O clipe do giro saiu depois de meio dia no ar. Nada foi reconstruído de memória: o encode da formação foi RECUPERADO do git (`38f8b02`), como o §8 manda.
 - 2026-08-19 — ⚠️ **O pedido COMPLETO dele não é entregável com o material que existe**, e os dois caminhos fecharam no mesmo dia: ele refinou para "em movimento de um lado para o outro, mostrando os dois lados da boca, MAS adicione essa ação de ir adicionando os ferros e os dentes" — giro E formação juntos, o que exige geração nova; e então (a) esta sessão não tem MCP de geração e (b) ele respondeu "eu to sem crefito no higgsfield". Foi ao ar a formação sozinha: entrega implantes → dentes entrando um a um, e NÃO entrega o giro nem a gengiva vazia antes dos implantes.
 - 2026-08-19 — **A `DERIVA` FOI DELETADA, e a ausência é MEDIDA.** O giro caminhava 115px na horizontal e 144px na vertical, e sem a tabela terminava visivelmente deslocado. A formação não caminha: 32 amostras ao longo dos 8,04s dão o centro do assunto em x=960 num quadro de 1920 — o meio exato — e deriva de **1px na horizontal, 0 na vertical**. Mantida, a tabela do giro deslocaria este clipe para o lado errado. É isso que resolve o "centralizar" do pedido, e resolve no ARQUIVO (recorte `1400:1056:260:24`, centrado em 960,552), sem nada em runtime.

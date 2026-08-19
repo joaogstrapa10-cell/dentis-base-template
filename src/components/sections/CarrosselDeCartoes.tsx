@@ -28,10 +28,23 @@ export type CartaoCarrossel = {
  * em 19/08 ("coloque esse template na sessão de especialidades, com a identidade
  * da suzuki, as informações, e fotos que remetam a tal especialidade").
  *
- * ✅ ISSO TIRA A `GradeDeCelulas` DE UMA SEÇÃO. Ela servia TRÊS (Áreas,
- * Diferenciais, Tratamentos) e o §5.2 registrava que não podia servir uma quarta;
- * agora serve duas. Seis das treze seções sendo o mesmo molde foi exatamente o que
- * reprovou o layout como "cara de IA" em 25/07.
+ * ⚠️ ELE SERVE TRÊS SEÇÕES — Áreas, Diferenciais e Tratamentos — E ISSO FOI DECISÃO
+ * DO USUÁRIO, TOMADA CONTRA UMA OBJEÇÃO EXPLÍCITA. Não é descuido, e não deve ser
+ * "corrigido" numa próxima sessão sem falar com ele.
+ *
+ * O que foi dito a ele antes de fazer, em 19/08:
+ *   1. seriam três seções com a mesma anatomia (a 3ª, a 5ª e a 7ª da home), que é
+ *      literalmente o defeito que reprovou o layout como "cara de IA" em 25/07 —
+ *      "seis das treze seções eram o mesmo componente" — e a razão pela qual a
+ *      `GradeDeCelulas` estava travada em três;
+ *   2. o carrossel é um componente de FOTO, e Diferenciais e Tratamentos não têm
+ *      foto própria: "planejamento antes de execução" não tem imagem que o ilustre;
+ *   3. em Tratamentos as fotos seriam REPETIDAS de Especialidades.
+ * Ele respondeu "mesmo assim, o carrossel nas duas". A repetição de imagem está
+ * registrada nos LEIA-ME das pastas.
+ *
+ * Efeito colateral: a `GradeDeCelulas` ficou sem uso e foi apagada. Está no git,
+ * em `bc92186`, se alguma seção voltar para ela.
  *
  * ── O QUE ENTROU DO TEMPLATE E O QUE FICOU FORA ────────────────────────────────
  *
@@ -184,7 +197,11 @@ export function CarrosselDeCartoes({
       className="relative isolate flex flex-col overflow-hidden rounded-3xl ring-1 ring-border md:rounded-[2rem] lg:flex-row"
     >
       {/* ── PAINEL ESQUERDO: a lista, sobre o petróleo ───────────────────────── */}
-      <div className="relative bg-ink px-5 py-9 md:px-8 lg:w-[38%] lg:py-12">
+      <div /* `items-center`: a lista tem altura FIXA (um slot por item) e o painel tem a
+            altura da coluna da foto, que é maior. Sem centrar, uma lista curta encosta
+            no topo e sobra petróleo vazio embaixo — visível com 3 e 4 itens, invisível
+            com 8, que é o caso em que este componente nasceu. */
+        className="relative flex items-center bg-ink px-5 py-9 md:px-8 lg:w-[38%] lg:py-12">
         <div
           role="tablist"
           aria-orientation="vertical"

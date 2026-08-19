@@ -1,12 +1,12 @@
 import { Blocks, Gem, Stethoscope } from "lucide-react";
 import type { TratamentoIcone, TratamentosContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
-import { GradeDeCelulas } from "@/components/sections/GradeDeCelulas";
+import { CarrosselDeCartoes } from "@/components/sections/CarrosselDeCartoes";
 
 /**
  * Estrutura: GRADE DE CÉLULAS de três colunas, a mesma de Áreas e Diferenciais —
  * pedido do cliente em 12/08, "para ficar tudo condizente". O componente vive em
- * `GradeDeCelulas.tsx`.
+ * `CarrosselDeCartoes.tsx`.
  *
  * ⚠️ Esta é a TERCEIRA seção da página com esta anatomia, e o risco é real: seis
  * das treze seções serem o mesmo molde foi a causa do layout ser reprovado como
@@ -49,22 +49,22 @@ export function TratamentosSection({ data }: { data: TratamentosContent }) {
     <Section id="tratamentos">
       <SectionHeader titulo={data.titulo} descricao={data.descricao} />
 
-      <div className="mt-14 md:mt-16">
-        <GradeDeCelulas
-          colunas={3}
+      <div className="mt-12 md:mt-14">
+        <CarrosselDeCartoes
+          rotuloLista="Eixos de tratamento"
           itens={data.eixos.map((eixo) => ({
             chave: eixo.titulo,
             titulo: eixo.titulo,
             descricao: eixo.descricao,
             icone: ICONES[eixo.icone],
-            /* O que o eixo envolve, empilhado dentro da célula. Em faixa
-               horizontal isto era uma linha corrida separada por ponto médio;
-               numa coluna de ~350px a linha corrida quebraria em qualquer
-               arranjo, e o ponto acabaria no início de linha lendo como
-               marcador. Empilhado, cada item é uma linha e não há separador
-               órfão. */
+            imagem: eixo.imagem,
+            imagemAlt: eixo.imagemAlt,
+            /* O que o eixo envolve, empilhado no pé do cartão. Sobre a foto o
+               fio de separação vira claro e o texto acompanha o resto do
+               painel — no cartão do carrossel o fundo é escuro, não a
+               superfície clara da grade antiga. */
             extra: (
-              <ul className="grid gap-1.5 border-t border-border pt-4 text-small text-foreground">
+              <ul className="grid gap-1 border-t border-white/20 pt-3 text-small text-ink-foreground/80">
                 {eixo.inclui.map((item) => (
                   <li key={item}>{item}</li>
                 ))}

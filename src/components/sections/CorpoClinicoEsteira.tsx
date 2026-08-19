@@ -13,7 +13,8 @@ import type { BioMembro } from "@/content/types";
  * É a TERCEIRA esteira do site (Estrutura e Depoimentos são as outras duas), e
  * isso é escolha do usuário, registrada: aqui o gesto se justifica porque os
  * nove retratos são do mesmo ensaio de estúdio e passam como série. Se aparecer
- * pedido de uma quarta, vale a mesma conversa que travou a `GradeDeCelulas`.
+ * pedido de uma quarta, vale a mesma conversa — que travou a antiga `GradeDeCelulas`
+ * em três seções, e que em 19/08 o usuário decidiu não seguir para o carrossel.
  *
  * O que esta forma resolve em relação à órbita que ela substitui:
  * - o retrato passa de 188px (o que a órbita comportava em 1440) para 288px, o

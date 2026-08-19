@@ -178,24 +178,36 @@ export const clinica: Clinica = {
       {
         titulo: "Corpo clínico de especialistas",
         icone: "corpo",
+        imagem: "/imagens/estrutura/08-atendimento.webp",
+        imagemAlt:
+          "Profissional da clínica em atendimento, com o paciente na cadeira.",
         descricao:
           "Cada área conduzida por quem se especializou nela. O caso não muda de mãos por conveniência de agenda.",
       },
       {
         titulo: "Casos de alta complexidade",
         icone: "complexidade",
+        imagem: "/imagens/estrutura/09-consultorio-digital.webp",
+        imagemAlt:
+          "Consultório com equipamento de imagem digital para planejamento.",
         descricao:
           "Reabilitações extensas e situações que exigem planejamento multidisciplinar são o centro da nossa rotina, não a exceção.",
       },
       {
         titulo: "Planejamento antes de execução",
         icone: "planejamento",
+        imagem: "/imagens/metodo/scanner-intraoral.jpeg",
+        imagemAlt:
+          "Scanner intraoral em uso, com o modelo digital da arcada na tela.",
         descricao:
           "Nenhum procedimento começa sem diagnóstico fechado e plano apresentado ao paciente, com etapas e critérios definidos.",
       },
       {
         titulo: "Harmonização com a face",
         icone: "face",
+        imagem: "/imagens/hero/sorriso.jpeg",
+        imagemAlt:
+          "Close de um sorriso em plano fechado, de perfil, com os dentes naturais à mostra.",
         descricao:
           "Função mastigatória e estética tratadas em conjunto, considerando a face como um todo, não o dente isolado.",
       },
@@ -590,12 +602,18 @@ export const clinica: Clinica = {
       {
         titulo: "Avaliação e prevenção",
         icone: "avaliacao",
+        imagem: "/imagens/estrutura/07-consultorio-claro.webp",
+        imagemAlt:
+          "Consultório claro da clínica, preparado para a consulta de avaliação.",
         descricao: "Consulta de avaliação, diagnóstico, limpeza e plano de acompanhamento.",
         inclui: ["Exame clínico completo", "Diagnóstico por imagem", "Plano de tratamento por escrito"],
       },
       {
         titulo: "Reabilitação",
         icone: "reabilitacao",
+        imagem: "/imagens/especialidades/08-reabilitacao-oral.webp",
+        imagemAlt:
+          "Prótese protocolo fixa sobre implantes, vista por baixo, em fundo escuro.",
         descricao: "Implantes, próteses e reabilitação da função mastigatória em casos extensos.",
         inclui: [
           "Planejamento multidisciplinar",
@@ -607,6 +625,9 @@ export const clinica: Clinica = {
       {
         titulo: "Estética e harmonização",
         icone: "estetica",
+        imagem: "/imagens/especialidades/02-estetica-dental.webp",
+        imagemAlt:
+          "Seis facetas de cerâmica apoiadas sobre uma folha, fotografadas em fundo escuro.",
         descricao: "Facetas, cerâmicas, clareamento e harmonização facial integrados ao plano.",
         inclui: [
           "Planejamento a partir da face",
