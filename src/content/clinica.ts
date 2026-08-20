@@ -99,20 +99,6 @@ export const clinica: Clinica = {
        encurtada para uma linha — não é texto novo, são as mesmas afirmações que a
        seção "Experiência aplicada caso a caso" faz mais abaixo. Escrever coisa nova
        aqui criaria promessa que nenhuma outra parte do site sustenta. */
-    pontos: [
-      {
-        titulo: "Corpo clínico de especialistas",
-        texto: "Cada área conduzida por quem se especializou nela.",
-      },
-      {
-        titulo: "Casos de alta complexidade",
-        texto: "Reabilitações extensas e planejamento multidisciplinar são a rotina.",
-      },
-      {
-        titulo: "Planejamento antes de execução",
-        texto: "Diagnóstico fechado e plano apresentado antes de começar.",
-      },
-    ],
     marcaAlt: "Suzuki Odontologia",
     wordmark: "SUZUKI",
   },

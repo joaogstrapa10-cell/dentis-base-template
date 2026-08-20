@@ -91,21 +91,6 @@ export type EstruturaContent = {
  * A abertura só acrescenta a marca e a linha; a sequência, o aviso legal e a
  * proveniência continuam num lugar só.
  */
-/**
- * Um dos três pontos da tela de entrada. NÃO é um card: é um bloco de texto com um
- * fio dourado em cima, e a diferença importa — cartão com fundo e sombra próprios
- * está na lista do que não volta (§5.2 do CLAUDE.md).
- *
- * A copy sai de `diferenciais.itens`, encurtada. Não é texto novo: são as mesmas
- * três coisas que a seção "Experiência aplicada caso a caso" já afirma, ditas em uma
- * linha para caber numa tela de entrada.
- */
-export type PortalPonto = {
-  titulo: string;
-  /** Uma linha. Se passar de ~90 caracteres, quebra em três linhas no celular e a
-   *  tela de entrada deixa de ser uma tela de entrada. */
-  texto: string;
-};
 
 export type AberturaContent = {
   /**
@@ -122,12 +107,6 @@ export type AberturaContent = {
   marcaAlt: string;
   /** Reserva em texto quando não há arquivo de marca. */
   wordmark: string;
-  /**
-   * Os três pontos da tela de entrada, sob a marca. Exatamente TRÊS: com dois a
-   * fileira fica torta no desktop, com quatro a tela deixa de ser um cartão de visita
-   * e vira uma seção de conteúdo — que já existe, é a "Experiência aplicada".
-   */
-  pontos: PortalPonto[];
 };
 
 /* ⚠️ NÃO EXISTE MAIS o campo `linha` ("ODONTOLOGIA ESPECIALIZADA", que ficava embaixo

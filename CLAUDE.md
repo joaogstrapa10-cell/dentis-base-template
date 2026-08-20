@@ -156,11 +156,14 @@ servir uma quarta.
 pendente no working tree, nada esperando OK.
 
 ⚠️ **A HOME ABRE PELA TELA DE ENTRADA (`#portal`)**, criada em 19/08 a pedido dele:
-fundo no verde padrão, a marca em cima e TRÊS PONTOS embaixo, cada um com um fio
-dourado curto. Ao rolar, a marca sobe, os pontos descem e se abrem para os lados, e
-tudo cresce e se apaga — a página passa por dentro do grupo. Custa **1,4 tela**, e
-esse número é `TRILHO_MULT` em `AberturaPortal.tsx`. A copy dos três pontos é a de
-`diferenciais.itens`, encurtada: não é texto novo.
+fundo no verde padrão e a marca da Suzuki SOZINHA no centro. Ao rolar, ela cresce e
+sobe, e se apaga junto com o fim da seção — a página passa por dentro dela.
+
+⚠️ **A escrita saiu em 20/08**: eram três pontos com fio dourado, e ele pediu "deixar
+somente a logo". A copy não se perdeu — era a de `diferenciais.itens` encurtada, e
+continua inteira em "Experiência aplicada caso a caso". O tipo `PortalPonto` e o campo
+`pontos` saíram do conteúdo em vez de virarem opcionais; estão em `9a77fdf`. Custa **1,4 tela**, e
+esse número é `TRILHO_MULT` em `AberturaPortal.tsx`.
 
 ⚠️ **A ARCADA 3D SAIU DO SITE** em 19/08, no fim da sessão: "tire a ideia dos dentes,
 a ideia da sessão do scroll com a logo tá boa, e após scrollar começa o hero". Ela foi
@@ -247,7 +250,7 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 
 | Anatomia | Seções |
 |---|---|
-| Palco `sticky`: marca em cima e três pontos com fio dourado, tudo se afastando e crescendo na rolagem | **Tela de entrada** |
+| Palco `sticky`: a marca sozinha no verde, crescendo e subindo na rolagem | **Tela de entrada** |
 | Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
 | Painel escuro com a lista + pilha de fotos que troca (`CarrosselDeCartoes`) | **Áreas (8), Diferenciais (4), Tratamentos (3)** |
 | Esteira contínua | Estrutura, Depoimentos, **corpo clínico da Bio** |
@@ -967,6 +970,10 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-08-19 — ⚠️ **OITAVO falso positivo de medição desta memória, e o mais caro em tempo:** o VMAF da montagem deu 82,7 a CRF 32 e SATUROU em 84 mesmo a CRF 21 com 8,7MB. Não era compressão — era o teste. O VP9 LOSSLESS contra a própria referência marcava 85,4, quando tem de dar ~100: as duas trilhas tinham timebase diferente (1/12288 contra 1/1000) e o comparador desalinhava os quadros. Com `settb=AVTB,setpts=PTS-STARTPTS,fps=24` nos dois lados, a sanidade sobe para 98,3 e o CRF 32 mostra o número real: **94,98**. **A regra do log salvou a rodada: medir o lossless PRIMEIRO, e se ele não der ~100, o defeito é do teste.**
 - 2026-08-19 — ⚠️ **A metade do giro tem uma geração de perda a mais**: ela é ampliada de 1180 para 1400 de largura, porque o master dela não existe mais (`assets-originais/`, gitignored, contêiner novo) e só há o encode comitado. Se o master reaparecer, refazer essa metade a partir dele.
 - 2026-08-19 — ⚠️ **CORTE SECO NO PRETO DEIXA MANCHA, e o usuário pegou antes de mim** ("tire essas manchas quando os dentes vão se encaixando, tá feio"). Com `if(lt(val,52),16,val)` os pontos do fundo que caíam LOGO ACIMA do limiar sobreviviam como blocos claros sobre preto puro — no vão entre as arcadas viravam manchas cinzas visíveis. A correção é uma curva, não um degrau: `16+(val-16)*pow(clip((val-16)/72,0,1),3)` leva o escuro a zero suavemente, sem sobra isolada. Fundo continua em 1–3 (o `screen` segue sem desenhar retângulo), VMAF 95,5, e o vão fica limpo — conferido em recorte ampliado, lado a lado com a versão anterior. **Ao crushar preto para blend, usar joelho suave; degrau produz mancha exatamente na faixa que se quer apagar.**
+- 2026-08-20 — **A TELA DE ENTRADA FICOU SÓ COM A LOGO**, a pedido: "tirar a escrita da sessão do scroll, deixar somente a logo". Saíram os três pontos, o fio dourado, o tipo `PortalPonto` e o campo `pontos` do conteúdo. **Nada de copy se perdeu**: aquele texto era o de `diferenciais.itens` encurtado, e continua inteiro na seção "Experiência aplicada caso a caso" — a tela de entrada nunca teve texto próprio.
+- 2026-08-20 — Com a marca sozinha o gesto precisou de mais peso: `ZOOM` de 0,7 para **0,9** e a marca de `min(30vw,23rem)` para `min(34vw,26rem)`. Dividindo a tela com três blocos de texto, o crescimento menor bastava; sozinha, ela carrega o gesto inteiro. Medido: 416 → 790px no desktop e 281 → 533 no celular, opacidade 1 → 0, overflow 0 em todo o curso.
+- 2026-08-20 — ⚠️ **Isso deixa esta tela com a MESMA FORMA do `AberturaMarca.tsx` que existiu em 18/08 e foi apagado.** A diferença é o gesto: lá a marca só se apagava nos primeiros pixels, aqui ela cresce e atravessa a tela ao longo do curso. Anotado no topo do componente — se o pedido virar "só a logo parada", o de 18/08 é o ponto de partida, não uma reescrita.
+- 2026-08-20 — Saíram junto os três constantes que só serviam aos pontos (`DESCE_PONTOS`, `ABRE_LADOS` e o `pontosRef`), e o `gap` da coluna do palco. **Ao remover conteúdo de uma seção, procurar as constantes que existiam só para ele** — é o mesmo cuidado do padding órfão do wordmark em 03/08.
 - 2026-08-20 — ⚠️ **A PILHA DE CASOS PASSAVA POR CIMA DA PÍLULA DE NAVEGAÇÃO**, reportado com print. Causa: cada cartão recebe `zIndex` inline de até **100** (ordem interna da pilha) e o header é `fixed z-50` — e a região dos cartões não criava contexto de empilhamento, então o 100 competia direto no contexto RAIZ e ganhava. `relative`, que a região já tinha, NÃO cria contexto: só cria com `z-index` declarado. Resolvido com `isolate` na região de arraste.
 - 2026-08-20 — Consertado NO COMPONENTE e não subindo o `z-50` do header, e a distinção é a regra: o número do header é a camada da moldura da página, o 100 dos cartões é ordenação interna que nunca deveria ter escapado. Subir o header só empurraria o problema para o próximo componente que usasse um número alto.
 - 2026-08-20 — `isolate` também entrou no `CarrosselDeCartoes`, por prevenção: ele usa `zIndex` 20/10/0, que hoje não conflita com o `z-50`, mas deixar ordenação interna escapar é exatamente o defeito que a galeria pagou.
