@@ -25,30 +25,50 @@ import type { AberturaContent } from "@/content/types";
  * tela, e na arcada está em repouso no tamanho normal. O que o §9 registra como
  * defeito é a mesma marca em DOIS TAMANHOS AO MESMO TEMPO, não em sequência.
  *
- * ⚠️ Custo de rolagem: esta seção soma 1,75 tela às 2,4 da arcada. São ~4,2 telas
- * antes do hero. Se incomodar, é `TRILHO_MULT` aqui — e reduzir abaixo de ~0,5 faz o
- * afastamento acontecer rápido demais para ser lido como gesto.
+ * ⚠️ Custo de rolagem: 1,4 tela até o hero estar em posição. Se incomodar, é
+ * `TRILHO_MULT` aqui — mas o piso é o próprio palco, que tem uma tela de altura e
+ * precisa sair de cena antes do hero entrar. Abaixo de ~0,3 o gesto passa antes de
+ * ser lido.
  */
 
-/** Quantas telas de ROLAGEM o afastamento consome, além da tela parada. */
-const TRILHO_MULT = 0.75;
+/** Quantas telas de ROLAGEM a seção tem além da tela parada. */
+const TRILHO_MULT = 0.4;
 
-/** Fração do curso em que os elementos começam a se apagar. Antes disso eles só se
- *  afastam e crescem — apagar cedo demais entrega uma tela vazia no meio do gesto. */
-const APAGA_DE = 0.55;
-const APAGA_ATE = 0.95;
+/**
+ * ⚠️ ONDE OS ELEMENTOS ACABAM DE SE APAGAR, em fração do curso TOTAL da seção — e
+ * "total" aqui inclui a SAÍDA do palco, não só o trecho em que ele está grudado.
+ *
+ * Esse detalhe era o defeito reportado em 19/08: "ao terminar o scroll inicial (...)
+ * ainda demora um pouco para ele aparecer, tem um baita espaço". A conta antiga dividia
+ * pelo trecho grudado (`altura - innerHeight`), então a opacidade chegava a ZERO com o
+ * palco ainda ocupando a tela inteira — e sobrava UMA TELA CHEIA de verde vazio rolando
+ * antes do hero. Medido: no fim do curso a marca estava em opacidade 0 e o topo do hero
+ * a 900px de distância.
+ *
+ * Dividindo pela altura INTEIRA, o apagamento termina junto com a seção: as peças
+ * continuam na tela enquanto o palco desliza para cima e o hero sobe por baixo. Em
+ * nenhum momento a tela fica vazia.
+ */
+const APAGA_DE = 0.72;
+const APAGA_ATE = 1;
 
-/** Deslocamento máximo, em fração da altura da tela. A marca sobe, os pontos descem. */
-const SOBE_MARCA = 0.42;
-const DESCE_PONTOS = 0.38;
+/**
+ * Deslocamento máximo, em fração da altura da tela. A marca sobe, os pontos descem.
+ *
+ * Menores do que eram (0,42 e 0,38) porque agora boa parte do curso é a SAÍDA do
+ * palco, e nela a rolagem da página já carrega tudo para cima de graça. Somar o
+ * deslocamento antigo em cima disso jogava as peças fora do quadro cedo demais, o que
+ * recriava a tela vazia por outro caminho.
+ */
+const SOBE_MARCA = 0.22;
+const DESCE_PONTOS = 0.2;
 
 /** Afastamento lateral do ponto da ponta, em fração da largura da tela. O do meio não
  *  anda — é ele que dá a sensação de a página passar por dentro do grupo. */
-const ABRE_LADOS = 0.3;
+const ABRE_LADOS = 0.26;
 
-/** Quanto tudo cresce ao longo do curso. 1,85 é o ponto em que a marca sai da tela
- *  pela borda de cima sem antes parecer que travou. */
-const ZOOM = 0.85;
+/** Quanto tudo cresce ao longo do curso. */
+const ZOOM = 0.7;
 
 export const PORTAL_VH = (TRILHO_MULT + 1) * 100;
 
@@ -83,9 +103,12 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          (órbita, arcada em quadros, arcada em vídeo, marca) — e aqui daria certo por
          acidente, porque esta É a primeira seção; usar `scrollY` deixaria uma bomba
          para o dia em que algo entrar antes dela. */
+      /* ⚠️ Divide pela altura INTEIRA da seção, não por `altura - innerHeight`. O
+         segundo mede só o trecho em que o palco está GRUDADO, e usá-lo faz a animação
+         terminar com o palco ainda ocupando a tela toda — sobrando uma tela cheia de
+         verde vazio antes do hero. Ver a nota de `APAGA_ATE`. */
       const caixa = trilho.getBoundingClientRect();
-      const curso = caixa.height - window.innerHeight;
-      const p = curso > 0 ? trava01(-caixa.top / curso) : 0;
+      const p = caixa.height > 0 ? trava01(-caixa.top / caixa.height) : 0;
 
       const escala = 1 + p * ZOOM;
       const opacidade =
