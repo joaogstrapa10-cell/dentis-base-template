@@ -192,7 +192,17 @@ export function GaleriaDeCasos({
         onPointerUp={aoSoltar}
         onPointerCancel={aoSoltar}
         className={cn(
-          "relative flex h-[22rem] touch-pan-y select-none items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-accent sm:h-[28rem] lg:h-[32rem]",
+          /* ⚠️ `isolate` NÃO É ENFEITE: os cartões recebem `zIndex` inline de até
+             100 (ver a nota em `Carta`), e sem um contexto de empilhamento próprio
+             esse 100 compete direto com a pílula de navegação, que é `fixed z-50` —
+             então a pilha passava POR CIMA do menu. Reportado pelo usuário em 20/08 com
+             print. `relative` sozinho não basta: só cria contexto com `z-index`
+             declarado. `isolate` (isolation: isolate) cria sempre, e mantém a
+             ordenação dos cartões como assunto interno do componente.
+             Corrigir aqui e não subindo o `z-50` do header: o número do header é a
+             camada da moldura da página, e o 100 dos cartões é ordem interna que nunca
+             deveria ter escapado. */
+          "relative isolate flex h-[22rem] touch-pan-y select-none items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-accent sm:h-[28rem] lg:h-[32rem]",
           /* SANGRA até a borda da janela e RECORTA ali. As duas coisas resolvem o
              mesmo defeito: a caixa envolvente de um cartão GIRADO é maior que o
              cartão — 208px com 12° de giro medem 256px — e o cartão da ponta

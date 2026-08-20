@@ -351,7 +351,12 @@ export function CarrosselDeCartoes({
              É a armadilha de 12/08 e 13/08 — arquivo panorâmico em caixa vertical
              não se resolve com `object-position`. Em 4:3 o recorte é de 11% da
              largura nas 1,5:1 e de 25% da altura na quadrada. Conferido nas oito. */
-          className="relative aspect-[4/3] w-full max-w-[34rem]"
+          /* `isolate` pelo mesmo motivo da galeria de casos: os cartões usam
+             `zIndex` inline (20/10/0) e isso é ordem INTERNA. Aqui os valores são
+             baixos e hoje não há conflito com a pílula (`z-50`), mas deixar a
+             ordenação escapar é o defeito que a galeria pagou com a pilha passando
+             por cima do menu. */
+          className="relative isolate aspect-[4/3] w-full max-w-[34rem]"
         >
           {itens.map((item, i) => {
             const d = distanciaCircular(i, ativo, n);
