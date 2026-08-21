@@ -315,7 +315,9 @@
    `will-change` é dica de performance, não requisito: a animação roda igual sem
    ele. Não reintroduzir. */
 .retrato-flutua {
-  animation: retrato-flutua 4.2s ease-in-out infinite;
+  /* Delay NEGATIVO: nasce no meio do ciclo em vez de estalar do zero no primeiro
+     quadro. Item do motion system da skill. */
+  animation: retrato-flutua 4.2s ease-in-out -1.4s infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -341,7 +343,7 @@
 }
 
 .carta-flutua {
-  animation: carta-flutua 5.4s ease-in-out infinite;
+  animation: carta-flutua 5.4s ease-in-out -2.1s infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -537,7 +539,7 @@
   to   { transform: translateX(-50%); }
 }
 @utility marquee-track {
-  animation: marquee-x 42s linear infinite;
+  animation: marquee-x 42s linear -6s infinite;
 }
 .marquee-mask {
   -webkit-mask-image: linear-gradient(to right, transparent 0, black 8%, black 92%, transparent 100%);
@@ -577,7 +579,7 @@
   to   { transform: translateX(-50%); }
 }
 .esteira {
-  animation: esteira 60s linear infinite;
+  animation: esteira 60s linear -11s infinite;
   width: max-content;
 }
 .esteira-pausa:hover .esteira,
@@ -658,12 +660,91 @@
   filter: saturate(0.75) contrast(1.02);
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   QUALITY FLOOR — da skill `10k-websites`, em .claude/skills/10k-websites/
+   ═══════════════════════════════════════════════════════════════════════════════
+   Cada item aqui é um item nomeado do "quality floor" e do "motion system" do
+   `references/scrub-pipeline.md`, aplicado a este projeto depois de MEDIR o que
+   faltava. O que passou já antes (marcos semânticos, `:focus-visible`, o bloco de
+   movimento reduzido, um único elemento `fixed`) não está repetido aqui.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 1. A PÁGINA NÃO SE ARRASTA PARA O LADO.
+   Medido antes: `overflow-x: visible` em html E body. `hidden` sozinho ainda deixa
+   código rolar a página lateralmente, e um único link de âncora deixa o site inteiro
+   deslocado; `clip` proíbe de verdade. `hidden` vem primeiro como reserva para
+   navegador que não conhece `clip`. */
+html,
+body {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* 2. ALVO DE TOQUE DE 44px, E SÓ ONDE FAZ SENTIDO.
+   Medidos 29 links abaixo de 44px de altura. DESSES, 16 são links em LINHA dentro de
+   texto corrido, que a própria norma isenta — engordar esses quebraria a entrelinha do
+   parágrafo. Os que importam estão no rodapé (24) e no header (5), e os do header ficam
+   escondidos sob ponteiro grosso, onde existe o menu mobile.
+   ⚠️ O alinhamento vem JUNTO com o `inline-flex`, e não é zelo: trocar o tipo de
+   display sem redeclarar alinhamento joga o rótulo para a esquerda e encolhe linha de
+   largura cheia até o texto. A skill nomeia esse defeito. */
+@media (pointer: coarse) {
+  footer :where(nav, dd, dl, li) > a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* 3. PAUSA GLOBAL EM ABA ESCONDIDA.
+   ⚠️ `animation-play-state` NÃO é propriedade herdada, então pôr o valor num
+   contêiner nunca alcança filho nem pseudo-elemento — é o defeito exato que a skill
+   registra. O padrão que não falha atinge elemento e pseudo-elemento diretamente.
+   Quem liga e desliga a classe é o `visibilitychange` no `__root.tsx`. */
+body.pausado *,
+body.pausado *::before,
+body.pausado *::after {
+  animation-play-state: paused !important;
+}
+
+/* 4. CAMADA DE AMBIENTE FIXA, ATRÁS DE TUDO.
+   A skill: "make the page one environment: one fixed background layer behind
+   everything, cycling at 60 seconds or longer, so scrolling feels like moving through
+   a place instead of past stacked sections." Medido antes: ZERO elementos `fixed`
+   além do header.
+   É petróleo e dourado em névoa muito baixa, girando em 90s. Fica em `-z-10` e é
+   `pointer-events: none`, então não intercepta clique nem entra na ordem de leitura.
+   ⚠️ Deriva por `transform`, nunca por `background-position`: a segunda repinta a
+   camada inteira a cada quadro. */
+.ambiente {
+  position: fixed;
+  inset: -20%;
+  z-index: -10;
+  pointer-events: none;
+  opacity: 0.5;
+  background:
+    radial-gradient(38% 30% at 22% 18%, color-mix(in oklch, var(--accent) 16%, transparent), transparent 70%),
+    radial-gradient(32% 26% at 82% 72%, color-mix(in oklch, var(--gold) 9%, transparent), transparent 70%);
+  animation: ambiente-deriva 90s ease-in-out -24s infinite alternate;
+  will-change: transform;
+}
+
+@keyframes ambiente-deriva {
+  from { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+  to   { transform: translate3d(1.5%, 1.5%, 0) scale(1.06); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .marquee-track, [data-marquee] { animation: none !important; }
   .esteira { animation: none !important; }
   .line-rise { animation: none !important; transform: none !important; }
   .abertura-entra-marca { animation: none !important; transform: none !important; }
+  /* A camada de ambiente para de derivar, mas CONTINUA visível: ela é cor de fundo,
+     não movimento decorativo, e apagá-la mudaria a paleta de quem pede menos
+     movimento. Estado final mostrado, motor desligado. */
+  .ambiente { animation: none !important; transform: none !important; }
   .lift:hover { transform: none; }
   .group:hover .nudge,
   .group:hover .tile-spin { transform: none; }

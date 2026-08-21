@@ -45,6 +45,21 @@ export const Route = createFileRoute("/")({
 function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground scroll-smooth">
+      {/* SKIP LINK — primeiro elemento focável da página, item do quality floor da
+          skill. Invisível até receber foco; quem navega por teclado aperta Tab uma vez
+          e pula a pílula inteira direto para o conteúdo. */}
+      <a
+        href="#main"
+        className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-[60] focus-visible:rounded-full focus-visible:bg-ink focus-visible:px-5 focus-visible:py-3 focus-visible:text-ink-foreground"
+      >
+        Pular para o conteúdo
+      </a>
+
+      {/* CAMADA DE AMBIENTE — uma só, fixa, atrás de tudo, derivando em 90s. A skill:
+          "make the page one environment (...) so scrolling feels like moving through a
+          place instead of past stacked sections." Fica em -z-10 e não recebe ponteiro. */}
+      <div aria-hidden className="ambiente" />
+
       <Header
         data={clinica.header}
         logo={clinica.brand.logo}
@@ -73,7 +88,10 @@ function Landing() {
           A ordem do menu (`header.nav`) e da coluna "Clínica" do rodapé segue
           esta mesma sequência — âncora que sobe a página em vez de descer lê como
           link errado. */}
-      <main>
+      {/* `id` e `tabIndex` juntos: sem o id o skip link não tem destino, e sem o
+          tabIndex o foco não PARA aqui — o navegador rola até a âncora mas deixa o foco
+          no link, então o próximo Tab volta para o topo. Item do quality floor. */}
+      <main id="main" tabIndex={-1}>
         {/* TELA DE ENTRADA — a primeira coisa do site, e a única abertura que
             sobrou. Verde padrão, marca em cima e três pontos embaixo; ao rolar, a
             marca sobe, os pontos descem e se abrem para os lados, tudo cresce e se

@@ -152,8 +152,16 @@ servir uma quarta.
 
 ## 5.2 Ponto de retomada
 
-**Última sessão: 19/08.** O último commit da `main` é o da abertura em `hero-scrub`. Nada
-pendente no working tree, nada esperando OK.
+**Última sessão: 21/08.** O último commit da `main` é o do piso de qualidade da skill
+`10k-websites`. Nada pendente no working tree, nada esperando OK.
+
+⚠️ **A SKILL `10k-websites` ESTÁ INSTALADA NO REPO**, em `.claude/skills/10k-websites/`
+(SKILL.md + 6 referências), mandada pelo usuário em 20/08. Ela descreve sites em HTML/CSS/JS
+puro publicados na Hostinger — arquitetura que **NÃO coexiste** com este projeto (TanStack
+Start + React + sync do Lovable). O que dela vale aqui é a **engenharia** e a **barra de
+qualidade**, e foi isso que entrou em 21/08: o piso de qualidade de dez itens, nove
+aplicados. Ver o log de 21/08 e `references/scrub-pipeline.md`, que é o padrão de
+escrubagem que este projeto já seguia por conta.
 
 ⚠️ **A HOME ABRE PELA TELA DE ENTRADA (`#portal`)**, criada em 19/08 a pedido dele:
 fundo no verde padrão e a marca da Suzuki SOZINHA no centro. Ao rolar, ela cresce e
@@ -348,6 +356,7 @@ accordion do FAQ e o menu do mobile não respondem.
 | `docs/conteudo-fonte.md` | Conteúdo consolidado do site antigo, com proveniência marcada. |
 | `docs/prompt-lovable.md` | Fase 1. Prompt único para colar no Lovable. |
 | `docs/replicacao.md` | Fase 5. Passo a passo para gerar as 3 variantes. |
+| `.claude/skills/10k-websites/` | Skill mandada pelo usuário em 20/08. Padrão de engenharia e barra de qualidade; a arquitetura dela (HTML puro + Hostinger) **não** se aplica a este projeto. |
 
 ---
 
@@ -494,8 +503,12 @@ src/components/sections/
 
 src/routes/index.tsx          ordem das seções + props tipadas
 src/routes/casos.tsx          página /casos, com todos os casos em dossiê
+src/routes/estrutura.tsx      página /estrutura, as 12 fotos de ambiente
+src/routes/__root.tsx         <html lang>, meta/OG, fontes por <link>, pausa de
+                              animação em aba escondida
 src/styles.css                @theme + :root com os tokens; --section-py; escala de
-                              cinco degraus; máscaras e keyframes
+                              cinco degraus; máscaras, keyframes e o bloco PISO DE
+                              QUALIDADE (.ambiente, .pausado, alvo de toque)
 scripts/congelar-html.mjs     gera o layout num .html avulso (ver §"Como validar")
 ```
 
@@ -862,6 +875,16 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
   capilares da gengiva. O VMAF separou os candidatos por 5,6 pontos onde o SSIM separou
   por 0,007. Há `libvmaf` no ffmpeg estático baixado do GitHub. ⚠️ E o `-v error` do
   ffmpeg ESCONDE a linha do score: o filtro loga em nível info.
+- **Cor em `oklch` não vira hex por regex nem por `fillStyle`.** `getComputedStyle`
+  devolve a string `oklch(...)` e ler os três números dela como se fossem RGB dá cor
+  inventada (deu `#0000c5` para o petróleo); `ctx.fillStyle = "oklch(...)"` PRESERVA a
+  string em vez de converter. O jeito que funciona é rasterizar — pintar num canvas e ler
+  o pixel com `getImageData`.
+- **Antes de medir qualquer coisa numa página, AFIRMAR que ela carregou.** Uma auditoria
+  minha voltou com `title: "127.0.0.1"` e zero landmark, o que lê como site quebrado, e
+  era a página ainda não servida. `waitForFunction` com uma condição do próprio conteúdo
+  (o título esperado, um seletor da primeira seção) antes da primeira leitura. É a 11ª
+  ocorrência da família "minha medição é o problema" registrada aqui.
 - **Imagem anexada pelo usuário não existe como arquivo no disco.** O base64 está no
   transcript da sessão (`/root/.claude/projects/.../<sessão>.jsonl`); é de lá que se extrai
   para poder processar os pixels. Script em `scratchpad/extrai-anexo.mjs`.
@@ -1022,3 +1045,14 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-08-19 — ⚠️ **`assets-originais/` NÃO SOBREVIVE a contêiner novo** — é gitignored, e os quatro masters 1080p que o usuário mandou em 18/08 não estão mais em disco. Recuperável do git só o que foi COMITADO: os encodes da formação (`arcada.mp4` 1920×1080/8,04s e `arcada.webm`, em `38f8b02`) e os 6 quadros de etapa (2048×1152, em `70e56cb`). Ao pedir master novo, comitar ou avisar que se perde.
 - 2026-08-19 — O contêiner novo também **não tem ffmpeg nem playwright**. Os dois se resolvem: ffmpeg estático do BtbN (com `libvmaf`) e `playwright-core` do npm, usando o Chromium de `/opt/pw-browsers/chromium-1194/chrome-linux/chrome` — o caminho `chromium/` do enunciado do ambiente NÃO existe, é o sufixo `-1194`.
 - 2026-08-19 — Quadro maior e menos vazio, a pedido ("aumente o tamanho um pouco, não tão grande, mas tá sobrando muito espaço entre o final da sessão a logo da Suzuki"): de 0,42 para **0,50** da largura da tela, com o teto de altura em 0,62. Em 1440 o quadro fecha em 720×549 e as folgas caíram de 133 para **77px** em cima e embaixo.
+- 2026-08-20 — **O template `expanded-map` que ele mandou JÁ ESTAVA aplicado**, desde 13/08 (`25a75cf`, `MapaLocalizacao.tsx`, 290 linhas): mosaico de tiles com o cartão expandindo. Ele está DORMENTE porque `latitude`/`longitude` são `null` no `clinica.ts` — sem coordenadas o componente cai no embed do Google, que acha pelo endereço. Ou seja: não é código a escrever, é **um dado a receber** (botão direito no ponto exato no Google Maps). Registrado para não reimplementar o que existe.
+- 2026-08-20 — **A skill `10k-websites` entrou no repo**, em `.claude/skills/10k-websites/` (SKILL.md + 6 referências), mandada pelo usuário com o pedido de "implementar isso na parte inicial do site". Copiada dos uploads da sessão — anexo do usuário não é arquivo do projeto até ser copiado, e fora do repo ela não sobrevive a contêiner novo nem chega no sync do Lovable.
+- 2026-08-20 — ⚠️ **A ARQUITETURA da skill NÃO coexiste com este projeto, e isso foi dito antes de mexer em nada.** Ela descreve site em HTML/CSS/JS puro, sem build, publicado por FTP na Hostinger. Aqui é TanStack Start + React + Tailwind v4, com sync bidirecional do Lovable na `main` — trocar a stack quebraria o sync, as duas rotas internas e a camada de conteúdo. O que é PORTÁVEL dela são duas coisas: o padrão de engenharia do `references/scrub-pipeline.md` (que este projeto já seguia por conta, item por item — progresso pelo trilho, seek quantizado, `-g` curto, nunca pedir com `seeking` verdadeiro) e a BARRA de qualidade do `design-package.md`. O usuário escolheu, entre três opções, levar o padrão para a abertura existente — "zero crédito, footage do git".
+- 2026-08-21 — **PISO DE QUALIDADE da skill aplicado ao site inteiro**, dez itens auditados e **nove** entregues. Nada disso é visual novo: é o que a skill trata como pré-requisito e este projeto não tinha. Um por um, com o motivo: `<html lang="pt-BR">` (estava `en`, num site 100% em português — leitor de tela lia com fonemas ingleses); `theme-color` e `og:locale` (a barra do navegador no celular ficava branca sobre uma página petróleo); meta de scaffold do Lovable removida (`author` dizia Lovable); **link "Pular para o conteúdo"** como primeiro focável das três rotas, com `<main id="main" tabIndex={-1}>` (sem ele, quem navega por teclado atravessava a pílula inteira em cada página); `overflow-x: clip` em `html, body`; alvo de toque de 44px no rodapé sob `pointer: coarse`; e **pausa de animação em aba escondida** (`body.pausado` por `visibilitychange`) — três esteiras em laço rodando numa aba de fundo é bateria e ventoinha por nada.
+- 2026-08-21 — **`.ambiente`: uma camada de atmosfera fixa atrás de tudo**, dois gradientes radiais em `--accent` a 16% e `--gold` a 9%, derivando em 90s. É o único item do piso que se VÊ, e existe porque o diagnóstico da skill sobre fundo chapado é o mesmo de 03/08 aqui: página clara sem nenhuma variação de campo lê como documento, não como peça. Fica em `z-10` NEGATIVO e `pointer-events: none`, então não disputa com nada. ⚠️ Sob `prefers-reduced-motion` ela **continua visível** e só para de derivar — é cor, não decoração; esconder mudaria o fundo de quem pediu menos movimento.
+- 2026-08-21 — ⚠️ **Os quatro laços infinitos do site começavam TODOS no mesmo instante** (`retrato-flutua`, `carta-flutua`, `marquee-x`, `esteira`), e num carregamento isso lê como uma coisa só pulsando em vez de uma página respirando. Corrigido com **atraso NEGATIVO** (-1,4s, -2,1s, -6s, -11s), que é o truque certo: adianta a fase sem atrasar o início, então nada fica parado esperando a vez. Custo zero em bytes.
+- 2026-08-21 — **O décimo item ficou de fora, e é decisão dele:** a skill pede "um elemento vivo por seção, em nível de sussurro", e o site tem 4 laços para 11 seções mais o rodapé. Não fiz porque é mudança VISUAL em toda a página, não piso técnico — e a regra deste projeto é que refino visual se pede item por item. Está aqui como a próxima frente pronta, se ele quiser.
+- 2026-08-21 — ⚠️ **A auditoria do piso voltou com `title: "127.0.0.1"` e ZERO landmark na primeira rodada**, o que lê como site quebrado, e era a página ainda não servida. **11ª ocorrência da família "minha medição é o problema" nesta memória.** Corrigido afirmando uma condição do próprio conteúdo (`waitForFunction` no título esperado) antes da primeira leitura, em vez de esperar por cronômetro.
+- 2026-08-21 — ⚠️ **E duas conversões de `oklch` para hex que deram cor inventada** (`#0000c5` para o petróleo): `getComputedStyle` devolve a string `oklch(...)` e ler os três números dela como RGB é ler outra escala; `ctx.fillStyle = "oklch(...)"` **preserva** a string em vez de converter, então nem o canvas ajuda se a leitura for do `fillStyle`. O que funciona é rasterizar — pintar e ler o pixel com `getImageData`. Registrado no §10.
+- 2026-08-21 — ⚠️ **`bun install` quebrou num host que o CLAUDE.md não previa:** o contorno documentado aponta para `europe-west1-npm.pkg.dev` e o `bun.lock` desta vez traz **`europe-west4`**. O grep documentado devolve zero e o problema parece ausente. Mesmo `sed`, região trocada. **Ao aplicar esse contorno, conferir a região no lockfile em vez de confiar no comando escrito aqui.**
+- 2026-08-21 — Medido depois, em 1440×900 e em 390×844 com ponteiro grosso: `lang=pt-BR`, `overflow-x: clip` nos dois elementos, `theme-color` e OG presentes, meta do Lovable ausente, primeiro Tab caindo no link de pular (e visível ao receber foco), `.ambiente` em `z-index -10` com `pointer-events: none`, 4 de 4 laços com atraso negativo, pausa ativando de verdade ao esconder a aba, zero alvo de toque abaixo de 44px no rodapé e zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.

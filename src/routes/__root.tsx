@@ -77,14 +77,37 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      /* ⚠️ Estes eram os padrões do scaffold: "Lovable App", "Lovable Generated
+         Project", `author: Lovable` e `twitter:site: @Lovable`. As três rotas
+         sobrescrevem título e descrição, então o título nunca vazou — mas autor e
+         perfil do Twitter vazavam em toda página, num site de clínica. */
+      { title: "Suzuki Odontologia" },
+      {
+        name: "description",
+        content:
+          "Clínica odontológica de alta complexidade em Curitiba/PR, com corpo clínico de especialistas.",
+      },
+      { name: "author", content: "Suzuki Odontologia" },
+      { property: "og:title", content: "Suzuki Odontologia" },
+      {
+        property: "og:description",
+        content:
+          "Clínica odontológica de alta complexidade em Curitiba/PR, com corpo clínico de especialistas.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "pt_BR" },
+      /* Cor da barra do navegador no celular: o petróleo da marca. Medido do token
+         `--ink` rasterizado em sRGB — oklch(0.213 0.040 197) é #001e1f. */
+      { name: "theme-color", content: "#001e1f" },
+      /* ⚠️ DEPLOY STEP — `og:image` e `og:url` precisam de URL ABSOLUTA, que só
+         existe depois de publicar. Enquanto forem relativas, a prévia de link no
+         WhatsApp e no Instagram sai sem imagem. Ao publicar, trocar as duas pelo
+         endereço real (o do preview do projeto ou o domínio próprio).
+         A imagem é a recepção da clínica; prévia de link corta para ~1,91:1, então
+         se um dia houver arte dedicada de 1200×630 ela entra aqui. */
+      { property: "og:image", content: "/imagens/estrutura/02-recepcao.webp" },
+      { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
@@ -113,7 +136,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    /* ⚠️ `pt-BR`, e isso é defeito de acessibilidade corrigido, não preferência: o
+       site é inteiro em português e estava declarado `en`. Leitor de tela pronuncia
+       tudo com fonética inglesa, e "Odontologia" vira algo que ninguém entende. */
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
@@ -127,6 +153,21 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  /* PAUSA TODA ANIMAÇÃO QUANDO A ABA ESTÁ ESCONDIDA.
+     Laço rodando em aba de fundo gasta bateria e é um dos itens do "motion system" da
+     skill. Só liga e desliga UMA classe no `body`; a regra que faz o trabalho está no
+     `styles.css`, e ela precisa atingir elemento E pseudo-elemento diretamente,
+     porque `animation-play-state` não é herdada. */
+  useEffect(() => {
+    const aplica = () => document.body.classList.toggle("pausado", document.hidden);
+    aplica();
+    document.addEventListener("visibilitychange", aplica);
+    return () => {
+      document.removeEventListener("visibilitychange", aplica);
+      document.body.classList.remove("pausado");
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

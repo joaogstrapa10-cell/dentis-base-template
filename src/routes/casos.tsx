@@ -46,13 +46,24 @@ function PaginaCasos() {
   const { casos } = clinica;
   return (
     <div className="min-h-screen scroll-smooth bg-background text-foreground">
+      {/* SKIP LINK — primeiro elemento focável, item do quality floor da skill. */}
+      <a
+        href="#main"
+        className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-[60] focus-visible:rounded-full focus-visible:bg-ink focus-visible:px-5 focus-visible:py-3 focus-visible:text-ink-foreground"
+      >
+        Pular para o conteúdo
+      </a>
+
+      {/* CAMADA DE AMBIENTE — a mesma da home, para as três rotas serem um lugar só. */}
+      <div aria-hidden className="ambiente" />
       <Header
         data={clinica.header}
         logo={clinica.brand.logo}
         logoAlt={clinica.brand.logoAlt}
       />
 
-      <main>
+      {/* `id` para o skip link ter destino, `tabIndex` para o foco PARAR aqui. */}
+      <main id="main" tabIndex={-1}>
         {/* Faixa escura do topo, com o mesmo tratamento do hero: sangra até a
             borda e arredonda só embaixo. */}
         <div className="rounded-b-3xl bg-ink">
