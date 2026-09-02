@@ -117,6 +117,37 @@ export type AberturaContent = {
    marca. Campo morto no tipo é o que sustentou a tabela de preços de Tratamentos por
    três semanas neste projeto. */
 
+/**
+ * A ASSINATURA MANUSCRITA do responsável técnico, embaixo do retrato no hero.
+ *
+ * Pedida em 19/08: "embaixo uma assinatura manuscrita do nome completo dele, tipo do
+ * Ayrton Senna". ⚠️ A referência importa e define o que é "pronto" aqui: a assinatura
+ * do Senna é a caligrafia REAL dele, digitalizada — é isso que a torna uma marca e não
+ * um enfeite tipográfico.
+ */
+export type HeroAssinatura = {
+  /**
+   * SVG do traço REAL, quando existir.
+   *
+   * ⚠️ HOJE É `null`, E ISSO É O ESTADO RESERVADO, não um esquecimento: enquanto ele
+   * é nulo o componente compõe `nome` numa fonte manuscrita (`.assinatura-manuscrita`
+   * no styles.css) e marca isso no `title` do elemento. O caminho para fechar: o Dr.
+   * Dalton assina o nome em papel branco com caneta preta grossa, alguém fotografa,
+   * eu vetorizo, este campo aponta para o SVG — e então a classe e a família Caveat
+   * saem do projeto. Não "resolver" isso desenhando uma caligrafia: seria atribuir a
+   * um profissional real um traço que não é o dele.
+   */
+  src: string | null;
+  /**
+   * O nome como ele assina.
+   *
+   * ⚠️ O usuário pediu o nome COMPLETO. Aqui está "Dalton Suzuki", que é o que o
+   * projeto conhece (`brand.responsavelTecnico`) — se houver nomes do meio, é este
+   * campo que muda, em um lugar só.
+   */
+  nome: string;
+};
+
 export type HeroContent = {
   eyebrow: string;
   /** Uma entrada por linha renderizada. A quebra de linha é decisão editorial,
@@ -144,7 +175,18 @@ export type HeroContent = {
    *
    * `null` devolve a colagem (ou, sem ela, o hero em coluna única).
    */
-  arcada: HeroImagem | null;
+  /**
+   * O RETRATO DO RESPONSÁVEL TÉCNICO, ao lado do texto do hero.
+   *
+   * Entrou em 19/08 a pedido do usuário: "vamos colocar o rosto do Dalton, ele é a
+   * principal cara da Suzuki". ⚠️ SUBSTITUIU o campo `arcada`, que era o slot de
+   * imagem do hero — ter dois slots convidaria a exibir os dois, e a arcada 3D já é a
+   * peça da tela de abertura. Nas variantes de Rogério e Décio este campo recebe o
+   * retrato de cada um; `null` colapsa a coluna e o hero volta a ser só texto.
+   */
+  retrato: HeroImagem | null;
+  /** A assinatura embaixo do retrato. Ver o tipo. */
+  assinatura: HeroAssinatura | null;
   /** Os três números ao pé do texto. Ver a nota em `clinica.ts`: só entra aqui
    *  dado VERIFICÁVEL. Lista vazia não renderiza a fileira. */
   stats: HeroStat[];

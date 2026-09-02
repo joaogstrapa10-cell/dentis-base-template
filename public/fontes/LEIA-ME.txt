@@ -1,0 +1,32 @@
+FONTES SERVIDAS PELO PRÓPRIO REPO
+=================================
+
+caveat-600-latin.woff2   51 KB   Caveat, peso 600, subconjunto LATIN
+
+É a fonte da ASSINATURA do responsável técnico no hero — e SÓ dela. Nenhum outro
+elemento do site usa. A Instrument Sans, que é a tipografia do site, continua vindo do
+Google Fonts pelo <link> em src/routes/__root.tsx.
+
+POR QUE HOSPEDADA AQUI, e não puxada do Google como a outra:
+
+1. VERIFICAÇÃO. O navegador do ambiente de desenvolvimento não alcança
+   fonts.googleapis.com — ele não confia na CA do proxy e a requisição morre com
+   ERR_CONNECTION_RESET. Com a fonte remota, a assinatura caía numa reserva serifada em
+   todo screenshot, ou seja era impossível conferir o resultado da peça antes de mostrar
+   ao usuário. Servida do repo, dá para medir e ver. (Medido: "Dalton Suzuki" a 600 40px
+   mede 188px com a Caveat e 243px na reserva — é assim que se confere que carregou, e
+   não por `document.fonts.check`, que responde `true` para a reserva também.)
+2. Uma requisição de terceiro menos numa página que hoje faz só uma.
+3. A assinatura deixa de depender de o Google Fonts estar no ar.
+
+⚠️ ESTE ARQUIVO TEM DATA DE SAÍDA. Ele existe porque a assinatura é uma COMPOSIÇÃO
+TIPOGRÁFICA PROVISÓRIA: o usuário pediu em 19/08 "uma assinatura manuscrita do nome
+completo dele, tipo do Ayrton Senna", e a do Senna é a caligrafia REAL dele,
+digitalizada. Quando o Dr. Dalton assinar em papel branco com caneta preta grossa e
+alguém fotografar, o caminho é: vetorizar em SVG, apontar `hero.assinatura.src` para o
+arquivo, e então apagar ESTE .woff2, o @font-face e a classe `.assinatura-manuscrita`
+do styles.css. O componente já renderiza o SVG quando o campo existe.
+
+Baixado do Google Fonts (Caveat v23, subconjunto latin) com curl, que passa pelo proxy.
+Licença: SIL Open Font License 1.1 — permite redistribuição e uso comercial, incluindo
+hospedagem própria.

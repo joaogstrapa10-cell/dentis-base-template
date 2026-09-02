@@ -113,7 +113,11 @@ export const clinica: Clinica = {
       "Saúde, função mastigatória e estética em harmonização com a face. Um corpo clínico reunido para tratar o que exige critério técnico, não volume de atendimento.",
     ctaPrimario: { label: "Agendar avaliação", href: WHATSAPP_HREF },
     ctaSecundario: { label: "Conhecer a clínica", href: "#diferenciais" },
-    responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112",
+    /* ⚠️ O espaço entre "CRO-PR" e o número é NÃO SEPARÁVEL (U+00A0). Na coluna do
+       retrato, com 288px, a linha quebrava exatamente ali e o "9112" caía sozinho na
+       segunda linha — número de inscrição partido ao meio lê como erro de dado, e é
+       justamente o campo que a CFO-196/2019 exige na divulgação. */
+    responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112",
     // COLAGEM de três imagens, na anatomia do template que o usuário trouxe em
     // 13/08. A ordem é hierarquia de tamanho, não gosto: a primeira é a maior.
     //
@@ -142,18 +146,43 @@ export const clinica: Clinica = {
        `arcada: null` — nenhum componente muda. A proveniência e as marcas de IA da
        foto da equipe estão em public/imagens/hero/LEIA-ME.txt. */
     colagem: [],
-    /* ⚠️ `arcada: null` — A ARCADA SAIU DO HERO em 19/08, a pedido do usuário ("tire
-       essa arcada da sessão hero"). O motivo é evidente vendo a página inteira: ela
-       abre com a arcada 3D girando na ABERTURA, e o hero, logo abaixo, repetia a mesma
-       arcada em imagem parada. Duas arcadas seguidas leem como a página se repetindo.
+    /* O RETRATO DO DALTON, ao lado do texto. Entrou em 19/08 a pedido do usuário:
+       "vamos colocar o rosto do Dalton, ele é a principal cara da Suzuki".
 
-       O campo é `HeroImagem | null` desde que existe, justamente para isso — trocar
-       para `null` não muda componente nenhum, o hero simplesmente não reserva a coluna.
-       Para as variantes de Rogério e Décio o campo aceita uma foto.
+       É o arquivo que JÁ ESTAVA no repo — foi a foto única do hero até 13/08, e voltou
+       do arquivo morto em vez de virar geração nova. 500×482, do "sobre nós" do site
+       antigo. O fundo dele é a parede verde da clínica, o que casa com o petróleo da
+       página por coincidência e não por montagem; por isso ele entra com
+       `.retrato-fundido`, que dissolve as quatro bordas para o retângulo da foto não
+       desenhar aresta sobre o bloco.
 
-       O arquivo `arcada-fim.webp` (o último quadro da sequência de formação, recortado
-       justo e com alpha) foi apagado da pasta porque ninguém mais o usa; está no git. */
-    arcada: null,
+       ⚠️ NÃO é o `dalton-suzuki-amplo.webp` (2560×703) da mesma pasta: aquele é
+       panorâmico e já foi reprovado em 12/08 justamente por isso — num slot vertical o
+       `object-cover` mostra 22% da largura e a foto vira um talho. Ver o LEIA-ME.
+
+       ⚠️ Este campo SUBSTITUIU `hero.arcada`, que apontava para um quadro do vídeo da
+       arcada 3D. Aquela animação foi apagada do site no fim de 19/08 e não existe em
+       seção nenhuma — está no git, em `b4292fc`. Manter o campo vazio aqui deixaria um
+       slot de imagem morto no hero. */
+    retrato: {
+      src: "/imagens/hero/dalton-suzuki.webp",
+      alt: "Dr. Dalton Suzuki, responsável técnico da clínica, de braços cruzados no consultório.",
+      largura: 500,
+      altura: 482,
+      /* `false` porque é FOTO retangular, não recorte com alpha — e é este campo que
+         decide a máscara no componente: `.retrato-fundido` dissolve as quatro bordas
+         (certo para foto), `.figura-recortada` apaga só os cortes da moldura (certo
+         para figura sem fundo). Trocar os dois apaga metade da peça, e isso está
+         registrado em 13/08. */
+      semFundo: false,
+    },
+    /* A ASSINATURA, embaixo do retrato. `src: null` é o ESTADO RESERVADO — ver a nota
+       do tipo em types.ts. Enquanto for nulo, o nome sai numa fonte manuscrita e o
+       componente declara isso no `title`; o traço real do Dalton fecha o assunto. */
+    assinatura: {
+      src: null,
+      nome: "Dalton Suzuki",
+    },
     // ⚠️ TRÊS NÚMEROS, TODOS VERIFICÁVEIS, e é essa a regra desta fileira.
     //   5,0  — nota real do perfil da clínica no Google, a mesma que alimenta a
     //          seção de avaliações (`depoimentos.resumo.nota`).
