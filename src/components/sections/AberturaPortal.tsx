@@ -66,13 +66,15 @@ const APAGA_ATE = 1;
 const SOBE_MARCA = 0.26;
 
 /**
- * Quanto a marca cresce ao longo do curso.
+ * Quanto o GRUPO (marca + retrato + assinatura) cresce ao longo do curso.
  *
- * Subiu de 0,7 para 0,9 quando a escrita saiu, em 20/08: sozinha na tela, ela carrega
- * o gesto inteiro, e o crescimento que bastava dividindo a atenção com três blocos de
- * texto ficava discreto demais.
+ * Foi 0,7, subiu para 0,9 em 20/08 quando a escrita saiu — sozinha na tela, a marca
+ * carregava o gesto inteiro e o crescimento menor ficava discreto — e **voltou para 0,7
+ * em 09/09**, pelo mesmo raciocínio ao contrário: com o retrato do Dalton ao lado e a
+ * assinatura embaixo, o grupo mede ~570×290px em 1440 contra ~416×183 da marca sozinha.
+ * A 0,9 ele chegaria a ~1080×550, encostando nas bordas antes do fim do curso.
  */
-const ZOOM = 0.9;
+const ZOOM = 0.7;
 
 export const PORTAL_VH = (TRILHO_MULT + 1) * 100;
 
@@ -132,21 +134,81 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
     <img
       src={data.marca}
       alt={data.marcaAlt}
-      /* Maior desde 20/08, quando a escrita saiu: sozinha no centro de uma tela cheia,
-         a marca precisa de presença que ela não precisava tendo três blocos de texto
-         embaixo. O teto em `rem` existe para ela não virar cartaz em monitor
-         ultralargo. */
-      className="w-[min(72vw,19rem)] md:w-[min(34vw,26rem)]"
+      /* ⚠️ DIMINUIU em 09/09, quando o retrato entrou ao lado: era
+         `min(72vw,19rem)` / `md:min(34vw,26rem)`, medida de quando ela estava sozinha
+         no centro da tela. Dividindo a linha com uma foto, os 26rem empurravam o par
+         para 640px de largura e o crescimento do grupo estourava a tela. O teto em
+         `rem` continua existindo para ela não virar cartaz em monitor ultralargo. */
+      className="w-[min(62vw,15rem)] md:w-[min(24vw,19rem)]"
     />
   ) : null;
+
+  const retrato = data.retrato;
+  const retratoEl = retrato ? (
+    <img
+      src={retrato.src}
+      alt={retrato.alt}
+      width={retrato.largura}
+      height={retrato.altura}
+      /* ⚠️ `.retrato-fundido`, e a escolha é pelo CONTEÚDO do arquivo: é uma FOTO
+         retangular (parede verde da clínica atrás), não um recorte com alpha, então sem
+         a máscara ela desenha uma aresta reta no meio do bloco escuro. A outra máscara
+         do projeto, `.figura-recortada`, é para figura sem fundo e aqui apagaria metade
+         da peça — a distinção está registrada em 13/08.
+
+         A proporção vem do ARQUIVO e não cravada aqui: é a lição de 12/08, quando uma
+         proporção fixa recortou 78% de uma foto panorâmica, e de 13/08, quando o arquivo
+         do hero mudou e a medida cravada passou a recortar. */
+      className="retrato-fundido h-auto w-[min(52vw,13rem)] object-contain md:w-[min(18vw,14rem)]"
+      style={{ aspectRatio: `${retrato.largura} / ${retrato.altura}` }}
+    />
+  ) : null;
+
+  const assinatura = data.assinatura;
+  const assinaturaEl = assinatura ? (
+    assinatura.src ? (
+      /* O TRAÇO REAL, quando existir. */
+      <img
+        src={assinatura.src}
+        alt={`Assinatura de ${assinatura.nome}`}
+        className="h-auto w-full max-w-[14rem] md:max-w-[16rem]"
+      />
+    ) : (
+      /* ⚠️ ESTADO RESERVADO: o nome composto numa fonte manuscrita, porque o traço do
+         Dr. Dalton ainda não existe em arquivo. O usuário aprovou isso como provisório
+         em 19/08, sabendo que a referência que ele deu (Ayrton Senna) é caligrafia real
+         digitalizada. O `title` diz o que a peça é, para quem inspeciona não confundir
+         com a assinatura verdadeira. `aria-hidden` NÃO: o nome é conteúdo legível e o
+         leitor de tela deve anunciá-lo. */
+      <p
+        className="assinatura-manuscrita text-ink-foreground"
+        title="Composição tipográfica provisória — a assinatura digitalizada do responsável técnico substituirá esta peça."
+      >
+        {assinatura.nome}
+      </p>
+    )
+  ) : null;
+
+  /* ⚠️ A LINHA vira COLUNA abaixo de `md`, e não é preferência: a marca é 2,27:1 e o
+     retrato 1,04:1 — lado a lado numa tela de 390px cada um ficaria com ~170px, e a
+     linha "odontologia" do logo (o menor traço da arte) deixa de se distinguir. */
+  const composicao = (
+    <div className="flex flex-col items-center gap-6 md:gap-8">
+      <div className="flex flex-col items-center gap-7 md:flex-row md:gap-10">
+        {marcaEl}
+        {retratoEl}
+      </div>
+      {assinaturaEl}
+    </div>
+  );
 
   /* ── SEM ANIMAÇÃO: a mesma tela, parada, sem trilho. O conteúdo é a marca, e ela não
         depende do movimento para ser lida. ── */
   if (semAnimacao) {
     return (
-      <section id="portal" className="bg-ink px-6 py-28 md:py-36">
+      <section id="portal" className="bg-ink px-6 py-24 md:py-32">
         <div className="mx-auto flex max-w-[64rem] flex-col items-center text-center">
-          {marcaEl}
+          {composicao}
         </div>
       </section>
     );
@@ -167,7 +229,7 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
           porque o contêiner de rolagem dele continua sendo a janela. */}
       <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden px-6 text-center">
         <div ref={marcaRef} className="will-change-transform">
-          {marcaEl}
+          {composicao}
         </div>
       </div>
     </section>

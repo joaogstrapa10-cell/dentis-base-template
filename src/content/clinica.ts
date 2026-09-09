@@ -101,6 +101,41 @@ export const clinica: Clinica = {
        aqui criaria promessa que nenhuma outra parte do site sustenta. */
     marcaAlt: "Suzuki Odontologia",
     wordmark: "SUZUKI",
+    /* O RETRATO DO DALTON, ao lado da marca. Pedido do usuário em 09/09, com o print
+       DESTA tela anexado: "a foto do Dalton precisa estar nessa sessão ao lado da logo,
+       vamos testar".
+
+       É o arquivo que já estava no repo — foi a foto única do hero até 13/08, voltou ao
+       hero em 19/08 e agora mudou de seção. 500×482, do "sobre nós" do site antigo. O
+       fundo dele é a parede verde da clínica, o que casa com o petróleo da página por
+       coincidência e não por montagem; por isso entra com `.retrato-fundido`, que
+       dissolve as quatro bordas para o retângulo da foto não desenhar aresta.
+
+       ⚠️ NÃO é o `dalton-suzuki-amplo.webp` (2560×703) da mesma pasta: aquele é
+       panorâmico e já foi reprovado em 12/08 — num slot vertical o `object-cover` mostra
+       22% da largura e a foto vira um talho. Ver o LEIA-ME.
+
+       ⚠️ E ELE SAIU DO HERO na mesma rodada. A mesma foto em duas telas seguidas é o
+       defeito que fez a arcada 3D sair do hero em 19/08. */
+    retrato: {
+      src: "/imagens/hero/dalton-suzuki.webp",
+      alt: "Dr. Dalton Suzuki, responsável técnico da clínica, de braços cruzados no consultório.",
+      largura: 500,
+      altura: 482,
+      /* `false` porque é FOTO retangular, não recorte com alpha — e é este campo que
+         decide a máscara: `.retrato-fundido` dissolve as quatro bordas (certo para
+         foto), `.figura-recortada` apaga só os cortes da moldura (certo para figura sem
+         fundo). Trocar os dois apaga metade da peça; registrado em 13/08. */
+      semFundo: false,
+    },
+    /* A ASSINATURA, embaixo do par marca+retrato. `src: null` é o ESTADO RESERVADO —
+       ver a nota do tipo em types.ts. Enquanto for nulo, o nome sai numa fonte
+       manuscrita e o componente declara isso no `title`; o traço real do Dalton fecha o
+       assunto. */
+    assinatura: {
+      src: null,
+      nome: "Dalton Suzuki",
+    },
   },
   hero: {
     eyebrow: "Curitiba · Alto da XV",
@@ -146,43 +181,6 @@ export const clinica: Clinica = {
        `arcada: null` — nenhum componente muda. A proveniência e as marcas de IA da
        foto da equipe estão em public/imagens/hero/LEIA-ME.txt. */
     colagem: [],
-    /* O RETRATO DO DALTON, ao lado do texto. Entrou em 19/08 a pedido do usuário:
-       "vamos colocar o rosto do Dalton, ele é a principal cara da Suzuki".
-
-       É o arquivo que JÁ ESTAVA no repo — foi a foto única do hero até 13/08, e voltou
-       do arquivo morto em vez de virar geração nova. 500×482, do "sobre nós" do site
-       antigo. O fundo dele é a parede verde da clínica, o que casa com o petróleo da
-       página por coincidência e não por montagem; por isso ele entra com
-       `.retrato-fundido`, que dissolve as quatro bordas para o retângulo da foto não
-       desenhar aresta sobre o bloco.
-
-       ⚠️ NÃO é o `dalton-suzuki-amplo.webp` (2560×703) da mesma pasta: aquele é
-       panorâmico e já foi reprovado em 12/08 justamente por isso — num slot vertical o
-       `object-cover` mostra 22% da largura e a foto vira um talho. Ver o LEIA-ME.
-
-       ⚠️ Este campo SUBSTITUIU `hero.arcada`, que apontava para um quadro do vídeo da
-       arcada 3D. Aquela animação foi apagada do site no fim de 19/08 e não existe em
-       seção nenhuma — está no git, em `b4292fc`. Manter o campo vazio aqui deixaria um
-       slot de imagem morto no hero. */
-    retrato: {
-      src: "/imagens/hero/dalton-suzuki.webp",
-      alt: "Dr. Dalton Suzuki, responsável técnico da clínica, de braços cruzados no consultório.",
-      largura: 500,
-      altura: 482,
-      /* `false` porque é FOTO retangular, não recorte com alpha — e é este campo que
-         decide a máscara no componente: `.retrato-fundido` dissolve as quatro bordas
-         (certo para foto), `.figura-recortada` apaga só os cortes da moldura (certo
-         para figura sem fundo). Trocar os dois apaga metade da peça, e isso está
-         registrado em 13/08. */
-      semFundo: false,
-    },
-    /* A ASSINATURA, embaixo do retrato. `src: null` é o ESTADO RESERVADO — ver a nota
-       do tipo em types.ts. Enquanto for nulo, o nome sai numa fonte manuscrita e o
-       componente declara isso no `title`; o traço real do Dalton fecha o assunto. */
-    assinatura: {
-      src: null,
-      nome: "Dalton Suzuki",
-    },
     // ⚠️ TRÊS NÚMEROS, TODOS VERIFICÁVEIS, e é essa a regra desta fileira.
     //   5,0  — nota real do perfil da clínica no Google, a mesma que alimenta a
     //          seção de avaliações (`depoimentos.resumo.nota`).

@@ -164,8 +164,15 @@ aplicados. Ver o log de 21/08 e `references/scrub-pipeline.md`, que é o padrão
 escrubagem que este projeto já seguia por conta.
 
 ⚠️ **A HOME ABRE PELA TELA DE ENTRADA (`#portal`)**, criada em 19/08 a pedido dele:
-fundo no verde padrão e a marca da Suzuki SOZINHA no centro. Ao rolar, ela cresce e
-sobe, e se apaga junto com o fim da seção — a página passa por dentro dela.
+fundo no verde padrão e, desde 09/09, a **marca da Suzuki ao lado do RETRATO DO DALTON,
+com a assinatura dele embaixo**. Ao rolar, o grupo cresce e sobe, e se apaga junto com o
+fim da seção — a página passa por dentro dele.
+
+⚠️ **É ESTA seção que ele chama de "hero do site"**, e a confusão custou duas rodadas:
+ele pediu a foto "ao lado da logo no hero", eu perguntei e ele escolheu a `Hero.tsx`,
+e no dia seguinte mandou o print DESTA tela dizendo "a foto do Dalton precisa estar
+nessa sessão ao lado da logo". Ao receber pedido que menciona "hero" **e** a logo,
+lembrar que a logo vive aqui.
 
 ⚠️ **A escrita saiu em 20/08**: eram três pontos com fio dourado, e ele pediu "deixar
 somente a logo". A copy não se perdeu — era a de `diferenciais.itens` encurtada, e
@@ -1072,3 +1079,10 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-08-19 — ⚠️ **O NAVEGADOR DESTE AMBIENTE NÃO ALCANÇA O GOOGLE FONTS** (`ERR_CONNECTION_RESET` — ele não confia na CA do proxy), embora o `curl` alcance. Consequência que vale para TODO screenshot já tirado neste projeto: **nenhum deles mostrou a Instrument Sans**, sempre a reserva do sistema. Foi por isso que a Caveat da assinatura passou a ser servida do próprio repo (`public/fontes/`, 51KB, subconjunto latin, baixada com curl) — sem isso eu não teria como VER a peça antes de mostrar a ele.
 - 2026-08-19 — ⚠️ **`document.fonts.check()` NÃO serve para saber se a fonte carregou**: responde `true` quando a reserva atende. O que funciona é medir a LARGURA do mesmo texto na família pedida e na reserva — "Dalton Suzuki" a 600 40px dá 188px com a Caveat e 243px sem ela.
 - 2026-08-19 — Espaço NÃO SEPARÁVEL entre "CRO-PR" e o número em `responsavelLinha`: na coluna de 288px do retrato a linha quebrava exatamente ali e o "9112" caía sozinho embaixo. Número de inscrição partido ao meio lê como erro de dado, e é o campo que a CFO-196/2019 exige na divulgação.
+
+- 2026-09-09 — **O RETRATO DO DALTON E A ASSINATURA MUDARAM DE SEÇÃO**, do hero para a TELA DE ENTRADA, com o print dela anexado: "a foto do Dalton precisa estar nessa sessão ao lado da logo, vamos testar". ⚠️ Isso encerra uma ambiguidade que custou duas rodadas: **o que ele chama de "hero do site" é o `AberturaPortal`**, não a `Hero.tsx`. Na véspera ele pediu a foto "ao lado da logo no hero", eu perguntei qual das duas e ele escolheu a `Hero.tsx` — e era esta. Ao ler pedido que cita "hero" junto de "logo", a logo vive na tela de entrada.
+- 2026-09-09 — Os dois campos SAÍRAM de `HeroContent` e entraram em `AberturaContent`, e a foto saiu do hero junto: a mesma peça em duas telas seguidas é o defeito que fez a arcada 3D sair do hero em 19/08. **O hero voltou a ser só texto** (headline, uma frase, duas ações, linha do responsável), centralizado como em 18/08 — e agora não tem mais slot de imagem nenhum: colagem (18/08), arcada (19/08) e retrato (09/09) saíram em três dias.
+- 2026-09-09 — ⚠️ **A linha do responsável técnico NÃO acompanhou a assinatura.** A assinatura leva só o NOME, e a CFO-196/2019 exige nome **e** número de inscrição juntos na divulgação — é a linha que carrega o CRO. Ela ficou no hero; se sair de lá, tem de aparecer em outro lugar da divulgação. Hoje o CRO do responsável está no hero, no título da Bio e no bloco legal do rodapé.
+- 2026-09-09 — `ZOOM` da tela de entrada voltou de 0,9 para **0,7**, e é a mesma conta de 20/08 ao contrário: com o retrato ao lado e a assinatura embaixo, o grupo mede ~568×292px em 1440 contra ~416×183 da marca sozinha. A 0,9 ele chegaria a ~1080×550, encostando nas bordas antes do fim do curso. A marca também diminuiu (de `min(34vw,26rem)` para `min(24vw,19rem)`), porque dividir a linha com uma foto empurrava o par para 640px.
+- 2026-09-09 — A linha vira COLUNA abaixo de `md`, e não é preferência: a marca é 2,27:1 e o retrato 1,04:1 — lado a lado numa tela de 390px cada um ficaria com ~170px, e a linha "odontologia" do logo (o menor traço da arte) deixa de se distinguir.
+- 2026-09-09 — Medido em 1920/1440/1024/390: grupo 568×292 no desktop e 240×384 no celular, lado a lado de `md` para cima e empilhado abaixo, máscara `.retrato-fundido` aplicada, Caveat carregando (assinatura de 192px a 40px), **zero overflow** e o grupo cabendo na tela aos 72% do curso nos quatro tamanhos (854×439 em 1440). `tsc` e build limpos.

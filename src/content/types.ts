@@ -107,6 +107,23 @@ export type AberturaContent = {
   marcaAlt: string;
   /** Reserva em texto quando não há arquivo de marca. */
   wordmark: string;
+  /**
+   * O RETRATO DO RESPONSÁVEL TÉCNICO, ao lado da marca nesta tela.
+   *
+   * Pedido do usuário em 09/09: "a foto do Dalton precisa estar nessa sessão ao lado da
+   * logo, vamos testar" — dito com o print DESTA tela anexado, o que encerrou uma
+   * ambiguidade de duas rodadas: o que ele chama de "hero do site" é esta seção, não a
+   * `Hero.tsx`.
+   *
+   * ⚠️ ELE VEIO DO HERO, não é asset novo: `hero.retrato` foi apagado na mesma rodada.
+   * Duas fotos iguais em telas seguidas é o mesmo defeito que fez a arcada 3D sair do
+   * hero em 19/08 ("tire essa arcada da sessão hero"), quando a abertura já a mostrava.
+   *
+   * `null` colapsa a coluna e a tela volta a ser a marca sozinha.
+   */
+  retrato: HeroImagem | null;
+  /** A assinatura, embaixo do par marca+retrato. Ver o tipo. */
+  assinatura: HeroAssinatura | null;
 };
 
 /* ⚠️ NÃO EXISTE MAIS o campo `linha` ("ODONTOLOGIA ESPECIALIZADA", que ficava embaixo
@@ -175,18 +192,12 @@ export type HeroContent = {
    *
    * `null` devolve a colagem (ou, sem ela, o hero em coluna única).
    */
-  /**
-   * O RETRATO DO RESPONSÁVEL TÉCNICO, ao lado do texto do hero.
-   *
-   * Entrou em 19/08 a pedido do usuário: "vamos colocar o rosto do Dalton, ele é a
-   * principal cara da Suzuki". ⚠️ SUBSTITUIU o campo `arcada`, que era o slot de
-   * imagem do hero — ter dois slots convidaria a exibir os dois, e a arcada 3D já é a
-   * peça da tela de abertura. Nas variantes de Rogério e Décio este campo recebe o
-   * retrato de cada um; `null` colapsa a coluna e o hero volta a ser só texto.
-   */
-  retrato: HeroImagem | null;
-  /** A assinatura embaixo do retrato. Ver o tipo. */
-  assinatura: HeroAssinatura | null;
+  /* ⚠️ O HERO NÃO TEM MAIS SLOT DE IMAGEM. `arcada` saiu em 19/08 (o vídeo foi apagado
+     do site) e `retrato`/`assinatura` foram para `AberturaContent` em 09/09, quando o
+     usuário mandou a foto do Dalton para a tela de entrada — "ao lado da logo". O hero
+     voltou a ser texto: headline, uma frase, duas ações e a linha do responsável.
+     Campo morto no tipo é o que sustentou a tabela de preços por três semanas aqui, e é
+     por isso que os três saíram em vez de virarem `null`. */
   /** Os três números ao pé do texto. Ver a nota em `clinica.ts`: só entra aqui
    *  dado VERIFICÁVEL. Lista vazia não renderiza a fileira. */
   stats: HeroStat[];
