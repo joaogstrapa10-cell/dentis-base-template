@@ -1,7 +1,7 @@
 FONTES SERVIDAS PELO PRÓPRIO REPO
 =================================
 
-caveat-600-latin.woff2   51 KB   Caveat, peso 600, subconjunto LATIN
+qwitcher-grypen-700-latin.woff2   44 KB   Qwitcher Grypen, peso 700, subconjunto LATIN
 
 É a fonte da ASSINATURA do responsável técnico no hero — e SÓ dela. Nenhum outro
 elemento do site usa. A Instrument Sans, que é a tipografia do site, continua vindo do
@@ -13,9 +13,9 @@ POR QUE HOSPEDADA AQUI, e não puxada do Google como a outra:
    fonts.googleapis.com — ele não confia na CA do proxy e a requisição morre com
    ERR_CONNECTION_RESET. Com a fonte remota, a assinatura caía numa reserva serifada em
    todo screenshot, ou seja era impossível conferir o resultado da peça antes de mostrar
-   ao usuário. Servida do repo, dá para medir e ver. (Medido: "Dalton Suzuki" a 600 40px
-   mede 188px com a Caveat e 243px na reserva — é assim que se confere que carregou, e
-   não por `document.fonts.check`, que responde `true` para a reserva também.)
+   ao usuário. Servida do repo, dá para medir e ver. (É assim que se confere que
+   carregou, e não por `document.fonts.check`, que responde `true` para a reserva
+   também: medir a LARGURA do mesmo texto na família pedida e na reserva.)
 2. Uma requisição de terceiro menos numa página que hoje faz só uma.
 3. A assinatura deixa de depender de o Google Fonts estar no ar.
 
@@ -30,3 +30,31 @@ do styles.css. O componente já renderiza o SVG quando o campo existe.
 Baixado do Google Fonts (Caveat v23, subconjunto latin) com curl, que passa pelo proxy.
 Licença: SIL Open Font License 1.1 — permite redistribuição e uso comercial, incluindo
 hospedagem própria.
+
+--------------------------------------------------------------------------------
+15/09 — A FAMÍLIA TROCOU: Caveat -> Qwitcher Grypen
+--------------------------------------------------------------------------------
+
+Pedido do usuário com uma IMAGEM de referência anexada (uma assinatura cursiva
+monolinear, ligada e bem inclinada): "com uma assinatura estilo essa que vou anexar
+como foto de exemplo".
+
+A Caveat é letra de MARCADOR — letra de mão, desligada, vertical. Não é assinatura.
+
+Seis famílias foram renderizadas lado a lado com "Dalton Suzuki" sobre o petróleo
+antes da escolha: Qwitcher Grypen, Ms Madi, Kolker Brush, Yellowtail, Dancing Script e
+a própria Caveat. A Qwitcher Grypen é a única com as TRÊS marcas da referência ao mesmo
+tempo — traço de largura constante, letras ligadas e inclinação forte. As duas mais
+próximas depois dela, se ele quiser trocar, são **Ms Madi** (mesma ideia, mais vertical
+e mais fina) e **Kolker Brush** (pincel, traço irregular — não é monolinear).
+
+⚠️ O CORPO TEVE DE CRESCER JUNTO. Em cursiva ligada a altura de x é bem menor que o
+corpo, então a 40px a Qwitcher lê como metade do tamanho de uma grotesca no mesmo
+valor. `clamp(1.75rem, 3.2vw, 2.5rem)` virou `clamp(2rem, 4.4vw, 3.5rem)` — medido:
+"Dalton Suzuki" fecha em 228px a 56px (1440), 183px a 45px (1024) e 130px a 32px (390).
+
+⚠️ E o PESO é 700, o mais cheio que a família tem. A 400 o traço fino claro desaparece
+sobre o petróleo — é o mesmo motivo pelo qual o dourado não serve de texto no claro.
+
+Continua valendo tudo o que está acima: a peça é PROVISÓRIA até o Dr. Dalton assinar
+em papel e a assinatura ser vetorizada.

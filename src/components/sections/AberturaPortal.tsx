@@ -134,12 +134,14 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
     <img
       src={data.marca}
       alt={data.marcaAlt}
-      /* ⚠️ DIMINUIU em 09/09, quando o retrato entrou ao lado: era
-         `min(72vw,19rem)` / `md:min(34vw,26rem)`, medida de quando ela estava sozinha
-         no centro da tela. Dividindo a linha com uma foto, os 26rem empurravam o par
-         para 640px de largura e o crescimento do grupo estourava a tela. O teto em
-         `rem` continua existindo para ela não virar cartaz em monitor ultralargo. */
-      className="w-[min(62vw,15rem)] md:w-[min(24vw,19rem)]"
+      /* ⚠️ MAIOR no desktop desde 15/09, a pedido ("quero colocar a logo maior"): de
+         `md:min(24vw,19rem)` para `min(30vw,24rem)`, ou seja 304 → 384px em 1440.
+         O valor do CELULAR ficou como estava, e isso é medido, não descuido: o grupo
+         cresce até 1,7× ao longo do curso, e a 62vw a marca já chega a 364px numa tela
+         de 390 aos 72% do percurso — que é onde ela ainda está opaca. Aumentar aqui a
+         faria ser RECORTADA pelo palco enquanto ainda se lê.
+         O teto em `rem` existe para ela não virar cartaz em monitor ultralargo. */
+      className="w-[min(62vw,15rem)] md:w-[min(30vw,24rem)]"
     />
   ) : null;
 
@@ -150,16 +152,27 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
       alt={retrato.alt}
       width={retrato.largura}
       height={retrato.altura}
-      /* ⚠️ `.retrato-fundido`, e a escolha é pelo CONTEÚDO do arquivo: é uma FOTO
-         retangular (parede verde da clínica atrás), não um recorte com alpha, então sem
-         a máscara ela desenha uma aresta reta no meio do bloco escuro. A outra máscara
-         do projeto, `.figura-recortada`, é para figura sem fundo e aqui apagaria metade
-         da peça — a distinção está registrada em 13/08.
+      /* ⚠️ SEM `.retrato-fundido` E COM SOMBRA desde 15/09, a pedido: "a foto do Dalton
+         sem borda com sombra, quero essa imagem maior".
+
+         A máscara dissolvia as quatro bordas para o retângulo da foto não desenhar
+         aresta sobre o bloco escuro — era a escolha certa enquanto a peça tinha de
+         PERTENCER ao fundo. Pedindo sombra, ele pediu o contrário: que ela seja um
+         objeto POUSADO sobre o fundo. As duas coisas se anulam (sombra de uma borda
+         dissolvida não existe), então a máscara saiu inteira.
+
+         ⚠️ Isso reintroduz "cartão com sombra própria", que está na lista do §5.2 do
+         CLAUDE.md como forma removida em 03/08. Voltou por pedido explícito e numa peça
+         só — não é licença para devolver sombra às outras seções.
+
+         `rounded-xl` e não canto vivo: a foto é 500×482, quase quadrada, e canto reto
+         sobre o bloco lê como print colado — o mesmo motivo que tirou o passe-partout
+         branco da equipe em 13/08. Sem BORDA nenhuma, que é o que ele pediu.
 
          A proporção vem do ARQUIVO e não cravada aqui: é a lição de 12/08, quando uma
-         proporção fixa recortou 78% de uma foto panorâmica, e de 13/08, quando o arquivo
-         do hero mudou e a medida cravada passou a recortar. */
-      className="retrato-fundido h-auto w-[min(52vw,13rem)] object-contain md:w-[min(18vw,14rem)]"
+         proporção fixa recortou 78% de uma foto panorâmica, e de 13/08, quando o
+         arquivo do hero mudou e a medida cravada passou a recortar. */
+      className="h-auto w-[min(60vw,16rem)] rounded-xl object-contain shadow-[0_24px_64px_rgba(0,0,0,0.5)] md:w-[min(24vw,19rem)] md:rounded-2xl"
       style={{ aspectRatio: `${retrato.largura} / ${retrato.altura}` }}
     />
   ) : null;
@@ -189,16 +202,22 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
     )
   ) : null;
 
-  /* ⚠️ A LINHA vira COLUNA abaixo de `md`, e não é preferência: a marca é 2,27:1 e o
-     retrato 1,04:1 — lado a lado numa tela de 390px cada um ficaria com ~170px, e a
-     linha "odontologia" do logo (o menor traço da arte) deixa de se distinguir. */
+  /* ⚠️ A ASSINATURA FICA NA COLUNA DA FOTO, e não embaixo do grupo inteiro — pedido de
+     15/09, "colocar a assinatura dele embaixo da foto". Não é o mesmo lugar: centrada
+     sob o par, ela caía sob o VÃO entre a marca e o retrato, o que a lia como legenda
+     das duas peças em vez de assinatura de quem está na foto.
+
+     ⚠️ E a LINHA vira COLUNA abaixo de `md`, o que também não é preferência: a marca é
+     2,27:1 e o retrato 1,04:1 — lado a lado numa tela de 390px cada um ficaria com
+     ~170px, e a linha "odontologia" do logo (o menor traço da arte) deixa de se
+     distinguir. */
   const composicao = (
-    <div className="flex flex-col items-center gap-6 md:gap-8">
-      <div className="flex flex-col items-center gap-7 md:flex-row md:gap-10">
-        {marcaEl}
+    <div className="flex flex-col items-center gap-8 md:flex-row md:gap-12">
+      {marcaEl}
+      <div className="flex flex-col items-center gap-3 md:gap-4">
         {retratoEl}
+        {assinaturaEl}
       </div>
-      {assinaturaEl}
     </div>
   );
 

@@ -662,16 +662,25 @@
        resultado da assinatura em screenshot nenhum. Servindo do repo, dá para conferir;
      · é uma requisição de terceiro menos numa página que só tem uma;
      · e a assinatura deixa de depender de o Google estar no ar.
-   É o subconjunto LATIN, peso 600, 51KB — só o que a peça usa. A Instrument Sans do
+   É o subconjunto LATIN, peso 700, 44KB — só o que a peça usa. A Instrument Sans do
    resto do site continua vindo do Google (fora do escopo desta mudança).
-   ⚠️ Quando o traço real do Dr. Dalton entrar em `hero.assinatura.src`, este @font-face
-   e o arquivo em public/fontes/ saem junto com a classe abaixo. */
+   ⚠️ A FAMÍLIA TROCOU em 15/09: era Caveat (marcador, letra de mão) e virou **Qwitcher
+   Grypen**, a pedido — ele mandou uma imagem de referência com uma assinatura cursiva
+   monolinear, ligada e inclinada, e pediu "uma assinatura estilo essa". Comparei seis
+   famílias renderizando "Dalton Suzuki" lado a lado no petróleo antes de escolher
+   (Qwitcher Grypen, Ms Madi, Kolker Brush, Yellowtail, Dancing Script, Caveat): a
+   Qwitcher é a única com as três marcas da referência ao mesmo tempo — traço de largura
+   constante, letras ligadas e inclinação forte. As duas mais próximas depois dela são
+   Ms Madi (mais vertical) e Kolker Brush (pincel irregular, não monolinear).
+
+   ⚠️ Quando o traço real do Dr. Dalton entrar em `abertura.assinatura.src`, este
+   @font-face e o arquivo em public/fontes/ saem junto com a classe abaixo. */
 @font-face {
-  font-family: "Caveat";
+  font-family: "Qwitcher Grypen";
   font-style: normal;
-  font-weight: 600;
+  font-weight: 700;
   font-display: swap;
-  src: url("/fontes/caveat-600-latin.woff2") format("woff2");
+  src: url("/fontes/qwitcher-grypen-700-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
     U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
     U+FEFF, U+FFFD;
@@ -698,11 +707,17 @@
   /* A pilha de reserva importa: se o Google Fonts falhar (e ele é BLOQUEADO neste
      ambiente de desenvolvimento), o nome ainda tem de sair em algo cursivo em vez de
      cair na grotesca do site e virar texto comum. */
-  font-family: "Caveat", "Segoe Script", "Bradley Hand", "Brush Script MT", cursive;
-  /* 600 e não 400: o hero é bloco escuro, e traço fino claro sobre petróleo desaparece
-     — é o mesmo motivo pelo qual o dourado não serve de texto no claro. */
-  font-weight: 600;
-  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  font-family: "Qwitcher Grypen", "Segoe Script", "Bradley Hand", "Brush Script MT", cursive;
+  /* 700, o peso mais cheio que a família tem: ela é MONOLINEAR e de traço fino, e
+     traço fino claro sobre petróleo desaparece — mesmo motivo pelo qual o dourado não
+     serve de texto no claro. */
+  font-weight: 700;
+  /* ⚠️ CORPO MAIOR que o da Caveat que saiu (era `clamp(1.75rem, 3.2vw, 2.5rem)`), e
+     não é "aumentar por aumentar": numa escrita cursiva ligada a altura de x é bem
+     menor que o corpo — a 40px a Qwitcher lê como metade do tamanho de uma grotesca no
+     mesmo valor. Medido: "Dalton Suzuki" a 56px mede ~245px aqui contra ~192px da
+     Caveat a 40px. */
+  font-size: clamp(2rem, 4.4vw, 3.5rem);
   line-height: 1.1;
   /* Levemente inclinada e apertada, que é o que separa "assinatura" de "fonte
      bonitinha". Sem `text-transform`: assinatura não é caixa alta. */
