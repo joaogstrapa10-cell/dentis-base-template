@@ -2,6 +2,7 @@ import type { EstruturaContent, EstruturaSlot } from "@/content/types";
 import { SectionHeader } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 import { PillButton } from "@/components/Primitives";
+import { useParadaForaDaTela } from "@/hooks/useParadaForaDaTela";
 
 /**
  * Estrutura: ESTEIRA de fotos passando em laço, mais um botão para a página com
@@ -58,6 +59,8 @@ function Foto({ slot }: { slot: EstruturaSlot }) {
 export function EstruturaSection({ data }: { data: EstruturaContent }) {
   // Renderizada duas vezes: a faixa desliza 50% e a emenda cai sobre uma cópia
   // idêntica, então o laço não tem costura visível.
+  /* Para a esteira enquanto a seção não está na tela — ver a nota do hook. */
+  const paradaRef = useParadaForaDaTela<HTMLDivElement>();
   const faixa = [...data.imagens, ...data.imagens];
 
   return (
@@ -76,7 +79,10 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
         />
       </div>
 
-      <div className="esteira-pausa esteira-mask mt-14 overflow-hidden md:mt-20">
+      <div
+        ref={paradaRef}
+        className="esteira-pausa esteira-mask mt-14 overflow-hidden md:mt-20"
+      >
         <ul className="esteira flex gap-3 md:gap-4">
           {faixa.map((slot, i) => {
             const duplicado = i >= data.imagens.length;

@@ -1,4 +1,5 @@
 import type { BioMembro } from "@/content/types";
+import { useParadaForaDaTela } from "@/hooks/useParadaForaDaTela";
 
 /**
  * Corpo clínico: ESTEIRA de retratos em laço, com nome e especialidade num
@@ -97,6 +98,8 @@ export function CorpoClinicoEsteira({
   nota: string;
 }) {
   // Duplicada: a faixa desliza 50% e a emenda cai sobre uma cópia idêntica.
+  /* Para a esteira enquanto a seção não está na tela — ver a nota do hook. */
+  const paradaRef = useParadaForaDaTela<HTMLDivElement>();
   const faixa = [...membros, ...membros];
 
   return (
@@ -125,7 +128,10 @@ export function CorpoClinicoEsteira({
 
           `motion-reduce:overflow-x-auto` é o par obrigatório da regra global que
           congela a animação: parada, a faixa continuaria cortada pelo overflow. */}
-      <div className="esteira-pausa esteira-mask -mx-5 mt-10 overflow-hidden motion-reduce:overflow-x-auto md:-mx-10 md:mt-12">
+      <div
+        ref={paradaRef}
+        className="esteira-pausa esteira-mask -mx-5 mt-10 overflow-hidden motion-reduce:overflow-x-auto md:-mx-10 md:mt-12"
+      >
         <ul
           className="esteira flex gap-4 px-5 md:px-10"
           /* 40s para ~152rem de faixa, ou ~61px/s: metade da velocidade da

@@ -149,7 +149,7 @@ export const clinica: Clinica = {
        assunto. */
     assinatura: {
       src: null,
-      nome: "Dalton Suzuki",
+      nome: "Dr. Dalton Suzuki",
     },
   },
   hero: {

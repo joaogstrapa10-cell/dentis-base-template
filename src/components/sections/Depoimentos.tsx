@@ -4,6 +4,7 @@ import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
 import { IconeGoogle } from "@/components/Primitives";
 import { cn } from "@/lib/utils";
+import { useParadaForaDaTela } from "@/hooks/useParadaForaDaTela";
 
 /**
  * Estrutura: cartão de resumo do perfil à esquerda, ESTEIRA de avaliações
@@ -158,6 +159,8 @@ export function DepoimentosSection({
   logo: string | null;
   logoAlt: string;
 }) {
+  /* Para a esteira enquanto a seção não está na tela — ver a nota do hook. */
+  const paradaRef = useParadaForaDaTela<HTMLDivElement>();
   const { resumo } = data;
   // Renderizada duas vezes: a faixa desliza 50% e a emenda cai sobre uma cópia
   // idêntica, então o laço não tem costura visível.
@@ -204,7 +207,10 @@ export function DepoimentosSection({
 
         {/* Esteira. O `-mx` cancela o padding do container para a faixa sangrar
             até a borda no mobile, onde o container é estreito. */}
-        <div className="esteira-pausa esteira-mask -mx-5 overflow-hidden md:-mx-10 lg:mx-0">
+        <div
+          ref={paradaRef}
+          className="esteira-pausa esteira-mask -mx-5 overflow-hidden md:-mx-10 lg:mx-0"
+        >
           <ul className="esteira flex items-stretch gap-4 px-5 md:px-10 lg:px-0">
             {faixa.map((item, i) => (
               <CartaoAvaliacao

@@ -138,6 +138,9 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
      ⚠️ `offsetWidth`/`offsetHeight` IGNORAM `transform`, que é o que os torna a medida
      certa aqui — o grupo está escalado quase o tempo todo. */
   const medidasRef = useRef({ gw: 0, gh: 0, pw: 0, ph: 0 });
+  /* Último par já aplicado ao DOM. Escrever estilo idêntico não é de graça: invalida
+     o elemento e o compositor refaz o trabalho. Ver a nota dentro do laço. */
+  const escritoRef = useRef({ transform: "", opacidade: "" });
   const [semAnimacao, setSemAnimacao] = useState(false);
 
   useEffect(() => {
@@ -183,19 +186,19 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
       const marca = marcaRef.current;
       if (!trilho || !marca) return;
 
-      /* O progresso sai da fração que o TRILHO desta seção já rolou por dentro de si,
-         nunca de `window.scrollY`. É o mecanismo provado quatro vezes neste projeto
-         (órbita, arcada em quadros, arcada em vídeo, marca) — e aqui daria certo por
-         acidente, porque esta É a primeira seção; usar `scrollY` deixaria uma bomba
-         para o dia em que algo entrar antes dela.
-
-         ⚠️ Divide pela altura INTEIRA da seção, não por `altura - innerHeight`. O
-         segundo mede só o trecho em que o palco está GRUDADO, e usá-lo faz o
-         crescimento terminar com o palco ainda ocupando a tela toda. Este `p` comanda
-         só a ESCALA e a subida dentro da faixa; quem comanda o apagamento é a faixa
-         visível — ver a nota de `BANDA_APAGADO`. */
       const caixa = trilho.getBoundingClientRect();
       const { gw, gh, pw, ph } = medidasRef.current;
+
+      /* ⚠️ FORA DE VISTA, NÃO FAZ NADA. Sem esta saída o laço media e escrevia estilo
+         a cada quadro da página INTEIRA — dez telas de rolagem pagando por uma seção
+         que já passou. No desktop não aparecia; no celular o usuário reportou "o
+         scroll está travando muito" em 15/09. A conta é direta: um `getBoundingClientRect`
+         por quadro é uma leitura de layout, e escrever `transform`/`opacity` num
+         elemento com sombra grande obriga o compositor a trabalhar de novo.
+
+         O `escrito` guarda o último par aplicado: quando a seção volta à vista e nada
+         mudou, nem o estilo é tocado. */
+      if (caixa.bottom <= 0) return;
 
       /* Quanto da seção já passou pelo topo da janela, de 0 a 1. Sai do retângulo da
          PRÓPRIA seção e não de `window.scrollY` — é o mecanismo provado cinco vezes
@@ -222,8 +225,16 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          deslocamento depois, em px NÃO escalados. Invertida, o deslocamento viria
          multiplicado pelo zoom e a marca sairia da tela cedo demais. Registrado em
          19/08 na abertura. */
-      marca.style.transform = `translate3d(0, ${desloca.toFixed(1)}px, 0) scale(${escala.toFixed(4)})`;
-      marca.style.opacity = opacidade.toFixed(3);
+      const transform = `translate3d(0, ${desloca.toFixed(1)}px, 0) scale(${escala.toFixed(4)})`;
+      const opacidadeTexto = opacidade.toFixed(3);
+      if (transform !== escritoRef.current.transform) {
+        marca.style.transform = transform;
+        escritoRef.current.transform = transform;
+      }
+      if (opacidadeTexto !== escritoRef.current.opacidade) {
+        marca.style.opacity = opacidadeTexto;
+        escritoRef.current.opacidade = opacidadeTexto;
+      }
     };
     raf = requestAnimationFrame(quadro);
     return () => cancelAnimationFrame(raf);
@@ -315,8 +326,14 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
      2,27:1 e o retrato 1,04:1 — lado a lado numa tela de 390px cada um ficaria com
      ~170px, e a linha "odontologia" do logo (o menor traço da arte) deixa de se
      distinguir. */
+  /* ⚠️ `gap-14` no CELULAR contra `gap-12` de `md` para cima, e a diferença é
+     deliberada — pedido de 15/09: "a logo está muito perto da imagem do Dalton,
+     colocar ela um pouco mais pra cima". Empilhado, o vão é o que separa a marca do
+     retrato, e como o grupo é centrado aumentá-lo SOBE a marca e desce a foto meio vão
+     cada. Em linha, de `md` para cima, esse mesmo vão é HORIZONTAL e não teria efeito
+     nenhum sobre a altura. */
   const composicao = (
-    <div className="flex flex-col items-center gap-8 md:flex-row md:gap-12">
+    <div className="flex flex-col items-center gap-14 md:flex-row md:gap-12">
       {marcaEl}
       <div className="flex flex-col items-center gap-3 md:gap-4">
         {retratoEl}
@@ -359,11 +376,28 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
           saída que sobrava o vão. */}
       <div
         ref={palcoRef}
-        className="palco-fundido flex h-svh items-center justify-center overflow-hidden px-6 text-center"
+        className="relative flex h-svh items-center justify-center overflow-hidden px-6 text-center"
       >
         <div ref={marcaRef} className="will-change-transform">
           {composicao}
         </div>
+
+        {/* VÉU no pé do palco: no fim do percurso o grupo cruza a borda da seção, e é
+            isso que mantém a faixa preenchida até o hero tomar a tela. Sem o véu o
+            `overflow-hidden` corta em linha reta e parte a assinatura ao meio.
+
+            ⚠️ Era uma `mask-image` e virou DEGRADÊ em 15/09, por desempenho: máscara
+            num elemento de tela inteira com imagem dentro obriga o navegador a compor
+            a camada de novo a cada quadro, e no celular o usuário reportou "o scroll
+            está travando muito". O degradê é uma caixa pintada — o resultado é o mesmo
+            porque o que está atrás é exatamente `--ink`, e o hero começa nessa borda.
+
+            96px fixos e não porcentagem: em porcentagem a dissolução comeria metade do
+            retrato numa tela baixa. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-ink"
+        />
       </div>
     </section>
   );
