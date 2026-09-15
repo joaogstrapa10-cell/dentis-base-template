@@ -8,7 +8,6 @@ import { EstruturaSection } from "@/components/sections/Estrutura";
 import { AreasSection } from "@/components/sections/Areas";
 import { CasosSection } from "@/components/sections/Casos";
 import { DepoimentosSection } from "@/components/sections/Depoimentos";
-import { TratamentosSection } from "@/components/sections/Tratamentos";
 import { AberturaPortal } from "@/components/sections/AberturaPortal";
 import { BioSection } from "@/components/sections/Bio";
 import { FaqSection } from "@/components/sections/Faq";
@@ -80,10 +79,15 @@ function Landing() {
           FAQ foi refeito duas vezes a pedido dele na véspera. Se a intenção era
           removê-lo, é uma linha aqui e outra no `clinica.ts`.
 
-          "Como funciona" = a seção de Tratamentos ("Orçamento após avaliação"),
-          que é a que descreve como o processo e o orçamento funcionam. As outras
-          dez etiquetas da lista batem com o título ou o assunto de uma seção
-          existente, uma a uma.
+          🗑️ "Como funciona" era a seção de TRATAMENTOS ("Orçamento após
+          avaliação."), e ela foi REMOVIDA em 15/09 a pedido — "retirar por completo
+          a sessão orçamento após avaliação". Saiu inteira: componente, bloco de
+          conteúdo, os três tipos e o item do menu. Está no git.
+
+          ⚠️ Com ela some a única explicação de COMO o orçamento funciona ("não
+          trabalhamos com tabela fechada: o valor depende do diagnóstico"). O site
+          não fala mais de valor em lugar nenhum — o que é coerente, mas é
+          informação que a clínica tinha e deixou de dar. Voltar é restaurar do git.
 
           A ordem do menu (`header.nav`) e da coluna "Clínica" do rodapé segue
           esta mesma sequência — âncora que sobe a página em vez de descer lê como
@@ -110,10 +114,19 @@ function Landing() {
         <HeroSection data={clinica.hero} />
         <CasosSection data={clinica.casos} />
         <AreasSection data={clinica.areas} />
+        {/* ⚠️ A CHAMADA SOBE PARA CÁ, logo depois de Especialidades, por pedido de
+            15/09 ("o CTA colocar depois de especialidades"). Ela era a última seção
+            antes do rodapé desde 12/08.
+
+            Consequência a vigiar, e não é bug: **a página deixou de terminar numa
+            chamada** — fecha em Localização e rodapé. A conversão continua no header
+            fixo (que acompanha a página inteira) e no hero. Se ele quiser fechar a
+            página com chamada de novo, o caminho é ter DUAS, e aí vale a regra de
+            12/08: chamada repetida com destino idêntico não é escolha. */}
+        <ChamadaFinalSection data={clinica.chamadaFinal} />
         <BioSection data={clinica.bio} />
         <DiferenciaisSection data={clinica.diferenciais} />
         <EstruturaSection data={clinica.estrutura} />
-        <TratamentosSection data={clinica.tratamentos} />
         <DepoimentosSection
           data={clinica.depoimentos}
           logo={clinica.brand.logoEscuro}
@@ -121,7 +134,6 @@ function Landing() {
         />
         <FaqSection data={clinica.faq} />
         <LocalizacaoSection data={clinica.localizacao} contato={clinica.contato} />
-        <ChamadaFinalSection data={clinica.chamadaFinal} />
       </main>
       <FooterSection
         data={clinica.footer}

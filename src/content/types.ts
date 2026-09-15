@@ -459,58 +459,6 @@ export type DepoimentosContent = {
   itens: Depoimento[];
 };
 
-/**
- * Um EIXO de tratamento, não um plano. A diferença é o que o tipo permite:
- * não há `valorLabel`, `cta`, `destaque` nem `badge` por item, e a ausência é
- * proposital.
- *
- * Antes havia os quatro, e com eles a seção era literalmente uma tabela de
- * preços de software: três colunas, coluna do meio destacada, selo "Mais
- * procurado", uma linha de valor repetida três vezes e três botões apontando
- * para o MESMO link de WhatsApp. Enquanto o texto da seção diz que a clínica
- * não trabalha com tabela fechada.
- *
- * `destaque`/`badge` eram pior que redundantes: "mais procurado" é pressão de
- * demanda aplicada a decisão de saúde. O valor e a chamada passaram para o
- * nível da seção, onde acontecem uma vez.
- */
-/** Ícone do eixo de tratamento. Do `lucide-react`, como os diferenciais — e
- *  distinto dos dois conjuntos já em uso, para nenhum ícone significar duas
- *  coisas em seções diferentes da mesma página. */
-export type TratamentoIcone = "avaliacao" | "reabilitacao" | "estetica";
-
-export type TratamentoEixo = {
-  titulo: string;
-  descricao: string;
-  /** O que o eixo envolve. Renderiza em linha, separado por ponto médio. */
-  inclui: string[];
-  icone: TratamentoIcone;
-  /**
-   * Foto do cartão do carrossel. Entrou em 19/08, quando o usuário pediu o mesmo
-   * template de Especialidades também aqui.
-   *
-   * ⚠️ NENHUMA é registro clínico de paciente. Ver a nota do mesmo campo em
-   * `AreaAtuacao` e a proveniência nos LEIA-ME.txt das pastas de imagem.
-   *
-   * `null` cai no slot nomeado — estado esperado nas variantes de Rogério e Décio.
-   */
-  imagem: string | null;
-  imagemAlt: string;
-};
-
-export type TratamentosContent = {
-  eyebrow: string;
-  titulo: string;
-  descricao: string;
-  eixos: TratamentoEixo[];
-  /*
-   * SEM `notaValor` e SEM `cta`, os dois removidos em 13/08 a pedido do cliente.
-   * Não deixei os campos como opcionais: campo morto no tipo é convite a
-   * reintroduzir o padrão, e neste tipo especificamente já foi assim uma vez —
-   * `valorLabel`, `destaque` e `badge` existiam e sustentavam a tabela de preços
-   * que a seção era. A política de orçamento vive em `descricao`.
-   */
-};
 
 
 
@@ -611,7 +559,6 @@ export type Clinica = {
   areas: AreasContent;
   casos: CasosContent;
   depoimentos: DepoimentosContent;
-  tratamentos: TratamentosContent;
   bio: BioContent;
   faq: FaqContent;
   chamadaFinal: ChamadaFinalContent;

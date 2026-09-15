@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 /**
  * Um cartão do carrossel. Mesma forma dos itens da `GradeDeCelulas`, de propósito:
  * as duas recebem o ícone JÁ RENDERIZADO, então cada seção escolhe o seu conjunto —
- * Áreas usa os oito dentais desenhados no projeto, Diferenciais e Tratamentos usam
- * lucide. Trocar uma seção de uma para a outra é trocar o componente, não o dado.
+ * Áreas usa os oito dentais desenhados no projeto e Diferenciais usa lucide. Trocar
+ * uma seção de uma para a outra é trocar o componente, não o dado.
  */
 export type CartaoCarrossel = {
   /** Chave de render. O título serve, desde que não se repita na mesma seção. */
@@ -17,9 +17,10 @@ export type CartaoCarrossel = {
   /** `null` cai no slot nomeado — ver a nota no render. */
   imagem: string | null;
   imagemAlt: string;
-  /** Conteúdo opcional abaixo da descrição, no cartão. Existe para Tratamentos, onde
-   *  cada eixo lista o que envolve; as outras duas seções não passam nada. */
-  extra?: ReactNode;
+  /* SEM `extra`: o campo era um bloco livre abaixo da descrição e existia SÓ para
+     Tratamentos, onde cada eixo listava o que envolve. A seção foi removida em 15/09
+     e o campo saiu junto, pela regra do projeto — campo morto é convite a
+     reintroduzir o padrão. Está no git com a seção. */
 };
 
 /**
@@ -28,12 +29,14 @@ export type CartaoCarrossel = {
  * em 19/08 ("coloque esse template na sessão de especialidades, com a identidade
  * da suzuki, as informações, e fotos que remetam a tal especialidade").
  *
- * ⚠️ ELE SERVE TRÊS SEÇÕES — Áreas, Diferenciais e Tratamentos — E ISSO FOI DECISÃO
- * DO USUÁRIO, TOMADA CONTRA UMA OBJEÇÃO EXPLÍCITA. Não é descuido, e não deve ser
- * "corrigido" numa próxima sessão sem falar com ele.
+ * ⚠️ ELE SERVE DUAS SEÇÕES — Áreas e Diferenciais — E ISSO FOI DECISÃO DO USUÁRIO,
+ * TOMADA CONTRA UMA OBJEÇÃO EXPLÍCITA. Não é descuido, e não deve ser "corrigido"
+ * numa próxima sessão sem falar com ele. Eram TRÊS até 15/09, quando Tratamentos
+ * foi removida do site — o que resolveu por tabela a parte mais forte da objeção.
  *
  * O que foi dito a ele antes de fazer, em 19/08:
- *   1. seriam três seções com a mesma anatomia (a 3ª, a 5ª e a 7ª da home), que é
+ *   1. seriam três seções com a mesma anatomia (a 3ª, a 5ª e a 7ª da home à época),
+ *      que é
  *      literalmente o defeito que reprovou o layout como "cara de IA" em 25/07 —
  *      "seis das treze seções eram o mesmo componente" — e a razão pela qual a
  *      `GradeDeCelulas` estava travada em três;
@@ -131,7 +134,7 @@ function distanciaCircular(i: number, ativo: number, n: number) {
  * sinal contrário, e esse salto precisa acontecer FORA da janela. Com oito itens e
  * janela de sete sobra exatamente uma posição escondida, que é onde ele acontece.
  *
- * Com QUATRO itens (Diferenciais) ou TRÊS (Tratamentos) não sobra nenhuma: o salto
+ * Com QUATRO itens (Diferenciais) não sobra nenhuma: o salto
  * cairia no meio da tela, à vista. Por isso, quando a lista não é maior que a
  * janela, ela não gira — fica parada e centrada, e só o realce anda. É a mesma
  * informação, sem um movimento que leria como defeito.
@@ -426,7 +429,6 @@ export function CarrosselDeCartoes({
                   <p className="mt-2 text-base leading-[1.5] text-ink-foreground/85">
                     {item.descricao}
                   </p>
-                  {item.extra ? <div className="mt-3">{item.extra}</div> : null}
                 </div>
               </div>
             );

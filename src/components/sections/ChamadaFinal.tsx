@@ -26,7 +26,15 @@ import { ArrowButton, PillButton } from "@/components/Primitives";
  */
 export function ChamadaFinalSection({ data }: { data: ChamadaFinalContent }) {
   return (
-    <section id="chamada" className="scroll-mt-12 px-3 md:px-4">
+    /* ⚠️ `pb-6 md:pb-8` — o DOBRO da goteira lateral, e é requisito desde 15/09,
+       quando esta seção subiu para depois de Especialidades e passou a ter a BIO
+       logo abaixo. As duas são faixas escuras sangradas e nenhuma participa do
+       ritmo de `--section-py`, então sem isto os dois cantos arredondados se
+       encostam e o fio claro entre eles lê como risco no meio de um bloco só —
+       medido: 0px de vão, exatamente o defeito que o rodapé pagou em 13/08.
+       Igual à goteira (12/16px) o vão viraria um fio; no ritmo de seção sobraria
+       mais branco do que a separação entre duas superfícies precisa. */
+    <section id="chamada" className="scroll-mt-12 px-3 pb-6 md:px-4 md:pb-8">
       <div className="relative isolate overflow-hidden rounded-3xl bg-ink">
         <div
           aria-hidden="true"

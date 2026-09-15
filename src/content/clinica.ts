@@ -76,7 +76,6 @@ export const clinica: Clinica = {
       { label: "Home", href: "#portal" },
       { label: "Áreas", href: "#areas" },
       { label: "Estrutura", href: "#estrutura" },
-      { label: "Tratamentos", href: "#tratamentos" },
       { label: "FAQ", href: "#faq" },
     ],
     cta: { label: "Agendar", href: WHATSAPP_HREF },
@@ -626,51 +625,6 @@ export const clinica: Clinica = {
         fonte: "google",
         nota: 5,
         quando: "",
-      },
-    ],
-  },
-  tratamentos: {
-    eyebrow: "Tratamentos",
-    titulo: "Orçamento após avaliação.",
-    descricao:
-      "Não trabalhamos com tabela fechada: o valor depende do diagnóstico, da extensão do caso e das etapas envolvidas. A avaliação inicial define o plano e o orçamento.",
-    eixos: [
-      {
-        titulo: "Avaliação e prevenção",
-        icone: "avaliacao",
-        imagem: "/imagens/estrutura/07-consultorio-claro.webp",
-        imagemAlt:
-          "Consultório claro da clínica, preparado para a consulta de avaliação.",
-        descricao: "Consulta de avaliação, diagnóstico, limpeza e plano de acompanhamento.",
-        inclui: ["Exame clínico completo", "Diagnóstico por imagem", "Plano de tratamento por escrito"],
-      },
-      {
-        titulo: "Reabilitação",
-        icone: "reabilitacao",
-        imagem: "/imagens/especialidades/08-reabilitacao-oral.webp",
-        imagemAlt:
-          "Prótese protocolo fixa sobre implantes, vista por baixo, em fundo escuro.",
-        descricao: "Implantes, próteses e reabilitação da função mastigatória em casos extensos.",
-        inclui: [
-          "Planejamento multidisciplinar",
-          "Cirurgia e implantes",
-          "Prótese sobre implante",
-          "Manutenção periódica",
-        ],
-      },
-      {
-        titulo: "Estética e harmonização",
-        icone: "estetica",
-        imagem: "/imagens/especialidades/02-estetica-dental.webp",
-        imagemAlt:
-          "Seis facetas de cerâmica apoiadas sobre uma folha, fotografadas em fundo escuro.",
-        descricao: "Facetas, cerâmicas, clareamento e harmonização facial integrados ao plano.",
-        inclui: [
-          "Planejamento a partir da face",
-          "Facetas e coroas em cerâmica",
-          "Clareamento",
-          "Harmonização facial",
-        ],
       },
     ],
   },

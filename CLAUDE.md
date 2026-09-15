@@ -279,7 +279,7 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 |---|---|
 | Palco `sticky`: a marca sozinha no verde, crescendo e subindo na rolagem | **Tela de entrada** |
 | Bloco escuro sangrando, duas colunas: texto + fileira de números à esquerda, COLAGEM de três fotos sobrepostas à direita | Hero |
-| Painel escuro com a lista + pilha de fotos que troca (`CarrosselDeCartoes`) | **Áreas (8), Diferenciais (4), Tratamentos (3)** |
+| Painel escuro com a lista + pilha de fotos que troca (`CarrosselDeCartoes`) | **Áreas (8), Diferenciais (4)** |
 | Esteira contínua | Estrutura, Depoimentos, **corpo clínico da Bio** |
 | Pilha de cartões arrastável | Casos (na home) |
 | Pilha de dossiês alternando de lado | Casos (em `/casos`) |
@@ -288,19 +288,22 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 | Fileira de dados à esquerda + cartão de mapa à direita | Localização |
 | Faixa escura curta, texto à esquerda e chamada à direita | Chamada final |
 
-São **onze** seções mais o rodapé, na ordem: Hero, Casos, Áreas, Bio, Diferenciais,
-Estrutura, Tratamentos, Depoimentos, FAQ, Localização, Chamada final, Footer. "Cada etapa,
-acompanhada." foi removida em 12/08 e a chamada final saiu do rodapé e virou seção na mesma
-data.
+São **dez** seções mais o rodapé, e a ordem mudou em 15/09: Hero, Casos, Áreas,
+**Chamada final**, Bio, Diferenciais, Estrutura, Depoimentos, FAQ, Localização, Footer.
 
-⚠️ **`CarrosselDeCartoes` SERVE TRÊS SEÇÕES, e isso foi DECISÃO DO USUÁRIO CONTRA
-UMA OBJEÇÃO EXPLÍCITA.** Não "corrigir" numa próxima sessão sem falar com ele — é o
-mesmo caso da exceção de Áreas em 12/08. A objeção que ele ouviu antes de mandar
-seguir está inteira no topo de `CarrosselDeCartoes.tsx`, em três pontos: seriam três
-seções com a mesma anatomia (a 3ª, a 5ª e a 7ª da home), que é o defeito que reprovou
-o layout como "cara de IA" em 25/07; Diferenciais e Tratamentos não têm foto própria;
-e as fotos de Tratamentos são REPETIDAS de Especialidades. Ele respondeu "mesmo assim,
-o carrossel nas duas".
+⚠️ **A chamada subiu para logo depois de Especialidades** ("o CTA colocar depois de
+especialidades"), então **a página não termina mais numa chamada** — fecha em Localização
+e rodapé. A conversão segue no header fixo e no hero. 🗑️ E **Tratamentos foi removida por
+completo** no mesmo pedido; com ela saiu a única explicação de como o orçamento funciona.
+"Cada etapa, acompanhada." tinha saído em 12/08.
+
+⚠️ **`CarrosselDeCartoes` SERVE DUAS SEÇÕES — Áreas e Diferenciais — e isso foi
+DECISÃO DO USUÁRIO CONTRA UMA OBJEÇÃO EXPLÍCITA.** Não "corrigir" numa próxima sessão
+sem falar com ele — é o mesmo caso da exceção de Áreas em 12/08. A objeção que ele
+ouviu antes de mandar seguir está inteira no topo de `CarrosselDeCartoes.tsx`. Eram
+**três** até 15/09, quando Tratamentos saiu do site: isso resolveu por tabela a parte
+mais forte da objeção (três seções com a mesma anatomia) e a repetição de foto, que
+acontecia só lá.
 
 🗑️ **`GradeDeCelulas` foi APAGADA** — ficou sem uso nenhum quando a terceira seção
 saiu dela. Está no git, em `bc92186`. Seis das treze seções sendo o mesmo molde foi exatamente o que
@@ -505,9 +508,10 @@ src/components/sections/
   Hero.tsx                    colagem de 3 fotos + fileira de números
   Casos.tsx                   PilhaDeCasos (dossiê, /casos) + AvisoCasos + seção da home
   GaleriaDeCasos.tsx          pilha arrastável de cartões (home)
-  Areas.tsx / Diferenciais.tsx / Tratamentos.tsx
-                              as TRÊS usam CarrosselDeCartoes — ver a objeção no
-                              topo dele antes de mudar isso
+  Areas.tsx / Diferenciais.tsx
+                              as DUAS usam CarrosselDeCartoes — ver a objeção no
+                              topo dele antes de mudar isso. Eram três: Tratamentos
+                              saiu do site em 15/09
   CarrosselDeCartoes.tsx      lista escura + pilha de fotos, sem dep. de animação
   GradeDeCelulas.tsx          grade de células com fio, ícone e realce no hover
   Bio.tsx                     faixa escura: responsável + corpo clínico
@@ -535,17 +539,19 @@ scripts/congelar-html.mjs     gera o layout num .html avulso (ver §"Como valida
 acompanhada."), Comparativo ("nós vs. o convencional"), a **ARCADA 3D**
 (`AberturaArcada.tsx` + 9,2 MB de vídeo, apagada em 19/08 — está em `b4292fc`), a
 **GRADE DE CÉLULAS**
-(`GradeDeCelulas.tsx`, apagada em 19/08 por ficar sem uso — está em `bc92186`) e a **ÓRBITA do corpo clínico**
+(`GradeDeCelulas.tsx`, apagada em 19/08 por ficar sem uso — está em `bc92186`), **TRATAMENTOS**
+("Orçamento após avaliação.", removida por completo em 15/09 a pedido — componente, bloco de
+conteúdo, três tipos e o item do menu) e a **ÓRBITA do corpo clínico**
 (`CorpoClinicoOrbita.tsx`, 413 linhas, apagado). As quatro saíram com aprovação ou pedido
 explícito, cada uma por um motivo registrado no §9 — a órbita com as palavras "não quero
 mais a órbita". Se aparecerem numa
 variante, é sinal de que alguém partiu de um commit antigo.
 
-**Ordem de render, ditada pelo usuário em 13/08** (a de antes era herança da
-geração inicial, com seções que já não existem):
+**Ordem de render**, ditada pelo usuário em 13/08 e alterada por ele em 15/09
+(a chamada subiu, Tratamentos saiu):
 
-Hero → **Casos** → Areas → Bio → Diferenciais → Estrutura → Tratamentos →
-Depoimentos → Faq → Localizacao → ChamadaFinal → Footer.
+Portal → Hero → **Casos** → Areas → **ChamadaFinal** → Bio → Diferenciais →
+Estrutura → Depoimentos → Faq → Localizacao → Footer.
 
 A lista que ele mandou tem dez seções e o rodapé; o **FAQ não estava nela e ficou**,
 entre Depoimentos e Localização — que é a posição que já ocupava em relação ao mapa.
@@ -1124,4 +1130,9 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-15 — O apagamento voltou a ser fração do CURSO (0,35 → 0,85) porque agora o curso é o gesto inteiro. Em 0,85 o topo do hero está a 15% do alto da tela — ou seja ele já ocupa ~87% — e o grupo está em zero: é o "não tem que estar nada na tela" ao pé da letra. **E é isto que tira a SOMBRA do retrato de cima da manchete**, também reportada: a sombra é do grupo e se apaga com ele; a foto continua com a sombra que ele pediu em 15/09.
 - 2026-09-15 — `SOBE_MARCA` em 0,16 da altura do palco, e o teto é geométrico — quem manda é o CELULAR, onde o grupo é alto (a linha vira coluna) e sobra menos folga acima. A 0,20 o topo saía 16px da tela aos 80% do curso, com o grupo ainda a 10% de opacidade. Medido a 0,16: primeiro pixel negativo só aos 90%, onde a opacidade já é zero.
 - 2026-09-15 — Medido em 1440×900 e 390×844, em oito pontos do curso: grupo só crescendo, opacidade 1 → 0, vão ZERO entre 0,35 e 0,80 do curso (era ~60% da tela antes das duas correções), 117px no ponto em que o grupo acaba de sumir, `elementFromPoint` devolvendo o HERO em toda a faixa dele (ou seja a ordem de pintura está certa sem precisar de `z-index`), zero recorte pelo topo e zero overflow. `tsc --noEmit` limpo.
+- 2026-09-15 — 🗑️ **TRATAMENTOS ("Orçamento após avaliação.") REMOVIDA POR COMPLETO**, a pedido: "retirar por completo a sessão orçamento após avaliação". Saiu a cadeia inteira — `Tratamentos.tsx`, o bloco de 45 linhas do `clinica.ts`, os TRÊS tipos (`TratamentoIcone`, `TratamentoEixo`, `TratamentosContent`), o campo na raiz de `Clinica` e o item "Tratamentos" do menu. ⚠️ **Com ela some a única explicação de COMO o orçamento funciona** ("não trabalhamos com tabela fechada: o valor depende do diagnóstico, da extensão do caso e das etapas envolvidas"). O site não fala mais de valor em lugar nenhum — coerente, mas é informação que a clínica dava e deixou de dar.
+- 2026-09-15 — **A CHAMADA SUBIU para logo depois de Especialidades** ("o CTA colocar depois de especialidades"). Era a última seção antes do rodapé desde 12/08. ⚠️ **A página deixou de terminar numa chamada** — fecha em Localização e rodapé. A conversão continua no header fixo (que acompanha a página inteira) e no hero. Fechar a página com chamada de novo exigiria DUAS, e aí vale a regra de 12/08: chamada repetida com destino idêntico não é escolha.
+- 2026-09-15 — ⚠️ **O defeito de 13/08 se repetiu no lugar novo, e a medição pegou:** a chamada e a BIO são as duas faixas escuras sangradas, nenhuma participa do ritmo de `--section-py`, e no lugar novo elas ficaram com **0px de vão** — dois cantos de raio 24px encostados, com o fio claro entre eles lendo como risco no meio de um bloco só. Mesmo conserto de 13/08: `pb-6 md:pb-8` na chamada, o **dobro da goteira** lateral. Medido depois: 32px no desktop, 24px no celular. **Ao mover faixa sangrada, conferir quem passa a vir antes e depois** — o vão não vem de graça.
+- 2026-09-15 — A prop `extra` do `CarrosselDeCartoes` saiu junto: era um bloco livre abaixo da descrição e existia SÓ para Tratamentos. Campo morto é convite a reintroduzir o padrão — mesma regra que tirou `valorLabel`/`destaque`/`badge` do mesmo tipo em 12/08.
+- 2026-09-15 — Medido em 1440×900 e 390×844: ordem `portal → top → casos → areas → chamada → responsavel → diferenciais → estrutura → depoimentos → faq → localizacao`, **zero âncora morta** no menu e no rodapé, nenhum `#tratamentos` no DOM, zero overflow lateral. A página caiu de 11,5 para **10,5 telas** no desktop. `tsc --noEmit` e `bun run build` limpos.
 
