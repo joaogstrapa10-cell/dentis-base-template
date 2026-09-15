@@ -715,13 +715,26 @@
   /* ⚠️ CORPO MAIOR que o da Caveat que saiu (era `clamp(1.75rem, 3.2vw, 2.5rem)`), e
      não é "aumentar por aumentar": numa escrita cursiva ligada a altura de x é bem
      menor que o corpo — a 40px a Qwitcher lê como metade do tamanho de uma grotesca no
-     mesmo valor. Medido: "Dalton Suzuki" a 56px mede ~245px aqui contra ~192px da
-     Caveat a 40px. */
-  font-size: clamp(2rem, 4.4vw, 3.5rem);
+     mesmo valor.
+
+     ⚠️ E SÃO DOIS TAMANHOS, um por faixa, porque o RETRATO acima dela não escala pela
+     mesma conta nas duas: no celular ele é uma fração grande da tela (72vw) e no
+     desktop é uma fração pequena (24vw). Com um `clamp` só, a assinatura fechava em 48%
+     da largura da foto no celular contra 75% no desktop — a mesma peça lendo como duas.
+     Com os dois degraus ela fica entre 64% e 80% da foto em toda largura de 320 a 1920.
+     Medido: 175px sob uma foto de 272 (390), 147 sob 184 (768), 163 sob 246 (1024),
+     228 sob 304 (1440 e 1920). */
+  font-size: clamp(2.5rem, 11vw, 3rem);
   line-height: 1.1;
   /* Levemente inclinada e apertada, que é o que separa "assinatura" de "fonte
      bonitinha". Sem `text-transform`: assinatura não é caixa alta. */
   letter-spacing: 0.005em;
+}
+
+@media (min-width: 768px) {
+  .assinatura-manuscrita {
+    font-size: clamp(2.25rem, 3.9vw, 3.5rem);
+  }
 }
 
 /* Mapa: no tema claro o embed já combina, só suaviza a saturação */

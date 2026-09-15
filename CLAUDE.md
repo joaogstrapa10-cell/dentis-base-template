@@ -165,8 +165,16 @@ escrubagem que este projeto já seguia por conta.
 
 ⚠️ **A HOME ABRE PELA TELA DE ENTRADA (`#portal`)**, criada em 19/08 a pedido dele:
 fundo no verde padrão e, desde 09/09, a **marca da Suzuki ao lado do RETRATO DO DALTON,
-com a assinatura dele embaixo da FOTO**. Ao rolar, o grupo cresce e sobe, e se apaga junto com o
-fim da seção — a página passa por dentro dele.
+com a assinatura dele embaixo da FOTO**. Ao rolar, o grupo cresce e se apaga, e o hero
+sobe por baixo — a página passa por dentro dele.
+
+⚠️ **O GRUPO É CENTRADO NA FAIXA VISÍVEL DO PALCO, não no palco**, desde 15/09, e é o que
+mantém o hero colado nele: a borda de baixo do palco É o topo do hero, então centrar entre
+o topo da tela e essa borda faz o grupo acompanhar o hero em vez de fugir dele. **Não
+voltar a centrar no palco** — foi assim que apareceu o "espaço grande vazio" que ele
+fotografou, com só a assinatura visível no canto e o resto da tela em verde. O apagamento
+e o teto da escala saem dessa mesma faixa, não de fração do curso, para não desalinharem
+no dia em que `TRILHO_MULT` mudar.
 
 ⚠️ **É ESTA seção que ele chama de "hero do site"**, e a confusão custou duas rodadas:
 ele pediu a foto "ao lado da logo no hero", eu perguntei e ele escolheu a `Hero.tsx`,
@@ -177,7 +185,7 @@ lembrar que a logo vive aqui.
 ⚠️ **A escrita saiu em 20/08**: eram três pontos com fio dourado, e ele pediu "deixar
 somente a logo". A copy não se perdeu — era a de `diferenciais.itens` encurtada, e
 continua inteira em "Experiência aplicada caso a caso". O tipo `PortalPonto` e o campo
-`pontos` saíram do conteúdo em vez de virarem opcionais; estão em `9a77fdf`. Custa **1,4 tela**, e
+`pontos` saíram do conteúdo em vez de virarem opcionais; estão em `9a77fdf`. Custa **1,3 tela**, e
 esse número é `TRILHO_MULT` em `AberturaPortal.tsx`.
 
 ⚠️ **A ARCADA 3D SAIU DO SITE** em 19/08, no fim da sessão: "tire a ideia dos dentes,
@@ -1093,3 +1101,11 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-15 — Marca e retrato maiores, a pedido: logo de `md:min(24vw,19rem)` para `min(30vw,24rem)` (304 → 384px em 1440) e retrato de `md:min(18vw,14rem)` para `min(24vw,19rem)` (224 → 304px). ⚠️ **O valor do CELULAR ficou como estava, e é medição e não descuido:** o grupo cresce até 1,7× ao longo do curso, e a 62vw a marca já chega a 364px numa tela de 390 aos 72% do percurso — que é onde ela ainda está OPACA. Aumentar ali a faria ser recortada pelo palco enquanto ainda se lê.
 - 2026-09-15 — A assinatura passou para a COLUNA DA FOTO ("colocar a assinatura dele embaixo da foto"), e não é o mesmo lugar de antes: centrada sob o par marca+retrato, ela caía sob o VÃO entre os dois e lia como legenda das duas peças, não como assinatura de quem está na foto.
 - 2026-09-15 — Medido em 1920/1440/1024/390: grupo 736×371 no desktop e 240×410 no celular, `maskImage: none` no retrato, Qwitcher carregando, lado a lado de `md` para cima e empilhado abaixo, zero overflow, e o grupo cabendo na tela aos 72% do curso nos quatro tamanhos (1107×558 em 1440). `tsc` e build limpos.
+- 2026-09-15 — **O TAMANHO DAS PEÇAS DEIXOU DE SER REFÉM DO ZOOM**, e é isso que destravou o celular ("mude tudo para o celular também, precisa estar parâmetro"). O grupo cresce `1 + ZOOM` e, passando da largura do palco enquanto ainda está OPACO, a marca era recortada no meio da leitura — por isso o celular tinha ficado pequeno na rodada anterior. Agora o laço mede grupo e palco por `ResizeObserver` e usa o MENOR entre `ZOOM` e o crescimento que ainda cabe (`OCUPACAO_MAX`). Celular: logo de `min(62vw,15rem)` para `min(78vw,18rem)` (240 → 288px em 390) e retrato de `min(60vw,16rem)` para `min(72vw,17rem)`. ⚠️ O preço é crescimento: no celular o grupo cresce ~30% (23% em 320px) contra 63% no desktop, porque **é a LARGURA da marca que fecha a conta ali** — crescer mais exige marca menor, é um ou outro.
+- 2026-09-15 — ⚠️ `offsetWidth`/`offsetHeight` IGNORAM `transform`, e é isso que os torna a medida certa para esse teto: o grupo está escalado quase o tempo todo, então `getBoundingClientRect` devolveria o tamanho já crescido e o teto se realimentaria.
+- 2026-09-15 — **A assinatura precisou de DOIS clamps**, um por faixa (`clamp(2.5rem, 11vw, 3rem)` abaixo de `md`, `clamp(2.25rem, 3.9vw, 3.5rem)` a partir dele): a foto escala por uma regra diferente de cada lado do breakpoint, e com um clamp só a assinatura media 48% da largura da foto no celular contra 75% no desktop. A referência que ele mandou tem a assinatura ocupando a largura da peça — a proporção é o que se mantém, não o tamanho.
+- 2026-09-15 — **"ESPAÇO GRANDE VAZIO" ENTRE A TELA DE ENTRADA E O HERO, com print**, e a causa era geométrica: o palco tem UMA TELA de altura, então depois de soltar a grudagem leva uma tela inteira de rolagem para sair de cena, e o grupo, centrado NELE, subia junto e sumia pelo topo com metade do palco ainda visível. No print sobrava só a assinatura, no canto de cima, e o resto era verde até a manchete. Consertado centrando o grupo na FAIXA VISÍVEL do palco — do topo da tela até a borda de baixo dele, que é o topo do hero. Medido em seis larguras: o vão entre o que se vê e o hero caiu de ~60% da tela para **3 a 4%** no miolo do curso.
+- 2026-09-15 — E o **teto da escala passou a sair da mesma faixa**, não do palco: sem isso o grupo continuaria grande dentro de uma faixa que encolhe e seria recortado pelo topo da tela — que é o outro defeito do mesmo print. Como a faixa encolhe, o grupo cresce até ~1,38× no meio do curso e então RECUA enquanto se apaga, o que é o gesto certo para "a página passa por dentro dele". Medido: zero recorte pelo topo em 1920/1440/1024/768/390/320.
+- 2026-09-15 — **O apagamento deixou de ser fração do curso e virou fração da FAIXA** (opaco até 0,95, apagado em 0,24). O limiar antigo (`APAGA_DE = 0,72` do curso) só por acaso caía perto do fim da animação: mexer em `TRILHO_MULT` o desalinhava sem avisar, que é o mesmo defeito do `0,7` chutado da arcada em 19/08. Junto, `SOBE_MARCA` passou a ser fração da FAIXA e não da janela (0,26 → 0,06) — em fração da janela ele empurrava o grupo para fora do topo assim que a faixa encolhia.
+- 2026-09-15 — `TRILHO_MULT` de 0,4 para **0,3**: a seção foi de 1,4 para 1,3 tela e o hero chega ~90px antes em 1440. O piso continua sendo o próprio palco — ele tem uma tela de altura e precisa sair de cena, então não existe ajuste que traga o hero em menos de ~1 tela de rolagem. O que se ajustou foi **o que aparece durante essa saída**, que era o defeito de verdade.
+- 2026-09-15 — Medido em 1920/1440/1024/768/390/320: vão máximo de 4% da tela no miolo do curso (era ~60%), grupo nunca recortado pelo topo, opacidade 1 → 0 ao longo da rolagem, zero overflow lateral nas seis larguras. `tsc --noEmit` e `bun run build` limpos.

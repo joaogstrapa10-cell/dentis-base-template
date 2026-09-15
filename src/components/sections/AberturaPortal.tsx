@@ -29,41 +29,44 @@ import type { AberturaContent } from "@/content/types";
  * diferente: lá disputava com um vídeo que precisa ser lido quadro a quadro, aqui ela
  * É o conteúdo. Se aparecer pedido para tirar de novo, é este componente.
  *
- * ⚠️ Custo de rolagem: 1,4 tela até o hero estar em posição. Se incomodar, é
+ * ⚠️ Custo de rolagem: 1,3 tela até o hero estar em posição. Se incomodar, é
  * `TRILHO_MULT` aqui — mas o piso é o próprio palco, que tem uma tela de altura e
  * precisa sair de cena antes do hero entrar. Abaixo de ~0,3 o gesto passa antes de
  * ser lido.
  */
 
 /** Quantas telas de ROLAGEM a seção tem além da tela parada. */
-const TRILHO_MULT = 0.4;
+const TRILHO_MULT = 0.3;
 
 /**
- * ⚠️ ONDE A MARCA ACABA DE SE APAGAR, em fração do curso TOTAL da seção — e "total"
- * aqui inclui a SAÍDA do palco, não só o trecho em que ele está grudado.
+ * ⚠️ O GRUPO FICA CENTRADO NA FAIXA VISÍVEL DO PALCO, e não no palco — e foi isto que
+ * acabou com o "espaço grande vazio" reportado em 15/09, com print.
  *
- * Esse detalhe era o defeito reportado em 19/08: "ao terminar o scroll inicial (...)
- * ainda demora um pouco para ele aparecer, tem um baita espaço". A conta antiga dividia
- * pelo trecho grudado (`altura - innerHeight`), então a opacidade chegava a ZERO com o
- * palco ainda ocupando a tela inteira — e sobrava UMA TELA CHEIA de verde vazio rolando
- * antes do hero. Medido: no fim do curso a marca estava em opacidade 0 e o topo do hero
- * a 900px de distância.
+ * O palco tem UMA TELA de altura, então, depois de soltar a grudagem, ele leva uma tela
+ * inteira de rolagem para sair de cena. Centrado nele, o grupo sobe junto nessa saída e
+ * some pelo topo com metade do palco ainda na tela — restando uma faixa de verde vazio
+ * entre o que se vê e o topo do hero. No print do usuário só a assinatura tinha sobrado
+ * visível, no canto de cima, com o resto da tela vazio até a manchete do hero.
  *
- * Dividindo pela altura INTEIRA, o apagamento termina junto com a seção: a marca
- * continua na tela enquanto o palco desliza para cima e o hero sobe por baixo. Em
- * nenhum momento a tela fica vazia.
+ * A borda de baixo do palco É o topo do hero (são vizinhos no fluxo). Centrando o grupo
+ * entre o topo da tela e essa borda, ele ACOMPANHA o hero que sobe em vez de fugir dele:
+ * a faixa vazia deixa de existir, porque a faixa é onde o grupo está.
+ *
+ * O apagamento é medido na própria faixa, e não em fração do curso: some quando o hero
+ * já tomou a tela. Assim o número não se desalinha no dia em que `TRILHO_MULT` mudar —
+ * que é o defeito que o limiar antigo tinha.
  */
-const APAGA_DE = 0.72;
-const APAGA_ATE = 1;
+const BANDA_OPACO = 0.95;
+const BANDA_APAGADO = 0.24;
 
 /**
- * Deslocamento máximo da marca, em fração da altura da tela.
+ * Quanto o grupo sobe DENTRO da faixa, em fração da altura dela.
  *
- * Modesto de propósito: boa parte do curso é a SAÍDA do palco, e nela a rolagem da
- * página já carrega a marca para cima de graça. Somar deslocamento demais em cima
- * disso a joga fora do quadro cedo, o que recria a tela vazia por outro caminho.
+ * Pequeno e proporcional à FAIXA, não à janela: em fração da janela ele sairia pelo topo
+ * assim que a faixa encolhesse — que é metade do defeito de 15/09. A subida de verdade
+ * não vem daqui, vem da faixa, que encolhe por cima e leva o grupo junto.
  */
-const SOBE_MARCA = 0.26;
+const SOBE_MARCA = 0.06;
 
 /**
  * Quanto o GRUPO (marca + retrato + assinatura) cresce ao longo do curso.
@@ -76,6 +79,24 @@ const SOBE_MARCA = 0.26;
  */
 const ZOOM = 0.7;
 
+/**
+ * Fração do palco que o grupo pode ocupar NO PICO do crescimento.
+ *
+ * ⚠️ É isto que tornou o tamanho das peças um parâmetro livre. Até 15/09 o tamanho no
+ * CELULAR estava travado por um risco: o grupo cresce `1 + ZOOM` e, passando da largura
+ * do palco enquanto ainda está OPACO, a marca era recortada no meio da leitura. A saída
+ * era manter as peças pequenas — e foi exatamente isso que o usuário mandou desfazer
+ * ("mude tudo para o celular também").
+ *
+ * Agora o zoom se limita sozinho: o laço mede o grupo e o palco e usa o MENOR entre
+ * `ZOOM` e o crescimento que ainda cabe. Aumentar uma peça não quebra mais nada — só
+ * consome crescimento, e o console não precisa ser consultado para saber quanto.
+ *
+ * 0,98 e não 1: um fio de folga para o arredondamento de subpixel não encostar a peça
+ * na borda do recorte.
+ */
+const OCUPACAO_MAX = 0.98;
+
 export const PORTAL_VH = (TRILHO_MULT + 1) * 100;
 
 const trava01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
@@ -83,6 +104,13 @@ const trava01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 export function AberturaPortal({ data }: { data: AberturaContent }) {
   const trilhoRef = useRef<HTMLElement | null>(null);
   const marcaRef = useRef<HTMLDivElement | null>(null);
+  const palcoRef = useRef<HTMLDivElement | null>(null);
+  /* Tamanhos de LAYOUT do grupo e do palco, em px, para o teto do zoom. Medidos por
+     `ResizeObserver` e não no laço: `offsetWidth` força cálculo de layout, e ler isso a
+     60fps é justamente o custo que este componente existe para não ter.
+     ⚠️ `offsetWidth`/`offsetHeight` IGNORAM `transform`, que é o que os torna a medida
+     certa aqui — o grupo está escalado quase o tempo todo. */
+  const medidasRef = useRef({ gw: 0, gh: 0, pw: 0, ph: 0 });
   const [semAnimacao, setSemAnimacao] = useState(false);
 
   useEffect(() => {
@@ -92,6 +120,32 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
     mq.addEventListener("change", aplica);
     return () => mq.removeEventListener("change", aplica);
   }, []);
+
+  useEffect(() => {
+    if (semAnimacao) return;
+    const grupo = marcaRef.current;
+    const palco = palcoRef.current;
+    if (!grupo || !palco) return;
+    const medir = () => {
+      medidasRef.current = {
+        gw: grupo.offsetWidth,
+        gh: grupo.offsetHeight,
+        pw: palco.offsetWidth,
+        ph: palco.offsetHeight,
+      };
+    };
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(grupo);
+    ro.observe(palco);
+    /* A marca e o retrato são imagens: até decodificarem, o grupo mede menos do que vai
+       medir. Sem isto o teto do zoom nasce generoso e só se corrige no primeiro resize. */
+    window.addEventListener("load", medir);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("load", medir);
+    };
+  }, [semAnimacao]);
 
   useEffect(() => {
     if (semAnimacao) return;
@@ -109,21 +163,50 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          para o dia em que algo entrar antes dela.
 
          ⚠️ Divide pela altura INTEIRA da seção, não por `altura - innerHeight`. O
-         segundo mede só o trecho em que o palco está GRUDADO, e usá-lo faz a animação
-         terminar com o palco ainda ocupando a tela toda — sobrando uma tela cheia de
-         verde vazio antes do hero. Ver a nota de `APAGA_ATE`. */
+         segundo mede só o trecho em que o palco está GRUDADO, e usá-lo faz o
+         crescimento terminar com o palco ainda ocupando a tela toda. Este `p` comanda
+         só a ESCALA e a subida dentro da faixa; quem comanda o apagamento é a faixa
+         visível — ver a nota de `BANDA_APAGADO`. */
       const caixa = trilho.getBoundingClientRect();
       const p = caixa.height > 0 ? trava01(-caixa.top / caixa.height) : 0;
 
-      const escala = 1 + p * ZOOM;
-      const opacidade =
-        p <= APAGA_DE ? 1 : 1 - trava01((p - APAGA_DE) / (APAGA_ATE - APAGA_DE));
+      const { gw, gh, pw, ph } = medidasRef.current;
+      const alturaPalco = ph || window.innerHeight;
+
+      /* A borda de baixo do palco na tela — e, como o hero é o próximo elemento do
+         fluxo, ELA É O TOPO DO HERO. Enquanto o palco está grudado ela vale a altura
+         dele; depois sobe com a rolagem, e a faixa visível encolhe até zero. */
+      const fundoPalco = Math.min(alturaPalco, caixa.bottom);
+      const banda = alturaPalco > 0 ? fundoPalco / alturaPalco : 0;
+
+      /* Centro do grupo NA TELA: o meio da faixa, com a subida medida na própria faixa.
+         O deslocamento é a diferença até onde o layout já o pôs — o meio do palco. */
+      const centro = fundoPalco * (0.5 - p * SOBE_MARCA);
+      const desloca = centro - (fundoPalco - alturaPalco / 2);
+
+      /* TETO DA ESCALA, derivado do que cabe: a LARGURA do palco e a ALTURA da faixa.
+         Ver a nota de `OCUPACAO_MAX` — é ele que tornou o tamanho das peças um parâmetro
+         livre, e é a metade da altura que impede o recorte pelo topo da tela quando a
+         faixa encolhe. `folga` é a menor distância do centro até uma borda da faixa. */
+      const folga = Math.max(0, Math.min(centro, fundoPalco - centro));
+      const escala =
+        gw > 0 && gh > 0
+          ? Math.max(
+              0,
+              Math.min(
+                1 + p * ZOOM,
+                (pw * OCUPACAO_MAX) / gw,
+                (2 * folga * OCUPACAO_MAX) / gh,
+              ),
+            )
+          : 1 + p * ZOOM;
+      const opacidade = trava01((banda - BANDA_APAGADO) / (BANDA_OPACO - BANDA_APAGADO));
 
       /* ⚠️ `translate3d` ANTES de `scale`: a escala é aplicada primeiro e o
          deslocamento depois, em px NÃO escalados. Invertida, o deslocamento viria
          multiplicado pelo zoom e a marca sairia da tela cedo demais. Registrado em
          19/08 na abertura. */
-      marca.style.transform = `translate3d(0, ${(-p * SOBE_MARCA * window.innerHeight).toFixed(1)}px, 0) scale(${escala.toFixed(4)})`;
+      marca.style.transform = `translate3d(0, ${desloca.toFixed(1)}px, 0) scale(${escala.toFixed(4)})`;
       marca.style.opacity = opacidade.toFixed(3);
     };
     raf = requestAnimationFrame(quadro);
@@ -134,14 +217,19 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
     <img
       src={data.marca}
       alt={data.marcaAlt}
-      /* ⚠️ MAIOR no desktop desde 15/09, a pedido ("quero colocar a logo maior"): de
-         `md:min(24vw,19rem)` para `min(30vw,24rem)`, ou seja 304 → 384px em 1440.
-         O valor do CELULAR ficou como estava, e isso é medido, não descuido: o grupo
-         cresce até 1,7× ao longo do curso, e a 62vw a marca já chega a 364px numa tela
-         de 390 aos 72% do percurso — que é onde ela ainda está opaca. Aumentar aqui a
-         faria ser RECORTADA pelo palco enquanto ainda se lê.
+      /* MAIOR nas duas faixas desde 15/09, a pedido: "quero colocar a logo maior" e, na
+         mensagem seguinte, "mude tudo para o celular também, precisa estar parâmetro".
+         Desktop de `min(24vw,19rem)` para `min(30vw,24rem)` (304 → 384px em 1440) e
+         celular de `min(62vw,15rem)` para `min(78vw,18rem)` (240 → 288px em 390).
+
+         ⚠️ O celular só pôde crescer porque o ZOOM passou a ter teto calculado — ver a
+         nota de `OCUPACAO_MAX`. Antes, a marca a 78vw seria recortada pelo palco no meio
+         do percurso, enquanto ainda opaca. O preço é crescimento: no celular o grupo
+         cresce ~33% em vez dos 70% do desktop, porque é a LARGURA da marca que fecha a
+         conta ali. Para crescer mais, a marca teria de ser menor — é um ou outro.
+
          O teto em `rem` existe para ela não virar cartaz em monitor ultralargo. */
-      className="w-[min(62vw,15rem)] md:w-[min(30vw,24rem)]"
+      className="w-[min(78vw,18rem)] md:w-[min(30vw,24rem)]"
     />
   ) : null;
 
@@ -172,7 +260,7 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          A proporção vem do ARQUIVO e não cravada aqui: é a lição de 12/08, quando uma
          proporção fixa recortou 78% de uma foto panorâmica, e de 13/08, quando o
          arquivo do hero mudou e a medida cravada passou a recortar. */
-      className="h-auto w-[min(60vw,16rem)] rounded-xl object-contain shadow-[0_24px_64px_rgba(0,0,0,0.5)] md:w-[min(24vw,19rem)] md:rounded-2xl"
+      className="h-auto w-[min(72vw,17rem)] rounded-xl object-contain shadow-[0_24px_64px_rgba(0,0,0,0.5)] md:w-[min(24vw,19rem)] md:rounded-2xl"
       style={{ aspectRatio: `${retrato.largura} / ${retrato.altura}` }}
     />
   ) : null;
@@ -246,7 +334,10 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
           para os lados. Pôr o recorte num ANCESTRAL do `sticky` mataria a grudagem
           (custou uma rodada na Bio em 13/08); no próprio elemento `sticky` é seguro,
           porque o contêiner de rolagem dele continua sendo a janela. */}
-      <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden px-6 text-center">
+      <div
+        ref={palcoRef}
+        className="sticky top-0 flex h-svh items-center justify-center overflow-hidden px-6 text-center"
+      >
         <div ref={marcaRef} className="will-change-transform">
           {composicao}
         </div>
