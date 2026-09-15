@@ -336,7 +336,7 @@ function Carta({
       {/* Rótulo do registro pendente, sozinho no topo. Ele desaparece quando a
           foto do caso chega, e é por isso que nada mais compete por este canto. */}
       {caso.imagem ? null : (
-        <span className="absolute left-3 top-3 rounded-md border border-border bg-background/85 px-2 py-1 text-small text-muted backdrop-blur sm:left-5 sm:top-5">
+        <span className="absolute left-3 top-3 rounded-md border border-border bg-background/95 px-2 py-1 text-small text-muted sm:left-5 sm:top-5 lg:backdrop-blur">
           {caso.rotuloSlot}
         </span>
       )}

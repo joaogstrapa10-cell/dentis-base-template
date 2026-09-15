@@ -57,7 +57,7 @@ function Retrato({
     >
       {/* Maiúscula e tracking removidos: era o último resto do vocabulário de
           rótulo pequeno que saiu de todas as outras seções. */}
-      <span className="rounded-md border border-ink-border bg-ink/80 px-2 py-1 text-small text-ink-muted backdrop-blur">
+      <span className="rounded-md border border-ink-border bg-ink/95 px-2 py-1 text-small text-ink-muted lg:backdrop-blur">
         {alt}
       </span>
     </div>

@@ -209,7 +209,7 @@ export function DepoimentosSection({
             até a borda no mobile, onde o container é estreito. */}
         <div
           ref={paradaRef}
-          className="esteira-pausa esteira-mask -mx-5 overflow-hidden md:-mx-10 lg:mx-0"
+          className="esteira-pausa esteira-mask-lg -mx-5 overflow-hidden md:-mx-10 lg:mx-0"
         >
           <ul className="esteira flex items-stretch gap-4 px-5 md:px-10 lg:px-0">
             {faixa.map((item, i) => (

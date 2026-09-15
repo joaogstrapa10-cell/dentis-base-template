@@ -40,7 +40,7 @@ function Foto({ slot }: { slot: EstruturaSlot }) {
         aria-label={slot.alt}
         className="slot-grid flex h-full w-full items-end bg-surface p-4"
       >
-        <span className="rounded-md border border-border bg-background/80 px-2 py-1 text-small text-muted backdrop-blur">
+        <span className="rounded-md border border-border bg-background/95 px-2 py-1 text-small text-muted lg:backdrop-blur">
           {slot.rotulo}
         </span>
       </div>
@@ -81,7 +81,7 @@ export function EstruturaSection({ data }: { data: EstruturaContent }) {
 
       <div
         ref={paradaRef}
-        className="esteira-pausa esteira-mask mt-14 overflow-hidden md:mt-20"
+        className="esteira-pausa esteira-mask-lg mt-14 overflow-hidden md:mt-20"
       >
         <ul className="esteira flex gap-3 md:gap-4">
           {faixa.map((slot, i) => {

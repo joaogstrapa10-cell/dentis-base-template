@@ -73,7 +73,7 @@ function CartaoMembro({ m }: { m: BioMembro }) {
       {/* Painel ESCURO, não claro como no template: as fotos são de estúdio com
           fundo creme, e um painel claro sobre elas some. Este é o mesmo
           vocabulário do rótulo de slot usado no resto do site. */}
-      <div className="absolute inset-x-2 bottom-2 rounded-xl border border-ink-border bg-ink/85 px-4 py-3 backdrop-blur">
+      <div className="absolute inset-x-2 bottom-2 rounded-xl border border-ink-border bg-ink/95 px-4 py-3 lg:backdrop-blur">
         <p className="text-base font-medium leading-[1.2] text-ink-foreground">
           {m.nome}
         </p>

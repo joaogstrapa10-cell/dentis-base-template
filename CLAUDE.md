@@ -308,6 +308,13 @@ e rodapé. A conversão segue no header fixo e no hero. 🗑️ E **Tratamentos 
 completo** no mesmo pedido; com ela saiu a única explicação de como o orçamento funciona.
 "Cada etapa, acompanhada." tinha saído em 12/08.
 
+⚠️ **NO CELULAR O `CarrosselDeCartoes` É OUTRO CARTÃO**, desde 15/09: os itens viram
+uma FAIXA horizontal rolável, o título e a descrição saem de cima da foto e vão para o
+painel escuro, e a foto ocupa a largura do cartão. O desktop ficou intacto. Motivo
+medido: em 390px a lista vertical sozinha media 604px, a foto ficava em 318×239 e o véu
+de texto por cima dela media **110% da altura da própria foto**. Ao mexer nesse
+componente, **conferir os dois layouts** — `empilhado` é o estado que os separa.
+
 ⚠️ **`CarrosselDeCartoes` SERVE DUAS SEÇÕES — Áreas e Diferenciais — e isso foi
 DECISÃO DO USUÁRIO CONTRA UMA OBJEÇÃO EXPLÍCITA.** Não "corrigir" numa próxima sessão
 sem falar com ele — é o mesmo caso da exceção de Áreas em 12/08. A objeção que ele
@@ -1164,4 +1171,11 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-15 — A máscara do pé do palco virou **DEGRADÊ** de todo jeito: o A/B não a condenou, mas uma caixa pintada é mais simples que uma máscara e o resultado é idêntico, porque o que está atrás é exatamente `--ink`. `.palco-fundido` saiu do CSS.
 - 2026-09-15 — Marca mais alta no CELULAR, a pedido ("a logo está muito perto da imagem do Dalton, colocar ela um pouco mais pra cima"): vão de `gap-8` para `gap-14` só na versão empilhada. Como o grupo é centrado, o vão maior SOBE a marca e desce a foto meio vão cada; de `md` para cima o mesmo vão é horizontal e não teria efeito nenhum — por isso os dois números são diferentes de propósito.
 - 2026-09-15 — Assinatura passou a levar o título: **"Dr. Dalton Suzuki"**. Medido em 1440/390/320: uma linha em todas, 79% a 87% da largura da peça ao lado, zero overflow.
+- 2026-09-15 — **O CARROSSEL GANHOU UM LAYOUT PRÓPRIO DE CELULAR**, e os números explicam o pedido ("está muito grande, as imagens ficaram pequenas e os textos em cima cobrem praticamente a imagem toda"): em 390px a lista vertical de oito pílulas media **604px sozinha**, a foto ficava em **318×239** e o véu de texto sobre ela media **261px — 110% da altura da foto**. Ou seja o texto cobria a imagem inteira. Agora: itens numa FAIXA horizontal rolável (58px), título e descrição no painel escuro FORA da foto, e a foto na largura do cartão. Medido: seção de 1,34 para **0,86 tela**, foto de 318×239 para **350×280 (+29% de área)**, zero véu, zero overflow em 390 e 320.
+- 2026-09-15 — ⚠️ **UM DOM só, não dois.** A diferença entre os dois layouts é o estado `empilhado` (por `matchMedia`, o mesmo padrão do `estreito` que já existia), aplicado a ESTILO e não a estrutura: os mesmos `<button role="tab">` mudam de posicionamento absoluto para fluxo horizontal. Duplicar a lista para o celular duplicaria os `id` das abas e o `aria-labelledby` do painel — o defeito que a órbita evitou em 13/08 com `display:none`.
+- 2026-09-15 — O chip ativo é centrado na faixa por `scrollLeft` na mão, **não por `scrollIntoView`**: este último também rola a PÁGINA no eixo vertical, e com a troca automática a cada 4,2s a seção inteira saltaria sozinha.
+- 2026-09-15 — Cartão com `-mx-2` no celular: sangra 16px para fora da goteira da seção, e esses 16px vão direto para a foto — que é a peça que ele apontou como pequena. Proporção **5:4 no celular** e 4:3 de `lg` para cima: a mais alta devolve presença onde a imagem é a peça principal, e o recorte sobe de 11% para 17% da largura nas fotos 1,5:1 do acervo — longe dos 47% que um retrato 4:5 custaria, que é a armadilha de 12/08 e 13/08.
+- 2026-09-15 — ⚠️ **"NO CELULAR O SCROLL ESTÁ TRAVANDO" — a causa mais provável é `backdrop-filter`, e ele estava em 17 ELEMENTOS**, incluindo a pílula de navegação, que é **fixa**. Num elemento fixo o navegador reamostra e desfoca tudo que passa atrás dele a CADA quadro de rolagem, e isso acompanha a página inteira; no celular é um dos efeitos mais caros que existem. Todos passaram a ser `lg:` — só no desktop —, com a opacidade do fundo subindo para 95%, onde o desfoque praticamente não aparece. Medido: **0 elementos com `backdrop-filter` no celular, 17 no desktop**.
+- 2026-09-15 — ⚠️ **Por que a minha medição não pegava isso:** `Emulation.setCPUThrottlingRate` estrangula a CPU, **não o compositor nem a GPU**, e num desktop `backdrop-filter` é trivial. É o limite desta bancada — dá para medir trabalho de JS e layout, não custo de composição. **Efeito caro de GPU se julga pela natureza do efeito, não pelo número daqui.**
+- 2026-09-15 — Junto, as máscaras de borda de DUAS das três esteiras viraram `lg:` (`.esteira-mask-lg`): máscara em elemento largo com imagens dentro força uma superfície de composição própria a cada quadro. No celular essas duas sangram até a borda da TELA (medido: 0px dos dois lados), então o corte do `overflow-hidden` cai onde a tela acaba e não se vê. A do corpo clínico FICA com a máscara: ela para a 12px da borda, e ali um corte reto atravessaria o retrato.
 

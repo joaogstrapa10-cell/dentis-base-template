@@ -268,8 +268,16 @@ export function Header({
           // render ao lado do próprio rótulo, em três posições de scroll:
           // sobre o hero escuro 7,54:1 nas duas opacidades, mas sobre seção
           // clara 3,52:1 a 75% (reprova, o rótulo tem 14px) contra 6,58:1 a
-          // 95%. O `backdrop-blur` continua, pela borda de vidro.
-          "border border-ink-border bg-ink/95 px-5 py-3 backdrop-blur-md",
+          // 95%.
+          //
+          // ⚠️ O `backdrop-blur` é `lg:` — SÓ no desktop —, e isso é desempenho, não
+          // estética. Num elemento FIXO o navegador reamostra e desfoca tudo que passa
+          // atrás dele a CADA quadro de rolagem; no celular é um dos efeitos mais caros
+          // que existem, e esta pílula acompanha a página inteira. A 95% de opacidade o
+          // desfoque quase não aparece — então tirá-lo no celular custa nada e devolve
+          // trabalho de compositor em toda rolagem. Reportado em 15/09: "no celular o
+          // scroll está travando muito".
+          "border border-ink-border bg-ink/95 px-5 py-3 lg:backdrop-blur-md",
           redondo ? "rounded-full" : "rounded-2xl",
           /* Entrada da pílula quando a arcada termina. Sobe 8px junto com o fade
              para ler como algo que chega, e não como algo que estava ali apagado.

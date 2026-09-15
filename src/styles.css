@@ -288,6 +288,18 @@
    Se um dia fizer falta, tem de ser numa classe própria, aplicada só onde o topo
    do bloco NÃO faz fronteira com outra superfície escura. O arco dourado da base
    fica — ele nunca tocou borda nenhuma. */
+/* Faixa de chips do carrossel no celular: rolagem horizontal sem a barra à mostra.
+   A barra nativa sobre o painel escuro lê como elemento estranho, e o affordance
+   aqui é o próprio chip cortado na borda. */
+.faixa-chips {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+.faixa-chips::-webkit-scrollbar {
+  display: none;
+}
+
 .ink-arc {
   background: radial-gradient(120% 90% at 50% 108%, var(--gold-glow) 0%, transparent 55%);
 }
@@ -611,6 +623,23 @@
 .esteira-mask {
   -webkit-mask-image: linear-gradient(to right, transparent 0, black 3%, black 97%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0, black 3%, black 97%, transparent 100%);
+}
+
+/* ⚠️ `.esteira-mask-lg`: a MESMA borda esmaecida, mas só de `lg` para cima. Existe
+   por desempenho no celular — máscara num elemento largo com imagens dentro força o
+   navegador a compor a camada numa superfície separada a cada quadro, e são duas
+   esteiras assim. Abaixo de `lg` essas duas sangram até a borda da TELA (medido: 0px
+   dos dois lados), então o corte do `overflow-hidden` cai exatamente onde a tela
+   acaba e não se vê. A do corpo clínico continua com a máscara cheia: ela para a
+   12px da borda, e ali um corte reto atravessaria o retrato. */
+.esteira-mask-lg {
+  mask-image: none;
+}
+@media (min-width: 1024px) {
+  .esteira-mask-lg {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 3%, black 97%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, black 3%, black 97%, transparent 100%);
+  }
 }
 
 /* ---------- Slot de imagem vazio ---------- */

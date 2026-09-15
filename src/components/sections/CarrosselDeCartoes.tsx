@@ -155,6 +155,18 @@ export function CarrosselDeCartoes({
   const [pausado, setPausado] = useState(false);
   const [semMovimento, setSemMovimento] = useState(false);
   const [estreito, setEstreito] = useState(false);
+  /* ⚠️ ABAIXO DE `lg` O CARTÃO É OUTRO, e não por gosto: em 390px a lista vertical
+     de oito pílulas sozinha media 604px, a foto ficava em 318×239 e o véu de texto
+     por cima dela media 261px — **110% da altura da própria foto**. Ou seja o texto
+     cobria a imagem inteira e a seção fechava em 1,34 tela. Reportado em 15/09:
+     "está muito grande, as imagens ficaram pequenas e os textos em cima cobrem
+     praticamente a imagem toda".
+
+     No celular, então: os itens viram uma FAIXA horizontal rolável, o título e a
+     descrição saem de cima da foto e vão para o painel escuro, e a foto ocupa a
+     largura do cartão. O desktop fica exatamente como estava. */
+  const [empilhado, setEmpilhado] = useState(false);
+  const faixaRef = useRef<HTMLDivElement | null>(null);
   const idBase = useId();
   const botoes = useRef<Array<HTMLButtonElement | null>>([]);
   const n = itens.length;
@@ -184,6 +196,32 @@ export function CarrosselDeCartoes({
     mq.addEventListener("change", aplica);
     return () => mq.removeEventListener("change", aplica);
   }, []);
+
+  /* Mesmo padrão de leitura do `estreito`: o valor decide POSIÇÃO (absoluta ou em
+     fluxo), então precisa existir em JS e não só como breakpoint de CSS. */
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023.98px)");
+    const aplica = () => setEmpilhado(mq.matches);
+    aplica();
+    mq.addEventListener("change", aplica);
+    return () => mq.removeEventListener("change", aplica);
+  }, []);
+
+  /* Na faixa horizontal o item ativo precisa vir para o meio sozinho, senão a troca
+     automática realça um chip que está fora da vista. ⚠️ `scrollLeft` na mão e não
+     `scrollIntoView`: este último também rola a PÁGINA no eixo vertical, e aqui a
+     seção inteira saltaria a cada 4,2s. */
+  useEffect(() => {
+    if (!empilhado) return;
+    const faixa = faixaRef.current;
+    const chip = botoes.current[ativo];
+    if (!faixa || !chip) return;
+    const alvo = chip.offsetLeft - (faixa.clientWidth - chip.offsetWidth) / 2;
+    faixa.scrollTo({
+      left: Math.max(0, alvo),
+      behavior: semMovimento ? "auto" : "smooth",
+    });
+  }, [ativo, empilhado, semMovimento]);
 
   useEffect(() => {
     if (pausado || semMovimento || n < 2) return;
@@ -222,21 +260,33 @@ export function CarrosselDeCartoes({
       onMouseLeave={() => setPausado(false)}
       onFocusCapture={() => setPausado(true)}
       onBlurCapture={() => setPausado(false)}
-      className="relative isolate flex flex-col overflow-hidden rounded-3xl ring-1 ring-border md:rounded-[2rem] lg:flex-row"
+      /* `-mx-2` no celular: o cartão sangra para fora da goteira da seção, e são 16px
+         de largura que vão direto para a FOTO — que é a peça que ele apontou como
+         pequena. O anel e o raio continuam, então a borda lê como intenção e não
+         como corte. */
+      className="relative isolate -mx-2 flex flex-col overflow-hidden rounded-3xl ring-1 ring-border md:rounded-[2rem] lg:mx-0 lg:flex-row"
     >
       {/* ── PAINEL ESQUERDO: a lista, sobre o petróleo ───────────────────────── */}
       <div /* `items-center`: a lista tem altura FIXA (um slot por item) e o painel tem a
             altura da coluna da foto, que é maior. Sem centrar, uma lista curta encosta
             no topo e sobra petróleo vazio embaixo — visível com 3 e 4 itens, invisível
             com 8, que é o caso em que este componente nasceu. */
-        className="relative flex items-center bg-ink px-5 py-9 md:px-8 lg:w-[38%] lg:py-12">
+        className="relative flex flex-col justify-center gap-5 bg-ink px-5 py-7 md:px-8 lg:gap-0 lg:py-12 lg:w-[38%]">
         <div
+          ref={faixaRef}
           role="tablist"
-          aria-orientation="vertical"
+          aria-orientation={empilhado ? "horizontal" : "vertical"}
           aria-label={rotuloLista}
           onKeyDown={aoTeclado}
-          className="relative"
-          style={{ height: itemH * (laco ? JANELA : n) }}
+          /* ⚠️ `-mx-5` na faixa: os chips têm de PODER sangrar até a borda do painel,
+             senão o último fica cortado pelo padding e parece defeito. O `px-5` de
+             dentro devolve a margem no começo e no fim da rolagem. */
+          className={
+            empilhado
+              ? "faixa-chips -mx-5 flex gap-2 overflow-x-auto px-5 pb-1"
+              : "relative"
+          }
+          style={empilhado ? undefined : { height: itemH * (laco ? JANELA : n) }}
         >
           {itens.map((item, i) => {
             /* Com laço, a posição é a distância circular até o ativo e a lista gira.
@@ -247,16 +297,25 @@ export function CarrosselDeCartoes({
             return (
               <div
                 key={item.chave}
-                className="absolute left-0 flex items-center"
-                style={{
-                  height: itemH,
-                  top: `calc(50% - ${itemH / 2}px)`,
-                  transform: `translateY(${d * itemH}px)`,
-                  opacity: foraDaJanela ? 0 : ativa ? 1 : 0.72,
-                  transition: semMovimento
-                    ? "none"
-                    : `${transicao(620, "transform")}, opacity 380ms ease`,
-                }}
+                className={
+                  empilhado ? "flex shrink-0 items-center" : "absolute left-0 flex items-center"
+                }
+                style={
+                  empilhado
+                    ? {
+                        opacity: ativa ? 1 : 0.72,
+                        transition: semMovimento ? "none" : "opacity 380ms ease",
+                      }
+                    : {
+                        height: itemH,
+                        top: `calc(50% - ${itemH / 2}px)`,
+                        transform: `translateY(${d * itemH}px)`,
+                        opacity: foraDaJanela ? 0 : ativa ? 1 : 0.72,
+                        transition: semMovimento
+                          ? "none"
+                          : `${transicao(620, "transform")}, opacity 380ms ease`,
+                      }
+                }
               >
                 <button
                   ref={(el) => {
@@ -272,11 +331,11 @@ export function CarrosselDeCartoes({
                   tabIndex={ativa ? 0 : -1}
                   /* Item fora da janela é invisível: tirar do fluxo de clique evita
                      que o cursor pegue algo que não está na tela. */
-                  aria-hidden={foraDaJanela || undefined}
+                  aria-hidden={(!empilhado && foraDaJanela) || undefined}
                   onClick={() => setAtivo(i)}
                   className={cn(
                     "flex items-center gap-2.5 rounded-full border px-3.5 py-3 text-left transition-colors duration-300 md:gap-3 md:px-5",
-                    foraDaJanela && "pointer-events-none",
+                    !empilhado && foraDaJanela && "pointer-events-none",
                     ativa
                       ? "border-transparent bg-ink-foreground text-ink"
                       : "border-ink-border text-ink-muted hover:border-white/35 hover:text-ink-foreground",
@@ -311,7 +370,7 @@ export function CarrosselDeCartoes({
                   <span
                     className={cn(
                       "text-small md:text-base",
-                      estreito ? "leading-[1.25]" : "whitespace-nowrap",
+                      estreito && !empilhado ? "leading-[1.25]" : "whitespace-nowrap",
                     )}
                   >
                     {item.titulo}
@@ -323,7 +382,7 @@ export function CarrosselDeCartoes({
 
           {/* Máscaras nas duas pontas, na cor do painel. É o que faz o item sair de
               cena em vez de ser cortado por uma aresta reta. */}
-          {laco ? (
+          {laco && !empilhado ? (
             <>
               <div
                 aria-hidden
@@ -336,6 +395,19 @@ export function CarrosselDeCartoes({
             </>
           ) : null}
         </div>
+
+        {/* ⚠️ O TEXTO DO ITEM ATIVO, no celular, VIVE AQUI — fora da foto. Por cima
+            dela ele media 110% da altura da imagem, ou seja cobria tudo. Só um dos
+            dois é renderizado por vez (este ou o véu do painel da foto), então não há
+            conteúdo repetido para leitor de tela. */}
+        {empilhado && itens[ativo] ? (
+          <div key={itens[ativo].chave}>
+            <h3 className="display-3 text-ink-foreground">{itens[ativo].titulo}</h3>
+            <p className="mt-1.5 text-small leading-[1.55] text-ink-foreground/85">
+              {itens[ativo].descricao}
+            </p>
+          </div>
+        ) : null}
       </div>
 
       {/* ── PAINEL DIREITO: a pilha de fotos ─────────────────────────────────── */}
@@ -344,7 +416,7 @@ export function CarrosselDeCartoes({
             direito lia como pagina vazia e o bloco parecia cortado ao meio. O
             petroleo a 5,5% da superficie visivel e amarra com o painel escuro ao
             lado, em vez de introduzir um cinza neutro que nao e da paleta. */
-        className="relative flex flex-1 items-center justify-center bg-foreground/[0.055] px-4 py-8 md:px-8 md:py-10">
+        className="relative flex flex-1 items-center justify-center bg-foreground/[0.055] p-2 lg:px-8 lg:py-10">
         <div
           role="tabpanel"
           id={`${idBase}-painel`}
@@ -359,7 +431,12 @@ export function CarrosselDeCartoes({
              baixos e hoje não há conflito com a pílula (`z-50`), mas deixar a
              ordenação escapar é o defeito que a galeria pagou com a pilha passando
              por cima do menu. */
-          className="relative isolate aspect-[4/3] w-full max-w-[34rem]"
+          /* 5:4 no CELULAR e 4:3 do `lg` para cima. A proporção mais alta devolve
+             presença à imagem onde ela é a peça principal (medido: de 318×239 para
+             350×280, +29% de área) e o recorte sobe de 11% para 17% da largura nas
+             fotos 1,5:1 do acervo — ainda longe dos 47% que um retrato 4:5 custaria,
+             que é a armadilha de 12/08 e 13/08. */
+          className="relative isolate aspect-[5/4] w-full max-w-[34rem] lg:aspect-[4/3]"
         >
           {itens.map((item, i) => {
             const d = distanciaCircular(i, ativo, n);
@@ -416,20 +493,22 @@ export function CarrosselDeCartoes({
                   </div>
                 )}
 
-                <div
-                  className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col justify-end p-5 pt-20 md:p-7 md:pt-24"
-                  style={{
-                    background:
-                      "linear-gradient(to top, oklch(0.16 0.03 197 / 0.94), oklch(0.16 0.03 197 / 0.5) 46%, transparent)",
-                    opacity: ativa ? 1 : 0,
-                    transition: semMovimento ? "none" : "opacity 400ms ease",
-                  }}
-                >
-                  <h3 className="display-3 text-ink-foreground">{item.titulo}</h3>
-                  <p className="mt-2 text-base leading-[1.5] text-ink-foreground/85">
-                    {item.descricao}
-                  </p>
-                </div>
+                {empilhado ? null : (
+                  <div
+                    className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col justify-end p-5 pt-20 md:p-7 md:pt-24"
+                    style={{
+                      background:
+                        "linear-gradient(to top, oklch(0.16 0.03 197 / 0.94), oklch(0.16 0.03 197 / 0.5) 46%, transparent)",
+                      opacity: ativa ? 1 : 0,
+                      transition: semMovimento ? "none" : "opacity 400ms ease",
+                    }}
+                  >
+                    <h3 className="display-3 text-ink-foreground">{item.titulo}</h3>
+                    <p className="mt-2 text-base leading-[1.5] text-ink-foreground/85">
+                      {item.descricao}
+                    </p>
+                  </div>
+                )}
               </div>
             );
           })}

@@ -59,7 +59,7 @@ function Registro({ caso }: { caso: CasoClinico }) {
       aria-label={caso.imagemAlt}
       className="slot-grid flex h-full w-full items-end bg-surface p-3"
     >
-      <span className="rounded-md border border-border bg-background/80 px-2 py-1 text-small uppercase tracking-[0.08em] text-muted backdrop-blur">
+      <span className="rounded-md border border-border bg-background/95 px-2 py-1 text-small uppercase tracking-[0.08em] text-muted lg:backdrop-blur">
         {caso.rotuloSlot}
       </span>
     </div>
