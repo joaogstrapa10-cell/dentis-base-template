@@ -272,11 +272,24 @@
 
 /* Glow do hero: arco de luz na base, como na referência. Em dourado, não em
    petróleo — o arco é a nota quente que tira o bloco escuro do registro de
-   dashboard. Petróleo aqui desapareceria dentro do próprio `--ink`. */
+   dashboard. Petróleo aqui desapareceria dentro do próprio `--ink`.
+
+   ⚠️ O SEGUNDO gradiente — um brilho branco a 9% ancorado em `50% -10%`, ou seja
+   no TOPO do bloco — foi REMOVIDO em 15/09, a pedido ("tem uma sombra aqui entre
+   a sessão de scrollagem e o hero, tire"). Ele não desenhava sombra: clareava a
+   borda de cima do hero, e como a tela de entrada logo acima é o MESMO `--ink`,
+   o encontro das duas virava um degrau visível de ponta a ponta da janela.
+   Medido na coluna central, em 1440: 23,69 de luminância acima da borda contra
+   26,80 logo abaixo, caindo de volta a 23,69 em ~80px — três níveis em 255, o
+   suficiente para ler como costura num campo chapado.
+
+   Não recriar: o brilho de topo só era invisível enquanto todo bloco escuro
+   encostava em seção CLARA, e desde 19/08 o hero encosta noutro bloco escuro.
+   Se um dia fizer falta, tem de ser numa classe própria, aplicada só onde o topo
+   do bloco NÃO faz fronteira com outra superfície escura. O arco dourado da base
+   fica — ele nunca tocou borda nenhuma. */
 .ink-arc {
-  background:
-    radial-gradient(120% 90% at 50% 108%, var(--gold-glow) 0%, transparent 55%),
-    radial-gradient(60% 40% at 50% -10%, oklch(1 0 0 / 0.09) 0%, transparent 70%);
+  background: radial-gradient(120% 90% at 50% 108%, var(--gold-glow) 0%, transparent 55%);
 }
 
 /* ---------- Wordmark fantasma: REMOVIDO ----------
