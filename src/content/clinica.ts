@@ -73,10 +73,26 @@ export const clinica: Clinica = {
       // deixou de existir — âncora que pula o começo da página lê como link errado,
       // do mesmo jeito que âncora para seção inexistente. Ao mexer na ordem das
       // seções, conferir este href e o da marca no Header.
+      /* ⚠️ UM ITEM POR SEÇÃO, e a lista é pedido de 15/09: "aqui precisamos ter um
+         botão para todas as sessões". Ele excluiu DUAS, cada uma com o print na mão:
+         Diferenciais ("Experiência aplicada caso a caso.") e Depoimentos (as
+         avaliações do Google). Ausência aqui é decisão dele, não esquecimento.
+
+         A chamada (`#chamada`, "Comece pela avaliação.") também ficou fora, e por um
+         motivo de forma: o destino dela é agendar, e o `cta` logo ao lado já é esse
+         botão. Item de menu apontando para a faixa ao lado do próprio botão de
+         agendar lê como link repetido. Se ele pedir, é uma linha.
+
+         ⚠️ A pílula é CENTRALIZADA, então cada item novo distribui largura nos dois
+         lados — e o pior caso NÃO é o desktop largo, é 1024, onde a navegação aparece
+         e a marca ainda existe nas rotas internas. Remedir a folga lá a cada item. */
       { label: "Home", href: "#portal" },
+      { label: "Casos", href: "#casos" },
       { label: "Áreas", href: "#areas" },
+      { label: "Equipe", href: "#responsavel" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "FAQ", href: "#faq" },
+      { label: "Contato", href: "#localizacao" },
     ],
     cta: { label: "Agendar", href: WHATSAPP_HREF },
     ariaAbrirMenu: "Abrir menu",
@@ -147,11 +163,6 @@ export const clinica: Clinica = {
       "Saúde, função mastigatória e estética em harmonização com a face. Um corpo clínico reunido para tratar o que exige critério técnico, não volume de atendimento.",
     ctaPrimario: { label: "Agendar avaliação", href: WHATSAPP_HREF },
     ctaSecundario: { label: "Conhecer a clínica", href: "#diferenciais" },
-    /* ⚠️ O espaço entre "CRO-PR" e o número é NÃO SEPARÁVEL (U+00A0). Na coluna do
-       retrato, com 288px, a linha quebrava exatamente ali e o "9112" caía sozinho na
-       segunda linha — número de inscrição partido ao meio lê como erro de dado, e é
-       justamente o campo que a CFO-196/2019 exige na divulgação. */
-    responsavelLinha: "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112",
     // COLAGEM de três imagens, na anatomia do template que o usuário trouxe em
     // 13/08. A ordem é hierarquia de tamanho, não gosto: a primeira é a maior.
     //

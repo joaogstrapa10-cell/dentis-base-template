@@ -224,7 +224,13 @@ export function Header({
         // quando "Home" entrou em 12/08: cada item novo alarga a pílula pelos
         // dois lados, e um item de 74px come 37px da folga esquerda. Volta aos
         // 80px em `xl`, onde sobram 80px de folga.
-        className="fixed left-6 top-4 z-50 md:left-14 md:top-6 lg:top-9 xl:top-6"
+        // ⚠️ `lg:left-6` devolve a marca para a goteira estreita SÓ na faixa
+        // 1024–1279, e é medição: com os sete itens de 15/09 a pílula fecha 643px
+        // ali, começa em 190px, e a marca a 56px de altura mede 127px de largura —
+        // saindo de `left-14` (56px) ela terminava em 183px, 7px da pílula. Em
+        // `left-6` (24px) termina em 151px e a folga volta a 39px, que é o número
+        // aceito desde 12/08. De `xl` para cima volta a `left-14`, onde sobra espaço.
+        className="fixed left-6 top-4 z-50 md:left-14 md:top-6 lg:left-6 lg:top-9 xl:left-14 xl:top-6"
         style={{
           opacity: opacidadeMarca,
           pointerEvents: opacidadeMarca < 0.05 ? "none" : undefined,

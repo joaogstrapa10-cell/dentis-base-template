@@ -173,7 +173,15 @@ export type HeroContent = {
   subheadline: string;
   ctaPrimario: Cta;
   ctaSecundario: Cta;
-  responsavelLinha: string;
+  /* SEM `responsavelLinha`: a linha "Responsável técnico: Dr. Dalton Suzuki,
+     CRO-PR 9112" saiu do hero em 15/09, a pedido, e o campo saiu junto em vez de
+     virar opcional — campo morto é convite a reintroduzir a peça.
+
+     ⚠️ Isso NÃO afeta a CFO-196/2019, e foi conferido antes de apagar: a resolução
+     exige nome e número de inscrição juntos na divulgação, e eles continuam em DOIS
+     lugares — no título da Bio (`bio.nome` + `bio.credencial`) e no bloco legal do
+     rodapé (`footer.copyright` e `brand.croResponsavel`). Se um dia esses dois
+     também saírem, aí sim a exigência deixa de ser atendida. */
   /** COLAGEM do hero: três imagens sobrepostas em passe-partout claro, na
    *  anatomia do template que o usuário trouxe em 13/08. A ordem importa e não é
    *  estética — é hierarquia de tamanho: [0] é a maior, ao centro e no topo; [1]

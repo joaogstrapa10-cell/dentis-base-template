@@ -37,16 +37,18 @@ import { Reveal } from "@/components/Reveal";
  * as 8 especialidades em Áreas, os 9 do corpo clínico na Bio.
  *
  * ---------------------------------------------------------------------------
- * A LINHA DO RESPONSÁVEL TÉCNICO FICA
+ * 🗑️ A LINHA DO RESPONSÁVEL TÉCNICO SAIU EM 15/09
  * ---------------------------------------------------------------------------
- * A Apple não põe nada parecido num hero, e ela fica de todo jeito: nome e número de
- * inscrição na divulgação são exigência da Resolução CFO-196/2019, não decoração.
+ * "Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112", a pedido — ele mandou o print
+ * dela e escreveu "tirar isso". O campo saiu do TIPO junto, não virou opcional.
  *
- * ⚠️ E ela é a razão de esta linha não ter saído junto com a assinatura para a tela de
- * entrada. A assinatura leva só o NOME; a exigência é nome **e** inscrição juntos, e é
- * esta linha que carrega o CRO. Se ela sair daqui, tem de aparecer em outro lugar da
- * divulgação — hoje o CRO do responsável está aqui, no título da Bio e no bloco legal
- * do rodapé.
+ * ⚠️ Foi conferido ANTES de apagar, e é a única razão de ter sido seguro: a Resolução
+ * CFO-196/2019 exige nome e número de inscrição JUNTOS na divulgação, e eles continuam
+ * em DOIS lugares — no título da Bio (`Dr. Dalton Suzuki` + `CRO-PR 9112`) e no bloco
+ * legal do rodapé. **Ao mexer em qualquer um desses dois, conferir que o outro continua
+ * de pé**: com esta linha fora, não há mais um terceiro para sobrar.
+ *
+ * O hero ficou com quatro peças: manchete, uma frase e duas ações.
  */
 
 export function HeroSection({ data }: { data: HeroContent }) {
@@ -104,14 +106,6 @@ export function HeroSection({ data }: { data: HeroContent }) {
                 tone="light"
               />
             </div>
-          </Reveal>
-
-          <Reveal delay={380}>
-            {/* Exigência da CFO-196/2019. Ver a nota do cabeçalho sobre por que ela não
-                acompanhou a assinatura para a tela de entrada. */}
-            <p className="mt-10 text-small text-ink-muted">
-              {data.responsavelLinha}
-            </p>
           </Reveal>
         </div>
       </div>

@@ -168,17 +168,21 @@ fundo no verde padrão e, desde 09/09, a **marca da Suzuki ao lado do RETRATO DO
 com a assinatura dele embaixo da FOTO**. Ao rolar, o grupo cresce e se apaga, e o hero
 sobe por baixo — a página passa por dentro dele.
 
-⚠️ **O HERO SOBE POR CIMA DO PALCO**, desde 15/09, e é o que resolve os DOIS defeitos
-que ele reportou naquele dia. A seção tem `curso + palco` de altura e uma **margem
-inferior negativa de uma tela**: o palco fica grudado o curso inteiro e o hero, que
-continua sendo o próximo do fluxo, começa uma tela antes e sobe por cima. Com isso nunca
-há tela vazia (quem vem depois do grupo é o hero, não o resto do palco), o grupo **só
-cresce** (o teto do zoom volta a sair do palco, que é fixo) e, quando o hero toma a tela,
-não sobra nada do portal.
+⚠️ **O APAGAMENTO SAI DA GEOMETRIA, e não de número escolhido.** O grupo fica centrado
+na faixa que ainda se vê do palco, e a opacidade é a FOLGA que sobra até a borda mais
+apertada dividida pela folga que havia em repouso: 1 com o palco inteiro na tela, 0 no
+instante em que ele encostaria. Some no ritmo em que o espaço acaba, nunca é recortado, e
+**se adapta sozinho ao tamanho das peças** — que é o que mais muda aqui.
 
-⚠️ **Não voltar a centrar o grupo numa faixa que encolhe.** Foi a tentativa do meio-dia
-de 15/09 e ele reprovou na hora: "ele está literalmente diminuindo". Amarrar o teto da
-escala a algo que encolhe durante a rolagem faz a peça recuar em vez de crescer.
+⚠️ **Três caminhos JÁ REPROVADOS nesta tela, todos em 15/09, todos por ele:**
+1. **Teto da escala amarrado à faixa** (que encolhe) → a peça RECUA no fim: "ele está
+   literalmente diminuindo".
+2. **Hero subindo por cima do palco** (margem negativa) → "parecendo que ao terminar de
+   scrollar os elementos entram em algum lugar". E tinha defeito: o palco é `sticky`,
+   ou seja posicionado, e cobria **385px do topo de Casos** — "a sessão dos casos
+   clínicos você cortou". `isolate` na seção NÃO resolve isso.
+3. **Grupo centrado no PALCO** com deslocamento próprio → ele sai pelo topo enquanto o
+   palco desliza, e sobra tela vazia: "tem um baita espaço antes do hero".
 
 ⚠️ **É ESTA seção que ele chama de "hero do site"**, e a confusão custou duas rodadas:
 ele pediu a foto "ao lado da logo no hero", eu perguntei e ele escolheu a `Hero.tsx`,
@@ -1135,4 +1139,11 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-15 — ⚠️ **O defeito de 13/08 se repetiu no lugar novo, e a medição pegou:** a chamada e a BIO são as duas faixas escuras sangradas, nenhuma participa do ritmo de `--section-py`, e no lugar novo elas ficaram com **0px de vão** — dois cantos de raio 24px encostados, com o fio claro entre eles lendo como risco no meio de um bloco só. Mesmo conserto de 13/08: `pb-6 md:pb-8` na chamada, o **dobro da goteira** lateral. Medido depois: 32px no desktop, 24px no celular. **Ao mover faixa sangrada, conferir quem passa a vir antes e depois** — o vão não vem de graça.
 - 2026-09-15 — A prop `extra` do `CarrosselDeCartoes` saiu junto: era um bloco livre abaixo da descrição e existia SÓ para Tratamentos. Campo morto é convite a reintroduzir o padrão — mesma regra que tirou `valorLabel`/`destaque`/`badge` do mesmo tipo em 12/08.
 - 2026-09-15 — Medido em 1440×900 e 390×844: ordem `portal → top → casos → areas → chamada → responsavel → diferenciais → estrutura → depoimentos → faq → localizacao`, **zero âncora morta** no menu e no rodapé, nenhum `#tratamentos` no DOM, zero overflow lateral. A página caiu de 11,5 para **10,5 telas** no desktop. `tsc --noEmit` e `bun run build` limpos.
+- 2026-09-15 — 🗑️ **A LINHA DO RESPONSÁVEL TÉCNICO SAIU DO HERO** ("tirar isso", com o print). O campo saiu do TIPO junto. ⚠️ **Conferido ANTES de apagar, e é a única razão de ter sido seguro:** a CFO-196/2019 exige nome e número de inscrição JUNTOS na divulgação, e eles continuam em DOIS lugares — no título da Bio (`Dr. Dalton Suzuki` + `CRO-PR 9112`) e no bloco legal do rodapé. Com esta linha fora **não há mais um terceiro para sobrar**: ao mexer num desses dois, conferir que o outro continua de pé.
+- 2026-09-15 — ⚠️ **A SOBREPOSIÇÃO DO HERO DUROU MEIO DIA e saiu por DOIS motivos.** O de gosto: "ficou parecendo que ao terminar de scrollar os elementos entram em algum lugar" — que é exatamente o que um bloco opaco subindo por cima faz. O de defeito, achado por medição: o palco é `sticky`, ou seja POSICIONADO, e elemento posicionado pinta acima de todo conteúdo em fluxo do mesmo contexto — com a margem negativa ele passou a cruzar a seção depois do hero e **cobriu 385px do topo de Casos** ("a sessão dos casos clínicos você cortou").
+- 2026-09-15 — ⚠️ **`isolate` NÃO conserta esse tipo de cobertura, e quase acreditei que sim.** Contexto de empilhamento criado por elemento NÃO posicionado pinta no mesmo ponto que um `z-index: 0` posicionado — ou seja continua acima do conteúdo em fluxo que vem depois. Medido: com `isolate` na seção, Casos continuava coberta na parte de cima. Resolver de verdade exigiria `z-index` em tudo que vem depois; **a saída certa foi tirar a sobreposição**.
+- 2026-09-15 — **O APAGAMENTO PASSOU A SAIR DA GEOMETRIA**, sem número chutado: opacidade = folga restante entre o grupo e a borda mais apertada da faixa ÷ folga em repouso. Com isso ele some no ritmo em que o espaço acaba, chega a zero ANTES de encostar (zero recorte medido em 1440 e 390) e **se adapta sozinho ao tamanho das peças** — que muda a cada rodada aqui. `ZOOM` caiu de 0,7 para **0,2** ("sem nada exagerado") e o teto continua saindo do PALCO, que é fixo, então a escala só cresce.
+- 2026-09-15 — Medido em 1440×900 e 390×844, em oito pontos: opacidade 1 → 0,96 → 0,82 → 0,44 → 0,05 → 0 no desktop, **nenhum quadro com a peça recortada**, sobreposição do portal com Casos **0px**, zero overflow. A página fechou em 10,6 telas.
+- 2026-09-15 — **O MENU PASSOU A TER UM ITEM POR SEÇÃO** ("aqui precisamos ter um botão para todas as sessões"), com DUAS exclusões que ele mandou com print na mão: **Diferenciais** ("Experiência aplicada caso a caso.") e **Depoimentos** (avaliações do Google). Ficou: Home, Casos, Áreas, Equipe, Estrutura, FAQ, Contato — mais o `cta`. A chamada (`#chamada`) ficou fora por forma: o destino dela é agendar e o botão "Agendar" está ao lado; item de menu apontando para a faixa ao lado do próprio botão lê como link repetido.
+- 2026-09-15 — ⚠️ **Três itens novos recriaram a colisão de 1024, pela quarta vez na memória.** A pílula foi de 4 para 7 itens e fechou 643px ali; com a marca em `left-14` (56px) a folga caiu para **7px** — o número aceito desde 12/08 é 39. Corrigido com `lg:left-6 xl:left-14`: a marca volta à goteira estreita SÓ na faixa 1024–1279 e a folga volta a **39px**. Em 1280 são 36px. **Remedir 1024 em `/casos` a cada item novo** — na home não há marca, então o defeito só aparece nas rotas internas.
 
