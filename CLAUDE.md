@@ -168,13 +168,17 @@ fundo no verde padrão e, desde 09/09, a **marca da Suzuki ao lado do RETRATO DO
 com a assinatura dele embaixo da FOTO**. Ao rolar, o grupo cresce e se apaga, e o hero
 sobe por baixo — a página passa por dentro dele.
 
-⚠️ **O GRUPO É CENTRADO NA FAIXA VISÍVEL DO PALCO, não no palco**, desde 15/09, e é o que
-mantém o hero colado nele: a borda de baixo do palco É o topo do hero, então centrar entre
-o topo da tela e essa borda faz o grupo acompanhar o hero em vez de fugir dele. **Não
-voltar a centrar no palco** — foi assim que apareceu o "espaço grande vazio" que ele
-fotografou, com só a assinatura visível no canto e o resto da tela em verde. O apagamento
-e o teto da escala saem dessa mesma faixa, não de fração do curso, para não desalinharem
-no dia em que `TRILHO_MULT` mudar.
+⚠️ **O HERO SOBE POR CIMA DO PALCO**, desde 15/09, e é o que resolve os DOIS defeitos
+que ele reportou naquele dia. A seção tem `curso + palco` de altura e uma **margem
+inferior negativa de uma tela**: o palco fica grudado o curso inteiro e o hero, que
+continua sendo o próximo do fluxo, começa uma tela antes e sobe por cima. Com isso nunca
+há tela vazia (quem vem depois do grupo é o hero, não o resto do palco), o grupo **só
+cresce** (o teto do zoom volta a sair do palco, que é fixo) e, quando o hero toma a tela,
+não sobra nada do portal.
+
+⚠️ **Não voltar a centrar o grupo numa faixa que encolhe.** Foi a tentativa do meio-dia
+de 15/09 e ele reprovou na hora: "ele está literalmente diminuindo". Amarrar o teto da
+escala a algo que encolhe durante a rolagem faz a peça recuar em vez de crescer.
 
 ⚠️ **É ESTA seção que ele chama de "hero do site"**, e a confusão custou duas rodadas:
 ele pediu a foto "ao lado da logo no hero", eu perguntei e ele escolheu a `Hero.tsx`,
@@ -1113,4 +1117,11 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-15 — O brilho de topo era invisível **enquanto todo bloco escuro encostava em seção CLARA** — que era verdade quando ele foi escrito, em 30/07. Deixou de ser em 19/08, quando a tela de entrada passou a ser a primeira seção e o hero deixou de ter página clara acima. **Efeito de borda só é neutro enquanto a vizinhança não muda**: ao pôr dois blocos da mesma cor em contato, conferir o que cada um pinta na borda comum. Os outros dois usos (`ChamadaFinal`, `Footer`) não perdem nada — os dois fazem fronteira com página clara ou com a goteira.
 - 2026-09-15 — ⚠️ **Décimo segundo falso positivo de medição, e este quase me fez procurar a causa errada:** remedi logo depois de editar o `styles.css` e o degrau continuava em 2,44, o que lia como "o `.ink-arc` não é o culpado". Era **CSS velho** — o dev server ainda não tinha recompilado quando o script abriu a página. A prova veio de isolar no próprio navegador (`display:none` no elemento, e `getComputedStyle` conferindo qual `background-image` estava sendo SERVIDO): com o CSS novo em pé, o degrau é 0,00 com e sem a camada. **Ao medir efeito de edição em CSS, confirmar no `getComputedStyle` que a regra nova chegou antes de acreditar no resultado.**
 - 2026-09-15 — Medido depois, em 1440×900 e 390×844, com o hero a 600/450/300/150px do fundo da tela e em três colunas (25%, 50%, 75%): degrau **0,00** em todas, exceto onde a coluna cruza o retrato que ainda está se apagando — que é conteúdo, não costura. `tsc --noEmit` e `bun run build` limpos.
+- 2026-09-15 — ⚠️ **"ELE ESTÁ LITERALMENTE DIMINUINDO" — a centragem na faixa visível foi REPROVADA no mesmo dia em que entrou**, e com razão: amarrar o teto da escala a uma faixa que encolhe faz o grupo RECUAR no fim do curso em vez de crescer. O pedido, nas palavras dele: "é preciso que ele escrole e vá sumindo (...) ao chegar já na seção da hero, ele já tem que sumir, não tem que estar nada na tela".
+- 2026-09-15 — **A saída foi ESTRUTURAL, e resolve os dois defeitos do dia de uma vez: o HERO SOBE POR CIMA DO PALCO.** A seção tem `curso + palco` de altura e uma **margem inferior negativa de uma tela** — o palco fica grudado o curso inteiro e o hero, que continua sendo o próximo elemento do fluxo, começa uma tela antes e sobe por cima. Consequências medidas: vão **zero** entre o que se vê e o hero no miolo do curso (a saída do palco deixou de existir), o grupo **só cresce** (736 → 1251px em 1440, 288 → 382 em 390), e o teto do zoom volta a sair do PALCO, que tem tamanho fixo.
+- 2026-09-15 — ⚠️ **Isso INVERTE a lição de 19/08** ("divide pela altura INTEIRA da seção, não por `altura - innerHeight`"). Aquela conta estava certa para a geometria de então, em que o palco precisava sair de cena; agora ele fica grudado o curso todo e o denominador certo é de novo `altura - palco`. **A regra não é a fórmula, é a geometria** — conferir qual das duas está em vigor antes de "corrigir" o denominador.
+- 2026-09-15 — ⚠️ **O palco e o hero são os dois `--ink`, então a borda que sobe é INVISÍVEL** — o grupo parece ser apagado de baixo para cima em vez de ser coberto por uma aresta. Isso só funciona porque o brilho de topo do `.ink-arc` saiu horas antes: com ele, a subida desenharia uma linha clara atravessando o grupo. **Duas correções do mesmo dia que dependem uma da outra.**
+- 2026-09-15 — O apagamento voltou a ser fração do CURSO (0,35 → 0,85) porque agora o curso é o gesto inteiro. Em 0,85 o topo do hero está a 15% do alto da tela — ou seja ele já ocupa ~87% — e o grupo está em zero: é o "não tem que estar nada na tela" ao pé da letra. **E é isto que tira a SOMBRA do retrato de cima da manchete**, também reportada: a sombra é do grupo e se apaga com ele; a foto continua com a sombra que ele pediu em 15/09.
+- 2026-09-15 — `SOBE_MARCA` em 0,16 da altura do palco, e o teto é geométrico — quem manda é o CELULAR, onde o grupo é alto (a linha vira coluna) e sobra menos folga acima. A 0,20 o topo saía 16px da tela aos 80% do curso, com o grupo ainda a 10% de opacidade. Medido a 0,16: primeiro pixel negativo só aos 90%, onde a opacidade já é zero.
+- 2026-09-15 — Medido em 1440×900 e 390×844, em oito pontos do curso: grupo só crescendo, opacidade 1 → 0, vão ZERO entre 0,35 e 0,80 do curso (era ~60% da tela antes das duas correções), 117px no ponto em que o grupo acaba de sumir, `elementFromPoint` devolvendo o HERO em toda a faixa dele (ou seja a ordem de pintura está certa sem precisar de `z-index`), zero recorte pelo topo e zero overflow. `tsc --noEmit` limpo.
 

@@ -35,38 +35,65 @@ import type { AberturaContent } from "@/content/types";
  * ser lido.
  */
 
-/** Quantas telas de ROLAGEM a seção tem além da tela parada. */
-const TRILHO_MULT = 0.3;
+/**
+ * ⚠️ O HERO SOBE POR CIMA DO PALCO, e é o que torna esta seção possível sem vão nem
+ * recorte. Vale entender antes de mexer em qualquer número aqui.
+ *
+ * O palco é `sticky` e tem UMA TELA de altura. Num trilho comum ele grudaria, soltaria,
+ * e então gastaria uma tela inteira de rolagem só para sair de cena — e é dessa saída
+ * que vêm os DOIS defeitos já reportados: o grupo, centrado nele, subia junto e sumia
+ * pelo topo restando verde vazio ("um espaço grande vazio", 15/09), e a tentativa de
+ * conserto (centrar na faixa visível, que encolhe) fazia o grupo ENCOLHER junto —
+ * "ele está literalmente diminuindo", reprovado no mesmo dia.
+ *
+ * A saída é estrutural: a seção tem `CURSO + PALCO` de altura e uma MARGEM INFERIOR
+ * NEGATIVA de uma tela. O palco fica grudado o curso inteiro, e o hero — que continua
+ * sendo o próximo elemento do fluxo — começa uma tela antes, subindo POR CIMA dele.
+ * Consequências, e as três resolvem um pedido:
+ *
+ *   1. Nunca há tela vazia: quem vem depois do grupo é o hero, não o resto do palco.
+ *   2. O grupo só CRESCE — o teto do zoom volta a sair do palco, que tem tamanho fixo.
+ *   3. Quando o hero toma a tela (`p = 1`), não sobra nada do portal: o grupo já se
+ *      apagou e o bloco escuro do hero cobre o palco inteiro.
+ *
+ * ⚠️ O hero e o palco são os dois `--ink`, então a borda que sobe é INVISÍVEL — o grupo
+ * parece ser apagado de baixo para cima em vez de ser coberto por uma aresta. Isso
+ * depende do `.ink-arc` não ter mais o brilho de topo (removido em 15/09): com ele, a
+ * subida desenharia uma linha clara atravessando o grupo.
+ */
+
+/** Telas de ROLAGEM que o gesto dura — é nelas que o hero sobe por cima do palco. */
+const CURSO_MULT = 1.3;
+
+/** Altura do palco em telas. É `h-svh`: uma. A margem negativa tem de casar com isto. */
+const PALCO_MULT = 1;
 
 /**
- * ⚠️ O GRUPO FICA CENTRADO NA FAIXA VISÍVEL DO PALCO, e não no palco — e foi isto que
- * acabou com o "espaço grande vazio" reportado em 15/09, com print.
+ * Onde o grupo começa e termina de se apagar, em fração do curso.
  *
- * O palco tem UMA TELA de altura, então, depois de soltar a grudagem, ele leva uma tela
- * inteira de rolagem para sair de cena. Centrado nele, o grupo sobe junto nessa saída e
- * some pelo topo com metade do palco ainda na tela — restando uma faixa de verde vazio
- * entre o que se vê e o topo do hero. No print do usuário só a assinatura tinha sobrado
- * visível, no canto de cima, com o resto da tela vazio até a manchete do hero.
+ * ⚠️ `APAGA_ATE` é o pedido de 15/09 ao pé da letra: "ao chegar já na seção da hero, ele
+ * já tem que sumir, não tem que estar nada na tela". Em 0,85 o topo do hero está a 15%
+ * do curso do alto da tela — ou seja ele já ocupa ~87% dela — e o grupo está em zero.
+ * O que ainda se vê do grupo entre 0,6 e 0,85 é coberto de baixo para cima pelo próprio
+ * hero, porque ele sobe por cima.
  *
- * A borda de baixo do palco É o topo do hero (são vizinhos no fluxo). Centrando o grupo
- * entre o topo da tela e essa borda, ele ACOMPANHA o hero que sobe em vez de fugir dele:
- * a faixa vazia deixa de existir, porque a faixa é onde o grupo está.
- *
- * O apagamento é medido na própria faixa, e não em fração do curso: some quando o hero
- * já tomou a tela. Assim o número não se desalinha no dia em que `TRILHO_MULT` mudar —
- * que é o defeito que o limiar antigo tinha.
+ * ⚠️ E é isto que tira a SOMBRA do retrato de cima da manchete, também reportada em
+ * 15/09: a sombra é do grupo, então ela se apaga com ele. Não é caso de tirar a sombra
+ * da foto — ela foi pedida em 15/09 ("sem borda com sombra") e continua na peça.
  */
-const BANDA_OPACO = 0.95;
-const BANDA_APAGADO = 0.24;
+const APAGA_DE = 0.35;
+const APAGA_ATE = 0.85;
 
 /**
- * Quanto o grupo sobe DENTRO da faixa, em fração da altura dela.
+ * Quanto o grupo sobe ao longo do curso, em fração da altura do PALCO.
  *
- * Pequeno e proporcional à FAIXA, não à janela: em fração da janela ele sairia pelo topo
- * assim que a faixa encolhesse — que é metade do defeito de 15/09. A subida de verdade
- * não vem daqui, vem da faixa, que encolhe por cima e leva o grupo junto.
+ * O teto real é geométrico, e quem manda é o CELULAR: lá o grupo é alto (a linha vira
+ * coluna) e sobra menos folga acima. A 0,20 o topo saía 16px da tela aos 80% do curso,
+ * com o grupo ainda a 10% de opacidade — medido. A 0,16 ele fica dentro em todo o trecho
+ * visível, e o primeiro pixel negativo cai onde a opacidade já é zero. Subir este número
+ * recorta a marca pelo alto enquanto ela ainda se lê — o defeito do print de 15/09.
  */
-const SOBE_MARCA = 0.06;
+const SOBE_MARCA = 0.16;
 
 /**
  * Quanto o GRUPO (marca + retrato + assinatura) cresce ao longo do curso.
@@ -97,7 +124,12 @@ const ZOOM = 0.7;
  */
 const OCUPACAO_MAX = 0.98;
 
-export const PORTAL_VH = (TRILHO_MULT + 1) * 100;
+/**
+ * O que a PÁGINA gasta de rolagem antes de o hero tomar a tela — e não a altura da
+ * seção, que é uma tela maior por causa da sobreposição. É o limiar que o `Header` usa
+ * para revelar a pílula, e o ponto em que a abertura acabou.
+ */
+export const PORTAL_VH = CURSO_MULT * 100;
 
 const trava01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
@@ -168,39 +200,26 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          só a ESCALA e a subida dentro da faixa; quem comanda o apagamento é a faixa
          visível — ver a nota de `BANDA_APAGADO`. */
       const caixa = trilho.getBoundingClientRect();
-      const p = caixa.height > 0 ? trava01(-caixa.top / caixa.height) : 0;
-
       const { gw, gh, pw, ph } = medidasRef.current;
       const alturaPalco = ph || window.innerHeight;
 
-      /* A borda de baixo do palco na tela — e, como o hero é o próximo elemento do
-         fluxo, ELA É O TOPO DO HERO. Enquanto o palco está grudado ela vale a altura
-         dele; depois sobe com a rolagem, e a faixa visível encolhe até zero. */
-      const fundoPalco = Math.min(alturaPalco, caixa.bottom);
-      const banda = alturaPalco > 0 ? fundoPalco / alturaPalco : 0;
+      /* O curso é a altura da seção MENOS o palco — ou seja o trecho em que ele está
+         grudado, que aqui é o gesto inteiro. Com a margem negativa, `p = 1` é o pixel
+         em que o hero termina de cobrir a tela. */
+      const curso = caixa.height - alturaPalco;
+      const p = curso > 0 ? trava01(-caixa.top / curso) : 0;
 
-      /* Centro do grupo NA TELA: o meio da faixa, com a subida medida na própria faixa.
-         O deslocamento é a diferença até onde o layout já o pôs — o meio do palco. */
-      const centro = fundoPalco * (0.5 - p * SOBE_MARCA);
-      const desloca = centro - (fundoPalco - alturaPalco / 2);
-
-      /* TETO DA ESCALA, derivado do que cabe: a LARGURA do palco e a ALTURA da faixa.
-         Ver a nota de `OCUPACAO_MAX` — é ele que tornou o tamanho das peças um parâmetro
-         livre, e é a metade da altura que impede o recorte pelo topo da tela quando a
-         faixa encolhe. `folga` é a menor distância do centro até uma borda da faixa. */
-      const folga = Math.max(0, Math.min(centro, fundoPalco - centro));
-      const escala =
+      /* TETO DO ZOOM, derivado do que cabe no PALCO — que tem tamanho fixo, então a
+         escala só cresce. Ver a nota de `OCUPACAO_MAX`: é ele que tornou o tamanho das
+         peças um parâmetro livre. ⚠️ Não amarrar este teto a nada que encolha durante a
+         rolagem: foi assim que o grupo passou a diminuir, e foi reprovado. */
+      const teto =
         gw > 0 && gh > 0
-          ? Math.max(
-              0,
-              Math.min(
-                1 + p * ZOOM,
-                (pw * OCUPACAO_MAX) / gw,
-                (2 * folga * OCUPACAO_MAX) / gh,
-              ),
-            )
-          : 1 + p * ZOOM;
-      const opacidade = trava01((banda - BANDA_APAGADO) / (BANDA_OPACO - BANDA_APAGADO));
+          ? Math.max(0, Math.min((pw * OCUPACAO_MAX) / gw, (ph * OCUPACAO_MAX) / gh) - 1)
+          : ZOOM;
+      const escala = 1 + p * Math.min(ZOOM, teto);
+      const opacidade = 1 - trava01((p - APAGA_DE) / (APAGA_ATE - APAGA_DE));
+      const desloca = -p * SOBE_MARCA * alturaPalco;
 
       /* ⚠️ `translate3d` ANTES de `scale`: a escala é aplicada primeiro e o
          deslocamento depois, em px NÃO escalados. Invertida, o deslocamento viria
@@ -326,7 +345,15 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
       ref={trilhoRef}
       id="portal"
       className="relative bg-ink"
-      style={{ height: `${PORTAL_VH}svh` }}
+      /* ⚠️ A MARGEM NEGATIVA TEM DE SER EXATAMENTE A ALTURA DO PALCO. É ela que faz o
+         hero começar uma tela antes e subir por cima; menor, sobra palco vazio no fim
+         (o vão de 15/09), maior, o hero morde o gesto antes da hora. A altura da seção
+         é `curso + palco`, e o `sticky` continua soltando só no fim — o que é o certo,
+         porque a essa altura ele já está inteiramente coberto. */
+      style={{
+        height: `${(CURSO_MULT + PALCO_MULT) * 100}svh`,
+        marginBottom: `-${PALCO_MULT * 100}svh`,
+      }}
     >
       {/* ⚠️ `overflow-hidden` AQUI, no próprio palco, e não em nenhum ancestral: a
           marca cresce até quase o dobro e sem recorte ela ALARGA a página — medido em
