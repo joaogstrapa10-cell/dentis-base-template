@@ -168,11 +168,18 @@ fundo no verde padrão e, desde 09/09, a **marca da Suzuki ao lado do RETRATO DO
 com a assinatura dele embaixo da FOTO**. Ao rolar, o grupo cresce e se apaga, e o hero
 sobe por baixo — a página passa por dentro dele.
 
-⚠️ **O APAGAMENTO SAI DA GEOMETRIA, e não de número escolhido.** O grupo fica centrado
-na faixa que ainda se vê do palco, e a opacidade é a FOLGA que sobra até a borda mais
-apertada dividida pela folga que havia em repouso: 1 com o palco inteiro na tela, 0 no
-instante em que ele encostaria. Some no ritmo em que o espaço acaba, nunca é recortado, e
-**se adapta sozinho ao tamanho das peças** — que é o que mais muda aqui.
+⚠️ **O `sticky` SAIU, e isso é o conserto do defeito mais reincidente desta tela.** A
+seção tem UMA tela e rola como qualquer outra. A conta que explica as quatro rodadas
+perdidas: **um palco grudado de uma tela gasta OUTRA tela inteira só para sair de cena**,
+o grupo sai pelo topo na primeira metade dessa saída e a segunda metade é fundo vazio —
+o "espaço enorme vazio" que ele reprovou quatro vezes em 15/09. Não é ajuste de opacidade,
+é geometria.
+
+⚠️ **O que ficou no lugar: PARALAXE 0,5 + apagamento até 0,78 do curso.** O grupo sobe
+mais devagar que a página, então a distância até o topo do hero ENCOLHE em vez de ficar
+congelada, e a peça só some quando o hero já ocupa 78% da tela. A borda de baixo do palco
+é dissolvida por máscara (`.palco-fundido`), porque no fim o grupo cruza a borda da seção
+e um corte reto ali parte a assinatura ao meio.
 
 ⚠️ **Três caminhos JÁ REPROVADOS nesta tela, todos em 15/09, todos por ele:**
 1. **Teto da escala amarrado à faixa** (que encolhe) → a peça RECUA no fim: "ele está
@@ -1146,4 +1153,9 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-15 — Medido em 1440×900 e 390×844, em oito pontos: opacidade 1 → 0,96 → 0,82 → 0,44 → 0,05 → 0 no desktop, **nenhum quadro com a peça recortada**, sobreposição do portal com Casos **0px**, zero overflow. A página fechou em 10,6 telas.
 - 2026-09-15 — **O MENU PASSOU A TER UM ITEM POR SEÇÃO** ("aqui precisamos ter um botão para todas as sessões"), com DUAS exclusões que ele mandou com print na mão: **Diferenciais** ("Experiência aplicada caso a caso.") e **Depoimentos** (avaliações do Google). Ficou: Home, Casos, Áreas, Equipe, Estrutura, FAQ, Contato — mais o `cta`. A chamada (`#chamada`) ficou fora por forma: o destino dela é agendar e o botão "Agendar" está ao lado; item de menu apontando para a faixa ao lado do próprio botão lê como link repetido.
 - 2026-09-15 — ⚠️ **Três itens novos recriaram a colisão de 1024, pela quarta vez na memória.** A pílula foi de 4 para 7 itens e fechou 643px ali; com a marca em `left-14` (56px) a folga caiu para **7px** — o número aceito desde 12/08 é 39. Corrigido com `lg:left-6 xl:left-14`: a marca volta à goteira estreita SÓ na faixa 1024–1279 e a folga volta a **39px**. Em 1280 são 36px. **Remedir 1024 em `/casos` a cada item novo** — na home não há marca, então o defeito só aparece nas rotas internas.
+- 2026-09-15 — ⚠️ **"SOBRA UM ESPAÇO ENORME VAZIO", a QUARTA reprovação da mesma tela no mesmo dia, e foi a que finalmente achou a causa: o `sticky`.** A conta: um palco grudado com UMA TELA de altura precisa de OUTRA tela inteira de rolagem só para sair de cena; o grupo mora no meio dele e sai pelo topo na primeira metade dessa saída — a segunda metade é fundo vazio rolando antes de o hero chegar. **Nenhum ajuste de opacidade, zoom ou deslocamento resolve isso**, e as três tentativas anteriores (centrar na faixa, apagar pela folga, pôr o hero por cima) trataram o sintoma. A seção passou a ter UMA tela e a rolar como qualquer outra.
+- 2026-09-15 — **PARALAXE 0,5 é o que fecha o vão, e o número é geométrico.** Sem paralaxe a distância entre o pé do grupo e o topo do hero fica CONGELADA em `(tela − altura do grupo) / 2` o percurso inteiro — 265px em 1440, 182 em 390. Com o grupo subindo a meia velocidade, ela encolhe: 265 → 192 → 119 → 46 → 0. E 0,5 especificamente porque as folgas de cima e de baixo começam iguais: a qualquer outro valor uma fecha antes da outra e sobra vazio de um lado.
+- 2026-09-15 — **`APAGA_ATE = 0,78` é o número que mata o vazio final**, e a conta é direta: a opacidade chega a zero quando o topo do hero está a 22% do alto da tela — ou seja, quando a peça some, **o hero já ocupa 78% da tela**. Antes ela sumia com o hero em 46% (desktop) e 63% (celular), e o vazio que sobrava era exatamente a ALTURA DO GRUPO, porque era ele que ocupava aquele espaço.
+- 2026-09-15 — O preço, consciente: nos últimos 20% o grupo já cruzou a borda da seção e é recortado por ela, com opacidade abaixo de ~0,3. Sobre fundo escuro não lê como corte — mas **só depois da máscara**: `.palco-fundido` dissolve os 96px finais do palco, senão o `overflow-hidden` parte a assinatura ao meio em linha reta. 96px fixos e não porcentagem: em porcentagem a dissolução comeria metade do retrato no celular.
+- 2026-09-15 — Medido em 1440×900 e 390×844, em oito pontos: vão entre o pé do grupo e o topo do hero **zero** enquanto a peça está visível, hero em 135–190px do alto quando ela some (era 415–530), seção em **1,00 tela** (era 1,35), zero overflow. A página fechou em 10,2 telas. `tsc --noEmit` e `bun run build` limpos.
 

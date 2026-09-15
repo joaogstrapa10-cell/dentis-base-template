@@ -29,71 +29,69 @@ import type { AberturaContent } from "@/content/types";
  * diferente: lá disputava com um vídeo que precisa ser lido quadro a quadro, aqui ela
  * É o conteúdo. Se aparecer pedido para tirar de novo, é este componente.
  *
- * ⚠️ Custo de rolagem: 1,3 tela até o hero estar em posição. Se incomodar, é
- * `TRILHO_MULT` aqui — mas o piso é o próprio palco, que tem uma tela de altura e
- * precisa sair de cena antes do hero entrar. Abaixo de ~0,3 o gesto passa antes de
- * ser lido.
+ * ⚠️ CUSTO DE ROLAGEM: UMA TELA, e isso é requisito — não sobra nada de trilho.
+ * A seção tem exatamente a altura da janela e o palco NÃO é mais `sticky`. Ver a nota
+ * de `PARALAXE` logo abaixo: a grudagem era a origem do vão que ele reprovou quatro
+ * vezes, porque um palco grudado de uma tela gasta OUTRA tela inteira só para sair de
+ * cena, e nessa saída o que se vê é fundo vazio.
  */
 
 /**
- * ⚠️ A SOBREPOSIÇÃO SAIU EM 15/09, no mesmo dia em que entrou, e por DOIS motivos —
- * um de gosto e um de defeito. Vale ler antes de tentar de novo.
+ * ⚠️ LEIA ISTO ANTES DE MEXER: o `sticky` SAIU em 15/09, e ele era a causa do defeito
+ * que o usuário reportou QUATRO vezes no mesmo dia — "sobra um espaço enorme vazio".
  *
- * A ideia era: seção com `curso + palco` de altura e margem inferior negativa de uma
- * tela, o palco grudado o curso inteiro e o HERO subindo por cima dele. Resolvia o vão
- * e o encolhimento, e o usuário reprovou assim mesmo: "ficou parecendo que ao terminar
- * de scrollar os elementos entram em algum lugar" — que é exatamente o que um bloco
- * opaco subindo por cima faz, ele engole a peça de baixo para cima.
+ * A conta que explica tudo: um palco grudado com UMA TELA de altura precisa de OUTRA
+ * tela inteira de rolagem só para sair de cena. O grupo mora no meio dele, então sai
+ * pelo topo na primeira metade dessa saída — e a segunda metade é fundo vazio rolando
+ * antes de o hero chegar. Não existe ajuste de opacidade, zoom ou deslocamento que
+ * resolva isso: é geometria, e cada tentativa (centrar na faixa, apagar pela folga,
+ * pôr o hero por cima) tratou o sintoma.
  *
- * ⚠️ E ela tinha um defeito que só a medição pegou: o palco é `sticky`, ou seja
- * POSICIONADO, e elemento posicionado pinta acima de todo conteúdo em fluxo do mesmo
- * contexto — não importa a ordem no DOM. Com a margem negativa o palco passou a cruzar
- * a seção DEPOIS do hero e a cobrir o topo dela: **385px de Casos recortados**, medidos,
- * e foi o que o usuário reportou ("a sessão dos casos clínicos você cortou"). `isolate`
- * na seção NÃO resolve: contexto de empilhamento criado por elemento não posicionado
- * pinta no mesmo ponto que um `z-index: 0` posicionado, ou seja continua por cima.
- * Resolver de verdade exigiria pôr `z-index` em tudo que vem depois.
+ * Agora a seção tem UMA tela e ponto. O palco rola com a página, como qualquer seção,
+ * e o hero entra logo em seguida. O que sobrou de gesto é o que cabe numa tela:
  *
- * O que ficou no lugar é o mais simples que atende o pedido: **o grupo só se apaga**.
- * O palco sai de cena pela rolagem normal, e como ele e o hero são os dois `--ink` e o
- * brilho de topo do `.ink-arc` saiu em 15/09, a passagem de um para o outro não tem
- * borda visível — a tela escura simplesmente continua até a manchete chegar.
- */
-
-/** Quantas telas de ROLAGEM a seção tem além da tela parada. */
-const TRILHO_MULT = 0.35;
-
-/**
- * ⚠️ O APAGAMENTO NÃO TEM NÚMERO CHUTADO: ele sai da GEOMETRIA, e é isso que faz a
- * peça sumir "de leve" sem nunca ser recortada.
+ *   • PARALAXE — o grupo sobe MAIS DEVAGAR que a página. É isto que mata o vão: sem
+ *     paralaxe, a distância entre o pé do grupo e o topo do hero fica congelada em
+ *     `(tela − altura do grupo) / 2` o percurso inteiro; com paralaxe ela ENCOLHE, e o
+ *     grupo acompanha o hero que sobe em vez de fugir dele.
+ *   • um zoom de leve, e só ("sem nada exagerado").
  *
- * A borda de baixo do palco é o topo do hero, então a FAIXA que ainda se vê do palco
- * encolhe conforme ele sai de cena. O grupo fica centrado nessa faixa e a opacidade é a
- * FOLGA que sobra entre ele e a borda mais apertada, dividida pela folga que havia em
- * repouso: 1 com o palco inteiro na tela, 0 no instante em que o grupo encostaria na
- * borda. Ou seja ele se apaga exatamente no ritmo em que o espaço acaba.
- *
- * Três coisas que isso resolve de uma vez, e cada uma foi um pedido reprovado antes:
- *   • não recorta pelo topo — a opacidade chega a zero antes de encostar (era o defeito
- *     do print com só a assinatura visível no canto);
- *   • não encolhe — a escala continua saindo do PALCO, que é fixo ("ele está
- *     literalmente diminuindo");
- *   • não é engolido por nada — sem sobreposição, o hero não passa por cima ("parecendo
- *     que ao terminar de scrollar os elementos entram em algum lugar").
- *
- * E se adapta sozinho ao tamanho das peças, que é o que mais muda neste componente: uma
- * marca maior consome folga e o apagamento acompanha, sem remedir nada à mão.
+ * ⚠️ Tudo que já foi REPROVADO aqui, para não voltar por engano: teto de escala
+ * amarrado a faixa que encolhe ("ele está literalmente diminuindo"); hero subindo por
+ * cima com margem negativa ("parecendo que os elementos entram em algum lugar", e
+ * cobria 385px do topo de Casos, porque `sticky` pinta acima de conteúdo em fluxo);
+ * e grupo centrado no palco grudado ("um baita espaço antes do hero").
  */
 
 /**
- * Quanto o grupo sobe ao longo do curso, em fração da altura do palco.
+ * Quanto o grupo sobe em relação à página, de 0 a 1.
  *
- * Pequeno de propósito: a subida de verdade vem da FAIXA, que encolhe por cima e leva o
- * grupo junto. Este número existe só para a peça responder ao gesto durante o trecho
- * GRUDADO, onde a faixa ainda é a tela inteira e nada mais se move. Subir muito aqui
- * come a folga de cima e antecipa o apagamento.
+ * 0 = anda junto com a rolagem (e aí a distância até o hero fica CONGELADA o percurso
+ * inteiro — era esse o vão). 1 = fica parado no lugar.
+ *
+ * **0,5 é o ótimo geométrico, não um gosto:** o grupo começa com a mesma folga acima e
+ * abaixo, e a 0,5 as duas fecham ao mesmo tempo — ele termina preenchendo exatamente a
+ * faixa entre o topo da tela e o topo do hero, em vez de encostar num lado e deixar
+ * sobra no outro. Medido em 1440 e 390.
  */
-const SOBE_MARCA = 0.04;
+const PARALAXE = 0.5;
+
+/**
+ * Onde o grupo começa e termina de se apagar, em fração da altura da tela rolada.
+ *
+ * ⚠️ `APAGA_ATE = 0,78` É O NÚMERO QUE MATA O VÃO, e a conta é direta: a opacidade
+ * chega a zero quando o topo do hero está a `(1 − 0,78) = 22%` do alto da tela. Ou
+ * seja, quando a peça some, o hero JÁ OCUPA 78% da tela — não há mais o "espaço enorme
+ * vazio" que ele reprovou quatro vezes em 15/09.
+ *
+ * O preço, e é consciente: no trecho final o grupo já cruzou a borda da seção e é
+ * recortado por ela, com opacidade abaixo de ~0,3. Sobre fundo escuro isso não se lê
+ * como corte, se lê como a peça se dissolvendo — e é o que permite a faixa continuar
+ * PREENCHIDA até o fim. Apagar antes devolve o vão: o vazio que sobra é exatamente a
+ * altura do grupo, porque é ele que estava ocupando aquele espaço.
+ */
+const APAGA_DE = 0.25;
+const APAGA_ATE = 0.78;
 
 /**
  * Quanto o GRUPO (marca + retrato + assinatura) cresce ao longo do curso.
@@ -125,7 +123,8 @@ const ZOOM = 0.2;
  */
 const OCUPACAO_MAX = 0.98;
 
-export const PORTAL_VH = (TRILHO_MULT + 1) * 100;
+/** A seção tem UMA tela: é também o que a página gasta antes do hero. */
+export const PORTAL_VH = 100;
 
 const trava01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
@@ -197,38 +196,27 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          visível — ver a nota de `BANDA_APAGADO`. */
       const caixa = trilho.getBoundingClientRect();
       const { gw, gh, pw, ph } = medidasRef.current;
-      const alturaPalco = ph || window.innerHeight;
 
-      /* ⚠️ Divide pela altura INTEIRA da seção, não por `altura - palco`: o palco SAI
-         de cena aqui, então o curso do gesto é a seção toda. (A conta muda com a
-         geometria — houve um dia, em 15/09, em que o palco ficava grudado o curso
-         inteiro e o denominador certo era o outro.) `p` comanda só a escala e a
-         subidinha; o apagamento sai da faixa, mais abaixo. */
+      /* Quanto da seção já passou pelo topo da janela, de 0 a 1. Sai do retângulo da
+         PRÓPRIA seção e não de `window.scrollY` — é o mecanismo provado cinco vezes
+         neste projeto, e o que deixa a peça correta no dia em que algo entrar antes
+         dela na página. */
       const p = caixa.height > 0 ? trava01(-caixa.top / caixa.height) : 0;
 
-      /* A borda de baixo do palco na tela — e, como o hero é o próximo elemento do
-         fluxo, ELA É O TOPO DO HERO. Vale a altura do palco enquanto ele está grudado
-         e encolhe depois, junto com a faixa que ainda se vê. */
-      const fundoPalco = Math.min(alturaPalco, caixa.bottom);
-
-      /* TETO DO ZOOM, derivado do que cabe no PALCO — fixo, então a escala só cresce. */
+      /* TETO DO ZOOM, derivado do que cabe no palco — que tem tamanho fixo, então a
+         escala só cresce. Ver a nota de `OCUPACAO_MAX`: é ele que tornou o tamanho das
+         peças um parâmetro livre. ⚠️ Não amarrar a nada que encolha na rolagem. */
       const teto =
         gw > 0 && gh > 0
           ? Math.max(0, Math.min((pw * OCUPACAO_MAX) / gw, (ph * OCUPACAO_MAX) / gh) - 1)
           : ZOOM;
       const escala = 1 + p * Math.min(ZOOM, teto);
+      const opacidade = 1 - trava01((p - APAGA_DE) / (APAGA_ATE - APAGA_DE));
 
-      /* Centro do grupo NA TELA: meio da faixa visível, com a subidinha. O
-         deslocamento é a diferença até onde o layout já o pôs — o meio do palco. */
-      const centro = fundoPalco / 2 - p * SOBE_MARCA * alturaPalco;
-      const desloca = centro - (fundoPalco - alturaPalco / 2);
-
-      /* Opacidade = folga restante ÷ folga em repouso. Ver a nota de cima: some no
-         ritmo em que o espaço acaba, e chega a zero antes de encostar na borda. */
-      const meia = (gh * escala) / 2;
-      const folga = Math.min(centro - meia, fundoPalco - centro - meia);
-      const folgaRepouso = Math.max(1, alturaPalco / 2 - gh / 2);
-      const opacidade = gh > 0 ? trava01(folga / folgaRepouso) : 1;
+      /* PARALAXE: a página já levou o grupo `p * altura` para cima; devolver uma parte
+         disso o faz subir mais devagar que o hero, e é o que fecha a distância entre os
+         dois. Ver a nota da constante. */
+      const desloca = (1 - PARALAXE) * p * caixa.height;
 
       /* ⚠️ `translate3d` ANTES de `scale`: a escala é aplicada primeiro e o
          deslocamento depois, em px NÃO escalados. Invertida, o deslocamento viria
@@ -353,33 +341,25 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
     <section
       ref={trilhoRef}
       id="portal"
-      /* ⚠️ `isolate` E NÃO `relative`, e a diferença decide se a página funciona.
-         O palco é `sticky`, ou seja POSICIONADO, e elemento posicionado pinta acima
-         de todo conteúdo em fluxo do mesmo contexto de empilhamento — não importa a
-         ordem no DOM. Com a sobreposição de 15/09 o palco passou a cruzar a seção
-         seguinte ao hero e a COBRIR o topo dela: 385px de Casos recortados, medidos,
-         e foi o que o usuário reportou ("a sessão dos casos clínicos você cortou").
-
-         `isolate` confina o palco num contexto próprio, e a seção, sendo NÃO
-         posicionada, passa a pintar no fluxo — então tudo que vem depois pinta por
-         cima dela. O hero continua cobrindo o palco pelo mesmo motivo, agora por
-         ordem de fluxo em vez de por `z-index`.
-
-         ⚠️ Pôr `relative` de volta ressuscita o defeito: `relative` torna a seção
-         posicionada e ela volta a competir na camada de cima. E `isolate` não afeta o
-         `sticky` — o contêiner de rolagem dele continua sendo a janela. */
+      /* `isolate` e NÃO `relative`: a seção não precisa ser posicionada para nada, e
+         elemento posicionado pinta ACIMA de todo conteúdo em fluxo do mesmo contexto —
+         foi assim que, na versão com `sticky` e margem negativa, o palco cobriu 385px
+         do topo de Casos em 15/09. Hoje não há filho posicionado aqui, mas a trava
+         fica: é de graça e o defeito custou uma rodada. */
       className="isolate bg-ink"
       style={{ height: `${PORTAL_VH}svh` }}
     >
-      {/* ⚠️ `overflow-hidden` AQUI, no próprio palco, e não em nenhum ancestral: a
-          marca cresce até quase o dobro e sem recorte ela ALARGA a página — medido em
-          997px de rolagem horizontal no desktop, quando havia também os pontos saindo
-          para os lados. Pôr o recorte num ANCESTRAL do `sticky` mataria a grudagem
-          (custou uma rodada na Bio em 13/08); no próprio elemento `sticky` é seguro,
-          porque o contêiner de rolagem dele continua sendo a janela. */}
+      {/* ⚠️ `overflow-hidden` AQUI: o grupo cresce e, no fim do percurso, passa da
+          borda de cima — sem recorte ele ALARGA a página (medido em 997px de rolagem
+          horizontal na versão com os pontos) e, por baixo, apareceria por cima do
+          hero. Recortando aqui, ele some dentro da própria seção.
+
+          ⚠️ SEM `sticky`, e isso é o coração desta versão: ver a nota do topo do
+          arquivo. Palco grudado de uma tela gasta outra tela só para sair, e é nessa
+          saída que sobrava o vão. */}
       <div
         ref={palcoRef}
-        className="sticky top-0 flex h-svh items-center justify-center overflow-hidden px-6 text-center"
+        className="palco-fundido flex h-svh items-center justify-center overflow-hidden px-6 text-center"
       >
         <div ref={marcaRef} className="will-change-transform">
           {composicao}

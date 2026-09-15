@@ -288,6 +288,21 @@
    Se um dia fizer falta, tem de ser numa classe própria, aplicada só onde o topo
    do bloco NÃO faz fronteira com outra superfície escura. O arco dourado da base
    fica — ele nunca tocou borda nenhuma. */
+/* Borda de baixo do PALCO da tela de entrada, dissolvida em vez de cortada.
+
+   No fim do percurso o grupo passa da borda da seção — é isso que mantém a faixa
+   PREENCHIDA até o hero tomar a tela (ver a nota de `APAGA_ATE` no `AberturaPortal`).
+   Sem máscara o `overflow-hidden` corta em linha reta e o pé da assinatura fica
+   partido ao meio; com ela, a peça se dissolve na borda.
+
+   96px e não uma porcentagem: a dissolução tem de ter o mesmo tamanho em qualquer
+   altura de tela, senão em celular ela come metade do retrato. Em repouso não afeta
+   nada — o pé do grupo fica bem acima dessa faixa. */
+.palco-fundido {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 96px), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 96px), transparent 100%);
+}
+
 .ink-arc {
   background: radial-gradient(120% 90% at 50% 108%, var(--gold-glow) 0%, transparent 55%);
 }
