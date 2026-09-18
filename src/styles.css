@@ -286,9 +286,24 @@
    mesma razão que fez `.display-1/2/3` existirem. */
 .desc-secao {
   font-weight: 400;
-  font-size: 1.125rem;
-  line-height: 1.6;
-  letter-spacing: -0.005em;
+  font-size: 1rem;
+  line-height: 1.65;
+  letter-spacing: 0;
+}
+
+/* ⚠️ No CELULAR volta para 16px, o degrau de texto corrido, e é medição e não
+   recuo: em 390px o mesmo parágrafo que ocupa 4 linhas no desktop ocupa 7, e a
+   régua de leitura ali é a LARGURA DA TELA, não o tamanho da fonte. Ele viu as
+   duas telas e reprovou o celular duas vezes ("ficou muito grande", "ainda estão
+   muito muito grandes") depois de ter aprovado o mesmo valor no computador.
+   Ou seja: o 18px acima existe porque 16px é pequeno numa coluna de 864px —
+   num celular a coluna tem 350px e o problema não existe. */
+@media (min-width: 48rem) {
+  .desc-secao {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    letter-spacing: -0.005em;
+  }
 }
 
 /* ---------- Superfície escura ---------- */

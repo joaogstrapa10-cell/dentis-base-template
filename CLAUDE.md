@@ -327,13 +327,16 @@ bem embaixo das imagens, e ver todos os casos seria a terceira linha". Vãos: 32
 a pilha e as setas, **56px** entre as setas e o link, iguais nos dois viewports. O link
 é prop opcional (`verTodos`) do `GaleriaDeCasos` — quem decide se ela existe é a seção.
 
-⚠️ **A DESCRIÇÃO DE SEÇÃO É `.desc-secao` (18px), e é a ÚNICA medida fora dos cinco
-degraus.** Não é descuido: em 18/09 ele reprovou os DOIS vizinhos por nome, na mesma
+⚠️ **A DESCRIÇÃO DE SEÇÃO É `.desc-secao`: 16px no CELULAR e 18px de `md` para cima.**
+Os 18px são a ÚNICA medida fora dos cinco degraus, e existem só no desktop. Não é descuido: em 18/09 ele reprovou os DOIS vizinhos por nome, na mesma
 frente — 16px "estão muito pequenos" de manhã, 22px "ficou muito grande" no celular
 **e** no computador à tarde, dito três vezes. Com as duas pontas recusadas, escolher o
 vizinho deixou de ser opção. A justificativa inteira está no bloco **A LINHA DE APOIO**
-do `styles.css`. Vale para o `SectionHeader` (Casos, Diferenciais, Estrutura), para a
-`ChamadaFinal` e para a abertura de `/casos` e `/estrutura`.
+do `styles.css`. No CELULAR o valor volta a 16px, e também por pedido dele — o mesmo
+tamanho que ele aprovou no computador foi reprovado duas vezes no telefone. A régua de
+leitura no celular é a LARGURA DA COLUNA (350px contra 864px), não o tamanho da fonte.
+Vale para o `SectionHeader` (Casos, Diferenciais, Estrutura), para a `ChamadaFinal` e
+para a abertura de `/casos` e `/estrutura`.
 ⚠️ **Isto NÃO reabre a escala**: a regra de 03/08 continua valendo para todo o resto —
 proibido `text-[...]` arbitrário em seção, proibido `text-xs/sm/lg/xl`. E não trocar
 por utilitário de tamanho: a classe é declarada FORA de `@layer` e vence
@@ -1233,4 +1236,6 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-18 — Medido depois, em 1440×900 e 390×844, com `getComputedStyle` confirmando que o CSS NOVO estava sendo servido antes de acreditar na leitura (a armadilha de 15/09): `.desc-secao` em **18px/28,8px** nos quatro lugares da home e nas duas rotas internas, vão pilha→link 32px e link→setas 56px nos dois viewports, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
 - 2026-09-18 — **A BANDA DA GALERIA TROCOU DE ORDEM PELA SEGUNDA VEZ NO MESMO DIA e fechou em pilha → SETAS → link**: "as setas têm que estar em segundo, bem embaixo das imagens, e ver todos os casos seria a terceira linha". De manhã ele tinha pedido o link ENTRE a pilha e as setas; agora ele vai para o fim. A ordem final é a que faz sentido de leitura, e vale registrar o argumento para não trocar de novo: as setas são controle DESTA pilha e pertencem a ela; o link SAI da página e é o último passo. Os 56px de afastamento ficaram, agora entre as setas e o link.
 - 2026-09-18 — Medido em 1440×900 e 390×844: ordem `pilha → setas → link` no DOM **e** na tela (conferidas as duas — ordem visual certa com DOM errado quebraria a navegação por teclado), vãos 32px e 56px iguais nos dois viewports, zero overflow lateral. `tsc --noEmit` limpo.
+- 2026-09-18 — **A descrição de seção virou RESPONSIVA: 16px no celular, 18px de `md` para cima** ("no celular ainda estão muito muito grandes"). Terceira e última rodada desta frente no mesmo dia. O que ela ensina, e vale para a próxima: **tamanho de fonte aprovado num viewport não se transporta para o outro** — a régua de leitura no celular é a LARGURA DA COLUNA (350px contra 864px), então o mesmo parágrafo que ocupa 4 linhas no desktop ocupa 7 no telefone e a página lê como um paredão. Os 18px seguem existindo porque 16px é pequeno numa coluna de 864px; no celular esse problema simplesmente não existe.
+- 2026-09-18 — Medido em 1440, 768, 390 e 320: **18px/28,8px** de 768 para cima e **16px/26,4px** abaixo disso, nos quatro lugares da home e nas duas rotas internas, com `getComputedStyle` confirmando o CSS servido antes da leitura. Zero overflow nas quatro larguras. `tsc --noEmit` e `bun run build` limpos.
 
