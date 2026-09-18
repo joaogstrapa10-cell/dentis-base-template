@@ -1,0 +1,71 @@
+/* ===========================================================================
+   PALETA B — AREIA + BRONZE
+   Direção: acolhimento de alto padrão. O campo sai do branco e vai para uma
+   areia quente; os blocos escuros deixam de ser verdes e viram um marrom
+   profundo de madeira; a cor de ação é terracota, e o ornamento é bronze.
+
+   A origem não é invenção: as 12 fotos da clínica foram quantizadas em 30/07 e
+   o consultório é MADEIRA MEL + granito + parede branca. A paleta em vigor
+   pegou o verde do site antigo e deixou a madeira como ornamento; esta faz o
+   inverso — a madeira vira o ambiente e o verde sai de cena.
+
+   Risco assumido: sem o verde-petróleo, o site deixa de citar o site antigo.
+   É a direção certa se a marca vai ser refeita junto; é a errada se o verde é
+   inegociável (para isso, ver a paleta A, que o preserva como sinal).
+   =========================================================================== */
+
+:root {
+  --radius: 1.5rem;               /* canto largo: a forma é macia */
+
+  /* Campo -------------------------------------------------------------- */
+  --background: oklch(0.963 0.013 79);
+  --foreground: oklch(0.243 0.026 58);
+  --surface: oklch(0.991 0.006 82);
+  --surface-raised: oklch(0.940 0.018 77);
+
+  --muted: oklch(0.492 0.026 62);
+
+  /* Fios quentes, derivados do próprio texto */
+  --border: oklch(0.243 0.026 58 / 0.15);
+  --border-strong: oklch(0.243 0.026 58 / 0.53);
+
+  /* Blocos de presença: marrom de madeira escura, não preto e não verde */
+  --ink: oklch(0.228 0.030 54);
+  --ink-elevated: oklch(0.292 0.035 54);
+  --ink-foreground: oklch(0.976 0.011 84);
+  --ink-muted: oklch(0.748 0.022 76);
+  --ink-border: oklch(1 0 0 / 0.14);
+
+  /* Ação: terracota queimada. L 0.46 pelo mesmo motivo do accent atual —
+     serve de ícone sobre a areia e recebe texto claro em cima. */
+  --accent: oklch(0.46 0.098 46);
+  --accent-foreground: oklch(0.985 0.008 84);
+
+  /* Ornamento: bronze. É o #ffc501 do botão do site antigo puxado para a
+     madeira do balcão, e continua valendo a regra de 30/07 — SÓ sobre escuro.
+     Sobre a areia ele não tem contraste e vira mancha. */
+  --gold: oklch(0.800 0.128 77);
+  --gold-foreground: oklch(0.228 0.030 54);
+  --gold-glow: oklch(0.600 0.115 68 / 0.85);
+
+  /* Sinais, na faixa que funciona sobre fundo quente */
+  --positive: oklch(0.52 0.100 148);
+  --warning: oklch(0.70 0.140 72);
+  --destructive: oklch(0.54 0.190 28);
+
+  /* Estado desabilitado */
+  --disabled-surface: oklch(0.906 0.014 77);
+  --disabled-foreground: oklch(0.487 0.020 62);
+  --disabled-border: oklch(0.243 0.026 58 / 0.09);
+}
+
+/* Tratamento de imagem: canto largo, sem fio, sombra baixa e QUENTE — sombra
+   cinza sobre areia lê como sujeira. A foto é OBJETO pousado na página. */
+.paleta-b img,
+.paleta-b [role="img"] {
+  border-radius: 1.25rem;
+}
+.paleta-b .cartao-foto {
+  border: 0;
+  box-shadow: 0 18px 40px -24px oklch(0.243 0.026 58 / 0.45);
+}

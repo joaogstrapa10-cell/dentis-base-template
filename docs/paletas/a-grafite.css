@@ -1,0 +1,84 @@
+/* ===========================================================================
+   PALETA A — GRAFITE + UM SINAL
+   Direção: clínica precisa. Página neutra de verdade, quase sem croma, e UMA
+   cor no sistema inteiro: o petróleo da Suzuki, que passa a ser sinal e não
+   ambiente. Sem dourado em lugar nenhum.
+
+   O que a separa da paleta em vigor: hoje o verde está em TODA parte (fundo
+   tingido, texto, bordas, blocos) e o dourado é o calor. Aqui o campo é
+   grafite neutro e o verde só aparece onde há ação ou hierarquia — ele ganha
+   força justamente por ser raro.
+
+   Risco assumido: sem ornamento quente, a página fica severa. É a direção
+   certa se a clínica quer ler como técnica; é a errada se quer ler como
+   acolhedora (para isso, ver a paleta B).
+   =========================================================================== */
+
+:root {
+  --radius: 0.625rem;              /* canto curto: a forma é reta, não macia */
+
+  /* Campo -------------------------------------------------------------- */
+  --background: oklch(0.982 0.002 200);
+  --foreground: oklch(0.190 0.008 200);
+  --surface: oklch(1 0 0);
+  --surface-raised: oklch(0.957 0.003 200);
+
+  /* Texto secundário: cinza de verdade, não verde esmaecido */
+  --muted: oklch(0.468 0.010 200);
+
+  /* Fios. DOIS papéis diferentes, e só um deles tem exigência de contraste:
+     `--border` é DIVISOR decorativo (separa blocos, e a WCAG isenta) — fica
+     leve, 0,18. `--border-strong` é o CONTORNO das setas da galeria, que são
+     botão sem fundo: ali o fio é a única fronteira do controle e a regra de
+     não-texto (3:1) vale. Medido: a paleta em vigor entrega 1,63:1 nesse fio,
+     ou seja REPROVA hoje. 0,48 de alfa é o que leva a 3:1 sem engrossar a
+     linha. Ver docs/paletas.md §"O que a medição achou no site atual". */
+  --border: oklch(0.190 0.008 200 / 0.18);
+  --border-strong: oklch(0.190 0.008 200 / 0.48);
+
+  /* Blocos de presença: GRAFITE, não verde. O bloco escuro deixa de ser a
+     cor da marca e vira superfície neutra — é o verde do accent que carrega
+     a identidade em cima dele. */
+  --ink: oklch(0.175 0.009 200);
+  --ink-elevated: oklch(0.238 0.010 200);
+  --ink-foreground: oklch(0.980 0.002 200);
+  --ink-muted: oklch(0.726 0.008 200);
+  --ink-border: oklch(1 0 0 / 0.15);
+
+  /* O ÚNICO croma do sistema. L 0.44 é o mesmo ponto de equilíbrio da paleta
+     atual, e pela mesma razão: escuro o bastante para ícone sobre branco
+     (7,4:1), claro o bastante para receber texto branco em cima (4,8:1). */
+  --accent: oklch(0.44 0.085 196);
+  --accent-foreground: oklch(0.99 0.002 200);
+
+  /* Sem dourado. O slot continua existindo porque três componentes o leem
+     (estrelas, arco do hero, tile do botão); aqui ele recebe o PRÓPRIO verde
+     clareado para funcionar sobre escuro. Ornamento sem cor nova. */
+  --gold: oklch(0.760 0.070 194);
+  --gold-foreground: oklch(0.175 0.009 200);
+  --gold-glow: oklch(0.560 0.070 196 / 0.75);
+
+  /* Sinais */
+  --positive: oklch(0.50 0.105 168);
+  --warning: oklch(0.62 0.115 70);
+  --destructive: oklch(0.55 0.20 25);
+
+  /* Estado desabilitado — NÃO EXISTE na paleta em vigor, porque o site não
+     tem nenhum botão desabilitado hoje. Definido aqui para o sistema ficar
+     completo: fundo rebaixado, texto no limite de 4,5:1 (legível, nunca
+     "apagado a ponto de sumir"), fio fantasma. */
+  --disabled-surface: oklch(0.928 0.003 200);
+  --disabled-foreground: oklch(0.505 0.008 200);
+  --disabled-border: oklch(0.190 0.008 200 / 0.10);
+}
+
+/* Tratamento de imagem: canto curto, fio de contenção, zero sombra.
+   A foto é DOCUMENTO — entra na página como prova, não como objeto pousado. */
+.paleta-a img,
+.paleta-a [role="img"] {
+  border-radius: 0.5rem;
+}
+.paleta-a .cartao-foto {
+  border: 1px solid var(--border-strong);
+  box-shadow: none;
+}

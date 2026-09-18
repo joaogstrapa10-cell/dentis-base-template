@@ -1,0 +1,80 @@
+/* ===========================================================================
+   PALETA C — NOTURNO
+   Direção: a página INTEIRA no verde-petróleo, com o branco virando exceção.
+   É a inversão da estrutura atual: hoje o claro carrega a leitura e o escuro
+   entra em blocos; aqui o escuro é o ambiente e os cartões claros é que são
+   pontuais. O dourado ganha o papel principal, porque sobre escuro ele
+   finalmente pode ser cor de destaque e não só ornamento.
+
+   ⚠️ ESTA É A ÚNICA DAS TRÊS QUE NÃO É SÓ TROCA DE TOKEN, e isso está medido
+   no relatório: inverter claro/escuro mexe em COMPONENTE, não só em cor. Foi
+   exatamente o que este projeto pagou em 30/07 ao tentar o site todo escuro.
+   O que quebra está listado em docs/paletas.md §"O custo da C".
+
+   Risco assumido: é a mais distante do site atual e a mais cara de adotar.
+   Em compensação é a única em que a foto clínica ganha presença de verdade —
+   imagem sobre campo escuro lê como iluminada.
+   =========================================================================== */
+
+:root {
+  --radius: 1.375rem;
+
+  /* Campo: petróleo. O `--surface` NÃO é branco: é um degrau acima do fundo,
+     senão cada cartão vira um buraco aceso no meio da página. */
+  --background: oklch(0.178 0.028 197);
+  --foreground: oklch(0.966 0.006 190);
+  --surface: oklch(0.222 0.032 197);
+  --surface-raised: oklch(0.262 0.034 197);
+
+  --muted: oklch(0.722 0.020 194);
+
+  /* Fios claros translúcidos: sobre campo escuro, fio derivado do TEXTO
+     (claro) é o que desenha; fio derivado do fundo desaparece. */
+  --border: oklch(1 0 0 / 0.14);
+  --border-strong: oklch(1 0 0 / 0.36);
+
+  /* Blocos de presença: mais FUNDOS que a página, não mais claros. É o que
+     mantém o hero e o rodapé lendo como bloco num site já escuro. */
+  --ink: oklch(0.128 0.024 197);
+  --ink-elevated: oklch(0.196 0.030 197);
+  --ink-foreground: oklch(0.972 0.006 190);
+  --ink-muted: oklch(0.702 0.020 194);
+  --ink-border: oklch(1 0 0 / 0.13);
+
+  /* ⚠️ O accent INVERTE de luminosidade: 0.44 (escuro, para fundo claro) vira
+     0.74 (claro, para fundo escuro). É a lição de 24/07 — o mesmo token serve
+     de texto pequeno E de fundo de botão, e escurecê-lo quebra o contraste do
+     texto. Aqui ele precisa ser claro pelos dois lados. */
+  --accent: oklch(0.740 0.090 190);
+  --accent-foreground: oklch(0.160 0.026 197);
+
+  /* Dourado promovido: aqui ele PODE ser texto e número, porque todo fundo é
+     escuro. É a única das três paletas em que isso vale. */
+  --gold: oklch(0.822 0.140 84);
+  --gold-foreground: oklch(0.178 0.028 197);
+  --gold-glow: oklch(0.640 0.130 74 / 0.9);
+
+  --positive: oklch(0.76 0.120 165);
+  --warning: oklch(0.80 0.135 80);
+  --destructive: oklch(0.68 0.170 25);
+
+  /* Estado desabilitado: sobre campo escuro, "desabilitado" é MENOS luz, e
+     não mais cinza — cinza médio sobre petróleo continua chamando atenção. */
+  --disabled-surface: oklch(0.262 0.020 197);
+  --disabled-foreground: oklch(0.645 0.014 197);
+  --disabled-border: oklch(1 0 0 / 0.08);
+
+  color-scheme: dark;
+}
+
+/* Tratamento de imagem: canto médio, fio claro de 1px e NENHUMA sombra —
+   sombra sobre campo escuro é invisível por definição. O que separa a foto do
+   fundo é a própria luz dela. */
+.paleta-c img,
+.paleta-c [role="img"] {
+  border-radius: 1rem;
+}
+.paleta-c .cartao-foto {
+  border: 1px solid oklch(1 0 0 / 0.16);
+  box-shadow: none;
+}
