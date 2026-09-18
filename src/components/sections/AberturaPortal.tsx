@@ -310,7 +310,7 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          leitor de tela deve anunciá-lo. */
       <p
         className="assinatura-manuscrita text-ink-foreground"
-        title="Composição tipográfica provisória — a assinatura digitalizada do responsável técnico substituirá esta peça."
+        title="Composição tipográfica provisória. A assinatura digitalizada do responsável técnico substituirá esta peça."
       >
         {assinatura.nome}
       </p>

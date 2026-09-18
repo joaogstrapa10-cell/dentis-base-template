@@ -25,7 +25,7 @@ import { FooterSection } from "@/components/sections/Footer";
 export const Route = createFileRoute("/estrutura")({
   head: () => ({
     meta: [
-      { title: "A clínica, ambiente por ambiente — Suzuki Odontologia" },
+      { title: "A clínica, ambiente por ambiente | Suzuki Odontologia" },
       {
         name: "description",
         content:
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/estrutura")({
       },
       {
         property: "og:title",
-        content: "A clínica, ambiente por ambiente — Suzuki Odontologia",
+        content: "A clínica, ambiente por ambiente | Suzuki Odontologia",
       },
       {
         property: "og:description",
@@ -89,7 +89,7 @@ function PaginaEstrutura() {
                 </h1>
               </Reveal>
               <Reveal delay={180}>
-                <p className="mt-5 max-w-[62ch] text-base text-ink-muted">
+                <p className="display-3-leve mt-5 max-w-[44rem] text-ink-muted">
                   {estrutura.pagina.descricao}
                 </p>
               </Reveal>

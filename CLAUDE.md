@@ -253,6 +253,17 @@ responsável técnico (hero e título da Bio). O dado NÃO foi apagado: vive em
 `CorpoClinicoEsteira.tsx`. Isso foi dito ao usuário quando ele pediu. **Antes de publicar,
 confirmar com quem cuida do jurídico da clínica.**
 
+### O segundo aviso de compliance, aberto em 18/09
+
+⚠️ **O AVISO DA CFO-196/2019 SAIU DA SEÇÃO DE CASOS DA HOME**, a pedido explícito
+("isso aqui tira", com print do parágrafo). Ele **continua na página `/casos`**, e o
+texto segue inteiro em `clinica.casos.aviso` — devolver é uma linha
+(`<AvisoCasos texto={data.aviso} />` abaixo da galeria, em `Casos.tsx`).
+A ressalva foi dita a ele na hora e fica registrada: **a home mostra cinco imagens
+que ILUSTRAM especialidades e não são registro clínico do paciente descrito**, e era
+a última frase desse aviso que dizia isso ao visitante. Confirmar com o jurídico da
+clínica antes de publicar. São agora **dois** os alertas abertos: este e o CRO dos oito.
+
 ### Pendências que bloqueiam publicação
 
 | O quê | Onde aparece | Quem resolve |
@@ -307,6 +318,25 @@ especialidades"), então **a página não termina mais numa chamada** — fecha 
 e rodapé. A conversão segue no header fixo e no hero. 🗑️ E **Tratamentos foi removida por
 completo** no mesmo pedido; com ela saiu a única explicação de como o orçamento funciona.
 "Cada etapa, acompanhada." tinha saído em 12/08.
+
+⚠️ **A CHAMADA "Ver todos os casos" VIVE DENTRO DA GALERIA**, desde 18/09: entre a
+pilha de cartões e a fileira de setas, em linha própria e centrada. Ela era o `acao`
+do `SectionHeader`, ou seja ficava ao lado do título, a uma tela de distância dos
+cartões que promete mostrar. É prop opcional (`verTodos`) do `GaleriaDeCasos` — quem
+decide se ela existe é a seção, não a galeria.
+
+⚠️ **A DESCRIÇÃO DE SEÇÃO É `display-3-leve` (22px), NÃO `text-base`**, desde 18/09:
+ele pediu que "todos os textos abaixo dos títulos" aumentassem. 22px é o degrau
+VIZINHO da escala fechada de cinco — nenhum tamanho novo entrou. Vale para o
+`SectionHeader` (Casos, Diferenciais, Estrutura), para a `ChamadaFinal` e para a
+abertura de `/casos` e `/estrutura`. **Não "corrigir" de volta para `text-base`**, e
+não trocar por utilitário de tamanho: os `.display-*` vencem `@layer utilities` em
+silêncio, e é por isso que existe a variante `-leve`.
+
+⚠️ **NÃO HÁ TRAVESSÃO EM TEXTO VISÍVEL**, por pedido de 18/09 ("tirar todos os
+travessões de todos os textos"). Vale para `clinica.ts` e para título e OG das três
+rotas. Ao escrever copy nova, usar ponto, vírgula, dois-pontos ou parênteses. Os
+comentários do código seguem livres — não são texto do site.
 
 ⚠️ **NO CELULAR O `CarrosselDeCartoes` É OUTRO CARTÃO**, desde 15/09: os itens viram
 uma FAIXA horizontal rolável, o título e a descrição saem de cima da foto e vão para o
@@ -1178,4 +1208,17 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-15 — ⚠️ **"NO CELULAR O SCROLL ESTÁ TRAVANDO" — a causa mais provável é `backdrop-filter`, e ele estava em 17 ELEMENTOS**, incluindo a pílula de navegação, que é **fixa**. Num elemento fixo o navegador reamostra e desfoca tudo que passa atrás dele a CADA quadro de rolagem, e isso acompanha a página inteira; no celular é um dos efeitos mais caros que existem. Todos passaram a ser `lg:` — só no desktop —, com a opacidade do fundo subindo para 95%, onde o desfoque praticamente não aparece. Medido: **0 elementos com `backdrop-filter` no celular, 17 no desktop**.
 - 2026-09-15 — ⚠️ **Por que a minha medição não pegava isso:** `Emulation.setCPUThrottlingRate` estrangula a CPU, **não o compositor nem a GPU**, e num desktop `backdrop-filter` é trivial. É o limite desta bancada — dá para medir trabalho de JS e layout, não custo de composição. **Efeito caro de GPU se julga pela natureza do efeito, não pelo número daqui.**
 - 2026-09-15 — Junto, as máscaras de borda de DUAS das três esteiras viraram `lg:` (`.esteira-mask-lg`): máscara em elemento largo com imagens dentro força uma superfície de composição própria a cada quadro. No celular essas duas sangram até a borda da TELA (medido: 0px dos dois lados), então o corte do `overflow-hidden` cai onde a tela acaba e não se vê. A do corpo clínico FICA com a máscara: ela para a 12px da borda, e ali um corte reto atravessaria o retrato.
+- 2026-09-18 — **"VER TODOS OS CASOS" DESCEU PARA DENTRO DA GALERIA**, a pedido, com print: "entre esses botões para passar para o lado, essas setinhas, e entre essas imagens em cima". Saiu do `acao` do `SectionHeader` — onde ficava ao lado do título, ou seja ANTES de a pessoa ver um cartão sequer — e virou linha própria centrada entre a pilha e a fileira de setas. Medido em 1440 e 390: pilha termina em y=2266, link 2298→2324, setas em 2348 (desktop); 2333 / 2365→2392 / 2416 no celular. Centro do link no centro exato da tela nos dois.
+- 2026-09-18 — **Linha PRÓPRIA e não a mesma fileira das setas**, e é distinção de função: as setas são controle DESTA pilha e o link SAI da página. Na mesma linha, a chamada leria como um terceiro botão do carrossel. O vão das setas caiu de `mt-8` para `mt-6` quando o link existe, senão a banda inteira ficaria com três respiros iguais e sem hierarquia.
+- 2026-09-18 — `verTodos` é prop OPCIONAL do `GaleriaDeCasos` e não leitura direta de `data.verTodos`, mesmo o campo já estando no `CasosContent` que ela recebe: quem decide se a chamada existe é a SEÇÃO. A galeria é genérica e a página `/casos` não teria para onde mandar ninguém.
+- 2026-09-18 — 🗑️ **O AVISO DA CFO-196/2019 SAIU DA HOME**, a pedido explícito com print ("isso aqui tira... não é para aumentar o texto, não, confundi"). ⚠️ **Continua na página `/casos`** e o texto segue em `clinica.casos.aviso` — devolver à home é UMA linha. A ressalva foi dita a ele antes de apagar: as cinco imagens da home ilustram especialidades e **não são registro clínico**, e era a última frase deste aviso que dizia isso ao visitante. Confirmar com o jurídico da clínica antes de publicar. Segundo alerta de compliance aberto, ao lado do CRO dos oito.
+- 2026-09-18 — O `AvisoCasos` CONTINUA componente mesmo servindo um lugar só. Não é campo morto pela regra do projeto: ele existe para as duas cópias não divergirem se a da home voltar, e o texto é o mesmo por exigência.
+- 2026-09-18 — **A DESCRIÇÃO DE SEÇÃO SUBIU UM DEGRAU: 16 → 22px** ("aumentar todos os textos abaixo dos títulos, porque estão muito pequenos"). É `display-3-leve`, ou seja o degrau VIZINHO da escala fechada de cinco — **nenhum tamanho novo entrou na página**, que é a regra de 03/08. Resolve junto o "precisa ter um espaçamento entre elas": a classe traz line-height 1.45, então a entrelinha foi de 26,4px para **31,9px** sem nenhum ajuste à parte.
+- 2026-09-18 — A hierarquia contra o `.display-2` do título se segura pelo PESO (700 contra 400), e é isso que a salva no CELULAR: lá o título cai para 28px pelo clamp, contra 22px da descrição. Em tamanho apenas, 28 sobre 22 seria gradiente e não hierarquia — foi o diagnóstico de 03/08.
+- 2026-09-18 — Alcance medido, e vale saber para não procurar o que não existe: **quatro** seções da home exibem descrição (Casos, Chamada final, Diferenciais, Estrutura) mais a abertura de `/casos` e `/estrutura`. Áreas, FAQ, Localização e Depoimentos têm `descricao: ""` desde 24/07 — string vazia é falsy e o `SectionHeader` não renderiza o parágrafo. As duas que ele nomeou ("experiência aplicada caso a caso" e "o ambiente do tratamento") estão entre as quatro.
+- 2026-09-18 — A `credencial` da Bio (a linha do CRO embaixo de "Dr. Dalton Suzuki") FICOU em 16px, e é decisão: é metadado de identificação, não descrição de seção. A 22px ela competiria com o nome, que é o defeito que a `.display-3-leve` foi criada para evitar em 14/08. O corpo da bio também fica — é texto corrido de coluna, não linha de apoio.
+- 2026-09-18 — Nas duas rotas internas o `max-w-[62ch]` virou `max-w-[44rem]`, e é a armadilha do `ch` pela QUINTA vez: ele resolve contra a fonte do PRÓPRIO elemento, então subir a fonte de 16 para 22px alargaria a medida de ~496px para ~682px sozinho. Em bloco cujo tamanho de fonte muda, largura em `rem`.
+- 2026-09-18 — **TRAVESSÃO ZERO em texto visível**, a pedido ("tirar todos os travessões de todos os textos, caso haver"). Quatro lugares, e em nenhum foi só apagar o caractere — pontuação arrancada deixa frase capenga: o horário virou "das 8h às 12h e das 13h30 às 18h" (eram travessões de intervalo), a descrição de Casos fechou a frase em ponto ("...não de resultado. Cada caso depende de diagnóstico individual."), os 15 placeholders `[CASO 0N — X]` viraram `[CASO 0N: X]`, e o título/OG das três rotas trocou o travessão por `|`, que é a convenção de título de página. Medido no texto RENDERIZADO das três rotas, em 1440 e 390: **0 ocorrências**.
+- 2026-09-18 — Os comentários do código ficaram como estão, e é deliberado: o pedido é sobre o texto do SITE. Reescrever os blocos de `// ⚠️` do repo em nome disso apagaria a pontuação que separa afirmação de justificativa em toda a memória do projeto.
+- 2026-09-18 — Medido depois, em 1440×900 e 390×844, nas três rotas: descrição em 22px/31,9px nos seis lugares, ordem pilha → link → setas correta nos dois viewports, zero aviso de CFO na home e exatamente um em `/casos`, zero travessão renderizado, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
 

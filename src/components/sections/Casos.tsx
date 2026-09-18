@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import type { CasoClinico, CasosContent } from "@/content/types";
 import { Section, SectionHeader } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
-import { TextLink } from "@/components/Primitives";
 import { GaleriaDeCasos } from "@/components/sections/GaleriaDeCasos";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +30,9 @@ import { cn } from "@/lib/utils";
  *    exatamente o que a resolução restringe. O tipo `CasoClinico` reforça isso:
  *    tem `imagem` no singular, então não há como montar par comparativo aqui.
  *
- * O aviso do fim da seção é obrigatório, não decorativo. Não remover.
+ * O aviso do fim da seção é obrigatório, não decorativo. Não remover DAQUI — ele
+ * saiu da seção da home em 18/09 a pedido do usuário, e /casos passou a ser o
+ * único lugar onde ele aparece.
  */
 
 /** A imagem do caso, ou o slot rotulado quando ela não existe. Mesmo padrão da
@@ -145,10 +146,12 @@ export function PilhaDeCasos({
 }
 
 /**
- * Aviso de compliance. Componente próprio porque aparece em DOIS lugares — o
- * teaser da home e a página /casos — e as duas cópias têm de dizer a mesma
- * coisa. É exigência da CFO-196/2019, não rodapé de cortesia: não remover de
- * nenhum dos dois.
+ * Aviso de compliance. Nasceu componente porque aparecia em DOIS lugares — o
+ * teaser da home e a página /casos — e as duas cópias tinham de dizer a mesma
+ * coisa. Desde 18/09 só a página /casos o usa: o usuário pediu a remoção do
+ * parágrafo da home, com print. Continua componente porque devolvê-lo à home é
+ * uma linha, e porque as duas cópias não podem divergir se ele voltar.
+ * É exigência da CFO-196/2019, não rodapé de cortesia: não remover de /casos.
  */
 export function AvisoCasos({ texto }: { texto: string }) {
   return (
@@ -168,8 +171,18 @@ export function AvisoCasos({ texto }: { texto: string }) {
  * layout — carrossel tem altura fixa e caberia a lista inteira — e sim faz
  * curadoria: o cliente pediu "os cinco principais" na home e todos na página.
  *
- * O aviso da CFO-196/2019 continua aqui, abaixo da galeria. É exigência, não
- * rodapé de cortesia: não remover.
+ * "Ver todos os casos" saiu do `acao` do cabeçalho e foi para DENTRO da galeria,
+ * entre a pilha e as setas, a pedido do usuário em 18/09.
+ *
+ * ⚠️ O AVISO DA CFO-196/2019 SAIU DESTA SEÇÃO em 18/09, a pedido explícito do
+ * usuário ("isso aqui tira", com print do parágrafo). Ele CONTINUA na página
+ * /casos, que é onde os casos são documentados por inteiro — e o texto segue em
+ * `clinica.casos.aviso`, então devolvê-lo aqui é uma linha:
+ * `<AvisoCasos texto={data.aviso} />` abaixo da galeria.
+ * A ressalva foi dita a ele e fica registrada: a home mostra cinco imagens que
+ * ILUSTRAM especialidades e não são registro clínico do paciente descrito, e era
+ * a última frase deste aviso que dizia isso ao visitante. Confirmar com o
+ * jurídico da clínica antes de publicar.
  */
 export function CasosSection({ data }: { data: CasosContent }) {
   return (
@@ -178,14 +191,15 @@ export function CasosSection({ data }: { data: CasosContent }) {
         eyebrow={data.eyebrow}
         titulo={data.titulo}
         descricao={data.descricao}
-        acao={<TextLink label={data.verTodos.label} href={data.verTodos.href} />}
       />
 
       <div className="mt-10 md:mt-12">
-        <GaleriaDeCasos data={data} limite={data.limiteNaHome} />
+        <GaleriaDeCasos
+          data={data}
+          limite={data.limiteNaHome}
+          verTodos={data.verTodos}
+        />
       </div>
-
-      <AvisoCasos texto={data.aviso} />
     </Section>
   );
 }

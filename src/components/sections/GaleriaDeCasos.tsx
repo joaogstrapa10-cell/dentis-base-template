@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import type { CasoClinico, CasosContent } from "@/content/types";
+import type { CasoClinico, CasosContent, Cta } from "@/content/types";
+import { TextLink } from "@/components/Primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -79,11 +80,17 @@ function configuracao(largura: number) {
 export function GaleriaDeCasos({
   data,
   limite,
+  verTodos,
 }: {
   data: CasosContent;
   /** Quantos casos a pilha mostra. Omitido, mostra todos. A home passa
    *  `limiteNaHome`; a página /casos usa o dossiê, não esta galeria. */
   limite?: number;
+  /** Chamada para a página completa, renderizada ENTRE a pilha e as setas.
+   *  Posição pedida pelo usuário em 18/09: ela estava ao lado do título da
+   *  seção, a uma tela de distância dos cartões que ela promete mostrar.
+   *  Opcional porque quem decide se existe é a seção, não a galeria. */
+  verTodos?: Cta;
 }) {
   const itens = limite ? data.itens.slice(0, limite) : data.itens;
   const total = itens.length;
@@ -232,10 +239,23 @@ export function GaleriaDeCasos({
         </ul>
       </div>
 
+      {/* A chamada para /casos, EXATAMENTE entre a pilha e as setas — pedido do
+          usuário em 18/09, com print. Antes vivia no `acao` do `SectionHeader`,
+          ou seja acima de tudo e fora do alcance de quem acabou de percorrer os
+          cinco cartões. Aqui ela cai onde a leitura termina.
+          Linha própria e centrada, e não na mesma fileira das setas: as setas
+          são controle DESTA pilha e o link SAI da página — misturar os dois na
+          mesma linha faz a chamada ler como um terceiro botão do carrossel. */}
+      {verTodos ? (
+        <div className="mt-8 flex justify-center">
+          <TextLink label={verTodos.label} href={verTodos.href} />
+        </div>
+      ) : null}
+
       {/* Controles. Existem por acessibilidade e por descoberta: arraste é um
           gesto invisível, e num público que não é jovem por definição o botão é
           o caminho principal, não o alternativo. */}
-      <div className="mt-8 flex items-center justify-center gap-5">
+      <div className={cn("flex items-center justify-center gap-5", verTodos ? "mt-6" : "mt-8")}>
         <Botao rotulo={data.anteriorLabel} onClick={() => irPara(-1)}>
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
         </Botao>

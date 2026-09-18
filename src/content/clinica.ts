@@ -36,7 +36,7 @@ export const clinica: Clinica = {
     endereco: "Rua Atílio Bório, 547, Alto da XV",
     cep: "CEP 80045-120",
     cidadeUf: "Curitiba/PR",
-    horario: "Segunda a sexta, 8h–12h e 13h30–18h",
+    horario: "Segunda a sexta, das 8h às 12h e das 13h30 às 18h",
     telefone: TELEFONE_NUMERO,
     whatsapp: WHATSAPP_NUMERO,
     mapaEmbedSrc:
@@ -453,7 +453,7 @@ export const clinica: Clinica = {
     eyebrow: "Casos clínicos",
     titulo: "Casos clínicos conduzidos aqui.",
     descricao:
-      "Casos reais conduzidos pelo corpo clínico, em diferentes especialidades e diferentes níveis de complexidade. Todos são documentados do mesmo modo: a situação clínica de partida, a conduta adotada em cada etapa, as especialidades envolvidas e o tempo de tratamento. É descrição de processo, não de resultado — cada caso depende de diagnóstico individual.",
+      "Casos reais conduzidos pelo corpo clínico, em diferentes especialidades e diferentes níveis de complexidade. Todos são documentados do mesmo modo: a situação clínica de partida, a conduta adotada em cada etapa, as especialidades envolvidas e o tempo de tratamento. É descrição de processo, não de resultado. Cada caso depende de diagnóstico individual.",
     situacaoLabel: "Situação clínica",
     condutaLabel: "Conduta",
     especialidadesLabel: "Especialidades envolvidas",
@@ -480,10 +480,10 @@ export const clinica: Clinica = {
       {
         numero: "01",
         titulo: "Reabilitação total sobre implantes",
-        situacao: "[CASO 01 — SITUAÇÃO CLÍNICA DE PARTIDA]",
-        conduta: "[CASO 01 — CONDUTA, ETAPA POR ETAPA]",
+        situacao: "[CASO 01: SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 01: CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Implantodontia e Cirurgia", "Reabilitação Oral", "Periodontia"],
-        duracao: "[CASO 01 — DURAÇÃO]",
+        duracao: "[CASO 01: DURAÇÃO]",
         // ⚠️ IMAGEM ILUSTRATIVA DA ESPECIALIDADE, NÃO REGISTRO DESTE CASO.
         // O alt descreve o que a imagem é, e é isso que impede a página de
         // afirmar que a foto é do paciente descrito acima. Proveniência e o
@@ -498,10 +498,10 @@ export const clinica: Clinica = {
       {
         numero: "02",
         titulo: "Reabilitação estética com harmonização facial",
-        situacao: "[CASO 02 — SITUAÇÃO CLÍNICA DE PARTIDA]",
-        conduta: "[CASO 02 — CONDUTA, ETAPA POR ETAPA]",
+        situacao: "[CASO 02: SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 02: CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Estética Dental", "Harmonização Facial"],
-        duracao: "[CASO 02 — DURAÇÃO]",
+        duracao: "[CASO 02: DURAÇÃO]",
         imagem: "/imagens/casos/02-facetas-ceramica.jpeg",
         imagemAlt:
           "Facetas de cerâmica finíssimas apoiadas sobre uma folha verde, em fundo escuro",
@@ -510,10 +510,10 @@ export const clinica: Clinica = {
       {
         numero: "03",
         titulo: "Tratamento ortodôntico em adulto",
-        situacao: "[CASO 03 — SITUAÇÃO CLÍNICA DE PARTIDA]",
-        conduta: "[CASO 03 — CONDUTA, ETAPA POR ETAPA]",
+        situacao: "[CASO 03: SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 03: CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Ortodontia", "Periodontia"],
-        duracao: "[CASO 03 — DURAÇÃO]",
+        duracao: "[CASO 03: DURAÇÃO]",
         imagem: "/imagens/casos/03-aparelho-fixo.jpeg",
         imagemAlt: "Detalhe de aparelho ortodôntico fixo, com bráquetes e fio",
         rotuloSlot: "Registro 03",
@@ -527,10 +527,10 @@ export const clinica: Clinica = {
       {
         numero: "04",
         titulo: "Preservação de dente natural com tratamento de canal",
-        situacao: "[CASO 04 — SITUAÇÃO CLÍNICA DE PARTIDA]",
-        conduta: "[CASO 04 — CONDUTA, ETAPA POR ETAPA]",
+        situacao: "[CASO 04: SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 04: CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Endodontia", "Estética Dental"],
-        duracao: "[CASO 04 — DURAÇÃO]",
+        duracao: "[CASO 04: DURAÇÃO]",
         imagem: "/imagens/casos/04-canais-radiculares.jpeg",
         imagemAlt:
           "Ilustração 3D de dente translúcido mostrando os canais radiculares e o feixe nervoso",
@@ -539,10 +539,10 @@ export const clinica: Clinica = {
       {
         numero: "05",
         titulo: "Tratamento periodontal e manutenção",
-        situacao: "[CASO 05 — SITUAÇÃO CLÍNICA DE PARTIDA]",
-        conduta: "[CASO 05 — CONDUTA, ETAPA POR ETAPA]",
+        situacao: "[CASO 05: SITUAÇÃO CLÍNICA DE PARTIDA]",
+        conduta: "[CASO 05: CONDUTA, ETAPA POR ETAPA]",
         especialidades: ["Periodontia", "Reabilitação Oral"],
-        duracao: "[CASO 05 — DURAÇÃO]",
+        duracao: "[CASO 05: DURAÇÃO]",
         imagem: "/imagens/casos/05-raspagem-periodontal.jpeg",
         imagemAlt:
           "Raspagem periodontal em andamento, com instrumento sob afastador",

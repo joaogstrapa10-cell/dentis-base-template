@@ -23,13 +23,13 @@ import { FooterSection } from "@/components/sections/Footer";
 export const Route = createFileRoute("/casos")({
   head: () => ({
     meta: [
-      { title: "Casos conduzidos — Suzuki Odontologia" },
+      { title: "Casos conduzidos | Suzuki Odontologia" },
       {
         name: "description",
         content:
           "Casos de alta complexidade conduzidos na Suzuki Odontologia, documentados por etapa: situação clínica, conduta, especialidades envolvidas e duração.",
       },
-      { property: "og:title", content: "Casos conduzidos — Suzuki Odontologia" },
+      { property: "og:title", content: "Casos conduzidos | Suzuki Odontologia" },
       {
         property: "og:description",
         content:
@@ -84,7 +84,7 @@ function PaginaCasos() {
                 </h1>
               </Reveal>
               <Reveal delay={180}>
-                <p className="mt-5 max-w-[62ch] text-base leading-[1.65] text-ink-muted">
+                <p className="display-3-leve mt-5 max-w-[44rem] text-ink-muted">
                   {casos.pagina.descricao}
                 </p>
               </Reveal>

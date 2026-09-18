@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "Suzuki Odontologia — Alta complexidade em Curitiba",
+        title: "Suzuki Odontologia | Alta complexidade em Curitiba",
       },
       {
         name: "description",
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "Suzuki Odontologia — Alta complexidade em Curitiba",
+        content: "Suzuki Odontologia | Alta complexidade em Curitiba",
       },
       {
         property: "og:description",
