@@ -239,28 +239,20 @@ export function GaleriaDeCasos({
         </ul>
       </div>
 
-      {/* A chamada para /casos, EXATAMENTE entre a pilha e as setas — pedido do
-          usuário em 18/09, com print. Antes vivia no `acao` do `SectionHeader`,
-          ou seja acima de tudo e fora do alcance de quem acabou de percorrer os
-          cinco cartões. Aqui ela cai onde a leitura termina.
-          Linha própria e centrada, e não na mesma fileira das setas: as setas
-          são controle DESTA pilha e o link SAI da página — misturar os dois na
-          mesma linha faz a chamada ler como um terceiro botão do carrossel.
-          ⚠️ O vão ABAIXO do link é o dobro do vão acima (56px contra 32px), a
-          pedido do usuário em 18/09: "está muito perto um do outro". Com os dois
-          iguais, o link flutuava entre duas coisas sem pertencer a nenhuma; com o
-          de baixo maior, ele se agrupa com a pilha que promete mostrar e as setas
-          ficam como bloco de controle separado. */}
-      {verTodos ? (
-        <div className="mt-8 flex justify-center">
-          <TextLink label={verTodos.label} href={verTodos.href} />
-        </div>
-      ) : null}
+      {/* ORDEM DA BANDA, e ela mudou duas vezes em 18/09 a pedido dele:
+          pilha -> SETAS -> "Ver todos os casos". O link começou no `acao` do
+          `SectionHeader` (acima de tudo, antes de a pessoa ver um cartão), passou
+          por entre a pilha e as setas, e fechou aqui embaixo — "as setas têm que
+          estar em segundo, bem embaixo das imagens, e ver todos os casos seria a
+          terceira linha". Faz sentido de leitura: as setas são controle DESTA
+          pilha e pertencem a ela; o link SAI da página e é o último passo.
+          Linha própria para o link, e não a mesma fileira das setas — junto, ele
+          leria como um terceiro botão do carrossel. */}
 
       {/* Controles. Existem por acessibilidade e por descoberta: arraste é um
           gesto invisível, e num público que não é jovem por definição o botão é
           o caminho principal, não o alternativo. */}
-      <div className={cn("flex items-center justify-center gap-5", verTodos ? "mt-14" : "mt-8")}>
+      <div className="mt-8 flex items-center justify-center gap-5">
         <Botao rotulo={data.anteriorLabel} onClick={() => irPara(-1)}>
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
         </Botao>
@@ -273,6 +265,16 @@ export function GaleriaDeCasos({
           <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
         </Botao>
       </div>
+
+      {/* ⚠️ 56px de vão, o DOBRO do que separa a pilha das setas, e é o mesmo
+          número de antes da troca de ordem: ele pediu afastamento em 18/09
+          ("está muito perto um do outro"). O vão maior é o que mantém as setas
+          agrupadas com a pilha e o link como passo à parte. */}
+      {verTodos ? (
+        <div className="mt-14 flex justify-center">
+          <TextLink label={verTodos.label} href={verTodos.href} />
+        </div>
+      ) : null}
     </div>
   );
 }

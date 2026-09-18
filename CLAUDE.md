@@ -319,11 +319,13 @@ e rodapé. A conversão segue no header fixo e no hero. 🗑️ E **Tratamentos 
 completo** no mesmo pedido; com ela saiu a única explicação de como o orçamento funciona.
 "Cada etapa, acompanhada." tinha saído em 12/08.
 
-⚠️ **A CHAMADA "Ver todos os casos" VIVE DENTRO DA GALERIA**, desde 18/09: entre a
-pilha de cartões e a fileira de setas, em linha própria e centrada. Ela era o `acao`
-do `SectionHeader`, ou seja ficava ao lado do título, a uma tela de distância dos
-cartões que promete mostrar. É prop opcional (`verTodos`) do `GaleriaDeCasos` — quem
-decide se ela existe é a seção, não a galeria.
+⚠️ **A BANDA DA GALERIA DE CASOS É: pilha → SETAS → "Ver todos os casos"**, nesta
+ordem, fechada em 18/09 depois de DUAS trocas no mesmo dia. O link era o `acao` do
+`SectionHeader` (ao lado do título, antes de a pessoa ver um cartão), passou por entre
+a pilha e as setas, e terminou embaixo de tudo — "as setas têm que estar em segundo,
+bem embaixo das imagens, e ver todos os casos seria a terceira linha". Vãos: 32px entre
+a pilha e as setas, **56px** entre as setas e o link, iguais nos dois viewports. O link
+é prop opcional (`verTodos`) do `GaleriaDeCasos` — quem decide se ela existe é a seção.
 
 ⚠️ **A DESCRIÇÃO DE SEÇÃO É `.desc-secao` (18px), e é a ÚNICA medida fora dos cinco
 degraus.** Não é descuido: em 18/09 ele reprovou os DOIS vizinhos por nome, na mesma
@@ -1229,4 +1231,6 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-18 — Antes de cravar 18px eu tinha feito a versão RESPONSIVA (16px no celular, 22px de `md` para cima), que era a leitura da primeira mensagem dele. Durou dois minutos: a mensagem seguinte disse que o desktop também estava grande. **Ficou um valor só** — mais simples de manter e é o que ele pediu. ⚠️ `md:display-3-leve` não funcionaria de todo jeito: os degraus vivem FORA de `@layer`, não são utilitários e não aceitam variante de breakpoint — a classe nem seria gerada, sem erro nenhum.
 - 2026-09-18 — **O vão abaixo de "Ver todos os casos" virou o DOBRO do vão acima** (56px contra 32px), a pedido ("está muito perto um do outro", nos dois viewports). Com os dois iguais o link flutuava entre duas coisas sem pertencer a nenhuma; com o de baixo maior ele se agrupa com a pilha que promete mostrar, e as setas viram bloco de controle separado. Mesmo número no celular e no desktop.
 - 2026-09-18 — Medido depois, em 1440×900 e 390×844, com `getComputedStyle` confirmando que o CSS NOVO estava sendo servido antes de acreditar na leitura (a armadilha de 15/09): `.desc-secao` em **18px/28,8px** nos quatro lugares da home e nas duas rotas internas, vão pilha→link 32px e link→setas 56px nos dois viewports, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
+- 2026-09-18 — **A BANDA DA GALERIA TROCOU DE ORDEM PELA SEGUNDA VEZ NO MESMO DIA e fechou em pilha → SETAS → link**: "as setas têm que estar em segundo, bem embaixo das imagens, e ver todos os casos seria a terceira linha". De manhã ele tinha pedido o link ENTRE a pilha e as setas; agora ele vai para o fim. A ordem final é a que faz sentido de leitura, e vale registrar o argumento para não trocar de novo: as setas são controle DESTA pilha e pertencem a ela; o link SAI da página e é o último passo. Os 56px de afastamento ficaram, agora entre as setas e o link.
+- 2026-09-18 — Medido em 1440×900 e 390×844: ordem `pilha → setas → link` no DOM **e** na tela (conferidas as duas — ordem visual certa com DOM errado quebraria a navegação por teclado), vãos 32px e 56px iguais nos dois viewports, zero overflow lateral. `tsc --noEmit` limpo.
 
