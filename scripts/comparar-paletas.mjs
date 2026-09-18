@@ -28,6 +28,7 @@ const PALETAS = [
   { id: "a", nome: "A — grafite + um sinal", css: readFileSync("docs/paletas/a-grafite.css", "utf8") },
   { id: "b", nome: "B — areia + bronze", css: readFileSync("docs/paletas/b-areia.css", "utf8") },
   { id: "c", nome: "C — noturno", css: readFileSync("docs/paletas/c-noturno.css", "utf8") },
+  { id: "d", nome: "D — clareira", css: readFileSync("docs/paletas/d-clareira.css", "utf8") },
 ];
 
 /* As quatro telas cobrem os quatro contextos de cor do site: bloco escuro
@@ -202,15 +203,18 @@ for (const tela of [...TELAS.map((t) => t.id), "estados"]) {
     const carregadas = await Promise.all(imgs.map((i) => new Promise((res) => {
       const im = new Image(); im.onload = () => res(im); im.src = "data:image/png;base64," + i.b64;
     })));
-    const L = 720, R = 46;
+    /* A grade sai da CONTAGEM, nao de um 2x2 cravado: com a paleta D sao
+       cinco variantes, e o 2x2 antigo simplesmente descartava a quinta. */
+    const L = 720, R = 46, COLS = 2;
+    const LINHAS = Math.ceil(carregadas.length / COLS);
     const esc = L / carregadas[0].width;
     const alt = Math.round(carregadas[0].height * esc);
     const cv = document.createElement("canvas");
-    cv.width = L * 2; cv.height = (alt + R) * 2;
+    cv.width = L * COLS; cv.height = (alt + R) * LINHAS;
     const g = cv.getContext("2d");
     g.fillStyle = "#101418"; g.fillRect(0, 0, cv.width, cv.height);
     carregadas.forEach((im, i) => {
-      const x = (i % 2) * L, y = Math.floor(i / 2) * (alt + R);
+      const x = (i % COLS) * L, y = Math.floor(i / COLS) * (alt + R);
       g.fillStyle = "#101418"; g.fillRect(x, y, L, R);
       g.fillStyle = "#e8eef2"; g.font = "600 19px system-ui, sans-serif";
       g.fillText(imgs[i].rotulo, x + 16, y + 30);
