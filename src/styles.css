@@ -264,6 +264,33 @@
   letter-spacing: -0.014em;
 }
 
+/* ---------- A LINHA DE APOIO: 18px ----------
+
+   O parágrafo que vem logo abaixo do título de seção. É a ÚNICA medida de fonte
+   fora dos cinco degraus, e a exceção foi ditada pelo usuário em 18/09, que
+   reprovou os DOIS vizinhos por nome, na mesma frente:
+
+     16px (`text-base`) -> "estão muito pequenos", no dia 18 de manhã.
+     22px (`display-3`) -> "ficou muito grande" no celular E no computador,
+                            no dia 18 à tarde, depois de ver os dois.
+
+   Com as duas pontas recusadas, escolher o vizinho deixa de ser opção. 18px é o
+   meio, e é o padrão editorial de linha de apoio: distingue-se do corpo de 16px
+   sem virar um segundo título.
+
+   ⚠️ Isto NÃO reabre a escala. A regra de 03/08 continua de pé para tudo o
+   mais: proibido `text-[...]` arbitrário em seção, proibido `text-xs/sm/lg/xl`.
+   Aqui é uma classe nomeada, com um uso só, e este comentário é a justificativa.
+
+   ⚠️ É classe e não utilitário porque o line-height anda junto do tamanho — a
+   mesma razão que fez `.display-1/2/3` existirem. */
+.desc-secao {
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+
 /* ---------- Superfície escura ---------- */
 
 /* O quadriculado sobre os blocos escuros (`.ink-grid`) foi REMOVIDO em 30/07 a

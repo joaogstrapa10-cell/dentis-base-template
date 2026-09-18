@@ -84,7 +84,7 @@ function PaginaCasos() {
                 </h1>
               </Reveal>
               <Reveal delay={180}>
-                <p className="display-3-leve mt-5 max-w-[44rem] text-ink-muted">
+                <p className="desc-secao mt-5 max-w-[44rem] text-ink-muted">
                   {casos.pagina.descricao}
                 </p>
               </Reveal>

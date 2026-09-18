@@ -53,7 +53,7 @@ export function ChamadaFinalSection({ data }: { data: ChamadaFinalContent }) {
               <div className="max-w-[34rem]">
                 <h2 className="display-2 text-ink-foreground">{data.titulo}</h2>
                 {/* Mesmo degrau do `SectionHeader` desde 18/09 — ver a nota lá. */}
-                <p className="display-3-leve mt-4 text-ink-muted">
+                <p className="desc-secao mt-4 text-ink-muted">
                   {data.descricao}
                 </p>
               </div>

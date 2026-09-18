@@ -325,13 +325,17 @@ do `SectionHeader`, ou seja ficava ao lado do título, a uma tela de distância 
 cartões que promete mostrar. É prop opcional (`verTodos`) do `GaleriaDeCasos` — quem
 decide se ela existe é a seção, não a galeria.
 
-⚠️ **A DESCRIÇÃO DE SEÇÃO É `display-3-leve` (22px), NÃO `text-base`**, desde 18/09:
-ele pediu que "todos os textos abaixo dos títulos" aumentassem. 22px é o degrau
-VIZINHO da escala fechada de cinco — nenhum tamanho novo entrou. Vale para o
-`SectionHeader` (Casos, Diferenciais, Estrutura), para a `ChamadaFinal` e para a
-abertura de `/casos` e `/estrutura`. **Não "corrigir" de volta para `text-base`**, e
-não trocar por utilitário de tamanho: os `.display-*` vencem `@layer utilities` em
-silêncio, e é por isso que existe a variante `-leve`.
+⚠️ **A DESCRIÇÃO DE SEÇÃO É `.desc-secao` (18px), e é a ÚNICA medida fora dos cinco
+degraus.** Não é descuido: em 18/09 ele reprovou os DOIS vizinhos por nome, na mesma
+frente — 16px "estão muito pequenos" de manhã, 22px "ficou muito grande" no celular
+**e** no computador à tarde, dito três vezes. Com as duas pontas recusadas, escolher o
+vizinho deixou de ser opção. A justificativa inteira está no bloco **A LINHA DE APOIO**
+do `styles.css`. Vale para o `SectionHeader` (Casos, Diferenciais, Estrutura), para a
+`ChamadaFinal` e para a abertura de `/casos` e `/estrutura`.
+⚠️ **Isto NÃO reabre a escala**: a regra de 03/08 continua valendo para todo o resto —
+proibido `text-[...]` arbitrário em seção, proibido `text-xs/sm/lg/xl`. E não trocar
+por utilitário de tamanho: a classe é declarada FORA de `@layer` e vence
+`@layer utilities` em silêncio.
 
 ⚠️ **NÃO HÁ TRAVESSÃO EM TEXTO VISÍVEL**, por pedido de 18/09 ("tirar todos os
 travessões de todos os textos"). Vale para `clinica.ts` e para título e OG das três
@@ -1221,4 +1225,8 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-18 — **TRAVESSÃO ZERO em texto visível**, a pedido ("tirar todos os travessões de todos os textos, caso haver"). Quatro lugares, e em nenhum foi só apagar o caractere — pontuação arrancada deixa frase capenga: o horário virou "das 8h às 12h e das 13h30 às 18h" (eram travessões de intervalo), a descrição de Casos fechou a frase em ponto ("...não de resultado. Cada caso depende de diagnóstico individual."), os 15 placeholders `[CASO 0N — X]` viraram `[CASO 0N: X]`, e o título/OG das três rotas trocou o travessão por `|`, que é a convenção de título de página. Medido no texto RENDERIZADO das três rotas, em 1440 e 390: **0 ocorrências**.
 - 2026-09-18 — Os comentários do código ficaram como estão, e é deliberado: o pedido é sobre o texto do SITE. Reescrever os blocos de `// ⚠️` do repo em nome disso apagaria a pontuação que separa afirmação de justificativa em toda a memória do projeto.
 - 2026-09-18 — Medido depois, em 1440×900 e 390×844, nas três rotas: descrição em 22px/31,9px nos seis lugares, ordem pilha → link → setas correta nos dois viewports, zero aviso de CFO na home e exatamente um em `/casos`, zero travessão renderizado, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
+- 2026-09-18 — ⚠️ **22px DUROU MEIA TARDE: a descrição de seção fechou em 18px, e a escala de cinco degraus ganhou a PRIMEIRA exceção permanente.** Ele abriu no celular e reprovou ("não precisa colocar tão grande na versão do celular"), e nas duas mensagens seguintes estendeu ao desktop ("ficou muito grande também os textos", "dentro de computador também achei que ficou muito grande agora"). Com **16px reprovado de manhã** e **22px reprovado à tarde**, a regra "escolha o vizinho" não tem vizinho para escolher — os dois foram recusados por ele, por nome. 18px/1,6 é o meio e é o padrão editorial de linha de apoio. Classe `.desc-secao`, com a justificativa escrita no `styles.css`; `.display-3-leve` continua existindo e serve a nota do corpo clínico.
+- 2026-09-18 — Antes de cravar 18px eu tinha feito a versão RESPONSIVA (16px no celular, 22px de `md` para cima), que era a leitura da primeira mensagem dele. Durou dois minutos: a mensagem seguinte disse que o desktop também estava grande. **Ficou um valor só** — mais simples de manter e é o que ele pediu. ⚠️ `md:display-3-leve` não funcionaria de todo jeito: os degraus vivem FORA de `@layer`, não são utilitários e não aceitam variante de breakpoint — a classe nem seria gerada, sem erro nenhum.
+- 2026-09-18 — **O vão abaixo de "Ver todos os casos" virou o DOBRO do vão acima** (56px contra 32px), a pedido ("está muito perto um do outro", nos dois viewports). Com os dois iguais o link flutuava entre duas coisas sem pertencer a nenhuma; com o de baixo maior ele se agrupa com a pilha que promete mostrar, e as setas viram bloco de controle separado. Mesmo número no celular e no desktop.
+- 2026-09-18 — Medido depois, em 1440×900 e 390×844, com `getComputedStyle` confirmando que o CSS NOVO estava sendo servido antes de acreditar na leitura (a armadilha de 15/09): `.desc-secao` em **18px/28,8px** nos quatro lugares da home e nas duas rotas internas, vão pilha→link 32px e link→setas 56px nos dois viewports, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
 

@@ -76,21 +76,16 @@ export function SectionHeader({
           {titulo}
         </h2>
         {descricao ? (
-          /* ⚠️ `display-3-leve` e NÃO `text-base`: o usuário pediu em 18/09 que
-             "todos os textos abaixo dos títulos" aumentassem, "estão muito
-             pequenos". 22px é o DEGRAU VIZINHO da escala fechada de cinco — não
-             entra tamanho novo na página. E resolve junto o "precisa ter um
-             espaçamento entre elas": a classe traz line-height 1.45, ou seja
-             31,9px de entrelinha contra os 26,4px de antes.
-             A hierarquia contra o `.display-2` do título continua de pé pelo
-             PESO (700 contra 400), que é o que a segura no celular, onde o
-             título cai para 28px pelo clamp.
-             ⚠️ Não trocar por `text-base` com utilitário de tamanho: os degraus
-             `.display-*` são declarados FORA de `@layer` e vencem os utilitários
-             do Tailwind em silêncio — daí existir a variante `-leve`. */
+          /* ⚠️ `desc-secao` (18px) e NÃO `text-base` nem `display-3-leve`.
+             O usuário reprovou os DOIS vizinhos da escala em 18/09, na mesma
+             frente: 16px "estão muito pequenos" de manhã, 22px "ficou muito
+             grande" no celular e no computador à tarde. A justificativa inteira
+             está no bloco A LINHA DE APOIO do `styles.css`.
+             ⚠️ Não trocar por utilitário de tamanho: essa classe é declarada
+             FORA de `@layer` e vence `@layer utilities` em silêncio. */
           <p
             className={cn(
-              "display-3-leve mt-5",
+              "desc-secao mt-5",
               light ? "text-ink-muted" : "text-muted",
             )}
           >

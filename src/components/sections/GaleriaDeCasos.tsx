@@ -245,7 +245,12 @@ export function GaleriaDeCasos({
           cinco cartões. Aqui ela cai onde a leitura termina.
           Linha própria e centrada, e não na mesma fileira das setas: as setas
           são controle DESTA pilha e o link SAI da página — misturar os dois na
-          mesma linha faz a chamada ler como um terceiro botão do carrossel. */}
+          mesma linha faz a chamada ler como um terceiro botão do carrossel.
+          ⚠️ O vão ABAIXO do link é o dobro do vão acima (56px contra 32px), a
+          pedido do usuário em 18/09: "está muito perto um do outro". Com os dois
+          iguais, o link flutuava entre duas coisas sem pertencer a nenhuma; com o
+          de baixo maior, ele se agrupa com a pilha que promete mostrar e as setas
+          ficam como bloco de controle separado. */}
       {verTodos ? (
         <div className="mt-8 flex justify-center">
           <TextLink label={verTodos.label} href={verTodos.href} />
@@ -255,7 +260,7 @@ export function GaleriaDeCasos({
       {/* Controles. Existem por acessibilidade e por descoberta: arraste é um
           gesto invisível, e num público que não é jovem por definição o botão é
           o caminho principal, não o alternativo. */}
-      <div className={cn("flex items-center justify-center gap-5", verTodos ? "mt-6" : "mt-8")}>
+      <div className={cn("flex items-center justify-center gap-5", verTodos ? "mt-14" : "mt-8")}>
         <Botao rotulo={data.anteriorLabel} onClick={() => irPara(-1)}>
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
         </Botao>
