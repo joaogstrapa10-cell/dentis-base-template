@@ -925,93 +925,141 @@ body.pausado *::after {
 }
 
 /* ===== PALETA EM TESTE — INÍCIO (gerado por scripts/aplicar-paleta.mjs) ===== */
-/* Paleta A (GRAFITE + UM SINAL) em teste no site, a pedido do usuário.
+/* Paleta D (CLAREIRA) em teste no site, a pedido do usuário.
    O `:root` original continua acima, inteiro — este bloco só o sobrescreve.
    Desfazer: node scripts/aplicar-paleta.mjs --sair
    Trocar:   node scripts/aplicar-paleta.mjs <outra letra> */
 
 /* ===========================================================================
-   PALETA A — GRAFITE + UM SINAL
-   Direção: clínica precisa. Página neutra de verdade, quase sem croma, e UMA
-   cor no sistema inteiro: o petróleo da Suzuki, que passa a ser sinal e não
-   ambiente. Sem dourado em lugar nenhum.
+   PALETA D — CLAREIRA
+   Direção: MEDIDA de uma referência que o usuário mandou (o site "sublime.",
+   dois prints, 18/09). Não é proposta de Claude — os valores saíram de
+   amostragem de pixel nas duas telas dele, como a paleta em vigor saiu da
+   medição do site antigo em 30/07.
 
-   O que a separa da paleta em vigor: hoje o verde está em TODA parte (fundo
-   tingido, texto, bordas, blocos) e o dourado é o calor. Aqui o campo é
-   grafite neutro e o verde só aparece onde há ação ou hierarquia — ele ganha
-   força justamente por ser raro.
+   O que ela é: campo CLARO E LUMINOSO, cartão em branco PURO, e o verde
+   deixando de ser petróleo para virar verde de MATA. São 30 graus de matiz
+   de diferença, e isso é o que se vê: o verde atual puxa para o azul
+   (matiz 197), este puxa para o amarelo (matiz 166).
 
-   Risco assumido: sem ornamento quente, a página fica severa. É a direção
-   certa se a clínica quer ler como técnica; é a errada se quer ler como
-   acolhedora (para isso, ver a paleta B).
+   O que a separa das outras três: A tira a cor do campo, B troca o verde por
+   bronze, C escurece a página inteira. Esta mantém o verde POR TODA PARTE e
+   muda o CLIMA dele — mais frio no papel, mais vivo na cor. E traz um gesto
+   que nenhuma das outras tem: o bloco escuro deixa de ser chapado e passa a
+   ser um GRADIENTE, que é a assinatura da referência.
+
+   Medições da referência (print 3.jpg e 4.jpg, amostradas em canvas):
+     branco do cartão      #ffffff   (79,2% da tela de abertura)
+     campo em volta        #dfeee9 → #e7f1ed
+     verde da palavra      #154b38   oklch(0.372 0.065 166)
+     botão principal       #152c22   oklch(0.271 0.035 164)
+     gradiente do bloco    #2c624a (topo) → #114c38 (meio) → #0a3627 (base)
+     halo claro            #c8e8db   oklch(0.904 0.038 169)
+
+   ⚠️ Não há dourado nesta direção, e não é omissão: a referência não tem
+   nenhum. O ornamento dela é o PRÓPRIO verde clareado. O slot `--gold`
+   continua existindo porque três componentes o leem (estrelas, arco do hero,
+   tile do botão) — aqui ele recebe o halo verde medido acima.
+
+   Risco assumido: sem ornamento quente e com o campo quase branco, a página
+   fica mais fria que a atual. É a direção certa se a clínica quer ler como
+   limpa e contemporânea; é a errada se o calor do dourado é parte do que ela
+   vende hoje (para isso, ver a paleta B).
    =========================================================================== */
 
 :root {
-  --radius: 0.625rem;              /* canto curto: a forma é reta, não macia */
+  --radius: 1rem;                  /* canto generoso, medido nos cartões da referência */
 
-  /* Campo -------------------------------------------------------------- */
-  --background: oklch(0.982 0.002 200);
-  --foreground: oklch(0.190 0.008 200);
-  --surface: oklch(1 0 0);
-  --surface-raised: oklch(0.957 0.003 200);
+  /* Campo. O fundo NÃO é branco: é o verde claríssimo que a referência usa
+     por trás do cartão, e é ele que faz o branco puro do cartão SALTAR.
+     Inverter isso (fundo branco, cartão branco) apaga a estrutura inteira. */
+  --background: oklch(0.955 0.014 170);
+  --foreground: oklch(0.215 0.030 164);
+  --surface: oklch(1 0 0);                    /* branco PURO, sem tingimento */
+  --surface-raised: oklch(0.975 0.008 170);
 
-  /* Texto secundário: cinza de verdade, não verde esmaecido */
-  --muted: oklch(0.468 0.010 200);
+  /* Texto secundário: verde esmaecido, não cinza — o campo já é verde e um
+     cinza neutro aqui lê como peça de outro projeto. Medido: 5,93:1. */
+  --muted: oklch(0.470 0.022 166);
 
-  /* Fios. DOIS papéis diferentes, e só um deles tem exigência de contraste:
-     `--border` é DIVISOR decorativo (separa blocos, e a WCAG isenta) — fica
-     leve, 0,18. `--border-strong` é o CONTORNO das setas da galeria, que são
-     botão sem fundo: ali o fio é a única fronteira do controle e a regra de
-     não-texto (3:1) vale. Medido: a paleta em vigor entrega 1,63:1 nesse fio,
-     ou seja REPROVA hoje. 0,48 de alfa é o que leva a 3:1 sem engrossar a
-     linha. Ver docs/paletas.md §"O que a medição achou no site atual". */
-  --border: oklch(0.190 0.008 200 / 0.18);
-  --border-strong: oklch(0.190 0.008 200 / 0.48);
+  /* Fios. DOIS papéis, e só um tem exigência de contraste: `--border` é
+     DIVISOR decorativo (a WCAG 1.4.11 isenta), `--border-strong` é o CONTORNO
+     das setas da galeria, que são botão sem fundo — ali o fio é a única
+     fronteira do controle e valem os 3:1 de não-texto. 0,50 é o alfa que
+     leva a 3,23:1 neste campo; 0,46 dava 2,90 e reprovava. */
+  --border: oklch(0.215 0.030 164 / 0.16);
+  --border-strong: oklch(0.215 0.030 164 / 0.50);
 
-  /* Blocos de presença: GRAFITE, não verde. O bloco escuro deixa de ser a
-     cor da marca e vira superfície neutra — é o verde do accent que carrega
-     a identidade em cima dele. */
-  --ink: oklch(0.175 0.009 200);
-  --ink-elevated: oklch(0.238 0.010 200);
-  --ink-foreground: oklch(0.980 0.002 200);
-  --ink-muted: oklch(0.726 0.008 200);
-  --ink-border: oklch(1 0 0 / 0.15);
+  /* Blocos de presença. `--ink` é a cor CHAPADA e também o miolo do gradiente
+     — ver a regra `.bg-ink` no fim do arquivo. L 0.315 não é gosto:
+     o gradiente clareia até L 0.397 no topo, e é ESSE o pior caso do contraste
+     (fundo mais claro = texto branco pior). A L 0.315 o `--ink-muted` ainda
+     entrega 4,74:1 no ponto mais claro; a L 0.330 cai para 4,51 e some a
+     margem. */
+  --ink: oklch(0.315 0.058 166);
+  --ink-elevated: oklch(0.390 0.066 166);
+  --ink-foreground: oklch(0.985 0.004 170);
+  --ink-muted: oklch(0.790 0.030 168);
+  --ink-border: oklch(1 0 0 / 0.16);
 
-  /* O ÚNICO croma do sistema. L 0.44 é o mesmo ponto de equilíbrio da paleta
-     atual, e pela mesma razão: escuro o bastante para ícone sobre branco
-     (7,4:1), claro o bastante para receber texto branco em cima (4,8:1). */
-  --accent: oklch(0.44 0.085 196);
-  --accent-foreground: oklch(0.99 0.002 200);
+  /* O verde da palavra na referência, sem arredondar. Mais ESCURO que o
+     accent atual (L 0.372 contra 0.44) e mais verde (166 contra 196) — as
+     duas coisas juntas são o que muda o clima. Entrega 8,82:1 como ícone
+     sobre o campo e recebe texto branco a 9,72:1. */
+  --accent: oklch(0.372 0.065 166);
+  --accent-foreground: oklch(0.990 0.003 170);
 
-  /* Sem dourado. O slot continua existindo porque três componentes o leem
-     (estrelas, arco do hero, tile do botão); aqui ele recebe o PRÓPRIO verde
-     clareado para funcionar sobre escuro. Ornamento sem cor nova. */
-  --gold: oklch(0.760 0.070 194);
-  --gold-foreground: oklch(0.175 0.009 200);
-  --gold-glow: oklch(0.560 0.070 196 / 0.75);
+  /* Ornamento: o halo verde da referência, no lugar do dourado. Só existe
+     sobre escuro — sobre o campo claro dá 1,22:1, e é ASSIM que tem de ser
+     (a regra de 30/07: dourado como texto no claro não tem contraste, e o
+     teste do script existe para flagrar o dia em que alguém tentar). */
+  --gold: oklch(0.885 0.045 168);
+  --gold-foreground: oklch(0.215 0.030 164);
+  --gold-glow: oklch(0.640 0.075 168 / 0.70);
 
   /* Sinais */
-  --positive: oklch(0.50 0.105 168);
+  --positive: oklch(0.48 0.100 166);
   --warning: oklch(0.62 0.115 70);
   --destructive: oklch(0.55 0.20 25);
 
   /* Estado desabilitado — NÃO EXISTE na paleta em vigor, porque o site não
-     tem nenhum botão desabilitado hoje. Definido aqui para o sistema ficar
-     completo: fundo rebaixado, texto no limite de 4,5:1 (legível, nunca
-     "apagado a ponto de sumir"), fio fantasma. */
-  --disabled-surface: oklch(0.928 0.003 200);
-  --disabled-foreground: oklch(0.505 0.008 200);
-  --disabled-border: oklch(0.190 0.008 200 / 0.10);
+     tem nenhum botão desabilitado hoje. Definido para o sistema ficar
+     completo: fundo rebaixado, texto em 4,70:1, fio fantasma. */
+  --disabled-surface: oklch(0.918 0.010 168);
+  --disabled-foreground: oklch(0.500 0.016 166);
+  --disabled-border: oklch(0.215 0.030 164 / 0.10);
 }
 
-/* Tratamento de imagem: canto curto, fio de contenção, zero sombra.
-   A foto é DOCUMENTO — entra na página como prova, não como objeto pousado. */
+/* O GESTO DA REFERÊNCIA: o bloco escuro não é chapado, é um gradiente que
+   clareia no alto e afunda embaixo. Vai em `background-image`, que pinta POR
+   CIMA do `background-color` do utilitário `bg-ink` — então nenhum componente
+   muda, e onde o gradiente não for suportado sobra a cor chapada.
+
+   Derivado do token por `color-mix`, nunca por literal: cor cravada aqui é o
+   que deixou `.slot-grid` fora da paleta na virada de 30/07.
+
+   160deg reproduz a direção medida no print: mais claro no topo-esquerda,
+   mais escuro na base-direita. */
+.bg-ink {
+  background-image: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--ink) 88%, white) 0%,
+    var(--ink) 58%,
+    color-mix(in oklab, var(--ink) 90%, black) 100%
+  );
+}
+
+/* Tratamento de imagem: canto generoso, sem fio, sombra baixa e FRIA.
+   A foto entra como objeto pousado no campo claro — é o oposto da paleta A,
+   onde ela é documento. A sombra é esverdeada de propósito: sombra cinza
+   sobre campo verde lê como sujeira. */
 img,
 [role="img"] {
-  border-radius: 0.5rem;
+  border-radius: 0.875rem;
 }
 .cartao-foto {
-  border: 1px solid var(--border-strong);
-  box-shadow: none;
+  border: 0;
+  box-shadow: 0 1px 2px oklch(0.215 0.030 164 / 0.06),
+              0 12px 28px -12px oklch(0.215 0.030 164 / 0.22);
 }
 /* ===== PALETA EM TESTE — FIM ===== */

@@ -87,8 +87,24 @@ const TIPOS = {
 const dirAssets = join(REPO, ".output/public/assets");
 const nomeCss = readdirSync(dirAssets).filter((f) => f.startsWith("styles-") && f.endsWith(".css"))[0];
 if (!nomeCss) throw new Error("CSS do build não encontrado — rodar `vite build` antes");
-const css = readFileSync(join(dirAssets, nomeCss), "utf8");
+let css = readFileSync(join(dirAssets, nomeCss), "utf8");
 console.log(`CSS do build: ${nomeCss} (${Math.round(css.length / 1024)} KB)`);
+
+/* ⚠️ As fontes SERVIDAS DO REPO viram data URI, senão o @font-face aponta para
+   `file:///fontes/...` num arquivo local e o navegador devolve 404 — SEM ERRO
+   VISÍVEL, só a fonte de reserva no lugar. Hoje é a Qwitcher Grypen, que é a
+   assinatura do Dr. Dalton na tela de entrada: é justamente a peça em que a
+   troca de fonte salta aos olhos.
+   O <link> do Google Fonts continua com URL absoluta, e isso é de propósito —
+   embutir a Instrument Sans inteira engordaria o arquivo em centenas de KB, e
+   na máquina de quem abre o snapshot o Google Fonts carrega. */
+for (const arq of readdirSync(join(RAIZ, "fontes")).filter((f) => f.endsWith(".woff2"))) {
+  const b64 = readFileSync(join(RAIZ, "fontes", arq)).toString("base64");
+  const antes = css.length;
+  css = css.replaceAll(`url("/fontes/${arq}")`, `url("data:font/woff2;base64,${b64}")`)
+           .replaceAll(`url(/fontes/${arq})`, `url("data:font/woff2;base64,${b64}")`);
+  console.log(`  fonte embutida: ${arq}` + (css.length === antes ? "  ⚠️ NENHUMA ocorrência no CSS" : ""));
+}
 
 const b = await chromium.launch({
   executablePath: CHROMIUM,
@@ -204,6 +220,16 @@ async function congelar(rota, arquivo, titulo) {
   await p.close();
 }
 
-await congelar("/", "suzuki-layout-home.html", "Suzuki Odontologia — layout (home)");
-await congelar("/casos", "suzuki-layout-casos.html", "Suzuki Odontologia — layout (casos clínicos)");
+/* Se há paleta em teste, ela entra no NOME e no TÍTULO dos dois arquivos.
+   Sem isso, testar duas paletas seguidas produz dois pares de arquivos com
+   nomes idênticos: o segundo sobrescreve o primeiro, ou os dois se confundem
+   na pasta de quem recebeu. */
+const emTeste = (readFileSync("src/styles.css", "utf8")
+  .match(/Paleta ([A-Z]) \(([^)]+)\) em teste/) || []);
+const sufixoArq = emTeste[1] ? `-paleta-${emTeste[1]}` : "";
+const sufixoTit = emTeste[1] ? ` · paleta ${emTeste[1]} (${emTeste[2].toLowerCase()})` : "";
+if (emTeste[1]) console.log(`Paleta em teste detectada: ${emTeste[1]} — ${emTeste[2]}`);
+
+await congelar("/", `suzuki-layout${sufixoArq}-home.html`, `Suzuki Odontologia — layout (home)${sufixoTit}`);
+await congelar("/casos", `suzuki-layout${sufixoArq}-casos.html`, `Suzuki Odontologia — layout (casos clínicos)${sufixoTit}`);
 await b.close();
