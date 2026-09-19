@@ -107,6 +107,10 @@ na UI do Lovable, pede explicitamente e **para**.
 | — | Repaginação por densidade (diagnóstico da Apple) | **Concluída em 03/08** — escala tipográfica fechada em 5 degraus, 2 seções deletadas |
 | — | Rodada de templates do usuário (Áreas, FAQ, casos, mapa) | **Concluída em 12/08** |
 | — | Ordem das seções, hero em colagem, corpo clínico em círculo | **Concluída em 13/08** — ver §5.2 |
+| — | Piso de qualidade da skill `10k-websites` | **Concluída em 21/08** — 9 de 10 itens |
+| — | Retrato do Dalton + assinatura na tela de entrada | **Concluída em 09/09 e refinada em 15/09** |
+| — | Rodada de refino: galeria, escala da descrição, travessões | **Concluída em 18/09** |
+| — | **QUATRO direções de paleta, medidas e aplicadas no site real** | **Concluída em 18/09** — ver §5.3. **A paleta A está EM TESTE no site** |
 | — | Replicar para Rogério e Décio | **Não iniciada** — ver a ressalva de §5.2 e `docs/replicacao.md`, que precisa de correção antes |
 
 ---
@@ -152,8 +156,17 @@ servir uma quarta.
 
 ## 5.2 Ponto de retomada
 
-**Última sessão: 21/08.** O último commit da `main` é o do piso de qualidade da skill
-`10k-websites`. Nada pendente no working tree, nada esperando OK.
+**Última sessão: 18/09.** O último commit da `main` é `f7ebd5c`, que devolve a **paleta A**
+ao site. Nada pendente no working tree, nada esperando OK.
+
+🎨 **O SITE NÃO ESTÁ NA PALETA DE VIGOR: está com a PALETA A EM TESTE**, a pedido do
+usuário, e isso é a primeira coisa a saber ao abrir. Ele pediu para ver A e D no ar,
+viu as duas, e a última que ficou foi a A. **Ele ainda não escolheu.** Ver §5.3 inteiro
+antes de mexer em cor — inclusive como desfazer, que é um comando.
+
+⚠️ **NÃO É PARA "CORRIGIR" A PALETA DE VOLTA** achando que alguém trocou o tema por
+engano. O `:root` original continua inteiro no `styles.css`; o bloco em teste só o
+sobrescreve, no fim do arquivo, entre marcas.
 
 ⚠️ **A SKILL `10k-websites` ESTÁ INSTALADA NO REPO**, em `.claude/skills/10k-websites/`
 (SKILL.md + 6 referências), mandada pelo usuário em 20/08. Ela descreve sites em HTML/CSS/JS
@@ -390,6 +403,73 @@ essa seção de volta para índice tipográfico.
 
 ---
 
+## 5.3 As paletas, e qual está no site
+
+**Estado em 18/09: a paleta A está EM TESTE no site. Nenhuma foi escolhida.**
+
+O usuário pediu três direções de paleta, "distintas entre si, não três versões do mesmo
+caminho", cada uma com a combinação completa (fundo, texto, cor principal, destaque,
+estados do botão, bordas, divisores, tratamento de imagem), **aplicada numa tela real e
+não em amostra de cor**, com contraste conferido. Depois mandou dois prints de uma
+referência dele e pediu uma quarta.
+
+| | Direção | Eixo | Custo de adoção |
+|---|---|---|---|
+| **A** | grafite + um sinal | O campo perde a cor; o verde vira raro e só aparece onde há ação. Sem dourado. | zero código |
+| **B** | areia + bronze | A madeira mel das fotos vira o ambiente; o verde sai de cena. | zero código |
+| **C** | noturno | A página inteira no petróleo; o dourado vira texto. | **2 linhas** |
+| **D** | clareira | Verde de MATA no lugar do petróleo, cartão em branco puro, bloco escuro em GRADIENTE. | zero código |
+
+⚠️ **A D NÃO É PROPOSTA DE CLAUDE.** Os valores saíram de amostragem de pixel nos dois
+prints que o usuário mandou (o site "sublime."), como a paleta em vigor saiu da medição
+do site antigo em 30/07. O que a medição achou, e é o que a separa das outras:
+**matiz 166 contra 197** — o verde da Suzuki puxa para o azul, o da referência puxa para
+o amarelo. Trinta graus, e é isso que se vê.
+
+### Como trocar, e como desfazer
+
+```bash
+node scripts/aplicar-paleta.mjs a       # põe a A no site
+node scripts/aplicar-paleta.mjs d       # troca para a D
+node scripts/aplicar-paleta.mjs --sair  # volta à paleta em vigor (verde + branco)
+```
+
+O bloco entra no **FIM do `src/styles.css`**, entre marcas, e redefine os tokens. O
+`:root` original fica **intacto** logo acima, com todos os comentários da medição de
+30/07 — nada se perde, e desfazer é apagar o bloco. O script remove um bloco anterior
+antes de escrever o novo, então duas paletas nunca se empilham.
+
+Funciona porque o `@theme inline` mapeia `--color-accent: var(--accent)`, ou seja guarda
+a REFERÊNCIA e não o valor: redefinir `--accent` num `:root` posterior chega em todo
+utilitário do Tailwind, em runtime. **É o mesmo mecanismo que o comparador usa para
+injetar as quatro na mesma página.**
+
+### O que a medição achou no SITE ATUAL, e continua aberto
+
+⚠️ **O contorno das setas da galeria REPROVA em contraste: 1,63:1, contra 3:1.**
+Aquelas setas são botão sem fundo, então o fio (`--border-strong`) é a única fronteira
+do controle e vale a regra de não-texto da WCAG 1.4.11. **As quatro paletas novas
+corrigem**; a paleta em vigor corrige subindo o alfa de 0,24 para ~0,45. Se o usuário
+ficar com o verde + branco, **este conserto continua pendente**.
+⚠️ Não confundir com os DIVISORES (`--border`, `--ink-border`, 1,3 a 1,5): decoração é
+isenta, e um divisor a 3:1 seria um traço preto atravessando a página.
+
+⚠️ **Não existe estado desabilitado em lugar nenhum do projeto.** Nunca fez falta porque
+nenhum botão do site está desabilitado, mas o sistema de cor estava incompleto. As quatro
+propostas trazem `--disabled-surface`, `--disabled-foreground` e `--disabled-border`, e
+os três passam 4,5:1.
+
+### Ressalvas que valem para as quatro
+
+- **Os screenshots não mostram a Instrument Sans**, porque o navegador deste ambiente não
+  alcança o Google Fonts. Não afeta cor nem contraste; afeta o "ar" das telas.
+- **Nenhuma foi otimizada para as fotos do acervo** — madeira mel + granito + parede
+  branca, o que favorece a B por construção. É vantagem real dela, não empate.
+- **Da referência da D, o que NÃO entra por paleta** é a tipografia e o gesto da palavra
+  gigante no centro da tela. Isso é layout, é outro trabalho.
+
+---
+
 ### Como validar e renderizar
 
 ```bash
@@ -435,9 +515,11 @@ accordion do FAQ e o menu do mobile não respondem.
 | `docs/conteudo-fonte.md` | Conteúdo consolidado do site antigo, com proveniência marcada. |
 | `docs/prompt-lovable.md` | Fase 1. Prompt único para colar no Lovable. |
 | `docs/replicacao.md` | Fase 5. Passo a passo para gerar as 3 variantes. |
-| `docs/paletas.md` | **Proposta de 18/09**: três direções de paleta completas, medidas e aplicadas no site real. Nenhuma está em vigor. |
-| `docs/paletas/*.css` | Os três blocos `:root` prontos para trocar. |
-| `scripts/comparar-paletas.mjs` | Aplica cada paleta no site real, captura as telas e mede contraste por rasterização. |
+| `docs/paletas.md` | **Proposta de 18/09**: as direções de paleta, medidas e aplicadas no site real. ⚠️ Escrito quando eram TRÊS; a D entrou depois e está no §5.3 daqui. |
+| `docs/paletas/*.css` | Os QUATRO blocos `:root` prontos para trocar: `a-grafite`, `b-areia`, `c-noturno`, `d-clareira`. |
+| `scripts/comparar-paletas.mjs` | Aplica cada paleta no site real, captura as telas e mede contraste por rasterização. Grade do contact sheet sai da CONTAGEM de paletas. |
+| `scripts/aplicar-paleta.mjs` | **Põe uma paleta no site de verdade, e tira.** `a` / `d` / `--sair`. Ver §5.3. |
+| `scripts/congelar-html.mjs` | Gera o site num `.html` avulso. Desde 18/09 embute as fontes do repo e põe a paleta em teste no nome e no título. |
 | `.claude/skills/10k-websites/` | Skill mandada pelo usuário em 20/08. Padrão de engenharia e barra de qualidade; a arquitetura dela (HTML puro + Hostinger) **não** se aplica a este projeto. |
 
 ---
@@ -864,6 +946,20 @@ O scaffold também traz `AGENTS.md` e `.lovable/project.json` — ler antes de r
 - 2026-08-17 — Não renderizar é melhor que esconder por opacidade, e é a lição que já apareceu duas vezes nesta sessão: link opaco a 0 continua no Tab e continua sendo anunciado por leitor de tela. Medido: `marcaCantoNoDOM=0` em nove posições de rolagem da home, e `1` em `/casos`.
 - 2026-08-17 — Custo em página: **10,1 → 12,7 telas** em 1440, pelo trilho de 260vh (160vh de curso, ~32vh por etapa). É a seção mais alta do site, e é inerente ao pedido — sequência comandada por rolagem consome distância de rolagem por definição. Se incomodar, é UM número no `Arcada.tsx`; abaixo de ~200vh a etapa passa antes de ser lida.
 
+- 2026-09-18 — **QUARTA PALETA (D · clareira), e é a PRIMEIRA que não é proposta minha.** O usuário mandou dois prints de uma referência (o site "sublime.") e pediu para testar. Os valores saíram de amostragem de pixel em canvas nas duas telas, como a paleta em vigor saiu da medição do site antigo em 30/07. O que a medição achou: verde `#154b38` de **matiz 166** contra 197 do petróleo (trinta graus, e é isso que se vê — o da Suzuki puxa para o azul, o da referência para o amarelo), campo verde claríssimo em vez de branco tingido, cartão em **branco PURO** (79% da tela de abertura dela), bloco escuro em **GRADIENTE** `#2c624a → #0a3627` em vez de chapado, e **nenhum dourado** — o ornamento dela é o próprio verde clareado, halo `#c8e8db`.
+- 2026-09-18 — O gradiente do bloco vai em `background-image` POR CIMA do `background-color` do utilitário `bg-ink`, então **nenhum componente muda** e onde não houver suporte sobra a cor chapada. Derivado do token por `color-mix`, nunca por literal: cor cravada foi o que deixou `.slot-grid` fora da paleta na virada de 30/07. Medido nos 13 blocos: luminância 70 no topo a 54 na base.
+- 2026-09-18 — ⚠️ **`--ink` da D em L 0.315 é MEDIÇÃO, não gosto, e a conta não é óbvia:** o gradiente CLAREIA até L 0.397 no topo, e **fundo mais claro é contraste PIOR para texto branco** — ou seja o pior caso do contraste não é a cor do token, é o topo do gradiente. A L 0.315 o `--ink-muted` ainda entrega 4,74:1 lá; a L 0.330 cai para 4,51 e some a margem. **Ao pôr gradiente num bloco, medir o contraste no ponto mais CLARO dele.**
+- 2026-09-18 — **`scripts/aplicar-paleta.mjs` criado: põe uma paleta no site de verdade, e tira.** O bloco entra no FIM do `styles.css`, entre marcas, e redefine os tokens; o `:root` original fica INTACTO logo acima, com todos os comentários da medição de 30/07. Nada de copy se perde e desfazer é apagar o bloco. Funciona porque o `@theme inline` mapeia `--color-accent: var(--accent)`, ou seja guarda a REFERÊNCIA e não o valor. O script remove um bloco anterior antes de escrever o novo — **trocar de paleta nunca empilha duas.**
+- 2026-09-18 — **A PALETA A FOI AO AR, depois a D, depois a A de novo**, tudo a pedido dele, com push em cada troca. **Ele NÃO escolheu ainda.** O site está na A. Ver §5.3 — e não "corrigir" a paleta de volta achando que alguém trocou o tema por engano.
+- 2026-09-18 — ⚠️ **ACHADO NO SITE ATUAL, não nas propostas: o contorno das setas da galeria REPROVA em contraste, 1,63:1 contra 3:1.** Aquelas setas são botão sem fundo, então o fio é a única fronteira do controle e vale a regra de não-texto da WCAG 1.4.11. As quatro paletas novas corrigem; **se ele ficar com o verde + branco, o conserto continua pendente** (subir o alfa de `--border-strong` de 0,24 para ~0,45). Não confundir com os DIVISORES (1,3 a 1,5): decoração é isenta, e um divisor a 3:1 seria um traço preto atravessando a página.
+- 2026-09-18 — Segundo achado do mesmo tipo: **o projeto não tem estado desabilitado em lugar nenhum**. Nunca fez falta porque nenhum botão está desabilitado, mas o sistema de cor estava incompleto. As quatro propostas trazem os três tokens, e os três passam 4,5:1.
+- 2026-09-18 — ⚠️ **DOIS CONSERTOS NO CONGELADOR, achados ao gerar o `.html` que ele pediu para guardar.** (a) As fontes servidas do REPO viravam `file:///fontes/...` no arquivo local, ou seja **404 — e 404 de fonte não dá erro visível, só troca pela reserva**. A única hoje é a Qwitcher Grypen, que é a ASSINATURA do Dr. Dalton na tela de entrada: justamente a peça em que a troca salta aos olhos. Agora entra como data URI (+60KB). O `<link>` do Google Fonts continua absoluto de propósito — embutir a Instrument Sans custaria centenas de KB e na máquina de quem abre ela carrega. (b) O nome e o título dos dois arquivos passaram a carregar a paleta em teste, lida do próprio `styles.css`: sem isso, congelar duas paletas seguidas produz dois pares com nomes idênticos.
+- 2026-09-18 — O `presos_em_opacidade=17` que o congelador reporta **é ruído do próprio filtro, não defeito**. Conferido elemento a elemento no arquivo gerado: nenhum é um `Reveal` travado. São estados legítimos — os cartões de trás da pilha de casos, as fotos inativas do carrossel, o accordion do FAQ fechado, o menu do celular recolhido. O filtro exclui quem tem `opacity-0` no className, que é exatamente a classe que um Reveal preso teria — ou seja ele nunca contaria o que diz contar.
+- 2026-09-18 — **O documento das paletas existe em DUAS formas**, e as duas foram pedidas: um artifact em `https://claude.ai/artifact/T3JnyPXkQjKktWrYNuPGST` e um **`.html` avulso** (`snapshots/paletas-suzuki.html`, 2,75 MB), porque ele precisa apresentar sem depender de link do Claude. O avulso é autossuficiente: 30 telas em WebP e as 3 fontes embutidas como data URI, zero requisição de rede. Ele pediu para enxugar ("tem muita informação") — a decisão ficou na primeira tela e o resto foi para cinco blocos recolhidos, inclusive os 25 prints. **Recolher, não apagar.**
+- 2026-09-18 — ⚠️ **O MCP do Lovable VOLTOU a existir nesta sessão.** Em 19/08 estava registrado que não havia MCP nem conector — voltou, e com ele o diagnóstico de 30 segundos do §8 funciona inteiro. Conferido hoje: `latest_commit_sha` do projeto do João bate com `origin/main`, e `is_published: false` (só preview). A cópia do Giulliano continua sendo a única publicada, ou seja `clinic-base-starter.lovable.app` **ainda serve a versão de 25/07**.
+- 2026-09-18 — **A descrição de seção fechou em 16px no celular e 18px no desktop**, depois de TRÊS rodadas no mesmo dia: 16px "muito pequenos" de manhã, 22px "muito grande" à tarde nos dois viewports, 18px reprovado só no celular. É a PRIMEIRA exceção permanente à escala de cinco degraus, e existe porque **os dois vizinhos foram recusados por ele, por nome**. A justificativa inteira está no bloco "A LINHA DE APOIO" do `styles.css`. Lição que vale além disto: **tamanho de fonte aprovado num viewport não se transporta para o outro** — a régua de leitura no celular é a LARGURA DA COLUNA (350px contra 864px), não o tamanho da fonte.
+- 2026-09-18 — ⚠️ **`git add -p` e `nohup cmd &` NÃO funcionam neste ambiente**, e o segundo é novo: `nohup node script.mjs &` retorna exit 0 na hora e o processo morre com o shell, **sem deixar log e sem erro**. Rodei o comparador assim e ele "terminou com sucesso" sem gerar um arquivo. Usar o `run_in_background` da própria ferramenta Bash.
+
 ---
 
 ## 10. Como retomar num chat novo
@@ -878,19 +974,23 @@ fases 0 e 1, já espelhado aqui, e o ambiente não permite misturar owners.
 
 **Primeira mensagem sugerida:**
 
-> Leia o CLAUDE.md e os docs/. Retome de onde parou: §5.2 tem o ponto exato.
+> Leia o CLAUDE.md e os docs/. Retome de onde parou: §5.2 tem o ponto exato e §5.3
+> diz qual paleta está no site. Não comece a trabalhar antes de me perguntar o que eu
+> quero: a última rodada terminou sem trabalho pendente definido por mim.
 
 **Ordem de leitura para entrar no assunto:**
 
 1. `CLAUDE.md` §5.2 — o ponto de retomada, a tabela de anatomias e o aviso do CRO
-2. `CLAUDE.md` §8 — mapa dos arquivos, qual projeto do Lovable é o certo, e qual URL
+2. `CLAUDE.md` §5.3 — **as quatro paletas e qual está no site AGORA.** Ler antes de
+   tocar em cor: o site está com a **paleta A em teste**, e não é engano de ninguém
+3. `CLAUDE.md` §8 — mapa dos arquivos, qual projeto do Lovable é o certo, e qual URL
    mostra o trabalho (essa confusão já aconteceu duas vezes)
-3. `CLAUDE.md` §9 — o log. É longo, mas é onde está o **porquê** de cada decisão, e
+4. `CLAUDE.md` §9 — o log. É longo, mas é onde está o **porquê** de cada decisão, e
    quase toda ideia "nova" que aparecer já foi tentada e reprovada uma vez
-4. `docs/referencia-layout.md` §9 (paleta medida) e §8 (tokens em vigor)
-5. `public/imagens/*/LEIA-ME.txt` — proveniência de cada imagem, com o que foi
+5. `docs/referencia-layout.md` §9 (paleta medida) e §8 (tokens em vigor)
+6. `public/imagens/*/LEIA-ME.txt` — proveniência de cada imagem, com o que foi
    descartado e por quê. `hero/` e `casos/` são os que mais importam
-6. `docs/replicacao.md` — só quando for gerar as variantes, e **corrigir antes**: ele
+7. `docs/replicacao.md` — só quando for gerar as variantes, e **corrigir antes**: ele
    ainda promete que trocar de clínica é trocar tokens, o que vale para mudar de
    matiz e não para inverter claro/escuro (decisão de 30/07)
 
