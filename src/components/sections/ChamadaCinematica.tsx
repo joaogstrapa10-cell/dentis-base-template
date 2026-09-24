@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChamadaCinematicaContent } from "@/content/types";
 import { IconeWhatsApp } from "@/components/Primitives";
+import { PistaDeRolagem } from "@/components/PistaDeRolagem";
 import { cn } from "@/lib/utils";
 
 /**
@@ -134,6 +135,24 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
           <p className="display-1 text-accent">{data.linha2}</p>
         </div>
 
+        {/* A PISTA DE ROLAGEM, o MESMO componente da tela de entrada, a pedido
+            ("o sinal da scroll também precisa ser o mesmo").
+
+            ⚠️ Ela vive com a MANCHETE e não dentro do cartão, e isso foi decidido
+            depois de ver no render: dentro do cartão ela cai em cima do aparelho,
+            que é centrado e sangra pelo pé — não há lugar embaixo que não seja o
+            celular. Aqui ela some com a manchete, que é a curva certa: é no começo
+            do trilho que a pessoa ainda não sabe que a peça responde à rolagem, e
+            depois disso o cartão subindo já é o próprio aviso.
+
+            Fica em `z-10`, abaixo do cartão, então o cartão a cobre ao subir sem
+            precisar de mais nenhuma conta. */}
+        <PistaDeRolagem
+          rotulo={data.rotuloRolagem}
+          className="pointer-events-none absolute inset-x-0 bottom-7 z-10 flex flex-col items-center gap-2 text-muted"
+          style={{ opacity: 1 - v.saiTexto }}
+        />
+
         {/* O CARTÃO que sobe e toma a tela. */}
         <div
           className="relative z-20 flex w-full items-center justify-center overflow-hidden bg-ink"
@@ -146,22 +165,35 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
             boxShadow: "0 40px 100px -20px oklch(0 0 0 / 0.55)",
           }}
         >
-          {/* ⚠️ AS DUAS COLUNAS SÃO UM GRUPO CENTRADO, e isso já foi o contrário: por
-              uma rodada a grade teve TRÊS colunas com a terceira vazia, para pôr o
-              APARELHO no centro exato da tela. Ele viu no ar e pediu o oposto —
-              "deixar os dois elementos centralizados juntos, agrupe o celular + os
-              textos + o botão juntos". Com o celular no centro da tela o texto era
-              empurrado para a borda e sobrava um vazio do outro lado, que é o que
-              aparece no print dele.
+          {/* ⚠️ A GRADE É A DO TEMPLATE: TRÊS COLUNAS, texto na PRIMEIRA e aparelho na
+              do MEIO. A terceira fica vazia, e é ela que põe o aparelho no centro
+              exato do cartão.
 
-              `w-fit` + `justify-center`: as trilhas ocupam só o que precisam e o PAR
-              fica centrado. Uma largura fixa com `mx-auto` não serviria — a coluna de
-              texto mudaria de tamanho conforme a copy e o conjunto sairia do eixo. */}
-          <div className="mx-auto grid w-full grid-cols-1 items-center justify-center gap-8 px-5 py-6 md:px-10 lg:w-fit lg:grid-cols-[minmax(0,24rem)_auto] lg:gap-14">
-            {/* Texto do cartão. No celular vem DEPOIS do aparelho, porque ali o
-                aparelho é a peça que explica a seção. */}
+              Isso DESFAZ o agrupamento centrado de 24/09 ("agrupe o celular + os
+              textos + o botão juntos"), e é reversão pedida por ele no dia seguinte,
+              com o print do template na mão: "não gostei dos centralizados ali, faça
+              igual ao template... aumente ali e fique para o centro o celular, e a
+              mensagem fique à esquerda". Não é para "corrigir" de volta.
+
+              No template a terceira coluna carrega o wordmark gigante da marca. Aqui
+              ela fica VAZIA de propósito: ele pediu duas vezes que o "SOBERS" não
+              existisse, e a marca da Suzuki já aparece uma vez na home, grande, na
+              tela de entrada. Repetir aqui é o defeito de 17/08.
+
+              ⚠️ O `pt` DO CELULAR NÃO É RESPIRO, é a folga da pílula de navegação.
+              Ela é FIXA e termina em 74px numa janela de 390; com o texto em cima
+              (que é a ordem nova) a primeira linha da manchete nascia em 47px e
+              passava POR BAIXO do botão do menu. Medido em 390, 320 e 768: cruzava
+              nas três. Com 80/96px a folga fica em 31px no celular e 17px em 768.
+              De `lg` para cima o texto está na coluna da esquerda, longe da pílula
+              centralizada, e o `pt` volta a zero. */}
+          <div className="relative mx-auto grid h-full w-full max-w-[1200px] grid-rows-[auto_minmax(0,1fr)] gap-6 px-5 pt-20 md:px-10 md:pt-24 lg:max-w-[1280px] lg:grid-cols-3 xl:max-w-[1440px] lg:grid-rows-1 lg:items-center lg:gap-8 lg:px-12 lg:pt-0">
+            {/* TEXTO. À esquerda no desktop, em cima no celular — que é a mesma ordem
+                do template (lá ele é `order-3 lg:order-1`, embaixo no celular, mas ali
+                o aparelho não sangra; aqui o aparelho é cortado pelo pé do cartão, e
+                texto DEPOIS dele ficaria coberto). */}
             <div
-              className="order-2 text-center lg:order-1 lg:text-left"
+              className="z-20 text-center lg:text-left"
               style={{
                 opacity: v.entraTexto,
                 translate: `${(1 - v.entraTexto) * -24}px 0`,
@@ -200,10 +232,22 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
               </div>
             </div>
 
-            {/* O APARELHO com a conversa, na coluna do MEIO.
+            {/* O APARELHO, na coluna do MEIO.
 
-                ⚠️ A ENTRADA É A DO TEMPLATE, a pedido ("a animação do scroll ao chegar
-                no celular precisa ser igual ao template"): ele vem de baixo e de LONGE
+                ⚠️ ELE É CORTADO PELO PÉ DO CARTÃO, de propósito, e é o que ele pediu
+                olhando o print do template: "não completando o celular, igual tá
+                cortado ali". A conta que produz o corte é simples e não tem número
+                mágico: o aparelho é ANCORADO NO TOPO da própria célula e tem altura
+                MAIOR que ela, então quem decide onde ele acaba é a borda do cartão,
+                que já é `overflow-hidden`. Em qualquer janela ele sangra sozinho.
+
+                ⚠️ O `top` é PERCENTUAL da célula e não px, e isso é o que mantém o
+                aparelho fora da pílula de navegação: a pílula é fixa e termina em
+                98px, e um recuo em px não sabe a altura da janela — foi o defeito que
+                ele reportou com print em 24/09 ("ele passa do tamanho da seção de
+                navegação"). Medido depois em três janelas; ver o commit.
+
+                ⚠️ A ENTRADA É A DO TEMPLATE, a pedido: vem de baixo e de LONGE
                 (z negativo), tombado nos dois eixos, pequeno, e chega reto no lugar.
                 Os números são os do original — `y: 300, z: -500, rotationX: 50,
                 rotationY: -30, scale: 0.6` — interpolados aqui em vez de pelo GSAP.
@@ -211,32 +255,32 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
                 ⚠️ É `transform` numa string só, e NÃO as propriedades `translate`/
                 `scale`/`rotate` que o Tailwind v4 usa: as duas famílias não se somam,
                 uma sobrescreve a outra em silêncio. Por isso este elemento não pode
-                receber classe de translate ou scale.
-
-                ⚠️ E a ORDEM importa: `translate3d` antes de `rotate`/`scale` aplica a
-                escala e o giro primeiro, e o deslocamento depois em px não escalados.
-                Invertida, o deslocamento viria multiplicado. Registrado em 19/08. */}
-            <div
-              className="order-1 flex justify-center lg:order-2"
-              style={{ perspective: "1000px" }}
-            >
+                receber classe de translate ou scale — o `-translate-x-1/2` que centra
+                mora no PAI, que é outro elemento. */}
+            <div className="relative z-10 h-full min-h-0">
               <div
-                className="will-change-transform"
-                style={{
-                  opacity: v.entraCelular,
-                  transform: [
-                    `translate3d(0, ${(1 - v.entraCelular) * 300}px, ${(1 - v.entraCelular) * -500}px)`,
-                    `rotateX(${(1 - v.entraCelular) * 50}deg)`,
-                    `rotateY(${(1 - v.entraCelular) * -30}deg)`,
-                    `scale(${0.6 + v.entraCelular * 0.4})`,
-                  ].join(" "),
-                  transformStyle: "preserve-3d",
-                }}
+                className="absolute left-1/2 top-[7%] -translate-x-1/2 lg:top-[14%]"
+                style={{ perspective: "1000px" }}
               >
-                <Aparelho data={data} revelado={v.entraCelular} />
+                <div
+                  className="will-change-transform"
+                  style={{
+                    opacity: v.entraCelular,
+                    transform: [
+                      `translate3d(0, ${(1 - v.entraCelular) * 300}px, ${(1 - v.entraCelular) * -500}px)`,
+                      `rotateX(${(1 - v.entraCelular) * 50}deg)`,
+                      `rotateY(${(1 - v.entraCelular) * -30}deg)`,
+                      `scale(${0.6 + v.entraCelular * 0.4})`,
+                    ].join(" "),
+                    transformStyle: "preserve-3d",
+                  }}
+                >
+                  <Aparelho data={data} revelado={v.entraCelular} />
+                </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -250,88 +294,95 @@ function Aparelho({ data, revelado }: { data: ChamadaCinematicaContent; revelado
   return (
     <div
       aria-hidden="true"
-      /* ⚠️ A ALTURA SAI DA JANELA e não de um px cravado, e o motivo foi MEDIDO: com
-         640px fixos o aparelho passava POR TRÁS da pílula de navegação numa tela de
-         1440x800 (folga de -18px) embora coubesse folgado em 1440x900. Quem manda é a
-         ALTURA da janela, e um número em px não sabe disso — é o defeito que ele
-         reportou em 24/09 ("ele passa do tamanho da seção de navegação ali").
+      /* ⚠️ UMA MEDIDA MANDA NO APARELHO INTEIRO: a altura. O `font-size` sai dela
+         (`altura / 580`), e daí para baixo tudo é `em` com o número que o template
+         usa em px — moldura de 280x580, ilha de 100x28, botões físicos, raios de
+         48 e 40. É o que torna literal o "o celular precisa ser o mesmo": a
+         proporção não muda em nenhum tamanho.
 
-         O teto de 470px é o tamanho da PRIMEIRA versão desta peça, e foi um vaivém:
-         nasceu em 470, subiu para 640 a pedido ("aumente o tamanho do celular"), caiu
-         para 384 no mesmo dia ("diminuir em 40%") e voltou para 470 logo depois ("faça
-         o celular da primeira versão, agora tá minúsculo"). Ficou aqui.
+         ⚠️ A ALTURA SAI DA JANELA e não de um px cravado, e o motivo foi MEDIDO em
+         24/09: com px fixo o aparelho passava POR TRÁS da pílula de navegação numa
+         janela de 1440x800 embora coubesse folgado em 1440x900. Quem manda é a
+         ALTURA da janela.
 
-         O `56vh` é o que protege a tela baixa: abaixo de ~840px de janela ele passa a
-         mandar, e o aparelho encolhe sozinho em vez de invadir o menu. É essa regra,
-         e não o número do teto, que resolve o defeito que ele reportou com print.
-
-         ⚠️ O TETO É MENOR NO CELULAR (420px), e isso é medição e não descuido: ali o
-         aparelho e o texto ficam na MESMA coluna dentro do cartão, então a altura dele
-         empurra o botão do WhatsApp para fora. Medido em 390px: a 470 a folga do cartão
-         vira -31px e o botão sai; a 420 ele fica dentro. No desktop os dois ficam lado
-         a lado e a altura do cartão não depende do aparelho, então o teto pode ser maior.
-
-         A proporção vem do `aspectRatio`, então a largura acompanha e a tela nunca
-         deforma. 232/420 é a do aparelho real. */
-      style={{ height: "min(56vh, var(--aparelho-teto))", aspectRatio: "232 / 420" }}
-      className="relative w-auto shrink-0 rounded-[2.4rem] border border-white/10 bg-[#0d1210] p-2 shadow-[0_30px_70px_-20px_oklch(0_0_0/0.8),inset_0_1px_2px_oklch(1_0_0/0.14)] [--aparelho-teto:420px] md:[--aparelho-teto:470px]"
+         ⚠️ E ELE É MAIOR QUE A CÉLULA DE PROPÓSITO — é assim que o pé do cartão o
+         corta, como no print do template. Não "consertar" reduzindo a altura até
+         ele caber: o corte é o pedido. */
+      style={{ fontSize: "calc(var(--fone-altura) / 580)" }}
+      className="relative h-[580em] w-[280em] rounded-[48em] moldura-aparelho [--fone-altura:min(66vh,540px)] lg:[--fone-altura:min(104vh,900px)]"
     >
-      {/* Ilha do alto-falante */}
-      <div className="absolute left-1/2 top-3 z-20 h-5 w-[74px] -translate-x-1/2 rounded-full bg-black" />
+      {/* Botões físicos, nas posições do template */}
+      <span className="absolute -left-[3em] top-[120em] z-0 h-[25em] w-[3em] rounded-l-[4em] botao-aparelho" />
+      <span className="absolute -left-[3em] top-[160em] z-0 h-[45em] w-[3em] rounded-l-[4em] botao-aparelho" />
+      <span className="absolute -left-[3em] top-[220em] z-0 h-[45em] w-[3em] rounded-l-[4em] botao-aparelho" />
+      <span className="absolute -right-[3em] top-[170em] z-0 h-[70em] w-[3em] -scale-x-100 rounded-l-[4em] botao-aparelho" />
 
-      <div className="flex h-full w-full flex-col overflow-hidden rounded-[2rem] bg-[#0b141a]">
-        {/* Barra do contato */}
-        <div className="flex items-center gap-2.5 border-b border-white/5 bg-[#1f2c34] px-3 pb-2.5 pt-9">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#25D366]/15">
-            <IconeWhatsApp className="h-4 w-4 text-[#25D366]" />
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-small font-medium text-white">{data.contatoNome}</p>
-            <p className="truncate text-[11px] leading-tight text-white/45">{data.contatoStatus}</p>
-          </div>
-        </div>
+      {/* A TELA. `inset` uniforme em `em` — em % os lados e o topo dariam recuos
+          diferentes, porque % resolve contra eixos diferentes. */}
+      <div className="absolute inset-[7em] z-10 overflow-hidden rounded-[40em] bg-[#0b141a]">
+        <span className="brilho-tela pointer-events-none absolute inset-0 z-40" />
 
-        {/* Conversa */}
-        <div className="flex flex-1 flex-col gap-2 px-3 py-4">
-          {data.conversa.map((balao, i) => {
-            /* Cada balão entra depois do anterior, dentro do próprio curso de
-               revelação do aparelho: a conversa acontece, não aparece pronta. */
-            const inicio = 0.35 + i * 0.3;
-            const t = Math.min(1, Math.max(0, (revelado - inicio) / 0.3));
-            const doCliente = balao.de === "cliente";
-            return (
-              <div
-                key={balao.texto}
-                className={cn("flex", doCliente ? "justify-end" : "justify-start")}
-                style={{ opacity: t, translate: `0 ${(1 - t) * 10}px` }}
-              >
+        {/* Ilha dinâmica */}
+        <div className="absolute left-1/2 top-[5em] z-50 h-[28em] w-[100em] -translate-x-1/2 rounded-full bg-black" />
+
+        <div className="flex h-full w-full flex-col">
+          {/* Barra do contato */}
+          <div className="flex items-center gap-[12em] border-b border-white/5 bg-[#1f2c34] px-[16em] pb-[14em] pt-[46em]">
+            <div className="flex h-[40em] w-[40em] shrink-0 items-center justify-center rounded-full bg-[#25D366]/15">
+              <IconeWhatsApp className="h-[20em] w-[20em] text-[#25D366]" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-[16em] font-medium leading-tight text-white">
+                {data.contatoNome}
+              </p>
+              <p className="truncate text-[13em] leading-tight text-white/45">
+                {data.contatoStatus}
+              </p>
+            </div>
+          </div>
+
+          {/* Conversa */}
+          <div className="flex flex-1 flex-col gap-[10em] px-[14em] py-[18em]">
+            {data.conversa.map((balao, i) => {
+              /* Cada balão entra depois do anterior, dentro do próprio curso de
+                 revelação do aparelho: a conversa acontece, não aparece pronta. */
+              const inicio = 0.35 + i * 0.3;
+              const t = Math.min(1, Math.max(0, (revelado - inicio) / 0.3));
+              const doCliente = balao.de === "cliente";
+              return (
                 <div
-                  className={cn(
-                    "max-w-[86%] rounded-xl px-2.5 py-1.5",
-                    /* Verde do WhatsApp, na cor REAL: recolorir marca de terceiro
-                       para casar com a paleta é adulterá-la (30/07). */
-                    doCliente
-                      ? "rounded-br-sm bg-[#005c4b] text-white"
-                      : "rounded-bl-sm bg-[#1f2c34] text-white",
-                  )}
+                  key={balao.texto}
+                  className={cn("flex", doCliente ? "justify-end" : "justify-start")}
+                  style={{ opacity: t, translate: `0 ${(1 - t) * 10}px` }}
                 >
-                  <p className="text-[11px] leading-[1.45]">{balao.texto}</p>
-                  <p className="mt-0.5 text-right text-[9px] leading-none text-white/40">
-                    {balao.hora}
-                  </p>
+                  <div
+                    className={cn(
+                      "max-w-[86%] rounded-[16em] px-[12em] py-[8em]",
+                      /* Verde do WhatsApp, na cor REAL: recolorir marca de terceiro
+                         para casar com a paleta é adulterá-la (30/07). */
+                      doCliente
+                        ? "rounded-br-[5em] bg-[#005c4b] text-white"
+                        : "rounded-bl-[5em] bg-[#1f2c34] text-white",
+                    )}
+                  >
+                    <p className="text-[14em] leading-[1.45]">{balao.texto}</p>
+                    <p className="mt-[2em] text-right text-[11em] leading-none text-white/40">
+                      {balao.hora}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        {/* Campo de digitação, só como moldura do aplicativo */}
-        <div className="flex items-center gap-2 px-3 pb-4">
-          <div className="h-8 flex-1 rounded-full bg-[#1f2c34]" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366]">
-            <svg viewBox="0 0 24 24" className="h-4 w-4 fill-white">
-              <path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z" />
-            </svg>
+          {/* Campo de digitação, só como moldura do aplicativo */}
+          <div className="flex items-center gap-[10em] px-[14em] pb-[26em]">
+            <div className="h-[40em] flex-1 rounded-full bg-[#1f2c34]" />
+            <div className="flex h-[40em] w-[40em] items-center justify-center rounded-full bg-[#25D366]">
+              <svg viewBox="0 0 24 24" className="h-[20em] w-[20em] fill-white">
+                <path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z" />
+              </svg>
+            </div>
           </div>
         </div>
       </div>

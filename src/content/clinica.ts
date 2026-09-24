@@ -812,6 +812,7 @@ export const clinica: Clinica = {
       },
     ],
     mensagem: "Olá! Gostaria de agendar uma avaliação na Suzuki Odontologia.",
+    rotuloRolagem: "Role para ver",
     cta: {
       label: "Abrir no WhatsApp",
       href: whatsappHref(WHATSAPP_NUMERO, "Olá! Gostaria de agendar uma avaliação na Suzuki Odontologia."),

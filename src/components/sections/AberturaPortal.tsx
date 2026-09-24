@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { PistaDeRolagem } from "@/components/PistaDeRolagem";
 import type { AberturaContent } from "@/content/types";
 
 /**
@@ -418,24 +419,11 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
             Fica ACIMA do véu na ordem do DOM para não ser dissolvida por ele, e abaixo
             do grupo em importância: `text-small` e opacidade parcial, porque é uma
             pista e não um elemento da composição. */}
-        <div
-          ref={pistaRef}
-          aria-hidden="true"
+        <PistaDeRolagem
+          rotulo={data.rotuloRolagem}
+          innerRef={pistaRef}
           className="pointer-events-none absolute inset-x-0 bottom-7 z-10 flex flex-col items-center gap-2 text-ink-muted"
-        >
-          <span className="text-small tracking-[0.14em] uppercase">{data.rotuloRolagem}</span>
-          <svg
-            viewBox="0 0 24 24"
-            className="seta-rolagem h-5 w-5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 5v14M6 13l6 6 6-6" />
-          </svg>
-        </div>
+        />
       </div>
     </section>
   );

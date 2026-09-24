@@ -581,6 +581,9 @@ export type ChamadaCinematicaContent = {
   /** A mensagem que o link do WhatsApp pré-preenche. Igual ao primeiro balão
    *  de `de: "cliente"`. */
   mensagem: string;
+  /** Rótulo da pista de rolagem. Campo próprio, e não leitura do da abertura:
+   *  cada seção guarda os próprios rótulos, como já vale para os do rodapé. */
+  rotuloRolagem: string;
   cta: Cta;
 };
 
