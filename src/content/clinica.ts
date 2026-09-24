@@ -358,7 +358,7 @@ export const clinica: Clinica = {
   },
   areas: {
     eyebrow: "Áreas de atuação",
-    titulo: "Oito especialidades, um critério.",
+    titulo: "8 especialidades, um critério.",
     descricao: "",
     itens: [
       {

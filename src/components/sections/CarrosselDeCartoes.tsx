@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useNaTela } from "@/hooks/useNaTela";
 import { cn } from "@/lib/utils";
 
 /**
@@ -143,13 +145,56 @@ function usaLaco(n: number, janela: number) {
   return n > janela;
 }
 
+function SetaIcone({ sentido }: { sentido: "esquerda" | "direita" }) {
+  const Glifo = sentido === "esquerda" ? ArrowLeft : ArrowRight;
+  return <Glifo className="h-4 w-4" strokeWidth={1.75} />;
+}
+
+/* A seta da galeria de casos vive sobre a PÁGINA CLARA; esta vive sobre o painel
+   `--ink`, então o fio e o texto vêm do par escuro (`--ink-border` / `--ink-muted`).
+   O tamanho é o mesmo, 44px, que é o alvo de toque mínimo do piso de qualidade de
+   21/08 — e aqui isso não é formalidade: é um controle de celular. */
+function SetaCarrossel({
+  rotulo,
+  onClick,
+  children,
+}: {
+  rotulo: string;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={rotulo}
+      /* ⚠️ O FIO É `white/45` E NÃO `--ink-border`, e o número foi MEDIDO. Botão sem
+         fundo tem o fio como única fronteira do controle, então vale a regra de
+         não-texto da WCAG 1.4.11 (3:1) — e é exatamente o defeito que a galeria de
+         casos tinha em 18/09. `--ink-border` (branco a 15%) entrega 1,54:1 sobre o
+         painel: reprova. A 45% passa nos quatro fundos que este componente pode
+         receber: 4,54 na paleta A, 3,79 na D, 3,22 no topo do gradiente da D (o pior
+         caso, porque ali o fundo é mais claro) e 3,93 na verde + branco original. */
+      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/45 text-ink-foreground transition-colors duration-200 hover:border-ink-foreground active:border-ink-foreground"
+    >
+      {children}
+    </button>
+  );
+}
+
 export function CarrosselDeCartoes({
   itens,
   rotuloLista,
+  anteriorLabel,
+  proximoLabel,
 }: {
   itens: CartaoCarrossel[];
   /** Nome do grupo para leitor de tela. Cada seção tem o seu. */
   rotuloLista: string;
+  /** Rótulos das setas do CELULAR. Mesmo padrão do `rotuloLista`: vivem na seção
+      e não no `clinica.ts`, porque são nome de controle e não copy da clínica. */
+  anteriorLabel: string;
+  proximoLabel: string;
 }) {
   const [ativo, setAtivo] = useState(0);
   const [pausado, setPausado] = useState(false);
@@ -167,6 +212,10 @@ export function CarrosselDeCartoes({
      largura do cartão. O desktop fica exatamente como estava. */
   const [empilhado, setEmpilhado] = useState(false);
   const faixaRef = useRef<HTMLDivElement | null>(null);
+  /* A troca automática também para fora da tela, pelo mesmo motivo da galeria de
+     casos: sem isso a lista anda sozinha por dez telas e a pessoa volta para um
+     item que não tem relação com o que deixou. */
+  const { ref: refNaTela, naTela } = useNaTela<HTMLDivElement>();
   const idBase = useId();
   const botoes = useRef<Array<HTMLButtonElement | null>>([]);
   const n = itens.length;
@@ -224,10 +273,17 @@ export function CarrosselDeCartoes({
   }, [ativo, empilhado, semMovimento]);
 
   useEffect(() => {
-    if (pausado || semMovimento || n < 2) return;
+    if (pausado || semMovimento || !naTela || n < 2) return;
     const t = window.setInterval(() => setAtivo((i) => (i + 1) % n), AUTO_MS);
     return () => window.clearInterval(t);
-  }, [pausado, semMovimento, n]);
+  }, [pausado, semMovimento, naTela, n]);
+
+  /* Passo das setas do celular. Circular nos dois sentidos, como a troca
+     automática — carrossel que para na ponta obriga a voltar clicando de novo. */
+  const irPara = useCallback(
+    (passo: number) => setAtivo((i) => (i + passo + n) % n),
+    [n],
+  );
 
   /* Teclado. O template não tem nenhum: os itens dele são `<button>` mas a lista
      não é anunciada como grupo e as setas não andam entre eles. Aqui é o padrão de
@@ -253,6 +309,7 @@ export function CarrosselDeCartoes({
 
   return (
     <div
+      ref={refNaTela}
       /* A pausa cobre mouse E foco: quem navega por teclado precisa que a lista
          pare de andar embaixo dele. `onFocusCapture` porque o foco cai nos
          botões, não neste contêiner. */
@@ -272,21 +329,31 @@ export function CarrosselDeCartoes({
             no topo e sobra petróleo vazio embaixo — visível com 3 e 4 itens, invisível
             com 8, que é o caso em que este componente nasceu. */
         className="relative flex flex-col justify-center gap-5 bg-ink px-5 py-7 md:px-8 lg:gap-0 lg:py-12 lg:w-[38%]">
+        {/* ⚠️ A FAIXA DE CHIPS EXISTE SÓ NO DESKTOP desde 24/09. No celular ela foi
+            trocada por DUAS SETAS, a pedido: "vamos colocar setinhas para pessoa
+            clicar para ficar melhor, ao invés de mostrar os elementos ali (...)
+            fazer isso apenas no celular". A troca automática ficou ("seria bom
+            deixar passando automático também").
+
+            ⚠️ O QUE SE PERDE, e está dito: com os chips fora, o visitante de
+            celular não vê mais os NOMES das outras especialidades nem quantas são.
+            O contador entre as setas devolve a contagem, e o ícone ao lado do
+            título devolve a identificação do item atual — mas a lista em si sumiu
+            do celular. Foi decisão dele; não "corrigir" numa próxima sessão.
+
+            Por que renderizar zero em vez de esconder por CSS: chip escondido
+            continua no Tab e continua sendo anunciado por leitor de tela, que é a
+            lição de 17/08 (marca do canto) e de 17/08 de novo (`inert` que o React
+            não serializa). */}
+        {empilhado ? null : (
         <div
           ref={faixaRef}
           role="tablist"
-          aria-orientation={empilhado ? "horizontal" : "vertical"}
+          aria-orientation="vertical"
           aria-label={rotuloLista}
           onKeyDown={aoTeclado}
-          /* ⚠️ `-mx-5` na faixa: os chips têm de PODER sangrar até a borda do painel,
-             senão o último fica cortado pelo padding e parece defeito. O `px-5` de
-             dentro devolve a margem no começo e no fim da rolagem. */
-          className={
-            empilhado
-              ? "faixa-chips -mx-5 flex gap-2 overflow-x-auto px-5 pb-1"
-              : "relative"
-          }
-          style={empilhado ? undefined : { height: itemH * (laco ? JANELA : n) }}
+          className="relative"
+          style={{ height: itemH * (laco ? JANELA : n) }}
         >
           {itens.map((item, i) => {
             /* Com laço, a posição é a distância circular até o ativo e a lista gira.
@@ -297,25 +364,16 @@ export function CarrosselDeCartoes({
             return (
               <div
                 key={item.chave}
-                className={
-                  empilhado ? "flex shrink-0 items-center" : "absolute left-0 flex items-center"
-                }
-                style={
-                  empilhado
-                    ? {
-                        opacity: ativa ? 1 : 0.72,
-                        transition: semMovimento ? "none" : "opacity 380ms ease",
-                      }
-                    : {
-                        height: itemH,
-                        top: `calc(50% - ${itemH / 2}px)`,
-                        transform: `translateY(${d * itemH}px)`,
-                        opacity: foraDaJanela ? 0 : ativa ? 1 : 0.72,
-                        transition: semMovimento
-                          ? "none"
-                          : `${transicao(620, "transform")}, opacity 380ms ease`,
-                      }
-                }
+                className="absolute left-0 flex items-center"
+                style={{
+                  height: itemH,
+                  top: `calc(50% - ${itemH / 2}px)`,
+                  transform: `translateY(${d * itemH}px)`,
+                  opacity: foraDaJanela ? 0 : ativa ? 1 : 0.72,
+                  transition: semMovimento
+                    ? "none"
+                    : `${transicao(620, "transform")}, opacity 380ms ease`,
+                }}
               >
                 <button
                   ref={(el) => {
@@ -331,11 +389,11 @@ export function CarrosselDeCartoes({
                   tabIndex={ativa ? 0 : -1}
                   /* Item fora da janela é invisível: tirar do fluxo de clique evita
                      que o cursor pegue algo que não está na tela. */
-                  aria-hidden={(!empilhado && foraDaJanela) || undefined}
+                  aria-hidden={foraDaJanela || undefined}
                   onClick={() => setAtivo(i)}
                   className={cn(
                     "flex items-center gap-2.5 rounded-full border px-3.5 py-3 text-left transition-colors duration-300 md:gap-3 md:px-5",
-                    !empilhado && foraDaJanela && "pointer-events-none",
+                    foraDaJanela && "pointer-events-none",
                     ativa
                       ? "border-transparent bg-ink-foreground text-ink"
                       : "border-ink-border text-ink-muted hover:border-white/35 hover:text-ink-foreground",
@@ -370,7 +428,7 @@ export function CarrosselDeCartoes({
                   <span
                     className={cn(
                       "text-small md:text-base",
-                      estreito && !empilhado ? "leading-[1.25]" : "whitespace-nowrap",
+                      estreito ? "leading-[1.25]" : "whitespace-nowrap",
                     )}
                   >
                     {item.titulo}
@@ -382,7 +440,7 @@ export function CarrosselDeCartoes({
 
           {/* Máscaras nas duas pontas, na cor do painel. É o que faz o item sair de
               cena em vez de ser cortado por uma aresta reta. */}
-          {laco && !empilhado ? (
+          {laco ? (
             <>
               <div
                 aria-hidden
@@ -395,6 +453,7 @@ export function CarrosselDeCartoes({
             </>
           ) : null}
         </div>
+        )}
 
         {/* ⚠️ O TEXTO DO ITEM ATIVO, no celular, VIVE AQUI — fora da foto. Por cima
             dela ele media 110% da altura da imagem, ou seja cobria tudo. Só um dos
@@ -402,10 +461,51 @@ export function CarrosselDeCartoes({
             conteúdo repetido para leitor de tela. */}
         {empilhado && itens[ativo] ? (
           <div key={itens[ativo].chave}>
-            <h3 className="display-3 text-ink-foreground">{itens[ativo].titulo}</h3>
+            {/* ⚠️ O ÍCONE VOLTOU AQUI porque a faixa de chips levou o dele embora.
+                Os oito ícones dentais foram DESENHADOS neste projeto (12/08) por um
+                motivo registrado: "ícone genérico em especialidade clínica é enfeite
+                no lugar de informação" — ou seja eles são informação, e some-los do
+                celular inteiro seria perda silenciosa. Custa uma linha. */}
+            <h3 className="display-3 flex items-center gap-2.5 text-ink-foreground">
+              <span className="shrink-0 text-accent">{itens[ativo].icone}</span>
+              {itens[ativo].titulo}
+            </h3>
             <p className="mt-1.5 text-small leading-[1.55] text-ink-foreground/85">
               {itens[ativo].descricao}
             </p>
+          </div>
+        ) : null}
+
+        {/* AS SETAS DO CELULAR, e elas ficam DEPOIS do texto de propósito: assim
+            encostam na foto que trocam, em vez de flutuar no topo do painel a uma
+            descrição inteira de distância dela. É também onde o polegar alcança.
+            Mesma ordem da galeria de casos, que é o outro lugar do site com setas.
+
+            `role="group"` + `aria-roledescription`, não `tablist`: sem chips na tela
+            não há aba nenhuma, e anunciar abas que não existem é pior que não
+            anunciar nada.
+
+            ⚠️ SEM `aria-live` no contador, ao contrário da galeria de casos, e a
+            diferença é a troca AUTOMÁTICA: lá não há, aqui muda a cada 4,2s e um
+            live region falaria sozinho a cada 4 segundos. */}
+        {empilhado && n > 1 ? (
+          <div
+            role="group"
+            aria-roledescription="carrossel"
+            aria-label={rotuloLista}
+            className="flex items-center justify-center gap-5"
+          >
+            <SetaCarrossel rotulo={anteriorLabel} onClick={() => irPara(-1)}>
+              <SetaIcone sentido="esquerda" />
+            </SetaCarrossel>
+
+            <p className="text-small tabular-nums text-ink-muted">
+              {ativo + 1} / {n}
+            </p>
+
+            <SetaCarrossel rotulo={proximoLabel} onClick={() => irPara(1)}>
+              <SetaIcone sentido="direita" />
+            </SetaCarrossel>
           </div>
         ) : null}
       </div>
@@ -417,10 +517,22 @@ export function CarrosselDeCartoes({
             petroleo a 5,5% da superficie visivel e amarra com o painel escuro ao
             lado, em vez de introduzir um cinza neutro que nao e da paleta. */
         className="relative flex flex-1 items-center justify-center bg-foreground/[0.055] p-2 lg:px-8 lg:py-10">
+        {/* ⚠️ `tabpanel` só existe onde HÁ abas, ou seja no desktop. No celular os
+            chips não são renderizados, então `aria-labelledby` apontaria para um id
+            inexistente — o painel ficaria sem nome acessível. Lá ele vira um slide
+            de carrossel, nomeado pelo próprio item e pela posição. */}
         <div
-          role="tabpanel"
-          id={`${idBase}-painel`}
-          aria-labelledby={`${idBase}-aba-${ativo}`}
+          {...(empilhado
+            ? {
+                role: "group" as const,
+                "aria-roledescription": "slide",
+                "aria-label": `${itens[ativo]?.titulo ?? ""}, ${ativo + 1} de ${n}`,
+              }
+            : {
+                role: "tabpanel" as const,
+                id: `${idBase}-painel`,
+                "aria-labelledby": `${idBase}-aba-${ativo}`,
+              })}
           /* 4:3 e não o 4:5 do template: as oito imagens do acervo são 1,5:1
              (uma é 1:1), e num retrato elas perderiam mais da metade da largura.
              É a armadilha de 12/08 e 13/08 — arquivo panorâmico em caixa vertical

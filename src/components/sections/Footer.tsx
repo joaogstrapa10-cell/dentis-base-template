@@ -82,7 +82,12 @@ export function FooterSection({
                 <img
                   src={brand.logo}
                   alt={brand.logoAlt}
-                  className="h-10 w-auto"
+                  /* 40px ate 24/09, aumentada a pedido ("aumentar um pouco o
+                     tamanho da logo da suzuki"). 56px e um degrau so: a arte e
+                     2,27:1, entao a largura vai de ~91px para ~127px, e a coluna
+                     mais estreita em que ela vive (1/4 da grade no desktop) tem
+                     ~270px. */
+                  className="h-14 w-auto"
                 />
               ) : (
                 <p className="text-base font-semibold text-ink-foreground">

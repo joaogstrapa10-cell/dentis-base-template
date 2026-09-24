@@ -33,6 +33,8 @@ export function AreasSection({ data }: { data: AreasContent }) {
       <div className="mt-12 md:mt-14">
         <CarrosselDeCartoes
           rotuloLista="Especialidades"
+          anteriorLabel="Especialidade anterior"
+          proximoLabel="Próxima especialidade"
           itens={data.itens.map((area) => ({
             chave: area.titulo,
             titulo: area.titulo,

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNaTela } from "@/hooks/useNaTela";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { CasoClinico, CasosContent, Cta } from "@/content/types";
 import { TextLink } from "@/components/Primitives";
@@ -77,6 +78,9 @@ function configuracao(largura: number) {
   return { divisorDistancia: 200, divisorVelocidade: 800, sensibilidade: 250, x: 170, y: 40, giro: 12, reducao: 0.12 };
 }
 
+/** Passo da troca automática da pilha. Ver a nota do efeito que o usa. */
+const AUTO_MS = 5500;
+
 export function GaleriaDeCasos({
   data,
   limite,
@@ -98,6 +102,12 @@ export function GaleriaDeCasos({
   const [arrastando, setArrastando] = useState(false);
   const [config, setConfig] = useState(() => configuracao(1280));
   const arraste = useRef<{ x: number; t: number; vx: number } | null>(null);
+  /* A pilha passa sozinha desde 24/09, a pedido ("deixar as fotos irem passando
+     automaticamente mas mantendo as setinhas ali, tanto na versão de desktop
+     quanto na de celular"). As setas ficaram exatamente como estavam. */
+  const [pausado, setPausado] = useState(false);
+  const [semMovimento, setSemMovimento] = useState(false);
+  const { ref: refNaTela, naTela } = useNaTela<HTMLDivElement>();
 
   /* O progresso vive em DOIS lugares: no estado, que é o que renderiza, e numa
      ref, que é o que os manipuladores leem. A ref não é redundância — sem ela,
@@ -118,11 +128,40 @@ export function GaleriaDeCasos({
     return () => window.removeEventListener("resize", medir);
   }, []);
 
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const aplica = () => setSemMovimento(mq.matches);
+    aplica();
+    mq.addEventListener("change", aplica);
+    return () => mq.removeEventListener("change", aplica);
+  }, []);
+
   /** Encaixa no caso mais próximo, somando um empurrão opcional. */
   const irPara = useCallback(
     (passos: number) => aplicar(Math.round(vivo.current) + passos),
     [aplicar],
   );
+
+  /* ⚠️ 5,5s e não os 4,2s do `CarrosselDeCartoes`, e a diferença é o CONTEÚDO: lá
+     passa o nome de uma especialidade, aqui passa um caso com categoria, título e
+     duas linhas de resumo. Cadência que não dá tempo de ler é a mesma falha que
+     derrubou o carrossel de depoimentos em 30/07.
+
+     Para em QUATRO situações, e cada uma tem motivo próprio: no ponteiro em cima e
+     no foco de teclado (é o mecanismo de pausa que a WCAG 2.2.2 pede para conteúdo
+     em movimento, e é o mesmo que o carrossel já adota); durante o arraste, senão o
+     laço briga com o dedo; sob `prefers-reduced-motion`; e FORA DA TELA — sem essa
+     última a pilha anda sozinha enquanto a pessoa lê dez telas abaixo, e ela volta
+     para encontrar a seção numa posição que não tem relação com a que deixou.
+
+     `irPara(1)` e não um `setProgresso` próprio: é a mesma função das setas, então
+     a automática encaixa no caso seguinte pelo mesmo caminho e não existe um
+     segundo jeito de mover a pilha. */
+  useEffect(() => {
+    if (pausado || arrastando || semMovimento || !naTela || total < 2) return;
+    const t = window.setInterval(() => irPara(1), AUTO_MS);
+    return () => window.clearInterval(t);
+  }, [pausado, arrastando, semMovimento, naTela, total, irPara]);
 
   /* Arraste por Pointer Events, que cobrem mouse, toque e caneta com um
      caminho só. `setPointerCapture` mantém o arraste vivo quando o ponteiro sai
@@ -173,7 +212,7 @@ export function GaleriaDeCasos({
   const ativo = ((Math.round(progresso) % total) + total) % total;
 
   return (
-    <div>
+    <div ref={refNaTela}>
       {/* O arraste é ouvido pela PRÓPRIA região, não por uma camada por cima.
           O template tem uma superfície transparente em `z-50` para isso, e ela
           não funciona aqui: os cartões chegam a `z-index: 100`, então eles
@@ -198,6 +237,13 @@ export function GaleriaDeCasos({
         onPointerMove={aoMover}
         onPointerUp={aoSoltar}
         onPointerCancel={aoSoltar}
+        /* `onPointerEnter/Leave` e não `onMouseEnter`: no toque o ponteiro entra e
+           não sai, então o laço fica parado enquanto o dedo está na pilha, que é o
+           comportamento certo. O foco cobre quem chega por teclado. */
+        onPointerEnter={() => setPausado(true)}
+        onPointerLeave={() => setPausado(false)}
+        onFocusCapture={() => setPausado(true)}
+        onBlurCapture={() => setPausado(false)}
         className={cn(
           /* ⚠️ `isolate` NÃO É ENFEITE: os cartões recebem `zIndex` inline de até
              100 (ver a nota em `Carta`), e sem um contexto de empilhamento próprio
@@ -252,7 +298,16 @@ export function GaleriaDeCasos({
       {/* Controles. Existem por acessibilidade e por descoberta: arraste é um
           gesto invisível, e num público que não é jovem por definição o botão é
           o caminho principal, não o alternativo. */}
-      <div className="mt-8 flex items-center justify-center gap-5">
+      {/* A faixa de controle pausa por conta própria: ela fica FORA da região de
+          arraste, então o `onPointerEnter` de lá não a cobre — e parar o laço
+          enquanto a pessoa mira a seta é justamente quando mais importa. */}
+      <div
+        onPointerEnter={() => setPausado(true)}
+        onPointerLeave={() => setPausado(false)}
+        onFocusCapture={() => setPausado(true)}
+        onBlurCapture={() => setPausado(false)}
+        className="mt-8 flex items-center justify-center gap-5"
+      >
         <Botao rotulo={data.anteriorLabel} onClick={() => irPara(-1)}>
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
         </Botao>

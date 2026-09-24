@@ -68,6 +68,8 @@ export function DiferenciaisSection({ data }: { data: DiferenciaisContent }) {
       <div className="mt-12 md:mt-14">
         <CarrosselDeCartoes
           rotuloLista="Diferenciais da clínica"
+          anteriorLabel="Anterior"
+          proximoLabel="Próximo"
           itens={data.itens.map((item) => ({
             chave: item.titulo,
             titulo: item.titulo,
