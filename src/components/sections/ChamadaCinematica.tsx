@@ -44,7 +44,11 @@ function fase(p: number, de: number, ate: number) {
 
 export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) {
   const trilhoRef = useRef<HTMLElement | null>(null);
+  const aparelhoRef = useRef<HTMLDivElement | null>(null);
   const [p, setP] = useState(0);
+  /* Inclinação pelo ponteiro, o segundo gesto do template. Some ao estado neutro da
+     entrada, então as duas convivem sem brigar pela mesma propriedade. */
+  const [inclina, setInclina] = useState({ x: 0, y: 0 });
   const [semMovimento, setSemMovimento] = useState(false);
 
   useEffect(() => {
@@ -84,6 +88,34 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
     return () => {
       vivo = false;
       cancelAnimationFrame(id);
+    };
+  }, [semMovimento]);
+
+  /* ⚠️ Só onde há ponteiro FINO: num toque o `mousemove` não existe, e o custo de
+     escutá-lo seria por nada. `matchMedia` e não largura de tela — o que decide é o
+     dispositivo de entrada. */
+  useEffect(() => {
+    if (semMovimento) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    let pedido = 0;
+    const aoMover = (e: MouseEvent) => {
+      cancelAnimationFrame(pedido);
+      pedido = requestAnimationFrame(() => {
+        const el = aparelhoRef.current;
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) return;
+        const dx = e.clientX / window.innerWidth - 0.5;
+        const dy = e.clientY / window.innerHeight - 0.5;
+        /* 12 graus é a amplitude do template. Mais que isso e o aparelho vira um
+           objeto girando; menos e o gesto não se percebe. */
+        setInclina({ x: -dy * 2 * 6, y: dx * 2 * 6 });
+      });
+    };
+    window.addEventListener("mousemove", aoMover);
+    return () => {
+      window.removeEventListener("mousemove", aoMover);
+      cancelAnimationFrame(pedido);
     };
   }, [semMovimento]);
 
@@ -142,11 +174,16 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
             boxShadow: "0 40px 100px -20px oklch(0 0 0 / 0.55)",
           }}
         >
-          <div className="grid w-full max-w-6xl grid-cols-1 items-center gap-8 px-5 py-6 md:px-10 lg:grid-cols-2 lg:gap-14">
+          {/* ⚠️ TRÊS colunas e não duas, com a TERCEIRA VAZIA: é o que põe o celular
+              no centro da TELA, e não no centro de um par. No template a coluna da
+              direita carrega o nome da marca em caixa alta gigante; o usuário mandou
+              tirar ("não ter o Sobers"), e tirar a coluna junto jogaria o aparelho
+              para a direita. A coluna vazia é o contrapeso. */}
+          <div className="grid w-full max-w-6xl grid-cols-1 items-center gap-8 px-5 py-6 md:px-10 lg:grid-cols-3 lg:gap-10">
             {/* Texto do cartão. No celular vem DEPOIS do aparelho, porque ali o
                 aparelho é a peça que explica a seção. */}
             <div
-              className="order-2 text-center lg:order-1 lg:text-left"
+              className="order-2 text-center lg:order-1 lg:col-span-1 lg:text-left"
               style={{
                 opacity: v.entraTexto,
                 translate: `${(1 - v.entraTexto) * -24}px 0`,
@@ -174,16 +211,42 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
               </div>
             </div>
 
-            {/* O APARELHO com a conversa. */}
+            {/* O APARELHO com a conversa, na coluna do MEIO.
+
+                ⚠️ A ENTRADA É A DO TEMPLATE, a pedido ("a animação do scroll ao chegar
+                no celular precisa ser igual ao template"): ele vem de baixo e de LONGE
+                (z negativo), tombado nos dois eixos, pequeno, e chega reto no lugar.
+                Os números são os do original — `y: 300, z: -500, rotationX: 50,
+                rotationY: -30, scale: 0.6` — interpolados aqui em vez de pelo GSAP.
+
+                ⚠️ É `transform` numa string só, e NÃO as propriedades `translate`/
+                `scale`/`rotate` que o Tailwind v4 usa: as duas famílias não se somam,
+                uma sobrescreve a outra em silêncio. Por isso este elemento não pode
+                receber classe de translate ou scale.
+
+                ⚠️ E a ORDEM importa: `translate3d` antes de `rotate`/`scale` aplica a
+                escala e o giro primeiro, e o deslocamento depois em px não escalados.
+                Invertida, o deslocamento viria multiplicado. Registrado em 19/08. */}
             <div
-              className="order-1 flex justify-center lg:order-2"
-              style={{
-                opacity: v.entraCelular,
-                translate: `0 ${(1 - v.entraCelular) * 60}px`,
-                scale: String(0.82 + v.entraCelular * 0.18),
-              }}
+              className="order-1 flex justify-center lg:order-2 lg:col-span-1"
+              style={{ perspective: "1000px" }}
             >
-              <Aparelho data={data} revelado={v.entraCelular} />
+              <div
+                ref={aparelhoRef}
+                className="will-change-transform"
+                style={{
+                  opacity: v.entraCelular,
+                  transform: [
+                    `translate3d(0, ${(1 - v.entraCelular) * 300}px, ${(1 - v.entraCelular) * -500}px)`,
+                    `rotateX(${(1 - v.entraCelular) * 50 + inclina.x}deg)`,
+                    `rotateY(${(1 - v.entraCelular) * -30 + inclina.y}deg)`,
+                    `scale(${0.6 + v.entraCelular * 0.4})`,
+                  ].join(" "),
+                  transformStyle: "preserve-3d",
+                }}
+              >
+                <Aparelho data={data} revelado={v.entraCelular} />
+              </div>
             </div>
           </div>
         </div>

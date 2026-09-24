@@ -793,7 +793,7 @@ export const clinica: Clinica = {
      assim — "respondemos em X minutos" seria compromisso que ninguém assumiu. */
   chamadaCinematica: {
     linha1: "Agende a sua",
-    linha2: "implantodontia.",
+    linha2: "avaliação.",
     cardTitulo: "Uma mensagem, e o caso começa a ser avaliado.",
     cardDescricao:
       "A conversa vai direto para a clínica, com a mensagem já escrita. A avaliação define o diagnóstico, o plano e o orçamento.",
@@ -802,7 +802,7 @@ export const clinica: Clinica = {
     conversa: [
       {
         de: "cliente",
-        texto: "Olá! Gostaria de agendar uma avaliação de implantodontia na Suzuki Odontologia.",
+        texto: "Olá! Gostaria de agendar uma avaliação na Suzuki Odontologia.",
         hora: "09:41",
       },
       {
@@ -811,10 +811,10 @@ export const clinica: Clinica = {
         hora: "09:41",
       },
     ],
-    mensagem: "Olá! Gostaria de agendar uma avaliação de implantodontia na Suzuki Odontologia.",
+    mensagem: "Olá! Gostaria de agendar uma avaliação na Suzuki Odontologia.",
     cta: {
       label: "Abrir no WhatsApp",
-      href: whatsappHref(WHATSAPP_NUMERO, "Olá! Gostaria de agendar uma avaliação de implantodontia na Suzuki Odontologia."),
+      href: whatsappHref(WHATSAPP_NUMERO, "Olá! Gostaria de agendar uma avaliação na Suzuki Odontologia."),
     },
   },
   footer: {
