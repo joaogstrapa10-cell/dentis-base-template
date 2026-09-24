@@ -129,7 +129,7 @@ function Landing() {
             que a regra de 12/08 chama de escolha que não é escolha.
             A `ChamadaFinal.tsx` e o bloco `clinica.chamadaFinal` FICAM no repositório:
             voltar é trocar esta linha. */}
-        <ChamadaCinematica data={clinica.chamadaCinematica} />
+        <ChamadaCinematica data={clinica.chamadaCinematica} brand={clinica.brand} />
         <BioSection data={clinica.bio} />
         <DiferenciaisSection data={clinica.diferenciais} />
         <EstruturaSection data={clinica.estrutura} />

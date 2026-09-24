@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { ChamadaCinematicaContent } from "@/content/types";
+import type { BrandContent, ChamadaCinematicaContent } from "@/content/types";
 import { IconeWhatsApp } from "@/components/Primitives";
 import { PistaDeRolagem } from "@/components/PistaDeRolagem";
 import { cn } from "@/lib/utils";
@@ -43,7 +43,13 @@ function fase(p: number, de: number, ate: number) {
   return t * t * (3 - 2 * t);
 }
 
-export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) {
+export function ChamadaCinematica({
+  data,
+  brand,
+}: {
+  data: ChamadaCinematicaContent;
+  brand: BrandContent;
+}) {
   const trilhoRef = useRef<HTMLElement | null>(null);
   const [p, setP] = useState(0);
   /* ⚠️ A INCLINAÇÃO PELO PONTEIRO SAIU em 24/09, a pedido: "deixe o celular sem mexer,
@@ -275,7 +281,7 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
                     transformStyle: "preserve-3d",
                   }}
                 >
-                  <Aparelho data={data} revelado={v.entraCelular} />
+                  <Aparelho data={data} brand={brand} revelado={v.entraCelular} />
                 </div>
               </div>
             </div>
@@ -290,7 +296,15 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
 /* O aparelho é decorativo para leitor de tela: tudo que ele mostra já está no
    texto ao lado e no link. Anunciar a conversa balão a balão faria a pessoa ouvir
    uma encenação como se fosse mensagem recebida. */
-function Aparelho({ data, revelado }: { data: ChamadaCinematicaContent; revelado: number }) {
+function Aparelho({
+  data,
+  brand,
+  revelado,
+}: {
+  data: ChamadaCinematicaContent;
+  brand: BrandContent;
+  revelado: number;
+}) {
   return (
     <div
       aria-hidden="true"
@@ -328,8 +342,34 @@ function Aparelho({ data, revelado }: { data: ChamadaCinematicaContent; revelado
         <div className="flex h-full w-full flex-col">
           {/* Barra do contato */}
           <div className="flex items-center gap-[12em] border-b border-white/5 bg-[#1f2c34] px-[16em] pb-[14em] pt-[46em]">
-            <div className="flex h-[40em] w-[40em] shrink-0 items-center justify-center rounded-full bg-[#25D366]/15">
-              <IconeWhatsApp className="h-[20em] w-[20em] text-[#25D366]" />
+            {/* ⚠️ A FOTO DE PERFIL É A MARCA DA CLÍNICA, a pedido de 24/09 ("logo da
+                Suzuki na foto de perfil do whatsapp"). Era o glifo genérico do
+                WhatsApp, que dizia qual é o aplicativo e nada sobre quem atende.
+
+                ⚠️ É a logo COMPLETA (`brand.logoEscuro`), não um recorte só do
+                símbolo. A regra é de 19/08 e foi paga: eu tinha recortado os traços
+                da linha de baixo para caber melhor e ele reprovou na hora, "a logo da
+                Suzuki não tá completa". Marca não se recorta para caber, quem cede é
+                o layout.
+
+                Campo BRANCO e a arte escura, e não o contrário: a barra do contato é
+                `#1f2c34`, e a logo branca sobre ela some. Branco também é o que faz o
+                círculo ler como foto de perfil de verdade em vez de ícone. */}
+            <div
+              className={cn(
+                "flex h-[40em] w-[40em] shrink-0 items-center justify-center overflow-hidden rounded-full",
+                brand.logoEscuro ? "bg-white" : "bg-[#25D366]/15",
+              )}
+            >
+              {/* `logoEscuro` é opcional no tipo, e a reserva não é enfeite: numa
+                  variante sem a arte escura o campo branco ficaria vazio, e um
+                  círculo branco vazio lê como imagem quebrada. Sem ela, volta o
+                  glifo do WhatsApp, que era o estado anterior. */}
+              {brand.logoEscuro ? (
+                <img src={brand.logoEscuro} alt="" className="w-[30em]" />
+              ) : (
+                <IconeWhatsApp className="h-[20em] w-[20em] text-[#25D366]" />
+              )}
             </div>
             <div className="min-w-0">
               <p className="truncate text-[16em] font-medium leading-tight text-white">
