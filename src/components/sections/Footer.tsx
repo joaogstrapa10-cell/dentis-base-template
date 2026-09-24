@@ -74,7 +74,16 @@ export function FooterSection({
           className="ink-arc pointer-events-none absolute inset-0 opacity-25"
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pt-16 md:px-10 md:pt-24">
+        {/* ⚠️ O TOPO ERA `pt-16 md:pt-24` (64/96px) e foi reduzido em 24/09, a pedido:
+              "tem um espaçamento ali no rodapé que está me incomodando, do início do
+              elemento à logo da Suzuki". A conta que explica o incômodo: no celular
+              eram 64px de ar sobre uma logo de 56px, ou seja MAIS vão do que a altura
+              da própria peça que ele emoldura. E a logo tinha acabado de crescer de
+              40 para 56px na mesma rodada, o que só é coincidência na aparência: o
+              vão foi escolhido quando a logo era menor e ninguém remediu depois.
+              Agora 40/56px, que também aproxima o topo do rodapé do seu pé (`pb-10`).
+              ⚠️ Ao mexer no tamanho da logo daqui, remedir este vão. */}
+        <div className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pt-10 md:px-10 md:pt-14">
           {/* Colunas */}
           <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-12">
             <div className="col-span-2 md:col-span-1">
