@@ -331,7 +331,22 @@ export function Header({
             descrita na marca: como a pílula é centralizada, cada pixel que ela
             perde de largura devolve meio pixel de folga em CADA lado, e nos
             rótulos de uma linha só o aperto não se percebe. */}
-        <div className="flex w-full items-center justify-end gap-x-8 md:justify-between lg:gap-x-6 xl:gap-x-10">
+        <div
+          className={cn(
+            "flex w-full items-center justify-end gap-x-8 md:justify-between lg:gap-x-6 xl:gap-x-10",
+            /* ⚠️ ABERTO NO CELULAR, A LINHA DO X SAI DO FLUXO. Ela é uma faixa de
+               32px de altura com o botão encostado à direita, e no fluxo empurrava a
+               lista inteira para baixo — o "Home" nascia a 46px do topo do painel com
+               um campo vazio à esquerda do X. Pedido de 24/09: "quero o Home perto da
+               borda, alinhado, e em seguida os outros".
+               Fora do fluxo, o X fica onde estava (canto superior direito) e a lista
+               começa na borda de cima. Não há colisão: o painel tem 272px e o rótulo
+               mais largo ("Estrutura") mede ~96px, contra os 32px do botão à direita.
+               No DESKTOP esta mesma linha carrega o menu inteiro e o CTA, então a
+               regra é `lg:static` — lá ela nunca sai do fluxo. */
+            open && "absolute right-5 top-3 w-auto lg:static lg:right-auto lg:top-auto lg:w-full",
+          )}
+        >
           <nav className="hidden items-center gap-5 lg:flex xl:gap-8">
             {data.nav.map((item: NavLink) => (
               <AnimatedNavLink
@@ -378,7 +393,7 @@ export function Header({
                  24/09: "ainda tem um espaçamento em cima, subir um pouco os botões
                  das seções". Agora 8px, e o respiro do link continua fazendo a
                  separação que a lista precisa. */
-              ? "max-h-[32rem] w-full pt-2 opacity-100"
+              ? "max-h-[32rem] w-full pt-0 opacity-100"
               /* `w-0` e não só `max-h-0`: altura zero não tira o elemento da conta de
                  LARGURA do pai, e era exatamente isso que inflava a pílula fechada. */
               : "pointer-events-none max-h-0 w-0 pt-0 opacity-0",
@@ -390,7 +405,18 @@ export function Header({
                 key={item.href + item.label}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="whitespace-nowrap rounded-lg px-2 py-2.5 text-base text-ink-muted transition-colors hover:bg-ink-elevated hover:text-ink-foreground"
+                /* ⚠️ `first:pr-14` porque o X divide a faixa com o PRIMEIRO link desde
+                   que saiu do fluxo. Medido: o link ia até x=353 e o botão começa em
+                   321, ou seja 32px do link passavam POR BAIXO do X. O botão ganha o
+                   clique no centro (está por cima), mas quem mira nele e erra por
+                   poucos pixels acertaria "Home" — fecharia o menu e rolaria a página,
+                   que é o oposto do que a pessoa quis. Só o primeiro precisa: os
+                   outros já nascem abaixo do botão.
+                   ⚠️ É `max-w` e NÃO `pr`: num `flex-col` os itens esticam por
+                   `align-items: stretch`, então padding recua o texto mas deixa a
+                   CAIXA do mesmo tamanho — e é a caixa que recebe o toque. Medi com
+                   `pr-14` e a largura do link não mudou um pixel. */
+                className="whitespace-nowrap rounded-lg px-2 py-2.5 text-base text-ink-muted transition-colors first:max-w-[calc(100%-3.5rem)] hover:bg-ink-elevated hover:text-ink-foreground lg:first:max-w-none"
               >
                 {item.label}
               </a>
