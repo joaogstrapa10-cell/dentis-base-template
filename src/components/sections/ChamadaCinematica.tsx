@@ -256,14 +256,25 @@ function Aparelho({ data, revelado }: { data: ChamadaCinematicaContent; revelado
          ALTURA da janela, e um número em px não sabe disso — é o defeito que ele
          reportou em 24/09 ("ele passa do tamanho da seção de navegação ali").
 
-         O teto de 384px é o -40% que ele pediu na mesma rodada, sobre os 640 de antes.
-         O `46vh` é o que protege a tela baixa: abaixo de ~835px de janela ele passa a
-         mandar, e o aparelho encolhe sozinho em vez de invadir o menu.
+         O teto de 470px é o tamanho da PRIMEIRA versão desta peça, e foi um vaivém:
+         nasceu em 470, subiu para 640 a pedido ("aumente o tamanho do celular"), caiu
+         para 384 no mesmo dia ("diminuir em 40%") e voltou para 470 logo depois ("faça
+         o celular da primeira versão, agora tá minúsculo"). Ficou aqui.
+
+         O `56vh` é o que protege a tela baixa: abaixo de ~840px de janela ele passa a
+         mandar, e o aparelho encolhe sozinho em vez de invadir o menu. É essa regra,
+         e não o número do teto, que resolve o defeito que ele reportou com print.
+
+         ⚠️ O TETO É MENOR NO CELULAR (420px), e isso é medição e não descuido: ali o
+         aparelho e o texto ficam na MESMA coluna dentro do cartão, então a altura dele
+         empurra o botão do WhatsApp para fora. Medido em 390px: a 470 a folga do cartão
+         vira -31px e o botão sai; a 420 ele fica dentro. No desktop os dois ficam lado
+         a lado e a altura do cartão não depende do aparelho, então o teto pode ser maior.
 
          A proporção vem do `aspectRatio`, então a largura acompanha e a tela nunca
          deforma. 232/420 é a do aparelho real. */
-      style={{ height: "min(46vh, 384px)", aspectRatio: "232 / 420" }}
-      className="relative w-auto shrink-0 rounded-[2.4rem] border border-white/10 bg-[#0d1210] p-2 shadow-[0_30px_70px_-20px_oklch(0_0_0/0.8),inset_0_1px_2px_oklch(1_0_0/0.14)]"
+      style={{ height: "min(56vh, var(--aparelho-teto))", aspectRatio: "232 / 420" }}
+      className="relative w-auto shrink-0 rounded-[2.4rem] border border-white/10 bg-[#0d1210] p-2 shadow-[0_30px_70px_-20px_oklch(0_0_0/0.8),inset_0_1px_2px_oklch(1_0_0/0.14)] [--aparelho-teto:420px] md:[--aparelho-teto:470px]"
     >
       {/* Ilha do alto-falante */}
       <div className="absolute left-1/2 top-3 z-20 h-5 w-[74px] -translate-x-1/2 rounded-full bg-black" />
