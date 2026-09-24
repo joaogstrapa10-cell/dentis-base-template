@@ -262,6 +262,27 @@ export function Header({
           // demais" em 30/07. Com o logo descido, o encosto não acontece mais.
           "fixed right-4 top-4 z-50 md:left-1/2 md:right-auto md:top-8 md:-translate-x-1/2",
           "flex max-w-[calc(100%-7rem)] flex-col items-center md:max-w-none",
+          /* ⚠️ NO CELULAR A PÍLULA FECHADA TEM O TAMANHO DO BOTÃO, e isso exigiu
+             consertar a causa e não o sintoma. Ela media 178px de largura para um
+             ícone de 32px, e o culpado não era padding: era o PAINEL do menu, que
+             fechado tem `max-h-0` mas continua com a largura do conteúdo — os links
+             são `whitespace-nowrap` e o "Agendar avaliação" é uma pílula inteira.
+             Altura zero não é largura zero, e o pai dimensiona pelo filho mais largo.
+
+             Por isso são DOIS ajustes que só funcionam juntos: aqui o header ganha
+             largura explícita ao abrir, e lá embaixo o painel recebe `w-0` ao fechar.
+             Sem o `w-0` o header continua empurrado; sem a largura daqui o painel
+             aberto não teria contra o que medir seu `w-full`.
+
+             Pedido de 24/09: "ajustar o tamanho do menu na versão mobile para ficar
+             proporcional ao menu pizza, aí ele expande se abrir". */
+          open
+            ? "w-[min(17rem,calc(100vw-2rem))] lg:w-auto"
+            : "w-auto",
+          /* A largura entra na transição para a pílula ABRIR, em vez de saltar de um
+             tamanho para o outro. Mesma duração da altura do painel (300ms), senão
+             moldura e conteúdo chegam em tempos diferentes. */
+          "transition-[width] duration-300 ease-in-out motion-reduce:transition-none",
           // Quase opaca, e isso é requisito de contraste, não gosto. A pílula é
           // `fixed`: ela atravessa as seções claras, e a 75% de opacidade o
           // fundo claro subia por baixo dela. Medido por amostragem do pixel do
@@ -277,7 +298,21 @@ export function Header({
           // desfoque quase não aparece — então tirá-lo no celular custa nada e devolve
           // trabalho de compositor em toda rolagem. Reportado em 15/09: "no celular o
           // scroll está travando muito".
-          "border border-ink-border bg-ink/95 px-5 py-3 lg:backdrop-blur-md",
+          "border border-ink-border lg:backdrop-blur-md",
+          /* ⚠️ ABERTO NO CELULAR O FUNDO É OPACO, e é conserto de algo que a mudança
+             de largura de hoje agravou. A pílula é `bg-ink/95` porque atravessa
+             seções claras e precisa de contraste (medido em 30/07); os 5% que passam
+             eram invisíveis numa faixa de 178px, mas o painel aberto agora tem 272px
+             e cobre uma foto inteira — dá para LER o texto da página atrás dos links.
+             O `backdrop-blur` que disfarçaria isso é `lg:` de propósito, por
+             desempenho no celular (15/09), então a saída é opacidade total. Custa
+             nada: o menu aberto é estado momentâneo, não acompanha a rolagem. */
+          open ? "bg-ink lg:bg-ink/95" : "bg-ink/95",
+          /* Fechado no celular o padding é igual nos quatro lados: com um ícone de
+             32px dentro, `px-5 py-3` daria 72×56 — uma cápsula deitada em volta de um
+             quadrado. `p-3` fecha em 56×56, que é redondo de verdade e continua acima
+             dos 44px de alvo de toque do piso de qualidade de 21/08. */
+          open ? "px-5 py-3" : "p-3 lg:px-5 lg:py-3",
           redondo ? "rounded-full" : "rounded-2xl",
           /* Entrada da pílula quando a arcada termina. Sobe 8px junto com o fade
              para ler como algo que chega, e não como algo que estava ali apagado.
@@ -335,10 +370,12 @@ export function Header({
 
         <div
           className={cn(
-            "flex w-full flex-col overflow-hidden transition-all duration-300 ease-in-out lg:hidden",
+            "flex flex-col overflow-hidden transition-all duration-300 ease-in-out lg:hidden",
             open
-              ? "max-h-[32rem] pt-5 opacity-100"
-              : "pointer-events-none max-h-0 pt-0 opacity-0",
+              ? "max-h-[32rem] w-full pt-5 opacity-100"
+              /* `w-0` e não só `max-h-0`: altura zero não tira o elemento da conta de
+                 LARGURA do pai, e era exatamente isso que inflava a pílula fechada. */
+              : "pointer-events-none max-h-0 w-0 pt-0 opacity-0",
           )}
         >
           <nav className="flex w-full flex-col gap-1">
