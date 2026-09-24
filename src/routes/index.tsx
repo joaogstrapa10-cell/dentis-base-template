@@ -11,7 +11,7 @@ import { DepoimentosSection } from "@/components/sections/Depoimentos";
 import { AberturaPortal } from "@/components/sections/AberturaPortal";
 import { BioSection } from "@/components/sections/Bio";
 import { FaqSection } from "@/components/sections/Faq";
-import { ChamadaFinalSection } from "@/components/sections/ChamadaFinal";
+import { ChamadaCinematica } from "@/components/sections/ChamadaCinematica";
 import { FooterSection } from "@/components/sections/Footer";
 
 export const Route = createFileRoute("/")({
@@ -123,7 +123,13 @@ function Landing() {
             fixo (que acompanha a página inteira) e no hero. Se ele quiser fechar a
             página com chamada de novo, o caminho é ter DUAS, e aí vale a regra de
             12/08: chamada repetida com destino idêntico não é escolha. */}
-        <ChamadaFinalSection data={clinica.chamadaFinal} />
+        {/* ⚠️ SUBSTITUI a `ChamadaFinalSection`, que era a faixa escura curta com
+            texto à esquerda e botão à direita. As duas são a MESMA chamada, e manter
+            ambas daria dois convites de agendamento seguidos com o mesmo destino — o
+            que a regra de 12/08 chama de escolha que não é escolha.
+            A `ChamadaFinal.tsx` e o bloco `clinica.chamadaFinal` FICAM no repositório:
+            voltar é trocar esta linha. */}
+        <ChamadaCinematica data={clinica.chamadaCinematica} />
         <BioSection data={clinica.bio} />
         <DiferenciaisSection data={clinica.diferenciais} />
         <EstruturaSection data={clinica.estrutura} />

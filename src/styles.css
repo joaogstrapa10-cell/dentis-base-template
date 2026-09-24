@@ -1015,3 +1015,21 @@ img,
   box-shadow: none;
 }
 /* ===== PALETA EM TESTE — FIM ===== */
+
+/* ---------- Pista de rolagem da tela de entrada ----------
+   A abertura é comandada pela rolagem e nada na tela dizia isso: quem não rolasse
+   veria uma marca parada e concluiria que a página acabou ali. Pedido de 24/09.
+
+   A seta desce e volta, com pausa longa no repouso — o gesto precisa ser notado sem
+   virar um pisca-pisca. `translate` e não `transform`, que é o que o Tailwind v4
+   escreve: misturar as duas famílias faz uma sobrescrever a outra em silêncio.
+
+   Atraso NEGATIVO pela mesma razão dos outros quatro laços do site (21/08): adianta
+   a fase sem atrasar o início, então a seta não nasce parada esperando a vez. */
+@keyframes desce-sobe {
+  0%, 62%, 100% { translate: 0 0; }
+  78%           { translate: 0 0.45rem; }
+}
+.seta-rolagem {
+  animation: desce-sobe 2.6s -0.6s ease-in-out infinite;
+}

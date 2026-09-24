@@ -129,6 +129,7 @@ export const PORTAL_VH = 100;
 const trava01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
 export function AberturaPortal({ data }: { data: AberturaContent }) {
+  const pistaRef = useRef<HTMLDivElement | null>(null);
   const trilhoRef = useRef<HTMLElement | null>(null);
   const marcaRef = useRef<HTMLDivElement | null>(null);
   const palcoRef = useRef<HTMLDivElement | null>(null);
@@ -233,6 +234,13 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
       }
       if (opacidadeTexto !== escritoRef.current.opacidade) {
         marca.style.opacity = opacidadeTexto;
+        /* A pista se apaga MAIS RÁPIDO que a marca (o cubo de uma fração menor que 1
+           cai antes): ela existe para quem ainda não rolou, e nos primeiros pixels já
+           cumpriu o papel. Continuar visível durante o gesto seria pedir de novo algo
+           que a pessoa está fazendo. */
+        if (pistaRef.current) {
+          pistaRef.current.style.opacity = (opacidade ** 3).toFixed(3);
+        }
         escritoRef.current.opacidade = opacidadeTexto;
       }
     };
@@ -398,6 +406,36 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-ink"
         />
+
+        {/* PISTA DE ROLAGEM. Pedido de 24/09: "nem todo mundo vai saber que é animação
+            em scroll, é importante ter, e ao scrollar essa informação some".
+
+            ⚠️ Ela se apaga pela MESMA variável que apaga a marca — o laço escreve a
+            opacidade nos dois no mesmo quadro. Um segundo cálculo aqui seria um número
+            a desalinhar no dia em que o ritmo da abertura mudasse, que é o defeito do
+            `0,7` chutado da arcada em 19/08.
+
+            Fica ACIMA do véu na ordem do DOM para não ser dissolvida por ele, e abaixo
+            do grupo em importância: `text-small` e opacidade parcial, porque é uma
+            pista e não um elemento da composição. */}
+        <div
+          ref={pistaRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-7 z-10 flex flex-col items-center gap-2 text-ink-muted"
+        >
+          <span className="text-small tracking-[0.14em] uppercase">{data.rotuloRolagem}</span>
+          <svg
+            viewBox="0 0 24 24"
+            className="seta-rolagem h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 5v14M6 13l6 6 6-6" />
+          </svg>
+        </div>
       </div>
     </section>
   );

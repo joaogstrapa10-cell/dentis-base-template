@@ -105,6 +105,10 @@ export type AberturaContent = {
    */
   marca: string | null;
   marcaAlt: string;
+  /** Pista de rolagem no pé da tela. Existe porque a abertura é comandada pela
+   *  rolagem e nada na tela diz isso — pedido de 24/09. Some assim que a pessoa
+   *  rola, junto com o resto da composição. */
+  rotuloRolagem: string;
   /** Reserva em texto quando não há arquivo de marca. */
   wordmark: string;
   /**
@@ -540,6 +544,46 @@ export type ChamadaFinalContent = {
   cta: Cta;
 };
 
+/** Um balão da conversa mostrada no celular da chamada cinematográfica. */
+export type BalaoConversa = {
+  /** `cliente` sai à direita em verde (é a mensagem que a pessoa vai enviar);
+   *  `clinica` sai à esquerda em cinza. */
+  de: "cliente" | "clinica";
+  texto: string;
+  hora: string;
+};
+
+/**
+ * Chamada em rolagem: a manchete, o cartão que sobe e o celular com a conversa
+ * do WhatsApp já pronta.
+ *
+ * ⚠️ A CONVERSA MOSTRA O WHATSAPP, NÃO UM APP DA CLÍNICA, e isso é decisão de
+ * compliance e não de estética. Em 03/08 uma "janela de aplicativo falsa" foi
+ * removida do site porque insinuava um painel de acompanhamento que a clínica
+ * não tem. O WhatsApp ela tem: é o canal de agendamento do site inteiro. Ao
+ * mexer aqui, NÃO transformar este mockup num app da Suzuki.
+ *
+ * ⚠️ E o primeiro balão tem de ser IGUAL a `mensagem`, que é o texto que o link
+ * realmente pré-preenche. Mostrar uma mensagem e enviar outra é prometer na tela
+ * o que o clique não cumpre.
+ */
+export type ChamadaCinematicaContent = {
+  /** Duas linhas: a segunda recebe o destaque. */
+  linha1: string;
+  linha2: string;
+  /** Texto curto ao lado do celular, quando o cartão já tomou a tela. */
+  cardTitulo: string;
+  cardDescricao: string;
+  /** Nome e status que aparecem no topo da conversa. */
+  contatoNome: string;
+  contatoStatus: string;
+  conversa: BalaoConversa[];
+  /** A mensagem que o link do WhatsApp pré-preenche. Igual ao primeiro balão
+   *  de `de: "cliente"`. */
+  mensagem: string;
+  cta: Cta;
+};
+
 export type FooterContent = {
   colunaContatoLabel: string;
   /** Rótulo único, para quando `telefone` e `whatsapp` são o mesmo número. Mesma
@@ -570,5 +614,6 @@ export type Clinica = {
   bio: BioContent;
   faq: FaqContent;
   chamadaFinal: ChamadaFinalContent;
+  chamadaCinematica: ChamadaCinematicaContent;
   footer: FooterContent;
 };

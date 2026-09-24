@@ -110,6 +110,7 @@ export const clinica: Clinica = {
        quem cede é o layout. O arquivo do lockup foi apagado para não sobrar asset órfão
        convidando a voltar atrás. */
     marca: BRAND_LOGO,
+    rotuloRolagem: "Role para ver",
     /* Os três pontos da tela de entrada. A copy é a de `diferenciais.itens`,
        encurtada para uma linha — não é texto novo, são as mesmas afirmações que a
        seção "Experiência aplicada caso a caso" faz mais abaixo. Escrever coisa nova
@@ -774,6 +775,47 @@ export const clinica: Clinica = {
     descricao:
       "Uma consulta define o diagnóstico, o plano e o orçamento. Sem compromisso de fechamento.",
     cta: { label: "Agendar pelo WhatsApp", href: WHATSAPP_HREF },
+  },
+  /* Chamada em rolagem. A manchete foi ditada pelo usuário em 24/09: a peça sai do
+     template "Track the journey, not just the days" e o texto vira "Agende a sua
+     implantodontia.".
+
+     ⚠️ A conversa mostra O WHATSAPP, não um app da clínica. Em 03/08 uma janela de
+     aplicativo falsa saiu do site por insinuar um painel que a clínica não tem; o
+     WhatsApp ela tem, e é o canal de agendamento do site inteiro.
+
+     ⚠️ O primeiro balão do cliente é IGUAL a `mensagem`, que é o texto que o link
+     pré-preenche de verdade. Ao editar um, editar o outro — mostrar uma mensagem e
+     enviar outra é prometer na tela o que o clique não cumpre.
+
+     ⚠️ A resposta da clínica é ILUSTRAÇÃO de fluxo, não promessa de atendimento: ela
+     não diz prazo, não confirma horário e não afirma resultado. Ao reescrever, manter
+     assim — "respondemos em X minutos" seria compromisso que ninguém assumiu. */
+  chamadaCinematica: {
+    linha1: "Agende a sua",
+    linha2: "implantodontia.",
+    cardTitulo: "Uma mensagem, e o caso começa a ser avaliado.",
+    cardDescricao:
+      "A conversa vai direto para a clínica, com a mensagem já escrita. A avaliação define o diagnóstico, o plano e o orçamento.",
+    contatoNome: "Suzuki Odontologia",
+    contatoStatus: "Responde pelo WhatsApp",
+    conversa: [
+      {
+        de: "cliente",
+        texto: "Olá! Gostaria de agendar uma avaliação de implantodontia na Suzuki Odontologia.",
+        hora: "09:41",
+      },
+      {
+        de: "clinica",
+        texto: "Olá! Vamos agendar a sua avaliação. Pode nos dizer qual o melhor dia para você?",
+        hora: "09:41",
+      },
+    ],
+    mensagem: "Olá! Gostaria de agendar uma avaliação de implantodontia na Suzuki Odontologia.",
+    cta: {
+      label: "Abrir no WhatsApp",
+      href: whatsappHref(WHATSAPP_NUMERO, "Olá! Gostaria de agendar uma avaliação de implantodontia na Suzuki Odontologia."),
+    },
   },
   footer: {
     colunaContatoLabel: "Contato",
