@@ -1033,3 +1033,33 @@ img,
 .seta-rolagem {
   animation: desce-sobe 2.6s -0.6s ease-in-out infinite;
 }
+
+/* ---------- Halo do botão da chamada em rolagem ----------
+   ⚠️ PULSO e não PISCADA. O usuário pediu o botão "piscando" em 24/09; piscar de
+   verdade é alternar ligado/desligado, e a WCAG 2.3.1 trata isso acima de 3 vezes por
+   segundo como risco real. Mesmo abaixo do limite, num botão a alternância lê como
+   defeito de renderização em vez de destaque. Um halo que respira chama a atenção sem
+   sequestrá-la, e é o gesto que o resto do site já usa para movimento.
+
+   É um irmão `absolute` com `scale` e `opacity`, não um `box-shadow` animado: sombra
+   animada obriga o navegador a repintar o elemento a cada quadro, e este botão fica na
+   tela o tempo todo depois que a seção abre.
+
+   `inset: -6px` para o halo nascer POR FORA da pílula, e `-z-10` para ficar atrás dela
+   sem cobrir o rótulo. */
+.halo-cta {
+  position: absolute;
+  inset: -6px;
+  z-index: -10;
+  border-radius: 9999px;
+  background: var(--color-ink-foreground);
+  opacity: 0.28;
+  animation: respira-halo 2.4s ease-in-out infinite;
+}
+@keyframes respira-halo {
+  0%, 100% { scale: 1;    opacity: 0.18; }
+  50%      { scale: 1.09; opacity: 0.42; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .halo-cta { animation: none; opacity: 0.22; }
+}

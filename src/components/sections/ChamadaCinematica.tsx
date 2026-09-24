@@ -44,11 +44,11 @@ function fase(p: number, de: number, ate: number) {
 
 export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) {
   const trilhoRef = useRef<HTMLElement | null>(null);
-  const aparelhoRef = useRef<HTMLDivElement | null>(null);
   const [p, setP] = useState(0);
-  /* Inclinação pelo ponteiro, o segundo gesto do template. Some ao estado neutro da
-     entrada, então as duas convivem sem brigar pela mesma propriedade. */
-  const [inclina, setInclina] = useState({ x: 0, y: 0 });
+  /* ⚠️ A INCLINAÇÃO PELO PONTEIRO SAIU em 24/09, a pedido: "deixe o celular sem mexer,
+     fixo, porque ao passar o mouse em cima ele mexe". Era o segundo gesto do template
+     e entrou na rodada anterior junto com a entrada 3D; ele reprovou ao ver no ar.
+     Depois da entrada, o aparelho fica PARADO. Não reintroduzir sem pedido. */
   const [semMovimento, setSemMovimento] = useState(false);
 
   useEffect(() => {
@@ -88,34 +88,6 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
     return () => {
       vivo = false;
       cancelAnimationFrame(id);
-    };
-  }, [semMovimento]);
-
-  /* ⚠️ Só onde há ponteiro FINO: num toque o `mousemove` não existe, e o custo de
-     escutá-lo seria por nada. `matchMedia` e não largura de tela — o que decide é o
-     dispositivo de entrada. */
-  useEffect(() => {
-    if (semMovimento) return;
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    let pedido = 0;
-    const aoMover = (e: MouseEvent) => {
-      cancelAnimationFrame(pedido);
-      pedido = requestAnimationFrame(() => {
-        const el = aparelhoRef.current;
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > window.innerHeight) return;
-        const dx = e.clientX / window.innerWidth - 0.5;
-        const dy = e.clientY / window.innerHeight - 0.5;
-        /* 12 graus é a amplitude do template. Mais que isso e o aparelho vira um
-           objeto girando; menos e o gesto não se percebe. */
-        setInclina({ x: -dy * 2 * 6, y: dx * 2 * 6 });
-      });
-    };
-    window.addEventListener("mousemove", aoMover);
-    return () => {
-      window.removeEventListener("mousemove", aoMover);
-      cancelAnimationFrame(pedido);
     };
   }, [semMovimento]);
 
@@ -205,14 +177,25 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
                   translate: `0 ${(1 - v.entraBotao) * 14}px`,
                 }}
               >
+                {/* ⚠️ O DESTAQUE É PULSO, NÃO PISCADA, e a diferença é norma e não
+                    gosto: a WCAG 2.3.1 trata conteúdo que pisca acima de 3 vezes por
+                    segundo como risco real, e mesmo abaixo disso a alternância de
+                    ligado/desligado num botão lê como defeito de renderização. O que
+                    está aqui é um halo que respira em 2,4s — chama atenção sem
+                    sequestrá-la, e para sob `prefers-reduced-motion`.
+
+                    O halo é um irmão `absolute`, não um `box-shadow` animado: sombra
+                    animada repinta o elemento a cada quadro, e este botão fica na tela
+                    o tempo todo depois que a seção abre. */}
                 <a
                   href={data.cta.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 rounded-full bg-ink-foreground px-6 py-3.5 text-base font-medium text-ink transition-transform duration-200 hover:-translate-y-0.5"
+                  className="group relative inline-flex items-center gap-3 rounded-full bg-ink-foreground px-8 py-4.5 text-lg font-semibold text-ink transition-transform duration-200 hover:-translate-y-0.5"
                 >
-                  <IconeWhatsApp className="h-5 w-5" />
-                  {data.cta.label}
+                  <span aria-hidden="true" className="halo-cta" />
+                  <IconeWhatsApp className="relative h-6 w-6" />
+                  <span className="relative">{data.cta.label}</span>
                 </a>
               </div>
             </div>
@@ -238,14 +221,13 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
               style={{ perspective: "1000px" }}
             >
               <div
-                ref={aparelhoRef}
                 className="will-change-transform"
                 style={{
                   opacity: v.entraCelular,
                   transform: [
                     `translate3d(0, ${(1 - v.entraCelular) * 300}px, ${(1 - v.entraCelular) * -500}px)`,
-                    `rotateX(${(1 - v.entraCelular) * 50 + inclina.x}deg)`,
-                    `rotateY(${(1 - v.entraCelular) * -30 + inclina.y}deg)`,
+                    `rotateX(${(1 - v.entraCelular) * 50}deg)`,
+                    `rotateY(${(1 - v.entraCelular) * -30}deg)`,
                     `scale(${0.6 + v.entraCelular * 0.4})`,
                   ].join(" "),
                   transformStyle: "preserve-3d",
@@ -268,14 +250,20 @@ function Aparelho({ data, revelado }: { data: ChamadaCinematicaContent; revelado
   return (
     <div
       aria-hidden="true"
-      /* ⚠️ TRÊS tamanhos, e o degrau do CELULAR é o apertado: lá o aparelho divide os
-         793px do cartão com o título, a descrição e o botão — medido: a 470px de
-         altura a folga do cartão virava NEGATIVA (-26px) e o botão saía para fora
-         dele. 420px é o teto ali. Os outros dois crescem à
-         vontade porque no desktop ele tem uma coluna só para si. Proporção mantida em
-         ~1,81 nos três — é a do aparelho real, e esticá-la faria a tela parecer de
-         outro dispositivo. Aumentado a pedido em 24/09. */
-      className="relative h-[420px] w-[232px] shrink-0 rounded-[2.4rem] border border-white/10 bg-[#0d1210] p-2 shadow-[0_30px_70px_-20px_oklch(0_0_0/0.8),inset_0_1px_2px_oklch(1_0_0/0.14)] md:h-[560px] md:w-[310px] lg:h-[640px] lg:w-[354px]"
+      /* ⚠️ A ALTURA SAI DA JANELA e não de um px cravado, e o motivo foi MEDIDO: com
+         640px fixos o aparelho passava POR TRÁS da pílula de navegação numa tela de
+         1440x800 (folga de -18px) embora coubesse folgado em 1440x900. Quem manda é a
+         ALTURA da janela, e um número em px não sabe disso — é o defeito que ele
+         reportou em 24/09 ("ele passa do tamanho da seção de navegação ali").
+
+         O teto de 384px é o -40% que ele pediu na mesma rodada, sobre os 640 de antes.
+         O `46vh` é o que protege a tela baixa: abaixo de ~835px de janela ele passa a
+         mandar, e o aparelho encolhe sozinho em vez de invadir o menu.
+
+         A proporção vem do `aspectRatio`, então a largura acompanha e a tela nunca
+         deforma. 232/420 é a do aparelho real. */
+      style={{ height: "min(46vh, 384px)", aspectRatio: "232 / 420" }}
+      className="relative w-auto shrink-0 rounded-[2.4rem] border border-white/10 bg-[#0d1210] p-2 shadow-[0_30px_70px_-20px_oklch(0_0_0/0.8),inset_0_1px_2px_oklch(1_0_0/0.14)]"
     >
       {/* Ilha do alto-falante */}
       <div className="absolute left-1/2 top-3 z-20 h-5 w-[74px] -translate-x-1/2 rounded-full bg-black" />
