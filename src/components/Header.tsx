@@ -372,7 +372,13 @@ export function Header({
           className={cn(
             "flex flex-col overflow-hidden transition-all duration-300 ease-in-out lg:hidden",
             open
-              ? "max-h-[32rem] w-full pt-5 opacity-100"
+              /* `pt-2` e não `pt-5`: eram 20px entre a base do X e o topo do
+                 primeiro link, mais os 10px de respiro do próprio link — 30px até o
+                 texto, com o botão de fechar sozinho num campo vazio acima. Pedido de
+                 24/09: "ainda tem um espaçamento em cima, subir um pouco os botões
+                 das seções". Agora 8px, e o respiro do link continua fazendo a
+                 separação que a lista precisa. */
+              ? "max-h-[32rem] w-full pt-2 opacity-100"
               /* `w-0` e não só `max-h-0`: altura zero não tira o elemento da conta de
                  LARGURA do pai, e era exatamente isso que inflava a pílula fechada. */
               : "pointer-events-none max-h-0 w-0 pt-0 opacity-0",
