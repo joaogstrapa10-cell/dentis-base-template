@@ -174,16 +174,22 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
             boxShadow: "0 40px 100px -20px oklch(0 0 0 / 0.55)",
           }}
         >
-          {/* ⚠️ TRÊS colunas e não duas, com a TERCEIRA VAZIA: é o que põe o celular
-              no centro da TELA, e não no centro de um par. No template a coluna da
-              direita carrega o nome da marca em caixa alta gigante; o usuário mandou
-              tirar ("não ter o Sobers"), e tirar a coluna junto jogaria o aparelho
-              para a direita. A coluna vazia é o contrapeso. */}
-          <div className="grid w-full max-w-6xl grid-cols-1 items-center gap-8 px-5 py-6 md:px-10 lg:grid-cols-3 lg:gap-10">
+          {/* ⚠️ AS DUAS COLUNAS SÃO UM GRUPO CENTRADO, e isso já foi o contrário: por
+              uma rodada a grade teve TRÊS colunas com a terceira vazia, para pôr o
+              APARELHO no centro exato da tela. Ele viu no ar e pediu o oposto —
+              "deixar os dois elementos centralizados juntos, agrupe o celular + os
+              textos + o botão juntos". Com o celular no centro da tela o texto era
+              empurrado para a borda e sobrava um vazio do outro lado, que é o que
+              aparece no print dele.
+
+              `w-fit` + `justify-center`: as trilhas ocupam só o que precisam e o PAR
+              fica centrado. Uma largura fixa com `mx-auto` não serviria — a coluna de
+              texto mudaria de tamanho conforme a copy e o conjunto sairia do eixo. */}
+          <div className="mx-auto grid w-full grid-cols-1 items-center justify-center gap-8 px-5 py-6 md:px-10 lg:w-fit lg:grid-cols-[minmax(0,24rem)_auto] lg:gap-14">
             {/* Texto do cartão. No celular vem DEPOIS do aparelho, porque ali o
                 aparelho é a peça que explica a seção. */}
             <div
-              className="order-2 text-center lg:order-1 lg:col-span-1 lg:text-left"
+              className="order-2 text-center lg:order-1 lg:text-left"
               style={{
                 opacity: v.entraTexto,
                 translate: `${(1 - v.entraTexto) * -24}px 0`,
@@ -228,7 +234,7 @@ export function ChamadaCinematica({ data }: { data: ChamadaCinematicaContent }) 
                 escala e o giro primeiro, e o deslocamento depois em px não escalados.
                 Invertida, o deslocamento viria multiplicado. Registrado em 19/08. */}
             <div
-              className="order-1 flex justify-center lg:order-2 lg:col-span-1"
+              className="order-1 flex justify-center lg:order-2"
               style={{ perspective: "1000px" }}
             >
               <div
