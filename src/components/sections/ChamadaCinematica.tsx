@@ -262,7 +262,14 @@ function Aparelho({ data, revelado }: { data: ChamadaCinematicaContent; revelado
   return (
     <div
       aria-hidden="true"
-      className="relative h-[420px] w-[232px] shrink-0 rounded-[2.4rem] border border-white/10 bg-[#0d1210] p-2 shadow-[0_30px_70px_-20px_oklch(0_0_0/0.8),inset_0_1px_2px_oklch(1_0_0/0.14)] md:h-[470px] md:w-[258px]"
+      /* ⚠️ TRÊS tamanhos, e o degrau do CELULAR é o apertado: lá o aparelho divide os
+         793px do cartão com o título, a descrição e o botão — medido: a 470px de
+         altura a folga do cartão virava NEGATIVA (-26px) e o botão saía para fora
+         dele. 420px é o teto ali. Os outros dois crescem à
+         vontade porque no desktop ele tem uma coluna só para si. Proporção mantida em
+         ~1,81 nos três — é a do aparelho real, e esticá-la faria a tela parecer de
+         outro dispositivo. Aumentado a pedido em 24/09. */
+      className="relative h-[420px] w-[232px] shrink-0 rounded-[2.4rem] border border-white/10 bg-[#0d1210] p-2 shadow-[0_30px_70px_-20px_oklch(0_0_0/0.8),inset_0_1px_2px_oklch(1_0_0/0.14)] md:h-[560px] md:w-[310px] lg:h-[640px] lg:w-[354px]"
     >
       {/* Ilha do alto-falante */}
       <div className="absolute left-1/2 top-3 z-20 h-5 w-[74px] -translate-x-1/2 rounded-full bg-black" />
