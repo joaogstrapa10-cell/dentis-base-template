@@ -87,9 +87,9 @@ export const clinica: Clinica = {
          lados — e o pior caso NÃO é o desktop largo, é 1024, onde a navegação aparece
          e a marca ainda existe nas rotas internas. Remedir a folga lá a cada item. */
       { label: "Home", href: "#portal" },
+      { label: "Equipe", href: "#responsavel" },
       { label: "Casos", href: "#casos" },
       { label: "Áreas", href: "#areas" },
-      { label: "Equipe", href: "#responsavel" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "FAQ", href: "#faq" },
       { label: "Contato", href: "#localizacao" },
@@ -841,8 +841,8 @@ export const clinica: Clinica = {
       // Rota interna, não âncora: é a página com a lista inteira. O header não
       // recebe este item — a pílula já está em cinco e um sexto recria a colisão
       // com a marca em 1024px, medida duas vezes nesta sessão.
-      { label: "Casos clínicos", href: "/casos" },
       { label: "Responsável técnico", href: "#responsavel" },
+      { label: "Casos clínicos", href: "/casos" },
       { label: "Diferenciais", href: "#diferenciais" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "Perguntas frequentes", href: "#faq" },

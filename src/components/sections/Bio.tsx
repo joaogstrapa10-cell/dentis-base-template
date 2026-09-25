@@ -66,7 +66,16 @@ function Retrato({
 
 export function BioSection({ data }: { data: BioContent }) {
   return (
-    <section id="responsavel" className="scroll-mt-12 px-3 md:px-4">
+    /* ⚠️ O `pt` NÃO É RESPIRO, é a separação de duas faixas escuras. Desde 25/09
+       esta seção vem logo DEPOIS DO HERO, que também é bloco escuro sangrado, e
+       nenhuma das duas participa do ritmo de `--section-py` — então sem ele os
+       dois cantos arredondados ficam encostados e o fio claro entre eles lê como
+       risco no meio de um bloco só. É o mesmo defeito pago em 13/08 (chamada x
+       rodapé) e de novo em 15/09 (chamada x Bio). O valor é o DOBRO da goteira
+       lateral: igual à goteira viraria um fio, e no ritmo de seção sobraria mais
+       branco do que a separação entre duas superfícies precisa.
+       ⚠️ Se esta seção mudar de lugar, remedir quem passa a vir antes. */
+    <section id="responsavel" className="scroll-mt-12 px-3 pt-6 md:px-4 md:pt-8">
       {/* ⚠️ SEM `overflow-hidden`, e é requisito da órbita, não descuido: o palco
           dela é `position: sticky`, e um ancestral com `overflow` diferente de
           `visible` vira o contêiner de rolagem do sticky — que não rola, então o

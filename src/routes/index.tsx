@@ -112,6 +112,22 @@ function Landing() {
             "Home" no menu aponta para `#portal`, que é o topo da página. */}
         <AberturaPortal data={clinica.abertura} />
         <HeroSection data={clinica.hero} />
+        {/* ⚠️ A SEÇÃO DO RESPONSÁVEL É A PRIMEIRA DEPOIS DO HERO, por pedido de
+            25/09 com o print do hero na mão: "precisamos valorizar o Dalton, a
+            seção dele precisa ser a primeira após essa que printei". Ela era a
+            SEXTA, entre a chamada e Diferenciais, desde 15/09.
+
+            Isso muda o argumento da página pela terceira vez: ela abriu pelos
+            diferenciais até 13/08, passou a abrir pelo trabalho feito (Casos) e
+            agora abre por QUEM conduz o trabalho. O menu e a coluna "Clínica" do
+            rodapé seguem esta ordem, senão âncora que sobe a página enquanto a de
+            baixo desce lê como link errado.
+
+            ⚠️ Hero e Bio são os DOIS faixas escuras, e nenhuma das duas participa
+            do ritmo de `--section-py`. Ver o `pt` da Bio: sem ele os dois blocos
+            ficam encostados e leem como um bloco só com uma emenda no meio, que é
+            o defeito pago em 13/08 e de novo em 15/09. */}
+        <BioSection data={clinica.bio} />
         <CasosSection data={clinica.casos} />
         <AreasSection data={clinica.areas} />
         {/* ⚠️ A CHAMADA SOBE PARA CÁ, logo depois de Especialidades, por pedido de
@@ -130,7 +146,6 @@ function Landing() {
             A `ChamadaFinal.tsx` e o bloco `clinica.chamadaFinal` FICAM no repositório:
             voltar é trocar esta linha. */}
         <ChamadaCinematica data={clinica.chamadaCinematica} brand={clinica.brand} />
-        <BioSection data={clinica.bio} />
         <DiferenciaisSection data={clinica.diferenciais} />
         <EstruturaSection data={clinica.estrutura} />
         <DepoimentosSection
