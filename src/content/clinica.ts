@@ -794,28 +794,28 @@ export const clinica: Clinica = {
   chamadaCinematica: {
     linha1: "Agende a sua",
     linha2: "avaliação.",
-    cardTitulo: "Uma mensagem, e o caso começa a ser avaliado.",
+    cardTitulo: "Conte o seu caso. A gente avalia.",
     cardDescricao:
-      "A conversa vai direto para a clínica, com a mensagem já escrita. A avaliação define o diagnóstico, o plano e o orçamento.",
+      "A avaliação é presencial e é ela que define o diagnóstico, o plano de tratamento e o orçamento. Tudo começa por uma mensagem.",
     contatoNome: "Suzuki Odontologia",
     contatoStatus: "Responde pelo WhatsApp",
     conversa: [
       {
         de: "cliente",
-        texto: "Olá! Gostaria de agendar uma avaliação na Suzuki Odontologia.",
+        texto: "Olá! Gostaria de avaliar o meu caso na Suzuki Odontologia.",
         hora: "09:41",
       },
       {
         de: "clinica",
-        texto: "Olá! Vamos agendar a sua avaliação. Pode nos dizer qual o melhor dia para você?",
+        texto: "Olá! Pode nos contar o que está sentindo? Já encaminhamos a sua avaliação.",
         hora: "09:41",
       },
     ],
-    mensagem: "Olá! Gostaria de agendar uma avaliação na Suzuki Odontologia.",
+    mensagem: "Olá! Gostaria de avaliar o meu caso na Suzuki Odontologia.",
     rotuloRolagem: "Role para ver",
     cta: {
-      label: "Abrir no WhatsApp",
-      href: whatsappHref(WHATSAPP_NUMERO, "Olá! Gostaria de agendar uma avaliação na Suzuki Odontologia."),
+      label: "Agende sua consulta",
+      href: whatsappHref(WHATSAPP_NUMERO, "Olá! Gostaria de avaliar o meu caso na Suzuki Odontologia."),
     },
   },
   footer: {

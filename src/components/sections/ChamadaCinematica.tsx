@@ -229,10 +229,22 @@ export function ChamadaCinematica({
                   href={data.cta.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative inline-flex items-center gap-3 rounded-full bg-ink-foreground px-8 py-4.5 text-lg font-semibold text-ink transition-transform duration-200 hover:-translate-y-0.5"
+                  /* ⚠️ `whitespace-nowrap` É PEDIDO, não capricho: "no celular não
+                     quero que fiquem duas linhas o botão" (25/09). Mas nowrap sozinho
+                     não resolve nada, só troca quebra por transbordo. O que faz caber
+                     é a conta ao lado dele: em 320px o cartão dá 256px úteis, e com
+                     `px-8` mais o rótulo a 18px a pílula pedia 275px. Com `px-6` e o
+                     rótulo a 16px ela fecha em 250px, centrada. Recuo, vão e ícone
+                     voltam ao tamanho cheio de `md` para cima, onde nunca faltou espaço.
+                     ⚠️ Item de flex MAIOR que o contêiner não centra: com `justify-center`
+                     ele transborda para a DIREITA e a pílula fica fora de eixo. Foi o
+                     que aconteceu a 320px antes deste ajuste (folga 20px de um lado
+                     contra 4px do outro), e é por isso que caber é requisito e não folga.
+                     ⚠️ Ao trocar o rótulo, remedir em 320px: é lá que estoura. */
+                  className="group relative inline-flex items-center gap-2.5 whitespace-nowrap rounded-full bg-ink-foreground px-5 py-4.5 text-base font-semibold text-ink transition-transform duration-200 hover:-translate-y-0.5 md:gap-3 md:px-8 md:text-lg"
                 >
                   <span aria-hidden="true" className="halo-cta" />
-                  <IconeWhatsApp className="relative h-6 w-6" />
+                  <IconeWhatsApp className="relative h-5 w-5 md:h-6 md:w-6" />
                   <span className="relative">{data.cta.label}</span>
                 </a>
               </div>
