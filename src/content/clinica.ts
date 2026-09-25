@@ -641,8 +641,8 @@ export const clinica: Clinica = {
     ],
   },
   bio: {
-    eyebrow: "Responsável técnico",
-    nome: "Dr. Dalton Suzuki",
+    nomeLinha1: "Dr. Dalton",
+    nomeLinha2: "Suzuki",
     credencial: "CRO-PR 9112",
     retrato: "/imagens/equipe/dalton-suzuki.webp",
     retratoAlt: "Retrato do Dr. Dalton Suzuki, de jaleco, sorrindo",

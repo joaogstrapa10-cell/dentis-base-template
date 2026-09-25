@@ -264,6 +264,26 @@
   letter-spacing: -0.014em;
 }
 
+/* ⚠️ MESMO TAMANHO do `.display-1`, peso de EXIBIÇÃO. Não é degrau novo na escala
+   de cinco: é o par leve do primeiro, como `.display-3-leve` é o par leve do
+   terceiro — e existe pela mesma razão, que peso e leading de um `.display-*` NÃO
+   se ajustam por utilitário do Tailwind (os degraus são declarados fora de
+   `@layer` e vencem `@layer utilities` em silêncio).
+
+   Criado em 25/09 para o nome do responsável no template editorial que o usuário
+   mandou: lá o nome é gigante e finíssimo, com o sobrenome um grau mais cheio.
+   `.forte` é esse sobrenome, e precisa ser regra aninhada pelo mesmo motivo. */
+.display-1-leve {
+  font-weight: 200;
+  font-size: clamp(2rem, 3.7vw, 3rem);
+  line-height: 1.04;
+  letter-spacing: -0.038em;
+}
+
+.display-1-leve .forte {
+  font-weight: 400;
+}
+
 /* ---------- A LINHA DE APOIO: 18px ----------
 
    O parágrafo que vem logo abaixo do título de seção. É a ÚNICA medida de fonte

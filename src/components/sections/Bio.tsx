@@ -96,28 +96,80 @@ export function BioSection({ data }: { data: BioContent }) {
             conteúdo do bloco tem de alinhar com o das seções claras vizinhas. */}
         <div className="mx-auto w-full max-w-[1200px] px-5 py-14 md:px-10 md:py-24">
           <div className="relative z-10">
-            <Reveal>
-              <h2 className="display-2 text-ink-foreground">{data.nome}</h2>
-              <p className="mt-4 text-base text-ink-muted">{data.credencial}</p>
-            </Reveal>
+            {/* ⚠️ TEMPLATE EDITORIAL, mandado pelo usuário em 25/09 ("preciso mudar
+                esse layout, não estou gostando, quero fazer nesse sentido"): retrato
+                de um lado, e o bloco de informação SOBREPONDO a borda dele, com o
+                nome em tipo gigante e fino e o sobrenome um grau mais cheio.
 
-            <div className="mt-14 grid gap-10 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
-              <Reveal>
-                {/* `aspect-[3/4]`, a proporção nativa do arquivo. Estava em 4/5,
-                    que recortava a foto de estúdio sem necessidade. */}
+                DUAS COISAS DELE FICARAM FORA, as duas a pedido: o botão redondo de
+                seta e o rótulo de cargo ("Backend Engineer"). O rótulo não virou
+                outra coisa no mesmo lugar — quem carrega a identificação é o par
+                nome + CRO, e ele está logo abaixo do nome, que é onde a
+                CFO-196/2019 exige os dois juntos.
+
+                ⚠️ E O `framer-motion` DO TEMPLATE NÃO ENTROU. O projeto não tem
+                dependência de animação, e o motivo é duro: essas bibliotecas
+                escrevem a propriedade `transform`, o Tailwind v4 escreve
+                `translate`/`scale`/`rotate` SEPARADAS, e misturar as duas famílias
+                no mesmo elemento faz uma apagar a outra sem erro nenhum. A entrada
+                é o `Reveal` que o site inteiro já usa. Mesma decisão do GSAP em
+                19/08 e do `motion/react` em 19/08. */}
+            <div className="lg:flex lg:items-center">
+              {/* O RETRATO. `aspect-[3/4]` é a proporção NATIVA do arquivo
+                  (300x400), então o recorte é zero — o template pede 360x500, que
+                  é 0,72, e forçar o arquivo nele cortaria de lado. */}
+              <Reveal className="relative w-full max-w-[20rem] shrink-0 sm:max-w-[22rem] lg:max-w-none lg:w-[22rem]">
                 <Retrato
                   src={data.retrato}
                   alt={data.retratoAlt}
                   className="aspect-[3/4] w-full"
                 />
+                {/* ⚠️ O VÉU É REQUISITO DA SOBREPOSIÇÃO, não enfeite. No template o
+                    bloco de texto cruza a borda da foto por ~32px, e lá o texto é
+                    ESCURO sobre página clara. Aqui ele é claro sobre um bloco
+                    escuro, e a foto do Dalton é de estúdio com fundo CREME: texto
+                    claro cruzando creme simplesmente desaparece. O véu leva a borda
+                    direita da foto ao `--ink` da faixa, então o nome atravessa
+                    campo escuro. Só de `lg` para cima, que é onde há sobreposição. */}
+                <span
+                  aria-hidden="true"
+                  style={{
+                    /* Desce apagando: forte onde o NOME cruza (o topo da foto, que
+                       ali é só o fundo creme do estúdio) e ausente na altura do
+                       rosto e do corpo. Sem isso o véu enevoa o retrato inteiro,
+                       que foi o primeiro render desta rodada. */
+                    maskImage: "linear-gradient(to bottom, #000 0%, #000 22%, transparent 48%)",
+                    WebkitMaskImage:
+                      "linear-gradient(to bottom, #000 0%, #000 22%, transparent 48%)",
+                  }}
+                  className="pointer-events-none absolute inset-y-0 right-0 hidden w-24 rounded-r-2xl bg-gradient-to-l from-ink via-ink/90 to-transparent lg:block"
+                />
               </Reveal>
 
-              <Reveal delay={120}>
-                <p className="max-w-[64ch] text-base leading-[1.75] text-ink-foreground/90">
+              {/* O BLOCO DE INFORMAÇÃO, sobrepondo a foto. A margem negativa é o
+                  gesto do template; abaixo de `lg` ela some e as duas peças
+                  empilham, porque numa coluna de 350px não há o que sobrepor. */}
+              <Reveal
+                delay={120}
+                className="relative z-20 mt-10 lg:-ml-16 lg:mt-0 lg:min-w-0 lg:flex-1"
+              >
+                <h2 className="display-1-leve text-ink-foreground">
+                  {data.nomeLinha1}
+                  <br />
+                  <span className="forte">{data.nomeLinha2}</span>
+                </h2>
+                <p className="mt-4 text-base text-ink-muted">{data.credencial}</p>
+
+                {/* ⚠️ O RECUO É O QUE FAZ SÓ O NOME SOBREPOR. No template o corpo do texto
+                    é empurrado para a direita pelo botão redondo de seta; tirando o
+                    botão a pedido dele, o texto caiu para a borda do bloco e passou a
+                    cruzar a foto inteira, com as linhas correndo por cima do rosto.
+                    O `pl` devolve esse empurrão sem devolver o botão. */}
+                <p className="mt-10 max-w-[56ch] text-base leading-[1.8] text-ink-foreground/85 lg:pl-20">
                   {data.corpo}
                 </p>
 
-                <ul className="mt-10 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+                <ul className="mt-10 grid gap-x-10 gap-y-3 sm:grid-cols-2 lg:pl-20">
                   {data.titulacao.map((t) => (
                     <li
                       key={t}

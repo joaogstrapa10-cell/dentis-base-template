@@ -497,8 +497,13 @@ export type BioMembro = {
 };
 
 export type BioContent = {
-  eyebrow: string;
-  nome: string;
+  /** O nome em DUAS LINHAS, que é como o template editorial de 25/09 o exibe:
+   *  a primeira fina, a segunda um grau mais cheia. As duas juntas formam o nome
+   *  registrado, e é isso que mantém a exigência da CFO-196/2019 de pouparem nome
+   *  e número de inscrição lado a lado. Onde quebrar é decisão de conteúdo, não
+   *  do componente: partir por código no último espaço erra em nome composto. */
+  nomeLinha1: string;
+  nomeLinha2: string;
   credencial: string;
   /** Caminho em /public. `null` renderiza o slot rotulado. */
   retrato: string | null;
