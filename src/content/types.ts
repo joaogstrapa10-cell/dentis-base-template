@@ -497,13 +497,14 @@ export type BioMembro = {
 };
 
 export type BioContent = {
-  /** O nome em DUAS LINHAS, que é como o template editorial de 25/09 o exibe:
-   *  a primeira fina, a segunda um grau mais cheia. As duas juntas formam o nome
-   *  registrado, e é isso que mantém a exigência da CFO-196/2019 de pouparem nome
-   *  e número de inscrição lado a lado. Onde quebrar é decisão de conteúdo, não
-   *  do componente: partir por código no último espaço erra em nome composto. */
-  nomeLinha1: string;
-  nomeLinha2: string;
+  /** Nome do responsável técnico, em UM campo. Foi partido em duas linhas entre
+   *  24 e 28/09, enquanto o template editorial exibia o sobrenome num peso
+   *  diferente; com o editorial desfeito a pedido, voltou a ser um só. ⚠️ Ele
+   *  anda em par com `credencial`: a CFO-196/2019 exige nome e número de
+   *  inscrição JUNTOS na divulgação, e é este par que cumpre isso aqui. Hoje o
+   *  CRO do responsável aparece em dois lugares (este e o bloco legal do
+   *  rodapé); ao mexer num, conferir que o outro continua de pé. */
+  nome: string;
   credencial: string;
   /** Caminho em /public. `null` renderiza o slot rotulado. */
   retrato: string | null;
