@@ -112,48 +112,57 @@ function Landing() {
             "Home" no menu aponta para `#portal`, que é o topo da página. */}
         <AberturaPortal data={clinica.abertura} />
         <HeroSection data={clinica.hero} />
-        {/* ⚠️ A SEÇÃO DO RESPONSÁVEL É A PRIMEIRA DEPOIS DO HERO, por pedido de
-            25/09 com o print do hero na mão: "precisamos valorizar o Dalton, a
-            seção dele precisa ser a primeira após essa que printei". Ela era a
-            SEXTA, entre a chamada e Diferenciais, desde 15/09.
 
-            Isso muda o argumento da página pela terceira vez: ela abriu pelos
-            diferenciais até 13/08, passou a abrir pelo trabalho feito (Casos) e
-            agora abre por QUEM conduz o trabalho. O menu e a coluna "Clínica" do
-            rodapé seguem esta ordem, senão âncora que sobe a página enquanto a de
-            baixo desce lê como link errado.
+        {/* ⚠️ A ORDEM DESTA PÁGINA FOI DITADA PELO USUÁRIO EM 30/09, com a lógica
+            escrita por ele, e é a QUARTA vez que ela muda. Vale registrar o
+            argumento inteiro, porque sem ele a próxima sessão reordena de novo:
 
-            ⚠️ Hero e Bio são os DOIS faixas escuras, e nenhuma das duas participa
-            do ritmo de `--section-py`. Ver o `pt` da Bio: sem ele os dois blocos
-            ficam encostados e leem como um bloco só com uma emenda no meio, que é
-            o defeito pago em 13/08 e de novo em 15/09. */}
+              quem conduz e como  →  Bio + Diferenciais
+              o que a clínica faz →  Áreas, com a prova logo em seguida (Casos)
+              quem aprovou        →  Depoimentos, que aquecem antes do CTA
+              objeções práticas   →  Estrutura, FAQ e Localização (onde, como, quanto)
+
+            O que mudou em relação a 25/09: Diferenciais subiu para logo depois da
+            Bio, Casos DESCEU para depois de Áreas (a prova vem depois do que ela
+            prova), Depoimentos subiu para antes da chamada, e a chamada desceu
+            para o meio. Antes disso a página já tinha aberto pelos diferenciais
+            (até 13/08), pelo trabalho feito (Casos, 13/08) e por quem conduz o
+            trabalho (Bio, 25/09).
+
+            ⚠️ O MENU e a coluna "Clínica" do rodapé seguem esta ordem. Âncora que
+            sobe a página enquanto a de baixo desce lê como link errado. */}
+
+        {/* ⚠️ Hero e Bio são as DUAS faixas escuras sangradas em sequência, e
+            nenhuma participa do ritmo de `--section-py`. É por isso que a Bio tem
+            `pt-6 md:pt-8`: sem ele os dois blocos ficam com os cantos encostados e
+            leem como um bloco só com uma emenda no meio. Defeito pago em 13/08,
+            15/09 e 25/09. Ao mover faixa sangrada, conferir quem passa a vir
+            antes. */}
         <BioSection data={clinica.bio} />
-        <CasosSection data={clinica.casos} />
-        <AreasSection data={clinica.areas} />
-        {/* ⚠️ A CHAMADA SOBE PARA CÁ, logo depois de Especialidades, por pedido de
-            15/09 ("o CTA colocar depois de especialidades"). Ela era a última seção
-            antes do rodapé desde 12/08.
-
-            Consequência a vigiar, e não é bug: **a página deixou de terminar numa
-            chamada** — fecha em Localização e rodapé. A conversão continua no header
-            fixo (que acompanha a página inteira) e no hero. Se ele quiser fechar a
-            página com chamada de novo, o caminho é ter DUAS, e aí vale a regra de
-            12/08: chamada repetida com destino idêntico não é escolha. */}
-        {/* ⚠️ SUBSTITUI a `ChamadaFinalSection`, que era a faixa escura curta com
-            texto à esquerda e botão à direita. As duas são a MESMA chamada, e manter
-            ambas daria dois convites de agendamento seguidos com o mesmo destino — o
-            que a regra de 12/08 chama de escolha que não é escolha.
-            A `ChamadaFinal.tsx` e o bloco `clinica.chamadaFinal` FICAM no repositório:
-            voltar é trocar esta linha. */}
-        <ChamadaCinematica data={clinica.chamadaCinematica} brand={clinica.brand} />
         <DiferenciaisSection data={clinica.diferenciais} />
-        <EstruturaSection data={clinica.estrutura} />
+        <AreasSection data={clinica.areas} />
+        <CasosSection data={clinica.casos} />
         <DepoimentosSection
           data={clinica.depoimentos}
           logo={clinica.brand.logoEscuro}
           logoAlt={clinica.brand.logoAlt}
         />
+
+        {/* ⚠️ A CHAMADA É A TERCEIRA faixa escura sangrada, e aqui ela fica entre
+            Depoimentos e Estrutura — as duas CLARAS, com `--section-py` próprio,
+            que é quem dá o vão. Se alguma das duas vizinhas virar bloco escuro, o
+            vão some e volta o defeito dos cantos encostados.
+
+            ⚠️ SUBSTITUI a `ChamadaFinalSection`, que era a faixa escura curta com
+            texto à esquerda e botão à direita. As duas são a MESMA chamada, e
+            manter ambas daria dois convites de agendamento seguidos com o mesmo
+            destino. `ChamadaFinal.tsx` e o bloco `clinica.chamadaFinal` FICAM no
+            repositório: voltar é trocar esta linha. */}
+        <ChamadaCinematica data={clinica.chamadaCinematica} brand={clinica.brand} />
+        <EstruturaSection data={clinica.estrutura} />
         <FaqSection data={clinica.faq} />
+        {/* ⚠️ Fecha a página, e desde 30/09 carrega o próprio botão de agendar, a
+            pedido: com a chamada no meio, a última seção ficava sem nenhuma ação. */}
         <LocalizacaoSection data={clinica.localizacao} contato={clinica.contato} />
       </main>
       <FooterSection

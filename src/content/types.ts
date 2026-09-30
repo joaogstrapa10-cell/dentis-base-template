@@ -309,6 +309,16 @@ export type LocalizacaoContent = {
    * forem diferentes, as duas linhas separadas voltam sozinhas.
    */
   telefoneWhatsappLabel: string;
+  /**
+   * A chamada de agendamento da seção, e ela existe desde 30/09 por um motivo
+   * estrutural: com a chamada cinematográfica no MEIO da página, a Localização
+   * passou a ser a última seção antes do rodapé e ficava sem ação nenhuma.
+   *
+   * ⚠️ É UMA por seção, e o destino é o mesmo WhatsApp do header. A regra de
+   * 12/08 continua valendo: chamada repetida com destino idêntico DENTRO da
+   * mesma seção não é escolha, é ruído. Aqui é a única.
+   */
+  cta: Cta;
   /** Rótulo do link que abre o endereço no Google Maps. O mapa da seção é uma
    *  imagem; este link é o que permite traçar rota. */
   rotaLabel: string;

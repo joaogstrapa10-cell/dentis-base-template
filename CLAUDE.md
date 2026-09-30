@@ -156,8 +156,9 @@ servir uma quarta.
 
 ## 5.2 Ponto de retomada
 
-**Última sessão: 28/09.** O template editorial da Bio foi desfeito a pedido: volta o nome
-e o CRO em cima, com o retrato ao lado do texto.
+**Última sessão: 30/09.** A ordem da página foi refeita pelo usuário (quarta versão, ver
+§8), o "Conhecer a clínica" do hero passou a apontar para a seção seguinte, e a Localização
+ganhou botão próprio de agendar por ter virado a última seção.
 
 ⚠️ **ANTES DE TOCAR EM QUALQUER COISA, RODAR `git fetch origin main` E COMPARAR COM O
 HEAD.** Há mais de uma sessão trabalhando neste repo ao mesmo tempo, e o contêiner NÃO
@@ -333,8 +334,9 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 | Fileira de dados à esquerda + cartão de mapa à direita | Localização |
 | Faixa escura curta, texto à esquerda e chamada à direita | Chamada final |
 
-São **dez** seções mais o rodapé, e a ordem mudou em 15/09: Hero, Casos, Áreas,
-**Chamada final**, Bio, Diferenciais, Estrutura, Depoimentos, FAQ, Localização, Footer.
+São **dez** seções mais o rodapé. ⚠️ **A ORDEM MUDOU EM 30/09, e é a QUARTA versão
+dela** — ver a ordem de render no §8 e a lógica que o usuário escreveu, que é o que
+impede a próxima sessão de reordenar de novo por conta.
 
 ⚠️ **A chamada subiu para logo depois de Especialidades** ("o CTA colocar depois de
 especialidades"), então **a página não termina mais numa chamada** — fecha em Localização
@@ -699,11 +701,26 @@ explícito, cada uma por um motivo registrado no §9 — a órbita com as palavr
 mais a órbita". Se aparecerem numa
 variante, é sinal de que alguém partiu de um commit antigo.
 
-**Ordem de render**, ditada pelo usuário em 13/08 e alterada por ele em 15/09
-(a chamada subiu, Tratamentos saiu):
+**Ordem de render**, ditada pelo usuário em 13/08 e mudada por ele em 15/09, 25/09 e
+**30/09**, que é a que vale:
 
-Portal → Hero → **Casos** → Areas → **ChamadaFinal** → Bio → Diferenciais →
-Estrutura → Depoimentos → Faq → Localizacao → Footer.
+Portal → Hero → **Bio** → **Diferenciais** → Areas → **Casos** → **Depoimentos** →
+**ChamadaCinematica** → Estrutura → Faq → **Localizacao (com botão de agendar)** → Footer.
+
+⚠️ **A LÓGICA É DELE, e está escrita no `index.tsx`.** Registrada aqui porque sem ela
+a ordem lê como arbitrária e a próxima sessão reordena:
+
+| Bloco | Seções | Por quê |
+|---|---|---|
+| Quem conduz e como | Bio, Diferenciais | abre por quem faz o trabalho |
+| O que a clínica faz | Áreas, e a **prova logo em seguida** (Casos) | a prova vem DEPOIS do que ela prova |
+| Quem aprovou | Depoimentos | aquecem o visitante logo antes do CTA |
+| Objeções práticas | Estrutura, FAQ, Localização | onde, como e quanto |
+
+O que mudou em relação a 25/09: **Diferenciais subiu** para logo depois da Bio, **Casos
+DESCEU** para depois de Áreas, **Depoimentos subiu** para antes da chamada, e a **chamada
+desceu** para o meio. Com a chamada no meio, a Localização virou a última seção e por isso
+ganhou botão próprio de agendar.
 
 A lista que ele mandou tem dez seções e o rodapé; o **FAQ não estava nela e ficou**,
 entre Depoimentos e Localização — que é a posição que já ocupava em relação ao mapa.
@@ -1396,3 +1413,14 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-28 — Armadilha de sintaxe: **comentário JSX (`{/* */}`) logo depois de `return (` não compila** — ali só pode vir um elemento, e o erro sai como doze linhas de "')' expected" espalhadas pelo arquivo, longe da causa. Vira comentário JS acima do `return`.
 - 2026-09-28 — ⚠️ E uma medição minha que quase me fez errar o revert: `grep -c "pt-6 md:pt-8"` devolveu **0 nos dois commits**, o que lia como "o `pt` não existe em lugar nenhum". A classe real é `px-3 pt-6 md:px-4 md:pt-8` — **as duas partes não são substring contígua**. Conferido do jeito certo (`grep -o 'className="[^"]*"'` nos três commits), o `pt` entrou em `715790c~1` e o editorial não o tocou. É a mesma família de erro do §10: **conferir a medição antes de agir nela.**
 - 2026-09-28 — ⚠️ **Fica ABERTO o único pedido dele que a `main` ainda não atende**: o painel de nome do corpo clínico voltar a ser translúcido com desfoque (`bg-ink/85 backdrop-blur`, hoje `bg-ink/95 lg:backdrop-blur` em `Bio.tsx` e `CorpoClinicoEsteira.tsx`). Ele escolheu isso quando o menu estava errado, e depois apontou o editorial como o pedido de verdade; não ficou claro se quer os dois. **A ressalva vale de qualquer jeito: o `backdrop-filter` saiu do celular em 15/09 porque é o suspeito nº 1 do travamento de rolagem que ele reportou.** Perguntar antes de aplicar.
+
+- 2026-09-30 — **A ORDEM DA PÁGINA FOI REFEITA PELO USUÁRIO, e é a QUARTA versão dela.** Ficou: Abertura → Hero → Bio → Diferenciais → Áreas → Casos → Depoimentos → Chamada → Estrutura → FAQ → Localização. ⚠️ **A lógica é dele e está escrita por extenso no `index.tsx` e no §8** — quem conduz e como (Bio + Diferenciais), o que a clínica faz com a prova logo em seguida (Áreas → Casos), quem aprovou (Depoimentos, aquecendo antes do CTA) e as objeções práticas (Estrutura, FAQ, Localização). Sem esse registro a ordem lê como arbitrária e a próxima sessão reordena por conta, que é o que já aconteceu quatro vezes.
+- 2026-09-30 — O que mudou em relação a 25/09: **Diferenciais subiu** para logo depois da Bio, **Casos DESCEU** para depois de Áreas (a prova vem depois do que ela prova), **Depoimentos subiu** para antes da chamada, e a **chamada desceu** para o meio. O menu e a coluna "Clínica" do rodapé seguiram: Áreas passou à frente de Casos na pílula, Diferenciais subiu no rodapé. **Zero âncora morta**, conferido no DOM renderizado nos dois viewports.
+- 2026-09-30 — ⚠️ **Conferido ANTES de mover: a Chamada é a TERCEIRA faixa escura sangrada** (`px-3 md:px-4` com `bg-ink` dentro), como o Hero e a Bio, e nenhuma participa do ritmo de `--section-py`. No lugar novo ela fica entre Depoimentos e Estrutura, as duas CLARAS — mesma situação de antes, então não abriu o defeito dos cantos encostados, pago em 13/08, 15/09 e 25/09. Medido: o único par escuro→escuro da página continua sendo Hero→Bio, com os 32px/24px do `pt` conhecido.
+- 2026-09-30 — **"Conhecer a clínica" do hero passou a apontar para `#responsavel`**, que é a próxima seção. Apontava para `#diferenciais`, que na ordem nova está duas seções abaixo — botão que pula conteúdo lê como link errado, o mesmo defeito do "Como conduzimos" do rodapé em 12/08. **Ao mexer na ordem da página, conferir este href**: é o único CTA do site que aponta para uma âncora interna em vez do WhatsApp.
+- 2026-09-30 — **A LOCALIZAÇÃO GANHOU BOTÃO PRÓPRIO DE AGENDAR**, a pedido, e o motivo é estrutural: com a chamada no meio da página, ela virou a última seção antes do rodapé e fechava o site sem ação nenhuma — a conversão sobrava só no header fixo. `localizacao.cta` é campo novo no tipo. ⚠️ Ele fica FORA do `<dl>`, e isso é requisito: lista de definição só aceita pares `dt`/`dd`, e um botão solto ali é HTML inválido que leitor de tela anuncia fora de ordem. A regra de 12/08 continua valendo — **uma** chamada por seção, e esta é a única daqui.
+- 2026-09-30 — ⚠️ **O "9 no corpo clínico" do hero NÃO EXISTE NA TELA, e só a medição mostrou isso.** Ele reportou a contradição com o "Oito profissionais" da Bio; medindo o texto RENDERIZADO da página inteira, não há "No corpo clínico", nem "Nota no Google", nem o rótulo "Especialidades" em lugar nenhum: **o `Hero.tsx` parou de desenhar `hero.stats` em 15/09**, quando o hero virou só texto. O campo continua no conteúdo e no tipo, por decisão registrada naquele dia. Na tela só existe a frase da Bio, que bate com os 8 retratos da esteira. **Antes de "corrigir" contradição de copy, conferir se as duas pontas estão sendo renderizadas.**
+- 2026-09-30 — O dado morto foi corrigido assim mesmo, porque engana quem trouxer os números de volta e as variantes do Rogério e do Décio: o rótulo do terceiro virou **"Profissionais na clínica"**. Os dois números sempre estiveram certos e **quem mentia era o rótulo** — o 9 é os 8 de `bio.corpoClinicoMembros` mais o responsável, e a própria bio do Dr. Dalton diz que ele **coordena** o corpo clínico, ou seja a página o apresenta como estando fora dos oito. Continua NÃO dizendo "especialistas": o CRO e a especialidade dos oito ainda são placeholder.
+- 2026-09-30 — ⚠️ **Meu medidor de vãos entre seções deu números FALSOS e eu não agi neles:** `0px` para todo par claro→claro (ele mede a caixa da seção, e o `--section-py` fica DENTRO dela) e `1107px` para a chamada (pegou um filho alto do componente de rolagem). O que sustentou a conclusão foi a **classificação escuro/claro** e o print, não aqueles números. É a mesma família registrada no §10, e a regra vale de novo: **conferir a medição antes de acreditar nela** — mas também não descartar a rodada inteira quando só parte do medidor está errada.
+- 2026-09-30 — Medido em 1440×900 e 390×844: ordem no DOM `portal → top → responsavel → diferenciais → areas → casos → depoimentos → chamada → estrutura → faq → localizacao`, **zero âncora morta** no menu e no rodapé, `#responsavel` no CTA secundário do hero, botão da Localização apontando para o WhatsApp, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
+- 2026-09-30 — ⚠️ Lembrete para não confundir print com defeito: **o mapa da Localização aparece como quadrado cinza quebrado nos screenshots deste ambiente**. Sem `latitude`/`longitude` o componente cai no embed do Google, e `google.com` é 403 aqui (§7). No navegador do usuário carrega normalmente.

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { ContatoContent, LocalizacaoContent } from "@/content/types";
 import { Section } from "@/components/sections/Section";
 import { Reveal } from "@/components/Reveal";
-import { TextLink } from "@/components/Primitives";
+import { PillButton, TextLink } from "@/components/Primitives";
 import { MapaLocalizacao } from "@/components/sections/MapaLocalizacao";
 import { mapaHref, telHref, whatsappHref } from "@/lib/contato";
 
@@ -108,6 +108,22 @@ export function LocalizacaoSection({
               />
             </div>
           </dl>
+
+          {/* ⚠️ A ÚLTIMA AÇÃO DA PÁGINA, e é por isso que ela existe aqui: desde
+              30/09 a chamada cinematográfica ficou no MEIO da página, e sem este
+              botão a Localização fechava o site sem convite nenhum — a conversão
+              sobraria só no header fixo.
+
+              FORA do `<dl>`, e de propósito: uma lista de definição só aceita
+              pares `dt`/`dd`, e um botão solto ali é HTML inválido que leitor de
+              tela anuncia fora de ordem. Aqui ele é irmão da lista.
+
+              `tone="ink"` porque a seção é CLARA (pílula escura sobre a página) e
+              o ícone é o do WhatsApp, que é para onde ele vai de verdade — a regra
+              do primitivo é que o ícone diz o destino. */}
+          <div className="mt-10">
+            <PillButton label={data.cta.label} href={data.cta.href} external />
+          </div>
         </Reveal>
 
         <Reveal delay={160}>

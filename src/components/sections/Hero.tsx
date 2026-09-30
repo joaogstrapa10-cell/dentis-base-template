@@ -34,7 +34,12 @@ import { Reveal } from "@/components/Reveal";
  * `hero.colagem` e `hero.stats` CONTINUAM no conteúdo e no tipo, mas o componente NÃO
  * os desenha — se voltarem a ter itens, o caminho é recuperar o bloco do git, não
  * reescrevê-lo. Os três números vivem em outras seções: a nota do Google nas avaliações,
- * as 8 especialidades em Áreas, os 9 do corpo clínico na Bio.
+ * as 8 especialidades em Áreas, e na Bio os OITO do corpo clínico mais o responsável.
+ *
+ * ⚠️ Cuidado com esse último ao trazer os números de volta: a Bio diz "Oito
+ * profissionais" e o texto do Dr. Dalton diz que ele COORDENA o corpo clínico, então
+ * um rótulo "9 no corpo clínico" contradiz a página. O conteúdo já foi corrigido em
+ * 30/09 para "Profissionais na clínica"; o 9 é 8 + o responsável.
  *
  * ---------------------------------------------------------------------------
  * 🗑️ A LINHA DO RESPONSÁVEL TÉCNICO SAIU EM 15/09

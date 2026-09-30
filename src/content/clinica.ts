@@ -88,8 +88,11 @@ export const clinica: Clinica = {
          e a marca ainda existe nas rotas internas. Remedir a folga lá a cada item. */
       { label: "Home", href: "#portal" },
       { label: "Equipe", href: "#responsavel" },
-      { label: "Casos", href: "#casos" },
+      // ⚠️ Áreas ANTES de Casos desde 30/09, acompanhando a ordem da página: a
+      // prova (Casos) passou a vir depois do que ela prova (Áreas). Menu fora da
+      // ordem da página lê como link errado.
       { label: "Áreas", href: "#areas" },
+      { label: "Casos", href: "#casos" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "FAQ", href: "#faq" },
       { label: "Contato", href: "#localizacao" },
@@ -163,7 +166,11 @@ export const clinica: Clinica = {
     subheadline:
       "Saúde, função mastigatória e estética em harmonização com a face. Um corpo clínico reunido para tratar o que exige critério técnico, não volume de atendimento.",
     ctaPrimario: { label: "Agendar avaliação", href: WHATSAPP_HREF },
-    ctaSecundario: { label: "Conhecer a clínica", href: "#diferenciais" },
+    // ⚠️ Aponta para `#responsavel`, que desde 30/09 é a PRÓXIMA seção. Apontava
+    // para `#diferenciais`, que na ordem nova está duas seções abaixo: botão que
+    // pula conteúdo lê como link errado, e é o mesmo defeito do "Como conduzimos"
+    // do rodapé em 12/08. Ao mexer na ordem da página, conferir este href.
+    ctaSecundario: { label: "Conhecer a clínica", href: "#responsavel" },
     // COLAGEM de três imagens, na anatomia do template que o usuário trouxe em
     // 13/08. A ordem é hierarquia de tamanho, não gosto: a primeira é a maior.
     //
@@ -196,17 +203,24 @@ export const clinica: Clinica = {
     //   5,0  — nota real do perfil da clínica no Google, a mesma que alimenta a
     //          seção de avaliações (`depoimentos.resumo.nota`).
     //     8  — as oito especialidades de `areas.itens`, uma a uma.
-    //     9  — os nove retratos de `bio.equipe`, contados.
-    // O rótulo do terceiro diz "no corpo clínico", e não "especialistas": o CRO e
-    // a especialidade de oito deles ainda são placeholder, então afirmar a
-    // titulação de todos seria afirmar o que não se sabe.
+    //     9  — os nove retratos da Bio contados: os OITO de
+    //          `bio.corpoClinicoMembros` mais o responsável técnico.
+    // ⚠️ O RÓTULO DO TERCEIRO DEIXOU DE SER "No corpo clínico" EM 30/09, e a troca
+    // é de honestidade, não de estilo: a Bio diz "Oito profissionais" logo abaixo,
+    // e o próprio texto do Dr. Dalton diz que ele COORDENA o corpo clínico. Ou
+    // seja, os dois números sempre estiveram certos e quem mentia era o rótulo —
+    // o 9 só fecha incluindo alguém que a página apresenta como estando fora dos
+    // oito. "Profissionais" resolve sem inventar nada.
+    // Continua NÃO dizendo "especialistas": o CRO e a especialidade dos oito ainda
+    // são placeholder, e afirmar a titulação de todos seria afirmar o que não se
+    // sabe. ⚠️ Ao mexer em `bio.corpoClinicoMembros`, remedir este número.
     // NÃO acrescentar "anos de clínica" nem "pacientes atendidos" sem a clínica
     // fornecer o número — é a métrica mais fácil de inventar e a mais fácil de
     // desmentir, e publicidade odontológica não é lugar para número redondo.
     stats: [
       { valor: "5,0", rotulo: "Nota no Google", icone: "nota" },
       { valor: "8", rotulo: "Especialidades", icone: "especialidades" },
-      { valor: "9", rotulo: "No corpo clínico", icone: "corpoClinico" },
+      { valor: "9", rotulo: "Profissionais na clínica", icone: "corpoClinico" },
     ],
   },
   diferenciais: {
@@ -274,6 +288,10 @@ export const clinica: Clinica = {
     // Usado só quando os dois números são iguais, que é o caso aqui.
     telefoneWhatsappLabel: "Telefone e WhatsApp",
     rotaLabel: "Ver rota no Google Maps",
+    // ⚠️ A última ação da página. Entrou em 30/09, quando a chamada cinematográfica
+    // desceu para o meio e a Localização virou a seção final: sem ela a página
+    // terminava sem convite nenhum, e a conversão sobrava só no header fixo.
+    cta: { label: "Agendar avaliação", href: WHATSAPP_HREF },
   },
   // Os 12 ambientes reais da clínica. O carrossel da home passa por todos; a
   // página /estrutura mostra todos de uma vez, com o rótulo de cada ambiente.
@@ -841,8 +859,8 @@ export const clinica: Clinica = {
       // recebe este item — a pílula já está em cinco e um sexto recria a colisão
       // com a marca em 1024px, medida duas vezes nesta sessão.
       { label: "Responsável técnico", href: "#responsavel" },
-      { label: "Casos clínicos", href: "/casos" },
       { label: "Diferenciais", href: "#diferenciais" },
+      { label: "Casos clínicos", href: "/casos" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "Perguntas frequentes", href: "#faq" },
     ],
