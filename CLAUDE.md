@@ -164,11 +164,18 @@ perguntar na próxima sessão — **não reabrir o que ele já despachou**:
 
 | O quê | O que ele decidiu |
 |---|---|
-| Os DOIS alertas de compliance (CRO dos oito, aviso da CFO na home) | ⏸️ **"não sei ainda, não está na esteira"** — fica pendente, sem prazo. Continuam bloqueando publicação, mas **não é para cobrar** |
-| CRO e especialidade dos oito | ✅ **na esteira** — ele vai pedir à clínica |
-| CNPJ e nome jurídico | ⏸️ fora da esteira, "depois a gente vê" |
+| Os DOIS alertas de compliance, via **jurídico da clínica** | ✅ **NA ESTEIRA** |
+| CRO e especialidade dos oito | ✅ **NA ESTEIRA** — ele pede à clínica |
+| CNPJ e nome jurídico | ✅ **NA ESTEIRA** |
 | Latitude e longitude | ❌ **irrelevante**, descartado. Não voltar a oferecer |
 | Painel de nome do corpo clínico voltar a translúcido | ❌ **"pode deixar como está"** — encerra a pergunta aberta desde 28/09 |
+
+⚠️ **OS TRÊS PRIMEIROS ESTÃO CORRENDO COM ELE.** Na primeira resposta ele tinha dito que
+jurídico e CNPJ não estavam na esteira, e **corrigiu em seguida: "os três estão na
+esteira"**. É o registro dele que vale. Não cobrar prazo, mas também **não tratar como
+abandonado** — quando ele voltar com o CRO dos oito, a especialidade e o CNPJ, é só
+preencher o `clinica.ts`, e os dois alertas de compliance se resolvem com a resposta do
+jurídico.
 
 ⚠️ **A PALETA CONTINUA SEM DECISÃO** e é a única frente que ainda espera resposta dele.
 
@@ -308,7 +315,7 @@ clínica antes de publicar. São agora **dois** os alertas abertos: este e o CRO
 | CRO e especialidade dos 8 profissionais | `[ESPECIALIDADE]` na tela; o CRO está em `m.cro` e **não é exibido** desde 13/08, a pedido do usuário | ✅ **na esteira**: ele vai pedir à clínica (30/09) |
 | 4 respostas do FAQ | `[CONFIRMAR: ...]` na tela | clínica |
 | ~~Logo em versão escura~~ | ✅ resolvido em 30/07: `brand.logoEscuro`, os 21 traços do SVG recoloridos | — |
-| CNPJ e nome jurídico | `[CNPJ]`, `[NOME DA CLÍNICA]` | usuário — ⏸️ **fora da esteira por decisão dele em 30/09** ("depois a gente vê") |
+| CNPJ e nome jurídico | `[CNPJ]`, `[NOME DA CLÍNICA]` | usuário — ✅ **na esteira** (confirmado por ele em 30/09) |
 | 3 casos da galeria: situação, conduta, duração e registro clínico | `[CASO 0N — ...]` na tela | clínica |
 | ~~Latitude e longitude da clínica~~ | ❌ **DESCARTADO em 30/09**: ele disse que é irrelevante. O embed do Google fica, e o mosaico de tiles do `MapaLocalizacao.tsx` segue DORMENTE. **Não voltar a oferecer.** | — |
 
@@ -1445,4 +1452,5 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-30 — ⚠️ E um quase-erro de diagnóstico: o `textContent` dos itens do menu sai **duplicado** ("HomeHome"). Não é defeito — o `AnimatedNavLink` renderiza o rótulo DUAS vezes de propósito, são duas cópias empilhadas que deslizam no hover. Conferido no componente antes de "consertar".
 - 2026-09-30 — Medido em 390/1024/1280/1440/1920: dez itens no menu, ordem batendo item por item com a ordem do DOM, **zero âncora morta** na home, pílula cabendo na janela em todas, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
 - 2026-09-30 — ⚠️ **AS ÂNCORAS DO MENU NÃO RESOLVEM NAS ROTAS INTERNAS, e é defeito ANTIGO, não desta rodada.** `/casos` e `/estrutura` recebem o MESMO `header.nav` da home, e medido: **9 dos 10 hrefs não têm destino ali**. Clicar em "Áreas" em `/casos` não faz nada. Não mexi porque está fora do que ele pediu e a correção é uma decisão de produto (nav própria para rota interna, ou os itens virarem `/#areas`). **Registrado para a próxima sessão.**
-- 2026-09-30 — **ELE FECHOU AS PENDÊNCIAS ABERTAS, uma a uma**, e o resumo está na tabela do §5.2. O que mais importa para a próxima sessão: os **dois alertas de compliance ficam pendentes sem prazo** ("não sei ainda, não está na esteira") — continuam bloqueando publicação, mas **não é para cobrar**; a **latitude/longitude foi DESCARTADA** como irrelevante, então o mosaico de tiles do `MapaLocalizacao.tsx` segue dormente e **não se oferece de novo**; e o **painel do corpo clínico fica como está**, encerrando a pergunta aberta desde 28/09. A paleta é a única frente que ainda espera resposta dele.
+- 2026-09-30 — **ELE DESPACHOU AS PENDÊNCIAS ABERTAS, uma a uma**, e o resumo está na tabela do §5.2. ⚠️ **E CORRIGIU A PRÓPRIA RESPOSTA NA MENSAGEM SEGUINTE:** primeiro disse que o jurídico e o CNPJ "não estão na esteira", e logo depois — "na verdade, está na esteira, o jurídico, o CRO e o CNPJ, os três estão na esteira". **Vale a correção.** Os três estão correndo com ele: não cobrar prazo, mas também não tratar como abandonado. O que ficou FORA: a **latitude/longitude foi DESCARTADA** como irrelevante, então o mosaico de tiles do `MapaLocalizacao.tsx` segue dormente e **não se oferece de novo**; e o **painel do corpo clínico fica como está**, encerrando a pergunta aberta desde 28/09. A paleta é a única frente que ainda espera DECISÃO dele.
+- 2026-09-30 — Lição de processo dessa troca, e ela é barata de aplicar: **ele corrige a si mesmo na mensagem seguinte com frequência** (já registrado em 13/08 com "arcada dentária" → "um sorriso bem bonito", e em 18/09 com os três tamanhos da descrição no mesmo dia). Quando a resposta dele fecha várias frentes de uma vez, **esperar a mensagem seguinte antes de gravar na memória como decisão final** economiza uma correção.
