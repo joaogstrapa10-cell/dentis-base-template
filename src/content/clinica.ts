@@ -73,26 +73,39 @@ export const clinica: Clinica = {
       // deixou de existir — âncora que pula o começo da página lê como link errado,
       // do mesmo jeito que âncora para seção inexistente. Ao mexer na ordem das
       // seções, conferir este href e o da marca no Header.
-      /* ⚠️ UM ITEM POR SEÇÃO, e a lista é pedido de 15/09: "aqui precisamos ter um
-         botão para todas as sessões". Ele excluiu DUAS, cada uma com o print na mão:
-         Diferenciais ("Experiência aplicada caso a caso.") e Depoimentos (as
-         avaliações do Google). Ausência aqui é decisão dele, não esquecimento.
+      /* ⚠️ UM ITEM POR SEÇÃO DA HOME, SEM PULAR NENHUMA, e nesta ordem exata — pedido
+         de 30/09: "tem que ser exatamente a sequência que tenho no navegador". Ele
+         apontou o que faltava item por item: "áreas: você pula a questão ali da
+         experiência caso a caso" e "a estrutura: você pula bastante coisa".
 
-         A chamada (`#chamada`, "Comece pela avaliação.") também ficou fora, e por um
-         motivo de forma: o destino dela é agendar, e o `cta` logo ao lado já é esse
-         botão. Item de menu apontando para a faixa ao lado do próprio botão de
-         agendar lê como link repetido. Se ele pedir, é uma linha.
+         ⚠️ ISSO REVERTE A EXCLUSÃO DE 15/09, que também era decisão dele, com print
+         na mão: Diferenciais e Depoimentos tinham ficado FORA de propósito, e a
+         chamada por forma (o destino dela é agendar e o `cta` está ao lado). As três
+         voltaram. Não "corrigir" para a lista curta numa próxima sessão sem falar com
+         ele — é o mesmo caso da exceção de Áreas em 12/08.
 
-         ⚠️ A pílula é CENTRALIZADA, então cada item novo distribui largura nos dois
-         lados — e o pior caso NÃO é o desktop largo, é 1024, onde a navegação aparece
-         e a marca ainda existe nas rotas internas. Remedir a folga lá a cada item. */
+         ⚠️ "Agende" fica ao lado do botão "Agendar" da própria pílula, e os dois têm
+         destinos DIFERENTES: o item rola até a faixa da chamada, o botão abre o
+         WhatsApp. Era exatamente essa a objeção de 15/09. Foi dita a ele; a ordem
+         completa venceu. Se ler como link repetido, apagar esta linha resolve.
+
+         ⚠️ A PÍLULA É CENTRALIZADA, então cada item novo come folga dos DOIS lados, e
+         o pior caso não é o desktop largo: é a faixa 1024–1440 das rotas internas,
+         onde a marca do canto existe. Medido em 30/09 com estes dez itens, em
+         `/casos`: a pílula fecha 943px em 1024 e 1067px de 1280 para cima, e a marca
+         passou a ficar ESCONDIDA de `lg` a `xl` justamente por isso — ver a nota no
+         `Header.tsx`. Na HOME não há marca no canto, então lá nada disso se aplica.
+         Remedir a folga a cada item novo. */
       { label: "Home", href: "#portal" },
       { label: "Equipe", href: "#responsavel" },
+      { label: "Experiência", href: "#diferenciais" },
       // ⚠️ Áreas ANTES de Casos desde 30/09, acompanhando a ordem da página: a
       // prova (Casos) passou a vir depois do que ela prova (Áreas). Menu fora da
       // ordem da página lê como link errado.
       { label: "Áreas", href: "#areas" },
       { label: "Casos", href: "#casos" },
+      { label: "Avaliações", href: "#depoimentos" },
+      { label: "Agende", href: "#chamada" },
       { label: "Estrutura", href: "#estrutura" },
       { label: "FAQ", href: "#faq" },
       { label: "Contato", href: "#localizacao" },

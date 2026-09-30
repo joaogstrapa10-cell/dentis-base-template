@@ -156,9 +156,21 @@ servir uma quarta.
 
 ## 5.2 Ponto de retomada
 
-**Última sessão: 30/09.** A ordem da página foi refeita pelo usuário (quarta versão, ver
-§8), o "Conhecer a clínica" do hero passou a apontar para a seção seguinte, e a Localização
-ganhou botão próprio de agendar por ter virado a última seção.
+**Última sessão: 30/09.** Duas rodadas: a ordem da página refeita pelo usuário (quarta
+versão, ver §8) e o MENU passando a ter um item por seção, sem pular nenhuma.
+
+⚠️ **ELE FECHOU AS PENDÊNCIAS ABERTAS, uma a uma, no fim de 30/09.** Isso muda o que
+perguntar na próxima sessão — **não reabrir o que ele já despachou**:
+
+| O quê | O que ele decidiu |
+|---|---|
+| Os DOIS alertas de compliance (CRO dos oito, aviso da CFO na home) | ⏸️ **"não sei ainda, não está na esteira"** — fica pendente, sem prazo. Continuam bloqueando publicação, mas **não é para cobrar** |
+| CRO e especialidade dos oito | ✅ **na esteira** — ele vai pedir à clínica |
+| CNPJ e nome jurídico | ⏸️ fora da esteira, "depois a gente vê" |
+| Latitude e longitude | ❌ **irrelevante**, descartado. Não voltar a oferecer |
+| Painel de nome do corpo clínico voltar a translúcido | ❌ **"pode deixar como está"** — encerra a pergunta aberta desde 28/09 |
+
+⚠️ **A PALETA CONTINUA SEM DECISÃO** e é a única frente que ainda espera resposta dele.
 
 ⚠️ **ANTES DE TOCAR EM QUALQUER COISA, RODAR `git fetch origin main` E COMPARAR COM O
 HEAD.** Há mais de uma sessão trabalhando neste repo ao mesmo tempo, e o contêiner NÃO
@@ -293,12 +305,12 @@ clínica antes de publicar. São agora **dois** os alertas abertos: este e o CRO
 | O quê | Onde aparece | Quem resolve |
 |---|---|---|
 | ~~Telefone e WhatsApp~~ | ✅ resolvido em 12/08: `(41) 99206-1073` confirmado pelo usuário e aplicado | — |
-| CRO e especialidade dos 8 profissionais | `[ESPECIALIDADE]` na tela; o CRO está em `m.cro` e **não é exibido** desde 13/08, a pedido do usuário | página `/equipe/`, via agente do Lovable |
+| CRO e especialidade dos 8 profissionais | `[ESPECIALIDADE]` na tela; o CRO está em `m.cro` e **não é exibido** desde 13/08, a pedido do usuário | ✅ **na esteira**: ele vai pedir à clínica (30/09) |
 | 4 respostas do FAQ | `[CONFIRMAR: ...]` na tela | clínica |
 | ~~Logo em versão escura~~ | ✅ resolvido em 30/07: `brand.logoEscuro`, os 21 traços do SVG recoloridos | — |
-| CNPJ e nome jurídico | `[CNPJ]`, `[NOME DA CLÍNICA]` | usuário |
+| CNPJ e nome jurídico | `[CNPJ]`, `[NOME DA CLÍNICA]` | usuário — ⏸️ **fora da esteira por decisão dele em 30/09** ("depois a gente vê") |
 | 3 casos da galeria: situação, conduta, duração e registro clínico | `[CASO 0N — ...]` na tela | clínica |
-| Latitude e longitude da clínica | não bloqueia: sem elas a Localização usa o embed do Google, que acha pelo endereço. Com elas, liga o mapa em mosaico de tiles | usuário — botão direito no ponto exato no Google Maps |
+| ~~Latitude e longitude da clínica~~ | ❌ **DESCARTADO em 30/09**: ele disse que é irrelevante. O embed do Google fica, e o mosaico de tiles do `MapaLocalizacao.tsx` segue DORMENTE. **Não voltar a oferecer.** | — |
 
 **CRO é obrigatório em publicidade odontológica**, e desde 13/08 ele nem é exibido para os
 oito — ver o aviso no começo do §5.2. Enquanto isso não se resolver, o site não vai ao ar.
@@ -1424,3 +1436,13 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-30 — ⚠️ **Meu medidor de vãos entre seções deu números FALSOS e eu não agi neles:** `0px` para todo par claro→claro (ele mede a caixa da seção, e o `--section-py` fica DENTRO dela) e `1107px` para a chamada (pegou um filho alto do componente de rolagem). O que sustentou a conclusão foi a **classificação escuro/claro** e o print, não aqueles números. É a mesma família registrada no §10, e a regra vale de novo: **conferir a medição antes de acreditar nela** — mas também não descartar a rodada inteira quando só parte do medidor está errada.
 - 2026-09-30 — Medido em 1440×900 e 390×844: ordem no DOM `portal → top → responsavel → diferenciais → areas → casos → depoimentos → chamada → estrutura → faq → localizacao`, **zero âncora morta** no menu e no rodapé, `#responsavel` no CTA secundário do hero, botão da Localização apontando para o WhatsApp, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
 - 2026-09-30 — ⚠️ Lembrete para não confundir print com defeito: **o mapa da Localização aparece como quadrado cinza quebrado nos screenshots deste ambiente**. Sem `latitude`/`longitude` o componente cai no embed do Google, e `google.com` é 403 aqui (§7). No navegador do usuário carrega normalmente.
+
+- 2026-09-30 — **O MENU PASSOU A TER UM ITEM POR SEÇÃO DA HOME, SEM PULAR NENHUMA**, a pedido: "tem que ser exatamente a sequência que tenho no navegador". Ele apontou o que faltava item por item ("áreas: você pula a questão ali da experiência caso a caso", "a estrutura: você pula bastante coisa"). Entraram **Experiência** (`#diferenciais`), **Avaliações** (`#depoimentos`) e **Agende** (`#chamada`); a pílula foi de 7 para 10 itens. ⚠️ **ISSO REVERTE A EXCLUSÃO DE 15/09**, que também era decisão dele com print na mão — Diferenciais e Depoimentos tinham ficado fora de propósito, e a chamada por forma. Não "corrigir" para a lista curta sem falar com ele.
+- 2026-09-30 — ⚠️ **"Agende" fica ao lado do botão "Agendar" da pílula, e os dois têm destinos DIFERENTES**: o item rola até a faixa da chamada, o botão abre o WhatsApp. Era exatamente a objeção de 15/09, foi dita a ele, e a ordem completa venceu. Se ler como link repetido, apagar essa linha resolve.
+- 2026-09-30 — ⚠️ **A COLISÃO DE 1024 VOLTOU PELA QUINTA VEZ, e desta vez rótulo curto e vão apertado NÃO resolvem.** Medido em `/casos`, que é onde a marca do canto existe (na home ela não existe desde 17/08): a pílula fecha **943px em 1024** e **1067px de 1280 para cima**, contra 643px com sete itens. A marca termina em 151px (1024) e 238px (1280+), então a folga vira **-111px** e **-131px**. Encurtar rótulo e apertar vão economizam 30 a 50px onde faltam mais de 100.
+- 2026-09-30 — **A saída foi esconder a marca do canto de `lg` até 1639px**, e o limiar é DERIVADO: a pílula começa em `(W - 1067) / 2`, e os 39px de folga aceitos desde 12/08 exigem isso ≥ 277px, ou seja `W >= 1621`. 1640 é esse número com margem. Medido depois: marca visível até 768 (130 a 178px de folga), escondida de 1024 a 1600, de volta em 1640 com **49px** e em 1920 com **189px**. Abaixo de `lg` não há colisão — a navegação vira um botão só, à direita.
+- 2026-09-30 — ⚠️ **TRÊS ERROS MEUS nesta rodada, os três pegos pela medição antes de virarem defeito.** (a) Medi a pílula na HOME (783px) e quase apliquei a conta em `/casos`, onde ela mede **943px** — na home o botão "Agendar" fica escondido até a abertura terminar, e são 160px de diferença. **Medir a pílula na rota que TEM marca.** (b) Tentei devolver a marca no `2xl`: a folga medida em 1536 é **-3px**, ainda colide. (c) O par `lg:hidden` + `min-[1640px]:block` **não funciona**, e o sintoma parece cache: o Tailwind v4 emite os arbitrários `min-[]` **ANTES** dos breakpoints nomeados — medido no CSS compilado, `(width>=1640px)` cai no byte 76289 e o `.lg\:hidden` no 81889. Com a mesma especificidade quem vem depois ganha, então em 1920 as duas batem e o `display:none` vence, e a marca some em TODA largura. **Uma regra só (`lg:max-[1639px]:hidden`) resolve.**
+- 2026-09-30 — ⚠️ E um quase-erro de diagnóstico: o `textContent` dos itens do menu sai **duplicado** ("HomeHome"). Não é defeito — o `AnimatedNavLink` renderiza o rótulo DUAS vezes de propósito, são duas cópias empilhadas que deslizam no hover. Conferido no componente antes de "consertar".
+- 2026-09-30 — Medido em 390/1024/1280/1440/1920: dez itens no menu, ordem batendo item por item com a ordem do DOM, **zero âncora morta** na home, pílula cabendo na janela em todas, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
+- 2026-09-30 — ⚠️ **AS ÂNCORAS DO MENU NÃO RESOLVEM NAS ROTAS INTERNAS, e é defeito ANTIGO, não desta rodada.** `/casos` e `/estrutura` recebem o MESMO `header.nav` da home, e medido: **9 dos 10 hrefs não têm destino ali**. Clicar em "Áreas" em `/casos` não faz nada. Não mexi porque está fora do que ele pediu e a correção é uma decisão de produto (nav própria para rota interna, ou os itens virarem `/#areas`). **Registrado para a próxima sessão.**
+- 2026-09-30 — **ELE FECHOU AS PENDÊNCIAS ABERTAS, uma a uma**, e o resumo está na tabela do §5.2. O que mais importa para a próxima sessão: os **dois alertas de compliance ficam pendentes sem prazo** ("não sei ainda, não está na esteira") — continuam bloqueando publicação, mas **não é para cobrar**; a **latitude/longitude foi DESCARTADA** como irrelevante, então o mosaico de tiles do `MapaLocalizacao.tsx` segue dormente e **não se oferece de novo**; e o **painel do corpo clínico fica como está**, encerrando a pergunta aberta desde 28/09. A paleta é a única frente que ainda espera resposta dele.

@@ -230,7 +230,44 @@ export function Header({
         // saindo de `left-14` (56px) ela terminava em 183px, 7px da pílula. Em
         // `left-6` (24px) termina em 151px e a folga volta a 39px, que é o número
         // aceito desde 12/08. De `xl` para cima volta a `left-14`, onde sobra espaço.
-        className="fixed left-6 top-4 z-50 md:left-14 md:top-6 lg:left-6 lg:top-9 xl:left-14 xl:top-6"
+        /* ⚠️ ESCONDIDA DE `lg` PARA CIMA DESDE 30/09, e é GEOMETRIA, não estética.
+           Naquele dia o menu passou a ter UM ITEM POR SEÇÃO, dez no total, a pedido
+           ("tem que ser exatamente a sequência que tenho no navegador"). A pílula é
+           centralizada, então cada item come folga dos dois lados, e medido em
+           `/casos` ela fecha 943px em 1024 e 1067px de 1280 para cima. Com a marca
+           terminando em 151px (1024) e 238px (1280+), a folga vira -111px e -131px:
+           a marca fica POR BAIXO do menu.
+
+           Encurtar rótulo e apertar vão foram medidos e NÃO resolvem: economizam 30
+           a 50px onde faltam mais de 100.
+
+           ⚠️ VOLTA EM 1640px, e o limiar é DERIVADO, não escolhido: a pílula fecha
+           1067px de 1280 para cima, a marca termina em 238px, e os 39px de folga
+           exigem a pílula começando em 277px — ou seja `(W - 1067) / 2 >= 277`, que
+           dá W >= 1621. 1640 é esse número com margem, e em 1920 a folga é 189px.
+           ⚠️ NÃO usar `2xl`: em 1536 a folga medida é **-3px**, ou seja ainda colide.
+           Eu quase cometi esse erro, e o que pegou foi remedir em `/casos` em vez de
+           confiar na medida da HOME — lá a pílula mede 160px a menos, porque o botão
+           "Agendar" fica escondido até a abertura terminar. **Medir a pílula na rota
+           que TEM marca.**
+
+           ⚠️ E É UMA REGRA SÓ (`lg:max-[1639px]:hidden`), não um par
+           `lg:hidden` + `min-[1640px]:block`. O par NÃO funciona, e o motivo é
+           ordem de cascata: o Tailwind v4 emite os arbitrários `min-[]` ANTES dos
+           breakpoints nomeados — medido no CSS compilado, `(width>=1640px)` cai no
+           byte 76289 e o `.lg\:hidden` no 81889. Com a mesma especificidade, quem
+           vem depois ganha, então em 1920 as duas batem e o `display:none` vence.
+           A marca ficava escondida em TODA largura e o sintoma parecia cache.
+
+           Abaixo de `lg` ela FICA, e ali não há colisão: a navegação vira um botão
+           só, à direita (medido: 178px de folga em 390). Nada se perde em navegação
+           no desktop — a pílula tem "Home", e nas rotas internas a marca apontava
+           para `/`, que é o mesmo destino.
+
+           ⚠️ Na HOME a marca do canto não existe desde 17/08 ("não quero que a logo
+           volte após o scroll do vídeo"), então isto só afeta `/casos` e
+           `/estrutura`. Ao mexer na contagem de itens do menu, REMEDIR aqui. */
+        className="fixed left-6 top-4 z-50 md:left-14 md:top-6 lg:max-[1639px]:hidden"
         style={{
           opacity: opacidadeMarca,
           pointerEvents: opacidadeMarca < 0.05 ? "none" : undefined,
