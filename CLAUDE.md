@@ -156,8 +156,19 @@ servir uma quarta.
 
 ## 5.2 Ponto de retomada
 
-**Última sessão: 30/09.** Duas rodadas: a ordem da página refeita pelo usuário (quarta
-versão, ver §8) e o MENU passando a ter um item por seção, sem pular nenhuma.
+**Última sessão: 01/10.** Entrou a **TRAJETÓRIA do Dalton na implantodontia**, seção
+nova logo depois da Bio, com anatomia própria (trilho vertical com marcos). Ele pediu
+e mandou escolher a posição: **"coloca a sessão onde você achar melhor e eu analiso"**,
+ou seja a próxima mensagem dele sobre isso é VALIDAÇÃO, não pedido novo.
+
+⚠️ **A PÍLULA DE NAVEGAÇÃO CHEGOU AO LIMITE.** Com o item "Trajetória" ela passou a
+ONZE itens e estourou a janela de 1024, com o "Home" cortado. Foi apertada e coube
+(972px, 26px de margem), mas **um décimo segundo item não entra apertando mais**. Ver
+o log de 01/10: a saída seria a navegação cheia só a partir de `xl`. E o limiar da
+marca do canto mudou de 1640 para **1790**, porque ele é derivado da largura da pílula.
+
+Antes disso, em 30/09: a ordem da página refeita pelo usuário (quarta versão, ver §8)
+e o MENU passando a ter um item por seção, sem pular nenhuma.
 
 ⚠️ **ELE FECHOU AS PENDÊNCIAS ABERTAS, uma a uma, no fim de 30/09.** Isso muda o que
 perguntar na próxima sessão — **não reabrir o que ele já despachou**:
@@ -315,8 +326,9 @@ clínica antes de publicar. São agora **dois** os alertas abertos: este e o CRO
 | CRO e especialidade dos 8 profissionais | `[ESPECIALIDADE]` na tela; o CRO está em `m.cro` e **não é exibido** desde 13/08, a pedido do usuário | ✅ **na esteira**: ele vai pedir à clínica (30/09) |
 | 4 respostas do FAQ | `[CONFIRMAR: ...]` na tela | clínica |
 | ~~Logo em versão escura~~ | ✅ resolvido em 30/07: `brand.logoEscuro`, os 21 traços do SVG recoloridos | — |
-| CNPJ e nome jurídico | `[CNPJ]`, `[NOME DA CLÍNICA]` | usuário — ✅ **na esteira** (confirmado por ele em 30/09) |
+| CNPJ e razão social | `[CNPJ]` na tela. O rodapé passou a exibir o NOME FANTASIA em 02/10, a pedido dele; `brand.nome` continua sendo o slot da razão social e não é renderizado | usuário — ✅ **na esteira** (confirmado por ele em 30/09) |
 | 3 casos da galeria: situação, conduta, duração e registro clínico | `[CASO 0N — ...]` na tela | clínica |
+| **Os ANOS dos 6 marcos da Trajetória**, e a **ordem das duas especializações** | não aparece na tela: `ano: null` em todos, e a sequência hoje é a inferida | clínica — **não estimar ano nenhum** |
 | ~~Latitude e longitude da clínica~~ | ❌ **DESCARTADO em 30/09**: ele disse que é irrelevante. O embed do Google fica, e o mosaico de tiles do `MapaLocalizacao.tsx` segue DORMENTE. **Não voltar a oferecer.** | — |
 
 **CRO é obrigatório em publicidade odontológica**, e desde 13/08 ele nem é exibido para os
@@ -349,11 +361,12 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 | Pilha de cartões arrastável | Casos (na home) |
 | Pilha de dossiês alternando de lado | Casos (em `/casos`) |
 | Esteira de retratos em laço, painel de nome dentro do cartão | Bio (corpo clínico) |
+| **Trilho vertical com marcos, texto pendurado nele** | **Trajetória (01/10)** |
 | Título em cima, accordion em coluna única de largura cheia | FAQ |
 | Fileira de dados à esquerda + cartão de mapa à direita | Localização |
 | Faixa escura curta, texto à esquerda e chamada à direita | Chamada final |
 
-São **dez** seções mais o rodapé. ⚠️ **A ORDEM MUDOU EM 30/09, e é a QUARTA versão
+São **onze** seções mais o rodapé (a Trajetória entrou em 01/10). ⚠️ **A ORDEM MUDOU EM 30/09, e é a QUARTA versão
 dela** — ver a ordem de render no §8 e a lógica que o usuário escreveu, que é o que
 impede a próxima sessão de reordenar de novo por conta.
 
@@ -688,6 +701,8 @@ src/components/sections/
   CarrosselDeCartoes.tsx      lista escura + pilha de fotos, sem dep. de animação
   GradeDeCelulas.tsx          grade de células com fio, ícone e realce no hover
   Bio.tsx                     faixa escura: responsável + corpo clínico
+  Trajetoria.tsx              trilho vertical com os marcos de formação do
+                              responsável (anatomia própria, nova em 01/10)
   CorpoClinicoEsteira.tsx     esteira de retratos em laço, uma forma para toda largura
   Estrutura.tsx               esteira de 12 fotos
   Depoimentos.tsx             esteira das 4 avaliações do Google
@@ -723,7 +738,7 @@ variante, é sinal de que alguém partiu de um commit antigo.
 **Ordem de render**, ditada pelo usuário em 13/08 e mudada por ele em 15/09, 25/09 e
 **30/09**, que é a que vale:
 
-Portal → Hero → **Bio** → **Diferenciais** → Areas → **Casos** → **Depoimentos** →
+Portal → Hero → **Bio** → **Trajetória** → **Diferenciais** → Areas → **Casos** → **Depoimentos** →
 **ChamadaCinematica** → Estrutura → Faq → **Localizacao (com botão de agendar)** → Footer.
 
 ⚠️ **A LÓGICA É DELE, e está escrita no `index.tsx`.** Registrada aqui porque sem ela
@@ -1454,3 +1469,24 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-09-30 — ⚠️ **AS ÂNCORAS DO MENU NÃO RESOLVEM NAS ROTAS INTERNAS, e é defeito ANTIGO, não desta rodada.** `/casos` e `/estrutura` recebem o MESMO `header.nav` da home, e medido: **9 dos 10 hrefs não têm destino ali**. Clicar em "Áreas" em `/casos` não faz nada. Não mexi porque está fora do que ele pediu e a correção é uma decisão de produto (nav própria para rota interna, ou os itens virarem `/#areas`). **Registrado para a próxima sessão.**
 - 2026-09-30 — **ELE DESPACHOU AS PENDÊNCIAS ABERTAS, uma a uma**, e o resumo está na tabela do §5.2. ⚠️ **E CORRIGIU A PRÓPRIA RESPOSTA NA MENSAGEM SEGUINTE:** primeiro disse que o jurídico e o CNPJ "não estão na esteira", e logo depois — "na verdade, está na esteira, o jurídico, o CRO e o CNPJ, os três estão na esteira". **Vale a correção.** Os três estão correndo com ele: não cobrar prazo, mas também não tratar como abandonado. O que ficou FORA: a **latitude/longitude foi DESCARTADA** como irrelevante, então o mosaico de tiles do `MapaLocalizacao.tsx` segue dormente e **não se oferece de novo**; e o **painel do corpo clínico fica como está**, encerrando a pergunta aberta desde 28/09. A paleta é a única frente que ainda espera DECISÃO dele.
 - 2026-09-30 — Lição de processo dessa troca, e ela é barata de aplicar: **ele corrige a si mesmo na mensagem seguinte com frequência** (já registrado em 13/08 com "arcada dentária" → "um sorriso bem bonito", e em 18/09 com os três tamanhos da descrição no mesmo dia). Quando a resposta dele fecha várias frentes de uma vez, **esperar a mensagem seguinte antes de gravar na memória como decisão final** economiza uma correção.
+- 2026-10-01 — **SEÇÃO NOVA: TRAJETÓRIA DO DALTON NA IMPLANTODONTIA**, a pedido dele. Ele pesou página longa contra página escondida e decidiu na mesma frase: "uma sessão o site ficaria muito comprido. Na verdade, não. Vamos criar uma sessão, sim, eu acho que a sessão fica melhor para manter o padrão do site, não ter que adivinharem que existe uma outra página". ⚠️ **Rota separada foi considerada e DESCARTADA por ele** — não propor `/trajetoria` numa próxima sessão.
+- 2026-10-01 — **ANATOMIA NOVA: trilho vertical com marcos**, e é a décima segunda da tabela do §5.2. Nenhuma das onze existentes serve aqui: grade de cartões uniforme é o molde que reprovou o layout em 25/07, a esteira já serve TRÊS seções, e a pilha arrastável e o accordion são de outro gesto. Um layout só para todas as larguras, do celular ao desktop — duas versões do mesmo conteúdo é o que deixou o recorte extremo do hero passar em 12/08.
+- 2026-10-01 — Posição: **logo depois da Bio**, dentro do bloco "quem conduz e como" que o usuário desenhou em 30/09. A Bio apresenta o responsável, a Trajetória mostra como ele chegou lá, e só então Diferenciais fala do método. Depois de Diferenciais, a pessoa ficaria separada da formação dela por uma seção inteira.
+- 2026-10-01 — Seção **CLARA** de propósito, e isso é conserto preventivo: a Bio é faixa escura sangrada e não participa de `--section-py`, então uma seção escura ali deixaria dois cantos de raio 24px encostados — o defeito pago em 13/08, 15/09 e 25/09. Sendo clara, o vão vem do ritmo de seção e não precisa de `pt` nenhum.
+- 2026-10-01 — ⚠️ **NENHUM DOS SEIS MARCOS TEM ANO, e `ano: null` é a decisão, não um esquecimento.** A fonte (`docs/conteudo-fonte.md` §3) diz "~25 anos de formação, referência não datada" e não data uma única formação. Estimar ano de graduação ou de mestrado de um cirurgião-dentista real é dado falso sobre pessoa identificável. Enquanto for null, quem carrega a sequência é o rótulo de etapa; o campo já existe e os anos aparecem sozinhos quando a clínica mandar.
+- 2026-10-01 — ⚠️ **E a ORDEM das duas especializações é INFERÊNCIA**, registrada como tal no `clinica.ts`: periodontia antes de implantodontia é a progressão usual (o implante se assenta no periodonto), mas a fonte não ordena nada. Confirmar com a clínica antes de publicar. Quando os anos chegarem, são eles a ordem de verdade.
+- 2026-10-01 — Conteúdo 100% do site antigo, com proveniência: PUC-PR, APCD Bauru, ABO-PR, ILAPEO, docência e alta complexidade. Nada acrescentado. Nenhuma linha promete resultado — a seção fala de FORMAÇÃO e de CONDUTA, nunca de desfecho, que é requisito da CFO-196/2019 e não estilo. **Não** acrescentar "anos de experiência" nem número de casos sem a clínica fornecer: é a métrica mais fácil de inventar e a mais fácil de desmentir (mesma regra dos números do hero, 13/08).
+- 2026-10-01 — A **instituição** ficou em `--foreground` e não em `--muted`, e é o ponto da seção: ILAPEO, ABO-PR, APCD Bauru e PUC-PR são o sinal de autoridade, e em cinza secundário liam mais fracas que a palavra genérica do título logo acima. A descrição fica no secundário e a hierarquia se inverte na direção certa.
+- 2026-10-01 — ⚠️ **O trilho saiu PARTIDO no primeiro render, e só a medição pegou:** o fio ia do dot até a borda do `li`, e a marca seguinte começa 7px abaixo dela — a 7px de vão o trilho lê como linha tracejada, não como percurso. `-bottom-3.5` leva o fio ao CENTRO da próxima marca, que é desenhada depois dele no DOM e portanto o cobre. Medido: sobreposição de 8px em cada emenda, nos dois viewports.
+- 2026-10-01 — ⚠️ E o print **mostrou os dois últimos marcos EM BRANCO**, que seria o 14º falso positivo da memória se eu tivesse acreditado: a seção tem 1497px e a janela 900, então o `IntersectionObserver` dos dois últimos `Reveal` nunca disparou — o script capturou sem rolar por dentro da seção. Com a rolagem lenta (450ms por passo), 6 de 6 aparecem. **Em seção mais alta que a janela, rolar por dentro dela antes de capturar.**
+- 2026-10-01 — ⚠️ **A PÍLULA DE NAVEGAÇÃO CHEGOU AO LIMITE FÍSICO, e o item novo a estourou em 1024.** Com ONZE itens ela pedia 1038px numa janela de 1024 e o "Home" saía CORTADO pela borda esquerda. Os vãos e o `px` da faixa `lg` apertaram um degrau (`gap-3`, `lg:px-3`, `lg:gap-x-3`) e ela voltou a 972px, com 26px de margem de cada lado; de `xl` para cima nada muda. ⚠️ **Um décimo segundo item NÃO entra apertando mais** — a saída seria a navegação cheia só a partir de `xl`, com o botão compacto na faixa 1024 a 1279. Dizer isso a ele antes de aceitar seção nova com item de menu.
+- 2026-10-01 — ⚠️ **O limiar da marca do canto MUDOU DE NOVO, de 1640 para 1790, e é a sexta encarnação da colisão de 1024.** Ele é DERIVADO da largura da pílula, e a pílula cresce a cada item: com dez itens ela media 1067px e o limiar era 1640; com onze mede 1216 e `(W - 1216) / 2 >= 277` dá W >= 1770. Em 1640 a folga medida virou **-26px**, ou seja o número de 30/09 ficou errado no dia seguinte. Medido com 1790: 49px em 1790 e 114px em 1920, marca visível abaixo de `lg` (165px em 390, 117px em 768) e escondida de 1024 a 1789. **Ao mexer na contagem de itens do menu, remedir e recalcular — nunca ajustar a olho.**
+- 2026-10-01 — ⚠️ Duas vezes nesta rodada eu medi o ELEMENTO ERRADO e quase agi no número: primeiro `nav.closest("div")`, que é a linha interna e não a pílula, e depois o `<header>`, que é o wrapper externo — os três têm larguras diferentes (1038 / 1024 / 1216) e cada um conta uma história. O que resolveu foi subir do `<nav>` até o ancestral que carrega `border-ink-border`. É a mesma família do §10, e a regra continua: **confirmar QUAL elemento está sendo lido antes de acreditar na leitura.**
+- 2026-10-01 — ⚠️ E uma medição que "não mudou" depois de três edições certas no arquivo: era **CSS velho** sendo servido, com o `padding` ainda no valor da edição anterior. Mesmo caso de 15/09. O que confirma é o `getComputedStyle` bater com o valor NOVO antes de qualquer conclusão — e esperar o dev server recompilar.
+- 2026-10-01 — Custo medido: a seção fecha em **1,66 tela** em 1440 e 2,03 em 390, e a página foi de 13,0 para **14,69 telas** no desktop. É mais alta que a média de ~1,15 e menor que a do corpo clínico (1,94), que o §9 já aceitou. O diagnóstico de 03/08 concluiu que o problema do site era DENSIDADE e não comprimento, e esta seção é o oposto de densa: seis blocos de texto com ar entre eles.
+- 2026-10-01 — Medido em 1440×900 e 390×844: ordem `portal → top → responsavel → trajetoria → diferenciais → areas → casos → depoimentos → chamada → estrutura → faq → localizacao`, **zero âncora morta** no menu e no rodapé, seis marcos com texto visível, trilho contínuo, descrição em 18px no desktop e 16px no celular, **zero travessão** renderizado, zero overflow lateral. `tsc --noEmit` e `bun run build` limpos.
+- 2026-10-02 — **O RODAPÉ PASSOU A DIZER "Suzuki Odontologia"**, a pedido ("no rodapé está dizendo NOME DA CLINICA, coloque Suzuki Odontologia"). Mexeu só no `brand.copyright`, que é o único campo renderizado ali. ⚠️ **`brand.nome` NÃO virou "Suzuki Odontologia"**: ele é a RAZÃO SOCIAL, que anda junto do CNPJ e pode ser outra coisa ("... Ltda"), então passou de `[NOME DA CLÍNICA]` para `[RAZÃO SOCIAL]` — nome mais honesto para o que o campo é, e que impede uma próxima sessão de "uniformizar" os dois. O campo não é exibido em lugar nenhum hoje. Medido no texto renderizado das TRÊS rotas: a linha legal fecha em "© 2026 Suzuki Odontologia · Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112 · [CNPJ]", zero placeholder de nome na tela, e o `[CNPJ]` segue visível porque continua pendente. `tsc --noEmit` limpo.
+- 2026-10-02 — **O RETRATO DA TELA DE ENTRADA TROCOU PARA O DA BIO**, a pedido ("vamos mudar a foto do dalton, coloque a foto que esta na secao onde fala dele, ele nao gostou da foto que esta na hero"). Saiu o `hero/dalton-suzuki.webp` (500x482, do "sobre nós" do site antigo, fundo na parede verde da clínica) e entrou o `equipe/dalton-suzuki.webp` (300x400, o retrato de estúdio do ensaio do corpo clínico). ⚠️ **"Hero" aqui é a TELA DE ENTRADA** (`AberturaPortal`), e não a `Hero.tsx` — que não tem foto nenhuma desde 15/09. É a ambiguidade registrada em 09/09, e desta vez não custou rodada: o pedido cita a foto do Dalton, e ela só existe numa das duas.
+- 2026-10-02 — Nenhum componente mudou: a proporção vem do CONTEÚDO (`retrato.largura`/`altura`) desde 13/08, justamente para o dia em que o arquivo trocasse. Medido depois, com `dpr 2`: proporção **0,750 exata** nos três viewports (recorte ZERO), 304x405 em 1440, 272x363 em 390, 230x307 em 320, zero overflow e zero recorte do grupo em cinco pontos do curso. `tsc --noEmit` limpo.
+- 2026-10-02 — ⚠️ **ISSO PÕE A MESMA FOTO EM DUAS SEÇÕES DA HOME**, que em 19/08 foi o defeito que tirou a arcada 3D do hero ("duas arcadas seguidas leem como a página se repetindo"). Aqui passa por GEOMETRIA e não por sorte: a tela de entrada se apaga antes de o hero ocupar 78% da tela, e a Bio só vem depois dele — as duas nunca dividem a tela. Se ele reclamar da repetição, o candidato de volta é o arquivo antigo, que segue no repo.
+- 2026-10-02 — ⚠️ **A RESOLUÇÃO FICOU ABAIXO DO SLOT, e o número é 0,49.** O arquivo tem 300px de largura e a tela de entrada exibe 304px de base (mais o zoom), ou seja num aparelho retina a tela pede o DOBRO dos pixels que o arquivo tem. A foto anterior tinha 500px e dava densidade 0,82. Foi dito a ele; **se ficar mole no telefone dele, o conserto é um arquivo maior do MESMO ensaio, não trocar de foto de novo.** Medir densidade como `naturalWidth / (larguraExibida × devicePixelRatio)` — abaixo de 1 é upscale.

@@ -528,6 +528,43 @@ export type BioContent = {
   corpoClinicoMembros: BioMembro[];
 };
 
+/**
+ * Um marco da trajetória do responsável técnico.
+ *
+ * ⚠️ `ano` é `null` em TODOS os marcos hoje, e isso é deliberado: o site antigo
+ * não data nenhuma formação (ver `docs/conteudo-fonte.md` — "~25 anos de
+ * formação, referência não datada"). **Nunca estimar um ano aqui**: formação
+ * datada por chute é dado falso sobre um profissional real. Enquanto for null,
+ * quem carrega a sequência é `etapa`, e a ORDEM dos itens é inferência de
+ * progressão profissional, a confirmar com a clínica. Quando os anos chegarem,
+ * eles aparecem sozinhos e passam a ser a ordem de verdade.
+ */
+export type TrajetoriaMarco = {
+  ano: string | null;
+  /** Rótulo curto do estágio: "Graduação", "Mestrado", "Hoje". */
+  etapa: string;
+  titulo: string;
+  /** Instituição. `null` colapsa a linha, para o marco que não tem uma. */
+  instituicao: string | null;
+  descricao: string;
+};
+
+/**
+ * Trajetória do responsável técnico, em trilho vertical com marcos.
+ *
+ * ⚠️ É a ÚNICA seção com esta anatomia, e isso é o ponto — a tabela de
+ * anatomias do CLAUDE.md §5.2 existe para que nenhuma seção repita o gesto de
+ * outra. Trilho com marcos não é grade de cartões, não é esteira e não é
+ * accordion. Se alguém pedir uma segunda seção em linha do tempo, vale a mesma
+ * conversa que travou a `GradeDeCelulas` em três.
+ */
+export type TrajetoriaContent = {
+  eyebrow: string;
+  titulo: string;
+  descricao: string;
+  marcos: TrajetoriaMarco[];
+};
+
 export type FaqItem = { pergunta: string; resposta: string };
 
 export type FaqContent = {
@@ -631,6 +668,7 @@ export type Clinica = {
   casos: CasosContent;
   depoimentos: DepoimentosContent;
   bio: BioContent;
+  trajetoria: TrajetoriaContent;
   faq: FaqContent;
   chamadaFinal: ChamadaFinalContent;
   chamadaCinematica: ChamadaCinematicaContent;

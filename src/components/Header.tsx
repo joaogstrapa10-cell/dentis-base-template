@@ -242,16 +242,22 @@ export function Header({
            a 50px onde faltam mais de 100.
 
            ⚠️ VOLTA EM 1640px, e o limiar é DERIVADO, não escolhido: a pílula fecha
-           1067px de 1280 para cima, a marca termina em 238px, e os 39px de folga
-           exigem a pílula começando em 277px — ou seja `(W - 1067) / 2 >= 277`, que
-           dá W >= 1621. 1640 é esse número com margem, e em 1920 a folga é 189px.
+           1216px de 1280 para cima (eram 1067 com dez itens, antes de Trajetória
+           entrar em 01/10), a marca termina em 238px, e os 39px de folga exigem a
+           pílula começando em 277px — ou seja `(W - 1216) / 2 >= 277`, que dá
+           W >= 1770. 1790 é esse número com margem: folga medida de 49px em 1790 e
+           114px em 1920.
+           ⚠️ ESTE NÚMERO É DERIVADO DA LARGURA DA PÍLULA, e a pílula cresce a cada
+           item novo do menu. Em 30/09 ele era 1640 para dez itens e ficou errado no
+           dia seguinte, com onze: em 1640 a folga medida virou -26px. Ao acrescentar
+           ou tirar item, REMEDIR e recalcular, não ajustar a olho.
            ⚠️ NÃO usar `2xl`: em 1536 a folga medida é **-3px**, ou seja ainda colide.
            Eu quase cometi esse erro, e o que pegou foi remedir em `/casos` em vez de
            confiar na medida da HOME — lá a pílula mede 160px a menos, porque o botão
            "Agendar" fica escondido até a abertura terminar. **Medir a pílula na rota
            que TEM marca.**
 
-           ⚠️ E É UMA REGRA SÓ (`lg:max-[1639px]:hidden`), não um par
+           ⚠️ E É UMA REGRA SÓ (`lg:max-[1789px]:hidden`), não um par
            `lg:hidden` + `min-[1640px]:block`. O par NÃO funciona, e o motivo é
            ordem de cascata: o Tailwind v4 emite os arbitrários `min-[]` ANTES dos
            breakpoints nomeados — medido no CSS compilado, `(width>=1640px)` cai no
@@ -267,7 +273,7 @@ export function Header({
            ⚠️ Na HOME a marca do canto não existe desde 17/08 ("não quero que a logo
            volte após o scroll do vídeo"), então isto só afeta `/casos` e
            `/estrutura`. Ao mexer na contagem de itens do menu, REMEDIR aqui. */
-        className="fixed left-6 top-4 z-50 md:left-14 md:top-6 lg:max-[1639px]:hidden"
+        className="fixed left-6 top-4 z-50 md:left-14 md:top-6 lg:max-[1789px]:hidden"
         style={{
           opacity: opacidadeMarca,
           pointerEvents: opacidadeMarca < 0.05 ? "none" : undefined,
@@ -349,7 +355,15 @@ export function Header({
              32px dentro, `px-5 py-3` daria 72×56 — uma cápsula deitada em volta de um
              quadrado. `p-3` fecha em 56×56, que é redondo de verdade e continua acima
              dos 44px de alvo de toque do piso de qualidade de 21/08. */
-          open ? "px-5 py-3" : "p-3 lg:px-5 lg:py-3",
+          // ⚠️ `lg:px-3` (12px) e não `lg:px-5`, e os vãos do `nav` e da linha
+          // acompanham. É medição, não gosto: com ONZE itens a pílula pedia 1038px
+          // numa janela de 1024 e o "Home" saía cortado pela borda esquerda. O
+          // aperto a devolve para 972px, com 26px de margem de cada lado. De `xl`
+          // para cima tudo volta ao tamanho cheio (pílula em 1216px).
+          // ⚠️ A pílula está no LIMITE do que cabe em 1024. Um décimo segundo item
+          // não entra apertando mais: a saída seria a navegação cheia só a partir de
+          // `xl`, com o botão compacto na faixa 1024-1279.
+          open ? "px-5 py-3" : "p-3 lg:px-3 lg:py-3 xl:px-5",
           redondo ? "rounded-full" : "rounded-2xl",
           /* Entrada da pílula quando a arcada termina. Sobe 8px junto com o fade
              para ler como algo que chega, e não como algo que estava ali apagado.
@@ -370,7 +384,7 @@ export function Header({
             rótulos de uma linha só o aperto não se percebe. */}
         <div
           className={cn(
-            "flex w-full items-center justify-end gap-x-8 md:justify-between lg:gap-x-6 xl:gap-x-10",
+            "flex w-full items-center justify-end gap-x-8 md:justify-between lg:gap-x-3 xl:gap-x-10",
             /* ⚠️ ABERTO NO CELULAR, A LINHA DO X SAI DO FLUXO. Ela é uma faixa de
                32px de altura com o botão encostado à direita, e no fluxo empurrava a
                lista inteira para baixo — o "Home" nascia a 46px do topo do painel com
@@ -384,7 +398,7 @@ export function Header({
             open && "absolute right-5 top-3 w-auto lg:static lg:right-auto lg:top-auto lg:w-full",
           )}
         >
-          <nav className="hidden items-center gap-5 lg:flex xl:gap-8">
+          <nav className="hidden items-center gap-3 lg:flex xl:gap-8">
             {data.nav.map((item: NavLink) => (
               <AnimatedNavLink
                 key={item.href + item.label}

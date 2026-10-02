@@ -19,7 +19,13 @@ const BRAND_LOGO = "/imagens/marca/logo-horizontal-branco.svg";
 
 export const clinica: Clinica = {
   brand: {
-    nome: "[NOME DA CLÍNICA]",
+    // ⚠️ `nome` é a RAZÃO SOCIAL (o nome jurídico, que acompanha o CNPJ), e NÃO
+    // o nome fantasia. Os dois podem ser diferentes ("Suzuki Odontologia" contra
+    // algo como "Suzuki Odontologia Ltda"), e por isso este campo segue como
+    // placeholder enquanto o CNPJ não chega — os dois vêm juntos da clínica.
+    // Este campo NÃO é renderizado em lugar nenhum hoje; quem aparece no rodapé
+    // é `copyright`, logo abaixo.
+    nome: "[RAZÃO SOCIAL]",
     wordmark: "Suzuki Odontologia",
     logo: BRAND_LOGO,
     // Mesma arte do logo branco, recolorida no traço para a cor de texto da
@@ -30,7 +36,12 @@ export const clinica: Clinica = {
     responsavelTecnico: "Dr. Dalton Suzuki",
     croResponsavel: "CRO-PR 9112",
     cnpj: "[CNPJ]",
-    copyright: "© 2026 [NOME DA CLÍNICA] · Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112 · [CNPJ]",
+    // O nome que aparece no rodapé é o NOME FANTASIA, a pedido do usuário em
+    // 02/10 ("no rodapé está dizendo NOME DA CLINICA, coloque Suzuki
+    // Odontologia"). O `[CNPJ]` fica, e com ele vem a razão social: se a clínica
+    // confirmar que o nome jurídico é outro, é aqui que ele entra ao lado do
+    // CNPJ, sem tirar o fantasia.
+    copyright: "© 2026 Suzuki Odontologia · Responsável técnico: Dr. Dalton Suzuki, CRO-PR 9112 · [CNPJ]",
   },
   contato: {
     endereco: "Rua Atílio Bório, 547, Alto da XV",
@@ -98,6 +109,7 @@ export const clinica: Clinica = {
          Remedir a folga a cada item novo. */
       { label: "Home", href: "#portal" },
       { label: "Equipe", href: "#responsavel" },
+      { label: "Trajetória", href: "#trajetoria" },
       { label: "Experiência", href: "#diferenciais" },
       // ⚠️ Áreas ANTES de Casos desde 30/09, acompanhando a ordem da página: a
       // prova (Casos) passou a vir depois do que ela prova (Áreas). Menu fora da
@@ -137,11 +149,9 @@ export const clinica: Clinica = {
        DESTA tela anexado: "a foto do Dalton precisa estar nessa sessão ao lado da logo,
        vamos testar".
 
-       É o arquivo que já estava no repo — foi a foto única do hero até 13/08, voltou ao
-       hero em 19/08 e agora mudou de seção. 500×482, do "sobre nós" do site antigo. O
-       fundo dele é a parede verde da clínica, o que casa com o petróleo da página por
-       coincidência e não por montagem; por isso entra com `.retrato-fundido`, que
-       dissolve as quatro bordas para o retângulo da foto não desenhar aresta.
+       ⚠️ A FOTO MUDOU EM 02/10 e a nota abaixo do campo explica qual e por quê. Até
+       então era o `hero/dalton-suzuki.webp` (500×482, do "sobre nós" do site antigo,
+       fundo na parede verde da clínica), que foi a foto única do hero até 13/08.
 
        ⚠️ NÃO é o `dalton-suzuki-amplo.webp` (2560×703) da mesma pasta: aquele é
        panorâmico e já foi reprovado em 12/08 — num slot vertical o `object-cover` mostra
@@ -150,10 +160,31 @@ export const clinica: Clinica = {
        ⚠️ E ELE SAIU DO HERO na mesma rodada. A mesma foto em duas telas seguidas é o
        defeito que fez a arcada 3D sair do hero em 19/08. */
     retrato: {
-      src: "/imagens/hero/dalton-suzuki.webp",
-      alt: "Dr. Dalton Suzuki, responsável técnico da clínica, de braços cruzados no consultório.",
-      largura: 500,
-      altura: 482,
+      /* ⚠️ TROCADO EM 02/10, a pedido: "vamos mudar a foto do dalton, coloque a foto
+         que esta na secao onde fala dele, ele nao gostou da foto que esta na hero".
+         É O MESMO ARQUIVO da Bio (`bio.retrato`), de propósito: o retrato de estúdio
+         do ensaio do corpo clínico, 300x400.
+
+         ⚠️ Isso coloca a MESMA FOTO em duas seções da home, o que em 19/08 foi
+         defeito (a arcada 3D repetida saiu do hero por isso). Aqui é decisão dele, e
+         a diferença que a sustenta é a distância: a tela de entrada se apaga antes
+         de a Bio chegar, então as duas nunca dividem a tela. Se ele reclamar da
+         repetição, o candidato de volta é o `hero/dalton-suzuki.webp` (500x482), que
+         segue no repo.
+
+         ⚠️ DUAS CONSEQUÊNCIAS MEDIDAS, as duas inerentes ao arquivo:
+         1. PROPORÇÃO: 3:4 contra 1,04:1 da anterior. O componente tira a proporção
+            DESTE campo, então nada quebra, mas a peça fica mais alta e o grupo
+            inteiro cresce em altura. Foi por isso que a proporção saiu do componente
+            em 13/08.
+         2. RESOLUÇÃO: o arquivo tem 300px de largura e a tela de entrada exibe até
+            ~365px (304 de base e o zoom por cima), ou seja o DOBRO num aparelho
+            retina. A anterior tinha 500px. Se ficar mole na tela dele, o conserto é
+            um arquivo maior do mesmo ensaio, não trocar de foto. */
+      src: "/imagens/equipe/dalton-suzuki.webp",
+      alt: "Retrato do Dr. Dalton Suzuki, responsável técnico da clínica, de jaleco.",
+      largura: 300,
+      altura: 400,
       /* `false` porque é FOTO retangular, não recorte com alpha — e é este campo que
          decide a máscara: `.retrato-fundido` dissolve as quatro bordas (certo para
          foto), `.figura-recortada` apaga só os cortes da moldura (certo para figura sem
@@ -749,6 +780,82 @@ export const clinica: Clinica = {
       },
     ],
   },
+
+  // TRAJETÓRIA DO RESPONSÁVEL TÉCNICO
+  //
+  // Tudo aqui vem do site antigo, com proveniência marcada em
+  // `docs/conteudo-fonte.md` §3: PUC-PR, APCD Bauru, ABO-PR, ILAPEO, docência e
+  // alta complexidade. Nada foi acrescentado.
+  //
+  // ⚠️ DUAS RESSALVAS, e as duas são para a clínica fechar:
+  // 1. NENHUM marco tem ano. A fonte diz "~25 anos de formação" sem datar nada.
+  //    `ano: null` é honesto; um ano chutado sobre a formação de um
+  //    cirurgião-dentista real seria dado falso. Ao receber as datas, preencher
+  //    e reordenar por elas.
+  // 2. A ORDEM das duas especializações é INFERÊNCIA (periodontia antes de
+  //    implantodontia é a progressão usual, já que o implante se assenta no
+  //    periodonto). Confirmar antes de publicar.
+  //
+  // ⚠️ Nenhuma linha promete resultado, e isso é requisito da CFO-196/2019 e
+  // não estilo: a seção fala de FORMAÇÃO e de CONDUTA, nunca de desfecho de
+  // tratamento. Ao editar, não introduzir "melhor", "garantido" nem número de
+  // casos sem a clínica fornecer.
+  trajetoria: {
+    eyebrow: "",
+    titulo: "A trajetória na implantodontia.",
+    descricao:
+      "A implantodontia do Dr. Dalton Suzuki não começou no implante: começou na periodontia, passou pelo mestrado e segue na sala de aula. É esse percurso que define como um caso difícil é planejado aqui.",
+    marcos: [
+      {
+        ano: null,
+        etapa: "Graduação",
+        titulo: "Odontologia",
+        instituicao: "PUC-PR",
+        descricao:
+          "A formação de base, em Curitiba, na mesma cidade onde a clínica atende até hoje.",
+      },
+      {
+        ano: null,
+        etapa: "Especialização",
+        titulo: "Periodontia",
+        instituicao: "APCD Bauru",
+        descricao:
+          "O tecido que sustenta o dente vem antes do implante. É a especialidade que decide se um caso tem onde se apoiar.",
+      },
+      {
+        ano: null,
+        etapa: "Especialização",
+        titulo: "Implantodontia",
+        instituicao: "ABO-PR",
+        descricao:
+          "A cirurgia e a reabilitação sobre implantes, como especialidade formal registrada no conselho.",
+      },
+      {
+        ano: null,
+        etapa: "Mestrado",
+        titulo: "Implantodontia",
+        instituicao: "ILAPEO",
+        descricao:
+          "O título de mestre pelo instituto de Curitiba dedicado ao ensino e à pesquisa em implantodontia.",
+      },
+      {
+        ano: null,
+        etapa: "Docência e pesquisa",
+        titulo: "Aulas em pós-graduação",
+        instituicao: null,
+        descricao:
+          "Trabalhos publicados, participação em livros didáticos e aulas em cursos de pós-graduação em Implantodontia.",
+      },
+      {
+        ano: null,
+        etapa: "Hoje",
+        titulo: "Casos de alta complexidade",
+        instituicao: null,
+        descricao:
+          "Coordena o corpo clínico e conduz os casos de maior complexidade, com as outras especialidades da clínica em volta do mesmo plano.",
+      },
+    ],
+  },
   faq: {
     eyebrow: "Dúvidas",
     titulo: "Perguntas frequentes.",
@@ -872,6 +979,7 @@ export const clinica: Clinica = {
       // recebe este item — a pílula já está em cinco e um sexto recria a colisão
       // com a marca em 1024px, medida duas vezes nesta sessão.
       { label: "Responsável técnico", href: "#responsavel" },
+      { label: "Trajetória", href: "#trajetoria" },
       { label: "Diferenciais", href: "#diferenciais" },
       { label: "Casos clínicos", href: "/casos" },
       { label: "Estrutura", href: "#estrutura" },

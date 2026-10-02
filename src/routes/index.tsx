@@ -10,6 +10,7 @@ import { CasosSection } from "@/components/sections/Casos";
 import { DepoimentosSection } from "@/components/sections/Depoimentos";
 import { AberturaPortal } from "@/components/sections/AberturaPortal";
 import { BioSection } from "@/components/sections/Bio";
+import { Trajetoria } from "@/components/sections/Trajetoria";
 import { FaqSection } from "@/components/sections/Faq";
 import { ChamadaCinematica } from "@/components/sections/ChamadaCinematica";
 import { FooterSection } from "@/components/sections/Footer";
@@ -139,6 +140,16 @@ function Landing() {
             15/09 e 25/09. Ao mover faixa sangrada, conferir quem passa a vir
             antes. */}
         <BioSection data={clinica.bio} />
+
+        {/* TRAJETÓRIA, logo depois da Bio e dentro do bloco "quem conduz e como"
+            que o usuário desenhou em 30/09: a Bio apresenta o responsável, esta
+            mostra COMO ele chegou até aqui, e só então Diferenciais fala do
+            método. Entrar depois de Diferenciais separaria a pessoa da formação
+            dela por uma seção inteira.
+            Seção CLARA: a Bio acima é faixa escura sangrada, e duas escuras em
+            contato é o defeito dos cantos encostados, pago três vezes. */}
+        <Trajetoria data={clinica.trajetoria} />
+
         <DiferenciaisSection data={clinica.diferenciais} />
         <AreasSection data={clinica.areas} />
         <CasosSection data={clinica.casos} />
