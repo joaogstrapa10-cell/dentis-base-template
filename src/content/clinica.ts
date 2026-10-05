@@ -199,6 +199,31 @@ export const clinica: Clinica = {
       src: null,
       nome: "Dr. Dalton Suzuki",
     },
+    /* O MARCO DE TEMPO, embaixo da marca. Pedido em 05/10: "pensei em colocar os anos
+       de historia/experiencia dele, sao 30 anos, a credibilidade e um dos principais
+       argumentos dele, autoridade" e, em seguida, o lugar: "acho q ficaria bom na hero,
+       abaixo da logo, em uma fonte bem alto padrao e elegante".
+
+       ⚠️ O NÚMERO É DELE, e é isso que torna este campo legítimo: a regra de 13/08
+       proíbe Claude acrescentar "anos de clínica" sem a clínica fornecer, e ela
+       continua valendo para qualquer número novo.
+
+       ✅ E ele BATE com a única referência que existe: o site antigo dizia "~25 anos de
+       formação" e o material daquela página é de MAIO DE 2021 (datado pelo nome do
+       arquivo do retrato, `dalton.1620766963.webp`). 25 + 5 = 30 em 2026. Não é número
+       redondo de marketing, é a conta fechando — registrado para a próxima sessão não
+       "arredondar" nem reabrir.
+
+       ⚠️ SEM NOMEAR o Dr. Dalton na frase, e isso MUDOU com o lugar. Enquanto o campo
+       esteve no hero (que é só texto), o rótulo precisava dizer "do Dr. Dalton Suzuki":
+       "30 anos" sozinho lia como a idade da CLÍNICA, e a fundação dela não está em
+       fonte nenhuma. Aqui a atribuição é a composição — a linha fica entre o RETRATO
+       dele e a ASSINATURA dele. Se o retrato sair desta tela, o nome volta à frase.
+
+       ⚠️ Nada aqui promete desfecho, e é requisito da CFO-196/2019: tempo de exercício
+       é dado profissional factual. NÃO transformar em "mais experiente", "referência em
+       Curitiba" nem comparação com concorrente. */
+    anos: "30 anos de experiência",
   },
   hero: {
     eyebrow: "Curitiba · Alto da XV",
@@ -261,38 +286,13 @@ export const clinica: Clinica = {
     // NÃO acrescentar "anos de clínica" nem "pacientes atendidos" sem a clínica
     // fornecer o número — é a métrica mais fácil de inventar e a mais fácil de
     // desmentir, e publicidade odontológica não é lugar para número redondo.
-    // ⚠️ Em 05/10 o usuário FORNECEU um: os 30 anos, no campo `anos` logo abaixo.
-    // A regra não foi flexibilizada, a condição dela foi cumprida.
+    // ⚠️ Em 05/10 o usuário FORNECEU um: os 30 anos, hoje em `abertura.anos` (a
+    // tela de entrada). A regra não foi flexibilizada, a condição dela foi cumprida.
     stats: [
       { valor: "5,0", rotulo: "Nota no Google", icone: "nota" },
       { valor: "8", rotulo: "Especialidades", icone: "especialidades" },
       { valor: "9", rotulo: "Profissionais na clínica", icone: "corpoClinico" },
     ],
-    // O MARCO DE TEMPO, pedido em 05/10: "pensei em colocar os anos de
-    // história/experiência dele, são 30 anos, a credibilidade é um dos principais
-    // argumentos dele, autoridade".
-    //
-    // ⚠️ O NÚMERO É DELE, e é isso que torna este campo legítimo: a regra logo
-    // acima proíbe Claude acrescentar "anos de clínica" sem a clínica fornecer, e
-    // ela continua valendo para qualquer número novo. Este veio da boca do usuário.
-    //
-    // ✅ E ele BATE com a única referência que existe: o site antigo dizia "~25 anos
-    // de formação" e o material daquela página é de MAIO DE 2021 (datado pelo nome
-    // do arquivo do retrato, `dalton.1620766963.webp`). 25 + 5 = 30 em 2026. Ou
-    // seja, não é número redondo de marketing, é a conta fechando. Registrado para
-    // a próxima sessão não "arredondar" nem reabrir.
-    //
-    // ⚠️ O rótulo NOMEIA O DR. DALTON de propósito. "30 anos" sozinho no hero de
-    // uma clínica lê como a idade da CLÍNICA, e isso ninguém verificou: a fundação
-    // dela não está em fonte nenhuma. O que se sabe é sobre o responsável técnico.
-    //
-    // ⚠️ Nada aqui promete desfecho, e é requisito da CFO-196/2019: tempo de
-    // exercício é dado profissional factual. NÃO transformar em "mais experiente",
-    // "referência em Curitiba" nem comparação com concorrente.
-    anos: {
-      valor: "30 anos",
-      rotulo: "de experiência do Dr. Dalton Suzuki",
-    },
   },
   diferenciais: {
     eyebrow: "Por que aqui",

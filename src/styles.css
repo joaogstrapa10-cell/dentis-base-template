@@ -829,6 +829,86 @@
   }
 }
 
+/* ---------- CINZEL: o marco de tempo da tela de entrada ----------
+   Servida do REPO pelo mesmo motivo da Qwitcher logo acima, e o motivo é de
+   verificação, não de desempenho: o navegador deste ambiente de desenvolvimento NÃO
+   alcança fonts.googleapis.com (ERR_CONNECTION_RESET, ele não confia na CA do proxy).
+   Com a fonte remota, a peça cairia numa reserva serifada em todo screenshot e no
+   `.html` congelado — ou seja, impossível conferir antes de mostrar ao usuário.
+   14 KB, subconjunto latin. SIL Open Font License 1.1. */
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fontes/cinzel-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+/* ---------- MARCO DE TEMPO (tela de entrada, embaixo da marca) ----------
+   Pedido de 05/10: "acho q ficaria bom na hero, abaixo da logo, em uma fonte bem alto
+   padrao e elegante" + "os 30 anos de experiencia".
+
+   POR QUE CINZEL, e a escolha foi medida e não de gosto: quatro candidatas foram
+   renderizadas NESTA composição (logo + linha à esquerda, retrato + assinatura à
+   direita) antes de decidir — Cormorant Garamond, Cormorant, Playfair Display e uma
+   versão em versalete. As três em caixa baixa leem como LEGENDA da logo e somem ao lado
+   da assinatura cursiva, que é grande. A Cinzel é a capital romana (linhagem Trajan), o
+   MESMO registro do wordmark "SUZUKI" da própria arte do logo logo acima — então a
+   linha lê como parte do lockup e equilibra a assinatura do outro lado. É também a mais
+   leve das quatro, 14 KB contra 22 a 38.
+
+   ⚠️ ISTO ROÇA UMA FORMA APOSENTADA e a ressalva fica registrada: o §5.2 do CLAUDE.md
+   lista "rótulo em maiúscula com tracking largo" entre o que saiu do site em 03/08. O
+   que saiu de lá era o EYEBROW — rótulo pequeno, em grotesca, no topo de seção, gesto
+   de software B2B. Aqui é outra coisa: corpo grande, serifada, uma vez na página, na
+   tela da marca, como tagline de lockup. Se for para desfazer, a troca é a família e o
+   `text-transform` desta classe — não há caixa alta em mais lugar nenhum.
+
+   ⚠️ CLASSE PRÓPRIA, FORA DA ESCALA DE CINCO DEGRAUS, e é a mesma exceção que a
+   `.assinatura-manuscrita`: peça de composição da tela de entrada, não texto de seção.
+   A regra de 03/08 (proibido `text-[...]` arbitrário em seção, proibido
+   text-xs/sm/lg/xl) continua inteira para o resto do site.
+
+   ⚠️ E O TAMANHO É UMA CONTA, não um clamp escolhido a olho. O que faz a peça ler como
+   lockup é a linha medir ~90% da LARGURA DA MARCA em toda tela, e a marca não é fluida
+   de um jeito só: ela é `min(78vw,18rem)` no celular e `min(30vw,24rem)` de `md` para
+   cima. Um `clamp` único reprova no meio do caminho — medido com `clamp(.875rem,4vw,
+   1.5rem)`: 96% da logo em 1440, mas 120% em 1024 e 160% em 768, ou seja a linha mais
+   larga que a marca. Daí o tamanho repetir a MESMA fórmula da marca, dividida pela
+   largura natural da linha:
+
+     largura da linha = 15,38em  (22 caracteres em caixa alta, tracking 0.12em — medido)
+     fonte = largura da marca × 0,90 / 15,38
+
+   ⚠️ Os 15,38em valem para ESTE texto. Ao trocar `abertura.anos`, remedir a largura em
+   `em` e refazer os dois valores — e conferir em 320px, que é onde estoura (390 passa
+   sem avisar, lição de 25/09). */
+.anos-portal {
+  font-family: "Cinzel", "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  /* min(78vw,18rem) × 0,90 / 15,38 */
+  font-size: min(4.4vw, 1rem);
+  line-height: 1.25;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* O tracking é aplicado DEPOIS do último caractere também, o que desloca a linha
+     meio espaço para a esquerda do centro óptico. Devolver essa metade é o que a deixa
+     alinhada com o eixo da marca. */
+  text-indent: 0.12em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .anos-portal {
+    /* min(30vw,24rem) × 0,90 / 15,38 */
+    font-size: min(1.75vw, 1.4rem);
+  }
+}
+
 /* Mapa: no tema claro o embed já combina, só suaviza a saturação */
 .map-tint {
   filter: saturate(0.75) contrast(1.02);

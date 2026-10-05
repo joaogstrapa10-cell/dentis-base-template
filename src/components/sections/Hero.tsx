@@ -94,33 +94,12 @@ export function HeroSection({ data }: { data: HeroContent }) {
             </p>
           </Reveal>
 
-          {/* O MARCO DE TEMPO, entre a frase e as ações, e a POSIÇÃO é o argumento:
-              o visitante lê a promessa de conduta, lê a frase, bate na prova e só
-              então decide. Pôr o número depois dos botões o deixa fora do caminho da
-              decisão; pôr antes da manchete o transforma em eyebrow, que é o rótulo
-              pequeno removido do site inteiro em 03/08.
-
-              Sem cartão, sem fundo e sem sombra: a lista de formas aposentadas do
-              §5.2 inclui "cartão com fundo e sombra próprios", e um número solto no
-              bloco escuro tem presença de sobra pelo tamanho.
-
-              ⚠️ UM número, não três. A `stats` de três ainda existe no conteúdo e
-              segue sem ser desenhada: o 5,0 vive nas avaliações e as 8
-              especialidades em Áreas, e enfileirar os três aqui dilui justamente o
-              que o usuário pediu para destacar, além de reintroduzir a barra de
-              métricas que é gesto de software. */}
-          {data.anos ? (
-            <Reveal delay={260}>
-              <p className="mt-10">
-                <span className="display-2 block text-ink-foreground">
-                  {data.anos.valor}
-                </span>
-                <span className="mt-1 block text-base text-ink-muted">
-                  {data.anos.rotulo}
-                </span>
-              </p>
-            </Reveal>
-          ) : null}
+          {/* ⚠️ O MARCO DE TEMPO ("30 anos de experiência") esteve AQUI por algumas
+              horas em 05/10, entre a frase e as ações, e foi para a TELA DE ENTRADA no
+              mesmo dia, a pedido: "acho q ficaria bom na hero, abaixo da logo". A logo
+              vive no `AberturaPortal`, e é a ambiguidade de "hero" registrada em 09/09.
+              O campo saiu de `HeroContent` junto com o tipo `HeroAnos` — não virou
+              `null`, porque campo morto é convite a reintroduzir a peça. */}
 
           <Reveal delay={300}>
             {/* Duas ações lado a lado, como o par "Learn more / Buy" da referência. A

@@ -128,6 +128,36 @@ export type AberturaContent = {
   retrato: HeroImagem | null;
   /** A assinatura, embaixo do par marca+retrato. Ver o tipo. */
   assinatura: HeroAssinatura | null;
+  /**
+   * O MARCO DE TEMPO, embaixo da marca nesta tela.
+   *
+   * Pedido em 05/10, em duas mensagens: primeiro "pensei em colocar os anos de
+   * historia/experiencia dele, sao 30 anos, a credibilidade e um dos principais
+   * argumentos dele, autoridade" e, no dia seguinte, o lugar — "acho q ficaria bom na
+   * hero, abaixo da logo, em uma fonte bem alto padrao e elegante".
+   *
+   * ⚠️ "Hero" aqui é ESTA tela, não a `Hero.tsx`: é a ambiguidade registrada em 09/09,
+   * e o que a resolve é a palavra "logo" na mesma frase — a marca vive aqui. O campo
+   * ESTAVA em `HeroContent` por algumas horas em 05/10 e foi movido; o tipo `HeroAnos`
+   * saiu junto, porque campo morto é o que sustentou a tabela de preços de Tratamentos
+   * por três semanas neste projeto.
+   *
+   * ⚠️ É UMA STRING, e não o par `{valor, rotulo}` que existia no hero. Lá o rótulo
+   * tinha de NOMEAR o Dr. Dalton, senão "30 anos" sozinho lia como a idade da CLÍNICA,
+   * que ninguém verificou. Aqui a atribuição é a própria composição: a linha fica
+   * entre o RETRATO dele e a ASSINATURA dele, e o leitor de tela anuncia os três em
+   * sequência. Ao mudar esta tela, conferir se o retrato continua ao lado — sem ele a
+   * frase volta a precisar do nome.
+   *
+   * ⚠️ O número é do USUÁRIO, e isso é o que torna o campo legítimo: a regra de 13/08
+   * proíbe Claude acrescentar "anos de clínica" sem a clínica fornecer, e ela continua
+   * valendo para qualquer número novo. Nada aqui promete desfecho — tempo de exercício
+   * é dado profissional factual, e é assim que a CFO-196/2019 o admite. NÃO
+   * transformar em "mais experiente" nem em comparação com concorrente.
+   *
+   * `null` não renderiza nada, e é o estado das variantes sem o dado.
+   */
+  anos: string | null;
 };
 
 /* ⚠️ NÃO EXISTE MAIS o campo `linha` ("ODONTOLOGIA ESPECIALIZADA", que ficava embaixo
@@ -213,8 +243,9 @@ export type HeroContent = {
   /** Os três números ao pé do texto. Ver a nota em `clinica.ts`: só entra aqui
    *  dado VERIFICÁVEL. Lista vazia não renderiza a fileira. */
   stats: HeroStat[];
-  /** `null` não renderiza nada, e é o estado das variantes sem o dado. */
-  anos: HeroAnos | null;
+  /* ⚠️ SEM `anos`: o marco de tempo do Dr. Dalton nasceu aqui em 05/10 e foi para
+     `AberturaContent` no mesmo dia, a pedido — "abaixo da logo", e a logo vive na tela
+     de entrada. Saiu do tipo em vez de virar `null`, pela regra do projeto. */
 };
 
 export type HeroImagem = {
@@ -258,11 +289,6 @@ export type HeroImagem = {
  * responsável técnico. Ao traduzir isto para Rogério e Décio, trocar o número E o
  * nome, nunca só o número.
  */
-export type HeroAnos = {
-  valor: string;
-  rotulo: string;
-};
-
 export type HeroStatIcone = "nota" | "especialidades" | "corpoClinico";
 
 export type HeroStat = {

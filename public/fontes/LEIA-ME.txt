@@ -58,3 +58,48 @@ sobre o petróleo — é o mesmo motivo pelo qual o dourado não serve de texto 
 
 Continua valendo tudo o que está acima: a peça é PROVISÓRIA até o Dr. Dalton assinar
 em papel e a assinatura ser vetorizada.
+
+================================================================================
+05/10 — SEGUNDA FONTE NO REPO: cinzel-400-latin.woff2
+================================================================================
+
+cinzel-400-latin.woff2            14 KB   Cinzel, peso 400, subconjunto LATIN
+
+É a fonte do MARCO DE TEMPO da tela de entrada ("30 ANOS DE EXPERIÊNCIA", embaixo da
+marca) — e só dela. Pedido do usuário em 05/10: "acho q ficaria bom na hero, abaixo da
+logo, em uma fonte bem alto padrao e elegante" + "os 30 anos de experiencia".
+
+POR QUE HOSPEDADA AQUI: os mesmos três motivos da Qwitcher acima, e o primeiro deles é
+o que decide — o navegador deste ambiente não alcança o Google Fonts, então com a fonte
+remota a peça cairia numa reserva serifada em todo screenshot e no .html congelado, e
+seria impossível conferir o resultado antes de mostrar ao usuário.
+
+POR QUE CINZEL, e a escolha foi feita por RENDER e não de cabeça. Quatro candidatas
+foram desenhadas na composição real da tela (logo + linha à esquerda, retrato +
+assinatura à direita) antes de decidir:
+
+  Cormorant Garamond 400   caixa baixa, elegante — mas lê como LEGENDA da logo e some
+                           ao lado da assinatura cursiva, que é grande
+  Cormorant 300            traço fino demais; as hastes somem sobre o fundo escuro
+  Playfair Display 400     mais peso, registro editorial; funciona, mas é a menos
+                           parente da arte do logo
+  Cinzel 400               ESCOLHIDA
+
+A Cinzel é a capital romana (linhagem Trajan), que é o MESMO registro do wordmark
+"SUZUKI" desenhado na própria arte do logo logo acima. Por isso a linha lê como parte
+do lockup, e não como legenda. É também a mais leve das quatro: 14 KB contra 22 a 38.
+
+Se ele quiser trocar, a segunda colocada é a Playfair Display 400 (mais editorial, em
+caixa baixa) e a terceira a Cormorant Garamond 400 em versalete.
+
+⚠️ O TAMANHO É UMA CONTA, não um clamp escolhido a olho — ver o bloco `.anos-portal` no
+styles.css. A linha tem de medir ~90% da largura da MARCA em toda tela, e a marca é
+`min(78vw,18rem)` no celular e `min(30vw,24rem)` de md para cima. Um clamp único
+reprovava no meio do caminho: 96% da logo em 1440, mas 120% em 1024 e 160% em 768.
+
+⚠️ AO TROCAR O TEXTO de `abertura.anos`, remedir: a largura natural da linha de hoje é
+15,38em (22 caracteres em caixa alta com tracking 0.12em), e os dois `font-size` saem
+dela. Conferir em 320px, que é onde estoura — 390 passa sem avisar.
+
+Baixada do Google Fonts (Cinzel v26, subconjunto latin) com curl, que passa pelo proxy.
+Licença: SIL Open Font License 1.1 — permite redistribuição e hospedagem própria.

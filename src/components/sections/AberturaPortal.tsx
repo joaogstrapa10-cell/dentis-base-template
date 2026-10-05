@@ -269,6 +269,24 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
     />
   ) : null;
 
+  /* O MARCO DE TEMPO, embaixo da marca. Pedido de 05/10: "acho q ficaria bom na hero,
+     abaixo da logo, em uma fonte bem alto padrao e elegante" + "os 30 anos de
+     experiencia".
+
+     ⚠️ "Abaixo da LOGO" é literal: ele mora na COLUNA DA MARCA, do mesmo jeito que a
+     assinatura mora na coluna do retrato. Centrado sob o grupo inteiro ele cairia sob o
+     VÃO entre as duas peças e leria como legenda das duas — que é exatamente o defeito
+     que moveu a assinatura em 15/09.
+
+     A família é a **Cinzel**, servida do repo, e a justificativa inteira está no bloco
+     `.anos-portal` do styles.css: ela é a capital romana, o mesmo registro do wordmark
+     "SUZUKI" do logo logo acima, e por isso lê como linha de assinatura da marca em vez
+     de legenda. Comparada com Cormorant Garamond, Cormorant, Playfair Display e versão
+     em versalete, renderizadas lado a lado nesta composição antes da escolha. */
+  const anosEl = data.anos ? (
+    <p className="anos-portal text-ink-foreground">{data.anos}</p>
+  ) : null;
+
   const retrato = data.retrato;
   const retratoEl = retrato ? (
     <img
@@ -343,7 +361,13 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
      nenhum sobre a altura. */
   const composicao = (
     <div className="flex flex-col items-center gap-14 md:flex-row md:gap-12">
-      {marcaEl}
+      {/* COLUNA DA MARCA: logo em cima, marco de tempo embaixo — o espelho da coluna
+          do retrato, que tem a foto em cima e a assinatura embaixo. O `gap` é menor
+          que o das duas colunas entre si porque aqui as peças formam UM bloco. */}
+      <div className="flex flex-col items-center gap-4 md:gap-5">
+        {marcaEl}
+        {anosEl}
+      </div>
       <div className="flex flex-col items-center gap-3 md:gap-4">
         {retratoEl}
         {assinaturaEl}
