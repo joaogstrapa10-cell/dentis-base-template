@@ -261,11 +261,38 @@ export const clinica: Clinica = {
     // NÃO acrescentar "anos de clínica" nem "pacientes atendidos" sem a clínica
     // fornecer o número — é a métrica mais fácil de inventar e a mais fácil de
     // desmentir, e publicidade odontológica não é lugar para número redondo.
+    // ⚠️ Em 05/10 o usuário FORNECEU um: os 30 anos, no campo `anos` logo abaixo.
+    // A regra não foi flexibilizada, a condição dela foi cumprida.
     stats: [
       { valor: "5,0", rotulo: "Nota no Google", icone: "nota" },
       { valor: "8", rotulo: "Especialidades", icone: "especialidades" },
       { valor: "9", rotulo: "Profissionais na clínica", icone: "corpoClinico" },
     ],
+    // O MARCO DE TEMPO, pedido em 05/10: "pensei em colocar os anos de
+    // história/experiência dele, são 30 anos, a credibilidade é um dos principais
+    // argumentos dele, autoridade".
+    //
+    // ⚠️ O NÚMERO É DELE, e é isso que torna este campo legítimo: a regra logo
+    // acima proíbe Claude acrescentar "anos de clínica" sem a clínica fornecer, e
+    // ela continua valendo para qualquer número novo. Este veio da boca do usuário.
+    //
+    // ✅ E ele BATE com a única referência que existe: o site antigo dizia "~25 anos
+    // de formação" e o material daquela página é de MAIO DE 2021 (datado pelo nome
+    // do arquivo do retrato, `dalton.1620766963.webp`). 25 + 5 = 30 em 2026. Ou
+    // seja, não é número redondo de marketing, é a conta fechando. Registrado para
+    // a próxima sessão não "arredondar" nem reabrir.
+    //
+    // ⚠️ O rótulo NOMEIA O DR. DALTON de propósito. "30 anos" sozinho no hero de
+    // uma clínica lê como a idade da CLÍNICA, e isso ninguém verificou: a fundação
+    // dela não está em fonte nenhuma. O que se sabe é sobre o responsável técnico.
+    //
+    // ⚠️ Nada aqui promete desfecho, e é requisito da CFO-196/2019: tempo de
+    // exercício é dado profissional factual. NÃO transformar em "mais experiente",
+    // "referência em Curitiba" nem comparação com concorrente.
+    anos: {
+      valor: "30 anos",
+      rotulo: "de experiência do Dr. Dalton Suzuki",
+    },
   },
   diferenciais: {
     eyebrow: "Por que aqui",

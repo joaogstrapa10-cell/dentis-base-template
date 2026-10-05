@@ -213,6 +213,8 @@ export type HeroContent = {
   /** Os três números ao pé do texto. Ver a nota em `clinica.ts`: só entra aqui
    *  dado VERIFICÁVEL. Lista vazia não renderiza a fileira. */
   stats: HeroStat[];
+  /** `null` não renderiza nada, e é o estado das variantes sem o dado. */
+  anos: HeroAnos | null;
 };
 
 export type HeroImagem = {
@@ -241,6 +243,26 @@ export type HeroImagem = {
  *  nome livre renderizaria vazio em silêncio. Nenhum destes se repete em outra
  *  seção — ícone que significa duas coisas na mesma página informa menos que
  *  nenhum. */
+/**
+ * O MARCO DE TEMPO do hero: um número só, grande, logo antes das ações.
+ *
+ * ⚠️ Este é o ÚNICO número do site que não sai de dado já presente no repo, e por
+ * isso ele tem regra própria: **só existe porque o usuário forneceu**, em 05/10
+ * ("são 30 anos, a credibilidade é um dos principais argumentos dele"). A regra de
+ * 13/08 proíbe Claude acrescentar "anos de clínica" ou "pacientes atendidos" por
+ * conta — é a métrica mais fácil de inventar e a mais fácil de desmentir. Ela
+ * continua valendo: o que mudou é que a clínica mandou o número.
+ *
+ * ⚠️ O `rotulo` TEM de nomear o sujeito. "30 anos" sozinho num hero de clínica lê
+ * como idade da CLÍNICA, que ninguém verificou; o que se sabe é sobre o
+ * responsável técnico. Ao traduzir isto para Rogério e Décio, trocar o número E o
+ * nome, nunca só o número.
+ */
+export type HeroAnos = {
+  valor: string;
+  rotulo: string;
+};
+
 export type HeroStatIcone = "nota" | "especialidades" | "corpoClinico";
 
 export type HeroStat = {
