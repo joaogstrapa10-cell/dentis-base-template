@@ -155,9 +155,14 @@ export type AberturaContent = {
    * é dado profissional factual, e é assim que a CFO-196/2019 o admite. NÃO
    * transformar em "mais experiente" nem em comparação com concorrente.
    *
+   * ⚠️ VIROU SELO EM 07/10, a pedido ("precisamos colocar esse selo na hero do site").
+   * Era uma string única renderizada em Cinzel; agora os três pedaços são campos
+   * separados porque o selo os desenha em posições diferentes dentro do círculo, e
+   * partir a string por código erraria no dia em que o rótulo mudasse de tamanho.
+   *
    * `null` não renderiza nada, e é o estado das variantes sem o dado.
    */
-  anos: string | null;
+  anos: PortalSelo | null;
 };
 
 /* ⚠️ NÃO EXISTE MAIS o campo `linha` ("ODONTOLOGIA ESPECIALIZADA", que ficava embaixo
@@ -246,6 +251,22 @@ export type HeroContent = {
   /* ⚠️ SEM `anos`: o marco de tempo do Dr. Dalton nasceu aqui em 05/10 e foi para
      `AberturaContent` no mesmo dia, a pedido — "abaixo da logo", e a logo vive na tela
      de entrada. Saiu do tipo em vez de virar `null`, pela regra do projeto. */
+};
+
+/**
+ * O SELO de tempo de exercício da tela de entrada. Ver `SeloAnos.tsx`.
+ *
+ * ⚠️ Só dado factual entra aqui. Tempo de exercício é informação profissional; "o
+ * melhor", "referência em Curitiba" ou selo de premiação inventada não são, e a
+ * CFO-196/2019 trata comparação com concorrente à parte.
+ */
+export type PortalSelo = {
+  /** O número sozinho, sem a palavra. "30". */
+  numero: string;
+  /** As duas linhas do rótulo. A quebra é decisão de conteúdo: SVG não quebra texto
+   *  sozinho, e dividir por código no último espaço erra em rótulo de outro tamanho. */
+  linha1: string;
+  linha2: string;
 };
 
 export type HeroImagem = {

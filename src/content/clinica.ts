@@ -223,7 +223,11 @@ export const clinica: Clinica = {
        ⚠️ Nada aqui promete desfecho, e é requisito da CFO-196/2019: tempo de exercício
        é dado profissional factual. NÃO transformar em "mais experiente", "referência em
        Curitiba" nem comparação com concorrente. */
-    anos: "30 anos de experiência",
+    anos: {
+      numero: "30",
+      linha1: "Anos de",
+      linha2: "Experiência",
+    },
   },
   hero: {
     eyebrow: "Curitiba · Alto da XV",

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { PistaDeRolagem } from "@/components/PistaDeRolagem";
+import { SeloAnos } from "@/components/SeloAnos";
 import type { AberturaContent } from "@/content/types";
 
 /**
@@ -269,22 +270,37 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
     />
   ) : null;
 
-  /* O MARCO DE TEMPO, embaixo da marca. Pedido de 05/10: "acho q ficaria bom na hero,
-     abaixo da logo, em uma fonte bem alto padrao e elegante" + "os 30 anos de
-     experiencia".
+  /* ── SELO DE TEMPO DE EXERCÍCIO, na coluna da marca ──
+     Pedido de 07/10. A posição é a que o USUÁRIO propôs ("pensei em colocar embaixo da
+     logo da suzuki o selo"), e ela ganhou depois de as três serem renderizadas:
 
-     ⚠️ "Abaixo da LOGO" é literal: ele mora na COLUNA DA MARCA, do mesmo jeito que a
-     assinatura mora na coluna do retrato. Centrado sob o grupo inteiro ele cairia sob o
-     VÃO entre as duas peças e leria como legenda das duas — que é exatamente o defeito
-     que moveu a assinatura em 15/09.
+       A  abaixo da logo, na coluna da marca   ← esta
+       B  medalha sobre o canto do retrato     → descartada: o retrato é pintado depois
+          no DOM e cobria o selo, e mesmo com `z-index` o selo branco sobre o fundo
+          creme do estúdio perde contraste e tapa o ombro do Dalton
+       C  centrado abaixo do grupo inteiro     → funciona, mas cresce o grupo de 483
+          para 655px em 1440 e encosta na pista de rolagem; a folga do palco cai de
+          209 para 123px, ou seja come o curso do zoom
 
-     A família é a **Cinzel**, servida do repo, e a justificativa inteira está no bloco
-     `.anos-portal` do styles.css: ela é a capital romana, o mesmo registro do wordmark
-     "SUZUKI" do logo logo acima, e por isso lê como linha de assinatura da marca em vez
-     de legenda. Comparada com Cormorant Garamond, Cormorant, Playfair Display e versão
-     em versalete, renderizadas lado a lado nesta composição antes da escolha. */
-  const anosEl = data.anos ? (
-    <p className="anos-portal text-ink-foreground">{data.anos}</p>
+     A simetria é o que sustenta a A: as duas colunas passam a ter a mesma anatomia,
+     peça grande em cima e peça pequena embaixo (logo/selo e retrato/assinatura).
+
+     ⚠️ O SELO SUBSTITUI a linha "30 ANOS DE EXPERIÊNCIA" que entrou em 05/10 — não
+     convive com ela. As duas dizem a mesma coisa, e empilhadas sob a logo seriam a
+     mesma frase duas vezes, que é o defeito que apagou o lockup em 19/08. */
+  const selo = data.anos;
+  const seloEl = selo ? (
+    <SeloAnos
+      selo={selo}
+      /* ⚠️ A LARGURA REPETE A FÓRMULA DA MARCA, não é `rem` fixo, e é a mesma lição de
+         05/10: a logo é `min(78vw,18rem)` no celular e `min(30vw,24rem)` de `md` para
+         cima, então um valor fixo faz a proporção variar com a tela. Medido antes de
+         amarrar: 0,40 da logo em 1440 mas 0,49 em 1024, ou seja o selo crescia em
+         relação à marca justo onde a tela aperta.
+         36% no celular e 40% no desktop: um pouco menor embaixo porque ali as peças
+         empilham e cada pixel de altura disputa com o palco. */
+      className="w-[min(28vw,6.5rem)] text-ink-foreground md:w-[min(12vw,9.6rem)]"
+    />
   ) : null;
 
   const retrato = data.retrato;
@@ -361,12 +377,12 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
      nenhum sobre a altura. */
   const composicao = (
     <div className="flex flex-col items-center gap-14 md:flex-row md:gap-12">
-      {/* COLUNA DA MARCA: logo em cima, marco de tempo embaixo — o espelho da coluna
-          do retrato, que tem a foto em cima e a assinatura embaixo. O `gap` é menor
-          que o das duas colunas entre si porque aqui as peças formam UM bloco. */}
-      <div className="flex flex-col items-center gap-4 md:gap-5">
+      {/* COLUNA DA MARCA: logo em cima, selo embaixo. É o espelho da coluna do retrato,
+          que tem a foto em cima e a assinatura embaixo. O `gap` aqui é menor que o das
+          duas colunas entre si porque estas duas peças formam UM bloco. */}
+      <div className="flex flex-col items-center gap-4 md:gap-6">
         {marcaEl}
-        {anosEl}
+        {seloEl}
       </div>
       <div className="flex flex-col items-center gap-3 md:gap-4">
         {retratoEl}
