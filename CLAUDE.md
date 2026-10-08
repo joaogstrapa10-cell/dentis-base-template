@@ -365,7 +365,7 @@ estas — **é esta tabela que se consulta antes de criar seção nova**, para n
 | Pilha de cartões arrastável | Casos (na home) |
 | Pilha de dossiês alternando de lado | Casos (em `/casos`) |
 | Esteira de retratos em laço, painel de nome dentro do cartão | Bio (corpo clínico) |
-| **Percurso em zigue-zague: fichas presas por alfinete, alternando de lado, costuradas por um fio tracejado que caminha** | **Trajetória** (trilho vertical em 01/10, virou percurso em 08/10) |
+| **Percurso em zigue-zague: fichas presas por alfinete, alternando de lado, e um fio tracejado no CORREDOR entre as colunas, desenhado pela rolagem do 01 ao 06** | **Trajetória** (trilho vertical em 01/10, percurso em 08/10, fio pela rolagem em 08/10) |
 | Título em cima, accordion em coluna única de largura cheia | FAQ |
 | Fileira de dados à esquerda + cartão de mapa à direita | Localização |
 | Faixa escura curta, texto à esquerda e chamada à direita | Chamada final |
@@ -719,8 +719,8 @@ src/components/sections/
   Bio.tsx                     faixa escura: responsável + corpo clínico
   Trajetoria.tsx              percurso com os marcos de formação do responsável:
                               fichas com alfinete alternando de lado e fio
-                              tracejado em marcha. Posição e caminho CALCULADOS
-                              a partir da contagem de marcos (08/10)
+                              tracejado no corredor, DESENHADO PELA ROLAGEM.
+                              Nós e caminho MEDIDOS das fichas (08/10)
   CorpoClinicoEsteira.tsx     esteira de retratos em laço, uma forma para toda largura
   Estrutura.tsx               esteira de 12 fotos
   Depoimentos.tsx             esteira das 4 avaliações do Google
@@ -1579,3 +1579,7 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-10-08 — ⚠️ **O emblema da C FECHOU no primeiro render e virou um borrão sólido**: o ícone de implante é desenhado numa caixa de 24 com traço 1,5, e escalado com traço efetivo de 3,46 na mesma caixa a coroa encheu. Ao reaproveitar ícone do projeto em peça grande, **o traço tem de ser reescalado junto com a caixa** — ficou 1,43.
 - 2026-10-08 — ⚠️ **ERREI O VÃO ENTRE AS DUAS ARCADAS da primeira variação B e o diagnóstico só veio do render**: duas arcadas concêntricas rasas e largas não leem como coroa, leem como SORRISO, que é o clichê que o §4 proíbe. A saída não foi ajustar o vão, foi trocar a geometria (o arco virou portal). Registrado porque a tentação, numa próxima, é mexer no número em vez de na forma.
 - 2026-10-08 — **CUSTO DE ALTURA MEDIDO na composição real de 1440x900, e ele é melhor do que eu supunha:** quem dita a altura do grupo é a COLUNA DO RETRATO (foto 405 + vão 16 + assinatura = 477px), não a da marca. Então **A (coluna 470) e B (452) custam ZERO** — o grupo continua em 477 e a folga do palco em 212px de cada lado. Só a **C (515) faz o grupo crescer**, para 515, e a folga cai para 193. ⚠️ No CELULAR a conta é outra: ali as peças empilham, o grupo já media 739px num palco de 740 a 844, e qualquer das três piora isso. Ao escolher, medir em 390x740 e provavelmente reduzir a largura do selo no celular.
+- 2026-10-08 — **O FIO DA TRAJETÓRIA SAIU DE CIMA DAS FICHAS E PASSOU A SER DESENHADO PELA ROLAGEM**, a pedido: "não tenha aquelas linhas ali em cima dos cards" e "conforme eu escrolar, os traços vão se complementando até chegar na próxima etapa", do 01 ao 06. A causa do primeiro defeito era geométrica: o fio saía do TOPO de cada ficha, e como a ficha é inclinada, o primeiro trecho corria rente à quina e cruzava a borda. Agora ele corre no CORREDOR entre as colunas e encosta na LATERAL de cada ficha, na altura do número, por um nó; no celular vira um trilho à esquerda da pilha (`pl-8` no `<ol>`). Medido amostrando o caminho inteiro contra o retângulo de cada `article` em 1440, 1024, 768, 390 e 320: **zero ponto do fio dentro de ficha**, zero overflow.
+- 2026-10-08 — Mecânica: o traço tracejado fica inteiro e uma MÁSCARA com o mesmo caminho em traço contínuo é revelada por `stroke-dashoffset` até onde o caminho cruza uma linha de leitura a **62% da altura da janela**. Revelar o próprio tracejado não serve: o padrão 8/6 já é um dasharray. Cada trecho é uma cúbica com tangentes VERTICAIS, o que (a) evita a meia-volta em ponta de seta que a tangente horizontal criaria em cada nó e (b) garante que o y só cresce ao longo do caminho, então "até onde desenhar" é busca binária numa tabela amostrada uma vez. Nó cheio e número em 100% quando o fio chega; antes, nó vazado e número em 40%. Sob movimento reduzido, tudo desenhado e aceso. Laço só com a seção perto da tela e só escrevendo quando o valor muda.
+- 2026-10-08 — ⚠️ **O tracejado em marcha (`.fio-marcha` / `.fio-reto`) foi APAGADO**, CSS e regra de movimento reduzido junto: dois movimentos no mesmo traço, um da rolagem e um do relógio, competem, e o pedido é que o movimento seja o da rolagem. Não reintroduzir sem pedido. ⚠️ Armadilha paga na medição: o caminho é escrito com uma casa decimal e o nó não, então o primeiro nó caía um décimo acima do início do caminho e acendia antes de o fio começar; `Math.max(0, …)` no comprimento dos nós.
+
