@@ -41,6 +41,12 @@ import type { PortalSelo } from "@/content/types";
  * acima e 40 abaixo da base; o "de experiência" a 96px mede 340,7 de largura, 77 acima
  * e 29 abaixo. `getBBox` NÃO inclui a espessura do traço, então a metade dele (10,5)
  * entra na conta à mão — sem isso o "30" sai cortado nas bordas.
+ *
+ * ⚠️ MAS O ESPAÇO ENTRE AS DUAS LINHAS NÃO SE MEDE PELA CAIXA, e sim pela TINTA: o topo
+ * da caixa do "de experiência" são o "d" e o circunflexo, altos e estreitos, enquanto a
+ * massa da palavra é a altura de x e fica bem mais abaixo. A primeira versão tinha 4
+ * unidades de vão pela caixa e 47,5 de vazio real na coluna mais apertada — e lia
+ * afastada. A folga em vigor é medida por rasterização, coluna a coluna.
  */
 
 /** O "3" monolinear. Bojos grandes e lado esquerdo reto, que é a forma da referência:
@@ -58,7 +64,7 @@ export function SeloAnos({
 }) {
   return (
     <svg
-      viewBox="29.5 -4.5 457 308.5"
+      viewBox="29.5 -4.5 457 278.5"
       role="img"
       aria-label={`${selo.numero} ${selo.palavra} ${selo.complemento}`}
       className={className}
@@ -90,14 +96,27 @@ export function SeloAnos({
           a linha visivelmente para a esquerda.
 
           96px e não 64: a pedido ("aumentar o 'de experiencia' e deixar visivel muito
-          bem"). A base em 271 é o pé do "anos" (190) mais 4 de vão mais os 77 que o "d"
-          e o circunflexo sobem — o vão é pequeno de propósito, porque a massa da palavra
-          é a altura de x e fica bem mais abaixo do topo da caixa. Renderizado com vão
-          20, 4 e -8: a 20 as duas linhas se soltam uma da outra, a -8 o "d" encosta no
-          pé do zero. */}
+          bem").
+
+          ⚠️ A BASE EM 241 SAIU DE MEDIÇÃO DE TINTA, não da caixa do texto, e a diferença
+          entre as duas é de quase 30 unidades. A caixa dizia 4 de vão e a peça lia
+          AFASTADA — ele pediu "deixar o de experiencia mais proximo do 30 anos". O topo
+          da caixa são o "d" e o circunflexo, que são altos e ESTREITOS; a folga que se
+          vê é a menor distância entre a tinta de cima e a de baixo, coluna a coluna.
+          Medida por rasterização: a coluna mais apertada é x=105, onde o "d" de "de"
+          passa debaixo do bojo inferior do "3". A 271 ali havia 47,5 unidades de vazio,
+          e é isso que fazia as duas linhas lerem como dois objetos. Renderizado a 271,
+          259, 249, 241 e 233 → 47,5 / 35,5 / 25,5 / 17,5 / 9,5 unidades. Ficou 241: as
+          duas linhas viram uma peça só e ainda sobram ~9px no computador e ~7px no
+          celular. A 233 o "d" chega perto demais do "3" para o tamanho em que isto
+          renderiza.
+
+          ⚠️ Ao mexer neste número, REMEDIR por tinta e refazer a altura do viewBox —
+          medir pela caixa do `<text>` erra por quase 30 unidades, que foi o que
+          aconteceu aqui. */}
       <text
         x="258"
-        y="271"
+        y="241"
         textAnchor="middle"
         fill="currentColor"
         style={{ fontFamily: '"Qwitcher Grypen", cursive', fontWeight: 700, fontSize: 96 }}
