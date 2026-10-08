@@ -659,8 +659,14 @@ a segunda vez que essa confusão acontecia. O estado dos dois projetos naquele d
 | | Projeto do João (`1f2b8513`) | Cópia do Giulliano (`1896d5fd`) |
 |---|---|---|
 | `latest_commit_sha` | o commit do último push | `de9b9450`, de **25/07** |
-| `is_published` | **false** — só existe preview | **true** |
-| URL pública | não tem | `clinic-base-starter.lovable.app` |
+| `is_published` | **true** desde 08/10 (era false) | **true** |
+| Nome | `Site Suzuki Odontologia` (renomeado) | `Dentis Base Template — base tech` |
+
+⚠️ **ATUALIZADO EM 08/10: o projeto do João PASSOU A SER PUBLICADO** e foi renomeado
+para `Site Suzuki Odontologia`. O que **não** mudou é o que causa a confusão: a cópia
+do Giulliano continua publicada e continua **congelada em `de9b9450`, de 25/07** —
+conferido no screenshot dela, que ainda mostra o tema azul com o wordmark gigante.
+Ou seja `clinic-base-starter.lovable.app` segue servindo o site de julho.
 
 Ou seja: **o único endereço público do projeto serve a versão de 25 de julho.** Quem abre
 `clinic-base-starter.lovable.app` esperando ver o trabalho novo vê o site antigo — tema
@@ -1550,6 +1556,8 @@ congelado, e resposta curta dizendo o que mudou e o que foi medido.
 - 2026-10-08 — **O "30" ficou como TRAÇO, não contorno**, e é o que o torna mais editável: no Figma a espessura continua um campo, e virar contorno lá é um clique (`Object > Outline stroke`). O caminho inverso não existe. `fill="none"` foi escrito EXPLÍCITO nas duas peças de traço em vez de herdado da raiz: o importador do Figma não é obrigado a herdar, e sem isso o "3" entraria preenchido.
 - 2026-10-08 — Conferência do contorno por **diferença de pixel contra a versão de texto vivo**, a 4x o viewBox (1828x1114): **382.448 pixels de tinta contra 382.439**, ou seja 9 de diferença em 382 mil (0,002%); os 0,695% que diferem em algum nível são borda de antisserrilhado. Um glifo deslocado por uma unidade mudaria milhares. ✅ `pip install fonttools brotli uharfbuzz` FUNCIONA neste ambiente — PyPI responde, o que a §7 não listava.
 - 2026-10-08 — Duas cores, medidas por rasterização dos tokens: `#F7F9F9` (`--ink-foreground`, arte clara para fundo escuro) e `#101515` (`--foreground`, arte escura para fundo claro). ⚠️ Medidas com a **paleta A em teste**; o selo é monocromático, então trocar a cor no Figma é um clique e nada se perde se a paleta mudar. O terceiro arquivo (`-texto-vivo`) existe para reescrever a copy, e ⚠️ **resolve metade do problema nas variantes do Rogério e do Décio**: o "30" é path desenhado à mão, não fonte, então outro número é redesenhar o traço, não digitar.
+- 2026-10-08 — ⚠️ **O PROJETO DO JOÃO PASSOU A SER PUBLICADO (`is_published: true`) e foi renomeado para `Site Suzuki Odontologia`.** O §8 registrava `false`, e a tabela foi corrigida. Conferido na mesma chamada: a cópia do Giulliano continua publicada E continua **congelada em `de9b9450`, de 25/07** — o screenshot dela ainda mostra o tema azul com o wordmark gigante, ou seja `clinic-base-starter.lovable.app` segue servindo o site de julho. **A confusão que queimou duas rodadas continua de pé**, só que agora existe uma segunda URL pública.
+- 2026-10-08 — Diagnóstico dos 30 segundos do §8 rodado inteiro, e desta vez sem defeito nenhum: `latest_commit_sha` do projeto do João = `64d2f1e`, igual ao `origin/main`. O sync pegou o push da Trajetória sozinho; não houve nada para ele puxar na UI.
 - 2026-10-08 — **A TRAJETÓRIA VIROU PERCURSO**, do template `how-it-works` que ele mandou ("acho que daria para implementar esse template na secao sobre a trajetoria do dalton na implantodontia"): fichas presas por alfinete, alternando de lado, costuradas por um fio tracejado que caminha. Era TRILHO VERTICAL com marcos (01/10) e continua sendo um percurso, o que muda é que ele serpenteia e os marcos viraram fichas. A anatomia segue ÚNICA na tabela do §5.2 — nenhuma outra seção tem esta.
 - 2026-10-08 — ⚠️ **`motion/react` NÃO ENTROU, e é a QUINTA vez que esta recusa aparece** (GSAP e `motion/react` em 19/08, `motion/react` de novo em 19/08, `framer-motion` em 25/09). O template usa a lib para UMA coisa: interpolar `strokeDashoffset` num laço infinito. Isso é um keyframe de CSS de quatro linhas (`.fio-marcha`), roda no compositor, e **entra de graça nas duas regras globais que a lib ignoraria** — `body.pausado` (aba escondida, 21/08) e o `prefers-reduced-motion`. O conflito duro continua valendo: essas libs escrevem `transform`, o Tailwind v4 escreve `translate`/`scale`/`rotate` SEPARADAS, e misturar as duas famílias no mesmo elemento apaga uma sem erro nenhum — e aqui o `Reveal` escreve `translate` no elemento de fora e a ficha tem `rotate` + `scale`, ou seja seria exatamente o caso que falha.
 - 2026-10-08 — O resto do que ficou de fora do template, cada um por regra já paga: todo `dark:` (o projeto não tem modo escuro por classe); laranja/azul/roxo por item (a paleta é a medida da Suzuki, e três matizes decorativas é clichê do §4); **Comic Sans** no número; e `text-4xl`/`text-2xl`/`text-sm/5`, que viraram `.display-2`/`.display-3`/`text-small` — **nenhum tamanho novo entrou**, a escala de 03/08 segue em cinco degraus.
