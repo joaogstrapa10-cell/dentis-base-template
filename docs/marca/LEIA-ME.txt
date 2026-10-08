@@ -1,0 +1,88 @@
+SELO "30 ANOS DE EXPERIÊNCIA" — SVG para o Figma
+================================================
+
+Gerado em 08/10 a pedido ("gerar selo 30 anos em svg editavel no figma").
+É SÓ O SELO: sem logo, sem retrato, sem assinatura.
+
+Gerador: scripts/gerar-selo-svg.py (roda de novo se o componente mudar).
+Fonte da verdade do desenho: src/components/SeloAnos.tsx.
+
+
+OS ARQUIVOS
+-----------
+
+selo-30-anos-claro.svg      arte #F7F9F9, para fundo escuro.  <- é este o principal
+selo-30-anos-escuro.svg     arte #101515, para fundo claro.
+selo-30-anos-texto-vivo.svg "anos" e "de experiência" como <text>, não como contorno.
+
+Todos têm viewBox 29.5 -4.5 457 278.5 (proporção 1,641) e abrem em 457x278,5pt
+no Figma. Escalar à vontade: é vetor.
+
+
+COMO ELE ESTÁ MONTADO, E O QUE DÁ PARA EDITAR
+---------------------------------------------
+
+Camadas, como aparecem no Figma (os nomes vêm dos id do SVG):
+
+  selo-30-anos
+    numero-30
+      algarismo-3            path com TRAÇO de 21, ponta e junta redondas
+      algarismo-0            elipse com TRAÇO de 21
+    palavra-anos             contorno
+    linha-de-experiencia     contorno
+
+O "30" ficou como TRAÇO de propósito: assim a espessura continua um campo
+editável no Figma. Para virar contorno lá: selecionar e Object > Outline stroke.
+O caminho inverso não existe, então é melhor entregar como traço.
+
+"anos" e "de experiência" JÁ SÃO CONTORNO, e isso não é escolha estética: são
+Qwitcher Grypen, e <text> num SVG só renderiza certo em quem tem a fonte
+instalada. Sem ela o Figma troca por outra família e a peça muda de forma sem
+avisar. Cada palavra é UM path com todos os glifos dentro, regra de
+preenchimento nonzero: as letras da cursiva se sobrepõem e assim elas se unem
+em vez de desenhar costura (conferido a 45% de opacidade).
+
+Para REESCREVER o texto existe o selo-30-anos-texto-vivo.svg, e aí é preciso
+instalar a Qwitcher Grypen 700 (Google Fonts, licença OFL, grátis). ⚠️ Ele
+resolve metade do problema nas variantes do Rogério e do Décio: o número "30"
+é path desenhado à mão, não fonte, então trocar para outro número é redesenhar
+o traço, não digitar.
+
+
+AS CORES
+--------
+
+Saíram por rasterização dos tokens do site (getComputedStyle devolve a string
+oklch e lê-la como RGB dá cor inventada):
+
+  #F7F9F9   --ink-foreground   o quase-branco da marca
+  #101515   --foreground       o quase-preto
+
+⚠️ Medidos com a PALETA A em teste no site (ver CLAUDE.md §5.3, ainda sem
+decisão dele). O selo é monocromático, então trocar a cor no Figma é um clique
+e nada se perde se a paleta mudar.
+
+
+O QUE O SELO NÃO DIZ, E É COMPLIANCE
+------------------------------------
+
+Nada de "o melhor", "referência em Curitiba", "nº 1" nem laurel de premiação.
+Tempo de exercício é dado profissional factual, e é só isso que está aqui.
+Superlativo encosta em comparação com concorrente, que é o gesto que derrubou
+a seção Comparativo em 03/08.
+
+E o selo não repete o wordmark: no site ele fica logo ABAIXO da logo, que já
+traz "SUZUKI" e "odontologia".
+
+
+COMO FOI CONFERIDO
+------------------
+
+Os contornos saem da MESMA fonte do repo (public/fontes/qwitcher-grypen-700-
+latin.woff2), moldados por HarfBuzz, que é o mesmo moldador que o Chromium usa:
+ligaduras, alternantes contextuais e kerning saem iguais aos do site.
+
+Diferença de pixel contra a versão de texto vivo, a 4x o viewBox (1828x1114):
+382.448 pixels de tinta contra 382.439, ou seja 9 de diferença em 382 mil
+(0,002%). Os 0,695% de pixels que diferem em algum nível são borda de
+antisserrilhado, não forma.

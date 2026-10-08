@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Suzuki Odontologia · selo "30 anos de experiência"
+  Lettering desenhado para a tela de entrada do site. Monocromático de propósito:
+  trocar a cor no Figma é um clique.
+
+  O "30" é TRAÇO vetorial (espessura 21), então a espessura continua editável.
+  Para transformá-lo em contorno no Figma: selecionar e Object > Outline stroke.
+  ⚠️ ESTA VERSÃO USA TEXTO VIVO: precisa da Qwitcher Grypen 700 instalada
+  (Google Fonts, licença OFL). Sem ela o Figma troca por outra e a peça muda.
+-->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="29.5 -4.5 457.0 278.5" width="457" height="278.5" role="img" aria-label="30 anos de experiência">
+  <title>30 anos de experiência · Suzuki Odontologia (texto vivo)</title>
+  <g id="selo-30-anos">
+    <g id="numero-30">
+      <path id="algarismo-3" d="M 44 40 C 44 18 70 10 100 10 C 136 10 152 30 152 54 C 152 76 134 88 108 88 C 138 88 158 102 158 128 C 158 154 134 168 100 168 C 66 168 44 156 44 136" fill="none" stroke="#F7F9F9" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+      <ellipse id="algarismo-0" cx="236" cy="89" rx="78" ry="79" fill="none" stroke="#F7F9F9" stroke-width="21"/>
+    </g>
+    <text id="palavra-anos" x="326" y="150" fill="#F7F9F9" font-family="Qwitcher Grypen" font-weight="700" font-size="132">anos</text>
+    <text id="linha-de-experiencia" x="258" y="241" text-anchor="middle" fill="#F7F9F9" font-family="Qwitcher Grypen" font-weight="700" font-size="96">de experiência</text>
+  </g>
+</svg>
