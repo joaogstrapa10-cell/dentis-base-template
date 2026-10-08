@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 302.60" width="224" height="302.60" role="img" aria-label="30 anos de experiência" fill="none" color="#F7F9F9">
+  <title>C · PENDENTE</title>
+  <path d="M 4.5 20.5 A 16 16 0 0 1 20.5 4.5 L 203.5 4.5 A 16 16 0 0 1 219.5 20.5 L 219.5 298.10 L 112 276.10 L 4.5 298.10 Z" fill="none" stroke="currentColor" stroke-width="9" stroke-linejoin="round"/>
+  <g transform="translate(61.60 8.14) scale(4.2)" fill="none" stroke="currentColor" stroke-width="1.429" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6.9 4.4c0-.6.5-1.1 1.1-1.1h8c.6 0 1.1.5 1.1 1.1l-.7 4.6c-.1.6-.6 1-1.2 1H8.8c-.6 0-1.1-.4-1.2-1L6.9 4.4Z"/>
+  <path d="M9.4 10.4 11.4 20.9M14.6 10.4 12.6 20.9"/>
+  <path d="M9.9 13.6h4.2M10.4 16.8h3.2"/>
+  </g>
+  <g transform="translate(39.42 108.12) scale(0.40550)">
+  <path d="M 44 40 C 44 18 70 10 100 10 C 136 10 152 30 152 54 C 152 76 134 88 108 88 C 138 88 158 102 158 128 C 158 154 134 168 100 168 C 66 168 44 156 44 136" stroke="currentColor" stroke-width="8.52" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <ellipse cx="236" cy="89" rx="78" ry="79" stroke="currentColor" stroke-width="8.52" fill="none"/>
+  </g>
+  <text x="112" y="226.90" text-anchor="middle" fill="currentColor" style="font-family:'Qwitcher Grypen';font-weight:700;font-size:58px">anos</text>
+  <text x="112" y="260.10" text-anchor="middle" fill="currentColor" style="font-family:'Cinzel';font-weight:400;font-size:14px;letter-spacing:0.18em">DE EXPERIÊNCIA</text>
+</svg>

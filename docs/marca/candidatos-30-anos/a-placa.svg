@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 302.77" width="260" height="302.77" role="img" aria-label="30 anos de experiência" fill="none" color="#F7F9F9">
+  <title>A · PLACA</title>
+  <rect x="6" y="6" width="248" height="290.77" fill="none" stroke="currentColor" stroke-width="12"/>
+  <g transform="translate(37.73 36.26) scale(0.51546)">
+  <path d="M 44 40 C 44 18 70 10 100 10 C 136 10 152 30 152 54 C 152 76 134 88 108 88 C 138 88 158 102 158 128 C 158 154 134 168 100 168 C 66 168 44 156 44 136" stroke="currentColor" stroke-width="10.82" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <ellipse cx="236" cy="89" rx="78" ry="79" stroke="currentColor" stroke-width="10.82" fill="none"/>
+  </g>
+  <text x="130" y="201.07" text-anchor="middle" fill="currentColor" style="font-family:'Qwitcher Grypen';font-weight:700;font-size:76px">anos</text>
+  <path d="M 84 238.87 H 176" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <text x="130" y="266.77" text-anchor="middle" fill="currentColor" style="font-family:'Cinzel';font-weight:400;font-size:17px;letter-spacing:0.18em">DE EXPERIÊNCIA</text>
+</svg>

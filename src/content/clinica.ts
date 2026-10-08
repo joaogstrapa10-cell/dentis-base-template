@@ -197,7 +197,14 @@ export const clinica: Clinica = {
        assunto. */
     assinatura: {
       src: null,
-      nome: "Dr. Dalton Suzuki",
+      /* ⚠️ SÓ O NOME, sem o "Dr." — pedido de 08/10: "simplificar a assinatura para
+         mostrar só o nome, deixando mais clean para não pesar ao lado do selo". É também
+         o que uma assinatura real é: ninguém assina o próprio título. Conferido ANTES de
+         apagar, porque a CFO-196/2019 exige nome E número de inscrição juntos na
+         divulgação: o par continua de pé em DOIS lugares, o título da Bio
+         (`bio.nome` + `bio.credencial`) e o bloco legal do rodapé (`brand.copyright`).
+         Ao mexer num desses dois, conferir que o outro continua inteiro. */
+      nome: "Dalton Suzuki",
     },
     /* O MARCO DE TEMPO, embaixo da marca. Pedido em 05/10: "pensei em colocar os anos
        de historia/experiencia dele, sao 30 anos, a credibilidade e um dos principais

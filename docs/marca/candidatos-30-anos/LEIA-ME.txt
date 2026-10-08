@@ -1,0 +1,88 @@
+CANDIDATOS DO SELO DE 30 ANOS — 08/10/2026
+===========================================
+
+Três variações pedidas pelo usuário a partir de uma referência que ele mandou (o selo
+"20 ANOS" da BCCONT): emblema fechado, número grande, palavra embaixo, um ornamento
+vegetal (trevo/louro) e a logo da empresa dentro.
+
+O que a referência deu e o que NÃO entrou, por pedido dele:
+  - NÃO tem a logo da Suzuki dentro de nenhuma das três ("não precisa ter a logo da
+    Suzuki no selo, igual tem da BCC ali").
+  - NÃO tem trevo nem louro. Ele perguntou se dava para pôr "um dente ou alguma ideia
+    que remeta à identidade do Dalton, às especialidades dele" — é isso que B e C
+    respondem, cada uma de um jeito.
+  - A forma é deliberadamente outra: a referência é um quadrado arredondado, e nenhuma
+    das três é. Quadrado arredondado e CÍRCULO estão os dois fora — o círculo porque
+    ele reprovou o selo circular de 07/10 ("nao gostei").
+
+⚠️ NENHUMA ESTÁ NO SITE. O que está no ar é o LETTERING de 08/10 (`SeloAnos.tsx`):
+   "30" monolinear com "anos" encaixado embaixo e à direita, e "de experiência" em
+   Qwitcher. Estes arquivos são a proposta; trocar é reescrever o `SeloAnos.tsx` com o
+   desenho escolhido.
+
+AS TRÊS, E O EIXO DE CADA UMA
+-----------------------------
+O que as separa NÃO é decoração, é de onde vem a identidade:
+
+  A · PLACA      a identidade vem da GEOMETRIA DA PRÓPRIA MARCA. O símbolo da Suzuki é
+                 um retângulo de cantos retos com fio grosso (176×272 com 8 de fio =
+                 4,55% da largura); a placa repete isso (260 com 12 = 4,6%). Não usa a
+                 logo e não usa motivo dental nenhum. 260×303, 1,164:1.
+                 ⚠️ O risco dela é esse mesmo: empilhada sob a logo, são duas molduras
+                 retangulares seguidas. É rima deliberada, não descuido.
+
+  B · ARCADA     a identidade vem da ESPECIALIDADE. O arco é o perfil do ícone de
+                 Reabilitação Oral que o projeto já desenhou
+                 (`IconesEspecialidade.tsx` → `Arcada`), com pernas retas depois da
+                 coroa. Ou seja a coroa do selo não é invenção nova: é a marca de
+                 arcada que já existe no sistema. 272×296, 1,088:1 — a mais baixa.
+                 ⚠️ As PERNAS RETAS são requisito e não estilo: sem elas o "30" cruza o
+                 arco interno e os dois traços se fundem, que é exatamente o defeito que
+                 ele reportou no "anos" ("o anos esta zoado, esta atras do 30"). Folga
+                 medida entre o "30" e a perna interna: 13 unidades.
+
+  C · PENDENTE   a identidade vem do OBJETO: medalha com rabo de fita. O emblema do topo,
+                 no lugar do trevo da referência, é o ícone de IMPLANTODONTIA do próprio
+                 projeto (coroa sobre pino rosqueado). 224×303, 1,351:1 — a mais alta.
+                 ⚠️ O traço do emblema tem de ser proporcional à caixa de 24 do ícone:
+                 na primeira versão ficou 3,46 contra os 1,5 nativos e a coroa FECHOU,
+                 virando um borrão sólido. Aqui é 1,43.
+
+O QUE É IGUAL NAS TRÊS, de propósito
+------------------------------------
+  - O "30" é o MESMO lockup monolinear já aprovado em 08/10: "3" em path desenhado à mão
+    + zero em elipse, traço escalando junto (é isso que mantém a peça monolinear).
+  - "anos" na Qwitcher Grypen, a mesma da assinatura do Dr. Dalton na coluna ao lado —
+    duas cursivas diferentes na mesma tela leem como erro.
+  - "DE EXPERIÊNCIA" em Cinzel 400 com tracking 0,18em, a fonte que já serve o marco de
+    tempo da tela de entrada.
+  - Nenhuma usa superlativo, laurel de premiação ou comparação com concorrente: tempo de
+    exercício é dado profissional factual, e é só isso que o selo afirma.
+
+CUSTO DE ALTURA, MEDIDO na composição real de 1440×900
+------------------------------------------------------
+A coluna do RETRATO mede 477px (foto 405 + vão 16 + assinatura), então ela é quem dita a
+altura do grupo. Resultado: A e B cabem de graça; só a C faz o grupo crescer.
+
+  no ar hoje   coluna da marca 338   grupo 477   folga no palco 212 px
+  A · PLACA    coluna da marca 470   grupo 477   folga no palco 212 px   (custo ZERO)
+  B · ARCADA   coluna da marca 452   grupo 477   folga no palco 212 px   (custo ZERO)
+  C · PENDENTE coluna da marca 515   grupo 515   folga no palco 193 px   (+38 px)
+
+⚠️ NO CELULAR a conta é outra e vale conferir antes de aplicar: ali as peças EMPILHAM e
+o grupo já media 739px num palco de 740 a 844. Qualquer das três cresce esse número, e a
+assinatura já cruza a pista de rolagem em aparelho baixo (defeito aberto, reportado em
+08/10). Ao escolher, medir em 390×740 e provavelmente reduzir a largura do selo no
+celular (hoje `min(48vw,11rem)`).
+
+COMO ESTES ARQUIVOS FORAM FEITOS, E O QUE FALTA NELES
+-----------------------------------------------------
+Gerados por script, com as métricas das duas fontes MEDIDAS no navegador (não estimadas):
+"anos" na Qwitcher mede 1,183em de largura, 0,80em acima e 0,30em abaixo da base;
+"DE EXPERIÊNCIA" na Cinzel com 0,18em de tracking mede 10,695em.
+
+⚠️ O TEXTO DESTES SVG ESTÁ VIVO, não em contorno. Serve para inspecionar e para virar
+componente, mas NÃO serve para o Figma: a Qwitcher e a Cinzel não são fontes de sistema,
+e quem abrir sem elas instaladas vê outra família sem nenhum aviso. Se a escolhida for
+para o Figma, passar pelo `scripts/gerar-selo-svg.py`, que molda com HarfBuzz e emite
+contorno — é o mesmo problema já resolvido para o lettering em vigor.

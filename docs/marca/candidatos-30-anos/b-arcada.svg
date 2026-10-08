@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272 295.90" width="272" height="295.90" role="img" aria-label="30 anos de experiência" fill="none" color="#F7F9F9">
+  <title>B · ARCADA</title>
+  <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round">
+  <path d="M 0 250 L 0 96.00 C 0 39.62, 60.76 0, 136.00 0 C 211.24 0, 272.00 39.62, 272.00 96.00 L 272.00 250"/>
+  <path d="M 54.9848 250 L 54.9848 89.90 C 54.9848 55.00, 91.18 30.479999999999997, 136.00 30.479999999999997 C 180.82 30.479999999999997, 217.02 55.00, 217.02 89.90 L 217.02 250"/>
+  </g>
+  <g transform="translate(58.49 100.22) scale(0.43299)">
+  <path d="M 44 40 C 44 18 70 10 100 10 C 136 10 152 30 152 54 C 152 76 134 88 108 88 C 138 88 158 102 158 128 C 158 154 134 168 100 168 C 66 168 44 156 44 136" stroke="currentColor" stroke-width="9.09" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <ellipse cx="236" cy="89" rx="78" ry="79" stroke="currentColor" stroke-width="9.09" fill="none"/>
+  </g>
+  <text x="136" y="225.11" text-anchor="middle" fill="currentColor" style="font-family:'Qwitcher Grypen';font-weight:700;font-size:52px">anos</text>
+  <text x="136" y="285.90" text-anchor="middle" fill="currentColor" style="font-family:'Cinzel';font-weight:400;font-size:17px;letter-spacing:0.18em">DE EXPERIÊNCIA</text>
+</svg>
