@@ -653,6 +653,53 @@
 .esteira-pausa:focus-within .esteira {
   animation-play-state: paused;
 }
+
+/* FIO DO PERCURSO DA TRAJETÓRIA — o tracejado que costura as fichas e caminha.
+
+   ⚠️ É o substituto EXATO do `motion/react` que o template pedia. A lib era
+   usada para UMA coisa: interpolar `strokeDashoffset` num laço infinito. Em CSS
+   isso são quatro linhas, roda no compositor, e entra de graça nas duas regras
+   globais que a lib ignoraria — `body.pausado` (aba escondida, 21/08) e o
+   `prefers-reduced-motion` logo abaixo. Instalar dependência de animação aqui
+   ainda traria o conflito registrado quatro vezes neste projeto: essas libs
+   escrevem `transform`, o Tailwind v4 escreve `translate`/`scale`/`rotate`
+   separadas, e misturar as duas famílias apaga uma delas sem erro nenhum.
+
+   ⚠️ O deslocamento de 140 é MÚLTIPLO do período do tracejado (8 + 6 = 14). Em
+   qualquer outro valor o laço dá um salto visível ao reiniciar.
+
+   O atraso NEGATIVO de -0,9s segue a regra de 21/08: os laços infinitos do site
+   não podem começar todos no mesmo instante, senão o carregamento lê como uma
+   coisa só pulsando. Os outros estão em -1,4s, -2,1s, -6s, -11s e -24s. */
+@keyframes fio-marcha {
+  to { stroke-dashoffset: -140; }
+}
+.fio-marcha {
+  stroke-dasharray: 8 6;
+  animation: fio-marcha 3s linear -0.9s infinite;
+}
+
+/* O MESMO fio na versão empilhada (abaixo de `md`), onde o percurso é reto e
+   aparece nos vãos entre as fichas. É elemento pintado e não `<svg>` porque ali
+   a altura da pilha sai do texto, e o SVG precisaria dela medida em runtime.
+
+   ⚠️ Marcha por `background-position` e não por `transform`, que é a exceção à
+   regra de 19/08 ("deriva por transform, nunca por background-position, porque
+   a segunda repinta a camada inteira"). Aqui a camada tem UM pixel de largura:
+   a repintura é de uma coluna, não de uma tela. Com `transform` seria preciso
+   esticar o elemento 14px além do contêiner para não abrir vão no pé, o que
+   custa mais código do que economiza. */
+@keyframes fio-reto {
+  to { background-position-y: -14px; }
+}
+.fio-reto {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    color-mix(in oklch, var(--accent) 35%, transparent) 0 8px,
+    transparent 8px 14px
+  );
+  animation: fio-reto 3s linear -0.9s infinite;
+}
 /* ⚠️ Esteira FORA DA TELA não anda. A classe vem do `useParadaForaDaTela`, e o motivo
    é o celular: são três esteiras em laço infinito, cada uma com uma faixa larga de
    imagens e `mask-image` por cima. Mesmo fora de vista o compositor mantém essas
@@ -993,6 +1040,11 @@ body.pausado *::after {
   html { scroll-behavior: auto; }
   .marquee-track, [data-marquee] { animation: none !important; }
   .esteira { animation: none !important; }
+  /* O fio da Trajetória para de caminhar mas CONTINUA desenhado: ele é o
+     percurso que liga os marcos, ou seja conteúdo, e apagá-lo deixaria as
+     fichas soltas para quem pede menos movimento. Motor desligado, traço no
+     lugar. */
+  .fio-marcha, .fio-reto { animation: none !important; }
   .line-rise { animation: none !important; transform: none !important; }
   .abertura-entra-marca { animation: none !important; transform: none !important; }
   /* A camada de ambiente para de derivar, mas CONTINUA visível: ela é cor de fundo,
