@@ -297,9 +297,11 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          cima, então um valor fixo faz a proporção variar com a tela. Medido antes de
          amarrar: 0,40 da logo em 1440 mas 0,49 em 1024, ou seja o selo crescia em
          relação à marca justo onde a tela aperta.
-         36% no celular e 40% no desktop: um pouco menor embaixo porque ali as peças
+         62% da largura da marca nas duas faixas. O lockup é 1,45:1 e não
+         circular como o selo que ele substituiu, então precisa de mais largura para o
+         "de experiência" continuar legível: um pouco menor embaixo porque ali as peças
          empilham e cada pixel de altura disputa com o palco. */
-      className="w-[min(28vw,6.5rem)] text-ink-foreground md:w-[min(12vw,9.6rem)]"
+      className="w-[min(48vw,11rem)] text-ink-foreground md:w-[min(18.6vw,14.9rem)]"
     />
   ) : null;
 

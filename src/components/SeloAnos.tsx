@@ -1,36 +1,47 @@
 import type { PortalSelo } from "@/content/types";
 
 /**
- * SELO DE TEMPO DE EXERCÍCIO, desenhado aqui em SVG.
+ * O "30 ANOS DE EXPERIÊNCIA" da tela de entrada, em LETTERING desenhado aqui.
  *
- * Pedido de 07/10: "precisamos colocar esse selo na hero do site, é o de 30 anos de
- * experiencia, com a identidade da suzuki, ele é um print com marca d'agua e preciso
- * que faça".
+ * ⚠️ ESTA É A SEGUNDA FORMA DA PEÇA, e a primeira foi reprovada. Em 07/10 ela era um
+ * SELO CIRCULAR (anel duplo, "30" em Cinzel no meio, rótulo em caixa alta embaixo) e o
+ * usuário respondeu "nao gostei", mandando uma referência: um lockup de lettering com o
+ * "30" em traço monolinear vazado e a palavra "anos" em script cruzando o zero. Está no git,
+ * em `667bd9c`. **Não voltar ao círculo sem pedido dele.**
  *
- * ⚠️ É VETOR E NÃO O PRINT, e os três motivos são de produto, não de preferência:
- * 1. O print tem MARCA D'ÁGUA de terceiro. Pôr a marca de outra empresa sobre uma
- *    afirmação da clínica é o oposto do que o selo existe para fazer.
- * 2. Print é raster. Aqui a peça renderiza de 104 a 132px e precisa ficar nítida em
- *    tela retina, onde isso vira 264px. Vetor é exato em qualquer tamanho e pesa ~2KB
- *    contra centenas de um PNG.
- * 3. A cor sai de `currentColor`, então o selo acompanha a paleta sozinho. Com o print
- *    ele ficaria preso nas cores do arquivo e sairia do tema na próxima troca, que é
- *    exatamente o defeito do `.slot-grid` em 30/07.
+ * Da referência entrou o GESTO e não os elementos: ele pediu "somente o 30 anos, sem o
+ * resto das informacoes e elementos do png", então ficaram de fora o bloco de texto, o
+ * "YOUR LOGO HERE" e os arcos decorativos. "De experiência" foi pedido na mensagem
+ * seguinte, "com a mesma fonte de anos".
  *
- * ⚠️ O QUE O SELO **NÃO** DIZ, e isso é compliance e não enxugamento:
- * nada de "o melhor", "referência em Curitiba", "nº 1" nem laurel de premiação. Tempo
- * de exercício é dado profissional factual e é só isso que está aqui. Qualquer
- * superlativo entra na comparação com concorrente, que é o gesto que derrubou a seção
- * Comparativo em 03/08.
+ * ⚠️ O "30" É PATH DESENHADO À MÃO, não fonte com contorno, e a diferença decide o
+ * resultado: aplicar `stroke` numa fonte contorna a SILHUETA da letra e sai com fio
+ * duplo. A referência é MONOLINEAR, ou seja um traço só de espessura constante, que é
+ * o que um `path` sem preenchimento com `stroke-linecap: round` dá.
  *
- * ⚠️ E NÃO REPETE O WORDMARK. A tentação num selo é escrever "SUZUKI ODONTOLOGIA" no
- * arco de cima, mas ele fica logo ABAIXO da logo, que já traz as duas palavras. É o
- * mesmo defeito que apagou o lockup em 19/08, quando "odontologia" aparecia duas vezes
- * empilhada e o usuário reprovou na hora.
+ * ⚠️ O SCRIPT É A QWITCHER GRYPEN, a mesma da assinatura do Dr. Dalton na coluna ao
+ * lado, e isso é requisito de composição: duas cursivas diferentes na mesma tela leem
+ * como erro. Com a mesma família, o "anos" e a assinatura rimam e a tela fica com UMA
+ * voz manuscrita.
  *
- * Tipografia: Cinzel, a mesma que entrou em 05/10 para a linha que este selo
- * substitui. Capital romana, o registro do wordmark da própria arte do logo.
+ * ⚠️ SEM KNOCKOUT no cruzamento, e isso foi MEDIDO, não escolhido. A saída clássica de
+ * lettering para o script cruzar o zero é um halo na cor do fundo (`paint-order:
+ * stroke`), e aqui ela destrói a peça: a haste da Qwitcher tem ~6 unidades de espessura
+ * neste viewBox, então um halo de 4 come 2 de cada lado e a palavra some. Renderizado a
+ * 0, 3, 4 e 5: só o ZERO preserva o "anos". O "a" encosta na borda do zero e se funde,
+ * que é exatamente o que a referência faz.
+ *
+ * ⚠️ A geometria é MEDIDA: o conteúdo ocupa x 33,5..407,6 e y -0,5..257, e o viewBox é
+ * essa caixa com 4 unidades de folga. `getBBox` NÃO inclui a espessura do traço, então
+ * a metade dele (10,5) entra na conta à mão — sem isso o "30" sai cortado nas bordas.
  */
+
+/** O "3" monolinear. Bojos grandes e lado esquerdo reto, que é a forma da referência:
+ *  um "3" clássico tem o lado esquerdo aberto e ficou longe no primeiro render. */
+const TRACO_TRES =
+  "M 44 40 C 44 18 70 10 100 10 C 136 10 152 30 152 54 C 152 76 134 88 108 88 " +
+  "C 138 88 158 102 158 128 C 158 154 134 168 100 168 C 66 168 44 156 44 136";
+
 export function SeloAnos({
   selo,
   className,
@@ -40,67 +51,43 @@ export function SeloAnos({
 }) {
   return (
     <svg
-      viewBox="0 0 200 200"
+      viewBox="30 -4 382 266"
       role="img"
-      aria-label={`${selo.numero} ${selo.linha1} ${selo.linha2}`}
+      aria-label={`${selo.numero} ${selo.palavra} ${selo.complemento}`}
       className={className}
-      /* `currentColor` em tudo: quem define a cor é o elemento de fora, e o selo
-         acompanha a paleta sem nenhum token cravado aqui. */
       fill="none"
     >
-      {/* ANEL DUPLO. As duas opacidades diferentes é o que dá profundidade sem
-          introduzir uma segunda cor: num campo escuro, dois fios brancos de mesmo peso
-          leem como um traço grosso só. */}
-      <circle cx="100" cy="100" r="96.5" stroke="currentColor" strokeWidth="1.25" opacity="0.5" />
-      <circle cx="100" cy="100" r="87" stroke="currentColor" strokeWidth="0.75" opacity="0.26" />
+      <path
+        d={TRACO_TRES}
+        stroke="currentColor"
+        strokeWidth="21"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <ellipse cx="236" cy="89" rx="78" ry="79" stroke="currentColor" strokeWidth="21" />
 
-      {/* Os dois pontos no eixo horizontal, entre os anéis. É o detalhe que faz a peça
-          ler como SELO e não como "número dentro de um círculo". */}
-      <circle cx="8.3" cy="100" r="2.1" fill="currentColor" opacity="0.5" />
-      <circle cx="191.7" cy="100" r="2.1" fill="currentColor" opacity="0.5" />
-
-      {/* O NÚMERO. `dominantBaseline` não é confiável entre navegadores em SVG, então a
-          posição vertical sai do `y` medido, não de alinhamento automático. */}
+      {/* "anos" cruzando o zero. O x=250 é o ponto em que o "a" encosta na borda
+          direita do zero sem engolir o "n": medido contra 224, 242, 258 e 262. */}
       <text
-        x="100"
-        y="99"
-        textAnchor="middle"
+        x="250"
+        y="150"
         fill="currentColor"
-        style={{ fontFamily: '"Cinzel", Georgia, serif', fontSize: 78, fontWeight: 400 }}
+        style={{ fontFamily: '"Qwitcher Grypen", cursive', fontWeight: 700, fontSize: 132 }}
       >
-        {selo.numero}
+        {selo.palavra}
       </text>
 
-      {/* Filete separando o número do rótulo. Curto de propósito: encostar nos anéis
-          fecharia o selo em duas metades. */}
-      <line x1="66" y1="112" x2="134" y2="112" stroke="currentColor" strokeWidth="0.75" opacity="0.45" />
-
-      {/* ⚠️ `textTransform: uppercase` é REQUISITO e não estilo: a Cinzel é fonte de
-          CAIXA ALTA, e minúscula nela renderiza como VERSALETE. Sem isto, "Anos de"
-          sai com o A grande e o resto pequeno, o que lê como erro de digitação.
-
-          RÓTULO EM DUAS LINHAS, e a quebra vem do CONTEÚDO (`linha1`/`linha2`), não de
-          um `<tspan>` fixo: SVG não quebra texto sozinho, e partir por código no último
-          espaço erraria em variante com rótulo de outro tamanho. */}
+      {/* "de experiência", centrado no eixo do lockup inteiro (220,5, e não no 236 do
+          zero): o "30 anos" é assimétrico, então centrar pelo zero jogaria a linha
+          visivelmente para a direita. */}
       <text
-        x="100"
-        y="136"
+        x="220.5"
+        y="238"
         textAnchor="middle"
         fill="currentColor"
-        opacity="0.92"
-        style={{ fontFamily: '"Cinzel", Georgia, serif', fontSize: 16, fontWeight: 400, letterSpacing: 2.6, textTransform: "uppercase" }}
+        style={{ fontFamily: '"Qwitcher Grypen", cursive', fontWeight: 700, fontSize: 64 }}
       >
-        {selo.linha1}
-      </text>
-      <text
-        x="100"
-        y="155"
-        textAnchor="middle"
-        fill="currentColor"
-        opacity="0.92"
-        style={{ fontFamily: '"Cinzel", Georgia, serif', fontSize: 16, fontWeight: 400, letterSpacing: 2.6, textTransform: "uppercase" }}
-      >
-        {selo.linha2}
+        {selo.complemento}
       </text>
     </svg>
   );

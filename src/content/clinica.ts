@@ -225,8 +225,8 @@ export const clinica: Clinica = {
        Curitiba" nem comparação com concorrente. */
     anos: {
       numero: "30",
-      linha1: "Anos de",
-      linha2: "Experiência",
+      palavra: "anos",
+      complemento: "de experiência",
     },
   },
   hero: {

@@ -155,10 +155,11 @@ export type AberturaContent = {
    * é dado profissional factual, e é assim que a CFO-196/2019 o admite. NÃO
    * transformar em "mais experiente" nem em comparação com concorrente.
    *
-   * ⚠️ VIROU SELO EM 07/10, a pedido ("precisamos colocar esse selo na hero do site").
-   * Era uma string única renderizada em Cinzel; agora os três pedaços são campos
-   * separados porque o selo os desenha em posições diferentes dentro do círculo, e
-   * partir a string por código erraria no dia em que o rótulo mudasse de tamanho.
+   * ⚠️ VIROU SELO EM 07/10 e virou LETTERING em 08/10, as duas vezes a pedido. O selo
+   * circular foi reprovado ("nao gostei") e ele mandou uma referência de lockup com o
+   * "30" em traço vazado e "anos" em script cruzando o zero. Os três pedaços são campos
+   * separados porque o desenho os põe em posições diferentes, e partir a string por
+   * código erraria no dia em que a palavra mudasse de tamanho.
    *
    * `null` não renderiza nada, e é o estado das variantes sem o dado.
    */
@@ -261,12 +262,13 @@ export type HeroContent = {
  * CFO-196/2019 trata comparação com concorrente à parte.
  */
 export type PortalSelo = {
-  /** O número sozinho, sem a palavra. "30". */
+  /** O número sozinho, sem a palavra. "30". É ele que vira o traço monolinear. */
   numero: string;
-  /** As duas linhas do rótulo. A quebra é decisão de conteúdo: SVG não quebra texto
-   *  sozinho, e dividir por código no último espaço erra em rótulo de outro tamanho. */
-  linha1: string;
-  linha2: string;
+  /** A palavra que CRUZA o zero, em script. "anos". Curta por construção: ela nasce
+   *  dentro do zero, e qualquer coisa além de uma palavra sai do lockup. */
+  palavra: string;
+  /** A linha de baixo, no mesmo script. "de experiência". */
+  complemento: string;
 };
 
 export type HeroImagem = {
