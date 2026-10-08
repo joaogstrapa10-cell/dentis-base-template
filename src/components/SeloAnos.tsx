@@ -24,16 +24,23 @@ import type { PortalSelo } from "@/content/types";
  * como erro. Com a mesma família, o "anos" e a assinatura rimam e a tela fica com UMA
  * voz manuscrita.
  *
- * ⚠️ SEM KNOCKOUT no cruzamento, e isso foi MEDIDO, não escolhido. A saída clássica de
- * lettering para o script cruzar o zero é um halo na cor do fundo (`paint-order:
- * stroke`), e aqui ela destrói a peça: a haste da Qwitcher tem ~6 unidades de espessura
- * neste viewBox, então um halo de 4 come 2 de cada lado e a palavra some. Renderizado a
- * 0, 3, 4 e 5: só o ZERO preserva o "anos". O "a" encosta na borda do zero e se funde,
- * que é exatamente o que a referência faz.
+ * ⚠️ O "anos" NÃO CRUZA O ZERO, e isso é conserto de um defeito que ele reportou: na
+ * primeira versão a palavra começava em x=250, ou seja DENTRO do anel, e como as duas
+ * peças têm a mesma cor ela se fundia com o traço — "o anos esta zoado, esta atras do
+ * 30". A referência cruza porque tem KNOCKOUT (halo na cor do fundo), e aqui o halo foi
+ * MEDIDO e destrói a peça: a haste da Qwitcher tem ~6 unidades de espessura neste
+ * viewBox, então um halo de 4 come 2 de cada lado e a palavra some (renderizado a 0, 3,
+ * 4, 5, 9 e 13 — só o ZERO preserva o "anos"). Sem knockout possível, a saída é a
+ * distância: x=326 é a borda externa do zero (236 + 78 + 10,5 = 324,5), ou seja o "a"
+ * encosta sem nenhuma sobreposição de traço. O gesto de lockup se mantém pela ALTURA —
+ * a linha de base do "anos" está em 150 contra o centro do zero em 89, então a palavra
+ * fica encaixada embaixo e à direita, e não enfileirada ao lado.
  *
- * ⚠️ A geometria é MEDIDA: o conteúdo ocupa x 33,5..407,6 e y -0,5..257, e o viewBox é
- * essa caixa com 4 unidades de folga. `getBBox` NÃO inclui a espessura do traço, então
- * a metade dele (10,5) entra na conta à mão — sem isso o "30" sai cortado nas bordas.
+ * ⚠️ A geometria é MEDIDA, e os números vêm todos de `getBBox` no navegador: o "30"
+ * ocupa x 33,5..324,5 e y -0,5..178,5; o "anos" a 132px mede 156,5 de largura, 106
+ * acima e 40 abaixo da base; o "de experiência" a 96px mede 340,7 de largura, 77 acima
+ * e 29 abaixo. `getBBox` NÃO inclui a espessura do traço, então a metade dele (10,5)
+ * entra na conta à mão — sem isso o "30" sai cortado nas bordas.
  */
 
 /** O "3" monolinear. Bojos grandes e lado esquerdo reto, que é a forma da referência:
@@ -51,7 +58,7 @@ export function SeloAnos({
 }) {
   return (
     <svg
-      viewBox="30 -4 382 266"
+      viewBox="29.5 -4.5 457 308.5"
       role="img"
       aria-label={`${selo.numero} ${selo.palavra} ${selo.complemento}`}
       className={className}
@@ -66,10 +73,11 @@ export function SeloAnos({
       />
       <ellipse cx="236" cy="89" rx="78" ry="79" stroke="currentColor" strokeWidth="21" />
 
-      {/* "anos" cruzando o zero. O x=250 é o ponto em que o "a" encosta na borda
-          direita do zero sem engolir o "n": medido contra 224, 242, 258 e 262. */}
+      {/* "anos" encaixado embaixo e à direita do zero, encostando na borda externa dele
+          (324,5) e sem cruzar o traço. Medido contra 250 (a versão reprovada, dentro do
+          anel), 296 e 310: nas três a palavra se funde com o fio em alguma altura. */}
       <text
-        x="250"
+        x="326"
         y="150"
         fill="currentColor"
         style={{ fontFamily: '"Qwitcher Grypen", cursive', fontWeight: 700, fontSize: 132 }}
@@ -77,15 +85,22 @@ export function SeloAnos({
         {selo.palavra}
       </text>
 
-      {/* "de experiência", centrado no eixo do lockup inteiro (220,5, e não no 236 do
-          zero): o "30 anos" é assimétrico, então centrar pelo zero jogaria a linha
-          visivelmente para a direita. */}
+      {/* "de experiência", centrado no eixo do lockup inteiro (258, meio de 33,5..482,5, e
+          não no 236 do zero): o "30 anos" é assimétrico, então centrar pelo zero jogaria
+          a linha visivelmente para a esquerda.
+
+          96px e não 64: a pedido ("aumentar o 'de experiencia' e deixar visivel muito
+          bem"). A base em 271 é o pé do "anos" (190) mais 4 de vão mais os 77 que o "d"
+          e o circunflexo sobem — o vão é pequeno de propósito, porque a massa da palavra
+          é a altura de x e fica bem mais abaixo do topo da caixa. Renderizado com vão
+          20, 4 e -8: a 20 as duas linhas se soltam uma da outra, a -8 o "d" encosta no
+          pé do zero. */}
       <text
-        x="220.5"
-        y="238"
+        x="258"
+        y="271"
         textAnchor="middle"
         fill="currentColor"
-        style={{ fontFamily: '"Qwitcher Grypen", cursive', fontWeight: 700, fontSize: 64 }}
+        style={{ fontFamily: '"Qwitcher Grypen", cursive', fontWeight: 700, fontSize: 96 }}
       >
         {selo.complemento}
       </text>
