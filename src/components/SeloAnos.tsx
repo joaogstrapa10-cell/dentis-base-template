@@ -1,60 +1,51 @@
 import type { PortalSelo } from "@/content/types";
+import {
+  SELO_FIO,
+  SELO_TRACO_30,
+  SELO_TRACO_ANOS,
+  SELO_TRACO_ROTULO,
+  SELO_VAO,
+  SELO_VIEWBOX,
+} from "./seloAnosTracado";
 
 /**
- * O "30 ANOS DE EXPERIÊNCIA" da tela de entrada, em LETTERING desenhado aqui.
+ * O "30 ANOS DE EXPERIÊNCIA" da tela de entrada, em LETTERING FINO (09/10).
  *
- * ⚠️ ESTA É A SEGUNDA FORMA DA PEÇA, e a primeira foi reprovada. Em 07/10 ela era um
- * SELO CIRCULAR (anel duplo, "30" em Cinzel no meio, rótulo em caixa alta embaixo) e o
- * usuário respondeu "nao gostei", mandando uma referência: um lockup de lettering com o
- * "30" em traço monolinear vazado e a palavra "anos" em script cruzando o zero. Está no git,
- * em `667bd9c`. **Não voltar ao círculo sem pedido dele.**
+ * ⚠️ É A TERCEIRA FORMA DA PEÇA, e as duas anteriores estão no git. Em 07/10 era um
+ * selo CIRCULAR (reprovado: "nao gostei", em `667bd9c`). Em 08/10 virou lettering com
+ * um "30" monolinear desenhado à mão e "anos"/"de experiência" em script, a partir de
+ * uma referência do Pinterest. Em 09/10 ele reprovou o PESO e a LETRA daquele "30" ("tá
+ * muito grosso, 30, por exemplo, não é daquela fonte") e pediu que a peça fosse uma
+ * MARCA, não uma legenda ("precisa ter uma logo ali"). Quatro selos foram desenhados e
+ * renderizados na tela real, e ele escolheu este. **Não voltar ao círculo nem ao "30"
+ * grosso sem pedido dele.**
  *
- * Da referência entrou o GESTO e não os elementos: ele pediu "somente o 30 anos, sem o
- * resto das informacoes e elementos do png", então ficaram de fora o bloco de texto, o
- * "YOUR LOGO HERE" e os arcos decorativos. "De experiência" foi pedido na mensagem
- * seguinte, "com a mesma fonte de anos".
+ * As três peças, e de onde vem cada uma:
+ *   · "30" em Cormorant Garamond com algarismos alinhados, num peso 120 EXTRAPOLADO dos
+ *     mestres 300 e 400 da própria fonte (P = P300 + (P300 − P400) × 1,8). A haste tem
+ *     4,3% da altura do selo, contra 7,5% do "30" anterior. Abaixo do peso 50 o fio do
+ *     pé do zero quebra, por isso parou em 120;
+ *   · "anos" em Qwitcher Grypen 700, a MESMA fonte da assinatura do Dr. Dalton na
+ *     coluna ao lado, encaixado no pé direito do zero;
+ *   · "DE EXPERIÊNCIA" em Ubuntu 300, a face do "odontologia" da logo, justificado à
+ *     largura do fio que fecha o bloco.
  *
- * ⚠️ O "30" É PATH DESENHADO À MÃO, não fonte com contorno, e a diferença decide o
- * resultado: aplicar `stroke` numa fonte contorna a SILHUETA da letra e sai com fio
- * duplo. A referência é MONOLINEAR, ou seja um traço só de espessura constante, que é
- * o que um `path` sem preenchimento com `stroke-linecap: round` dá.
+ * ⚠️ TUDO É CONTORNO (path), não `<text>`, e por isso não depende de fonte nenhuma
+ * carregar: Cormorant e Ubuntu nem são servidas pelo site. A contrapartida é que o
+ * texto desenhado é FIXO — `selo.numero/palavra/complemento` só alimentam o
+ * `aria-label`. Numa variante com outro número (Rogério, Décio), os contornos têm de
+ * ser regerados a partir do mestre em `docs/marca/selo-30-anos-lettering-fino-claro.svg`.
  *
- * ⚠️ O SCRIPT É A QWITCHER GRYPEN, a mesma da assinatura do Dr. Dalton na coluna ao
- * lado, e isso é requisito de composição: duas cursivas diferentes na mesma tela leem
- * como erro. Com a mesma família, o "anos" e a assinatura rimam e a tela fica com UMA
- * voz manuscrita.
+ * ⚠️ O "anos" CRUZA o pé do zero, e o que impede a fusão das duas peças (o defeito de
+ * 08/10, "o anos esta zoado, esta atras do 30") é um VÃO aberto NO ALGARISMO por
+ * máscara: retângulo branco + o próprio "anos" em preto com traço de `SELO_VAO`. Nunca
+ * halo no script — numa cursiva os glifos se sobrepõem, e o halo de um come o vizinho.
+ * O `#fff`/`#000` da máscara é luminância, não pinta nada; toda tinta é `currentColor`.
  *
- * ⚠️ O "anos" NÃO CRUZA O ZERO, e isso é conserto de um defeito que ele reportou: na
- * primeira versão a palavra começava em x=250, ou seja DENTRO do anel, e como as duas
- * peças têm a mesma cor ela se fundia com o traço — "o anos esta zoado, esta atras do
- * 30". A referência cruza porque tem KNOCKOUT (halo na cor do fundo), e aqui o halo foi
- * MEDIDO e destrói a peça: a haste da Qwitcher tem ~6 unidades de espessura neste
- * viewBox, então um halo de 4 come 2 de cada lado e a palavra some (renderizado a 0, 3,
- * 4, 5, 9 e 13 — só o ZERO preserva o "anos"). Sem knockout possível, a saída é a
- * distância: x=326 é a borda externa do zero (236 + 78 + 10,5 = 324,5), ou seja o "a"
- * encosta sem nenhuma sobreposição de traço. O gesto de lockup se mantém pela ALTURA —
- * a linha de base do "anos" está em 150 contra o centro do zero em 89, então a palavra
- * fica encaixada embaixo e à direita, e não enfileirada ao lado.
- *
- * ⚠️ A geometria é MEDIDA, e os números vêm todos de `getBBox` no navegador: o "30"
- * ocupa x 33,5..324,5 e y -0,5..178,5; o "anos" a 132px mede 156,5 de largura, 106
- * acima e 40 abaixo da base; o "de experiência" a 96px mede 340,7 de largura, 77 acima
- * e 29 abaixo. `getBBox` NÃO inclui a espessura do traço, então a metade dele (10,5)
- * entra na conta à mão — sem isso o "30" sai cortado nas bordas.
- *
- * ⚠️ MAS O ESPAÇO ENTRE AS DUAS LINHAS NÃO SE MEDE PELA CAIXA, e sim pela TINTA: o topo
- * da caixa do "de experiência" são o "d" e o circunflexo, altos e estreitos, enquanto a
- * massa da palavra é a altura de x e fica bem mais abaixo. A primeira versão tinha 4
- * unidades de vão pela caixa e 47,5 de vazio real na coluna mais apertada — e lia
- * afastada. A folga em vigor é medida por rasterização, coluna a coluna.
+ * ⚠️ `overflow="visible"` na raiz é REQUISITO enquanto a paleta A estiver em teste: ela
+ * põe `border-radius: .5rem` em todo `[role="img"]`, e com o overflow padrão os cantos
+ * cortavam o "D" e o "A" do rótulo (visto no render).
  */
-
-/** O "3" monolinear. Bojos grandes e lado esquerdo reto, que é a forma da referência:
- *  um "3" clássico tem o lado esquerdo aberto e ficou longe no primeiro render. */
-const TRACO_TRES =
-  "M 44 40 C 44 18 70 10 100 10 C 136 10 152 30 152 54 C 152 76 134 88 108 88 " +
-  "C 138 88 158 102 158 128 C 158 154 134 168 100 168 C 66 168 44 156 44 136";
-
 export function SeloAnos({
   selo,
   className,
@@ -64,65 +55,40 @@ export function SeloAnos({
 }) {
   return (
     <svg
-      viewBox="29.5 -4.5 457 278.5"
+      viewBox={SELO_VIEWBOX}
       role="img"
       aria-label={`${selo.numero} ${selo.palavra} ${selo.complemento}`}
       className={className}
       fill="none"
+      overflow="visible"
     >
-      <path
-        d={TRACO_TRES}
-        stroke="currentColor"
-        strokeWidth="21"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+      <defs>
+        {/* `maskUnits` em espaço do usuário e cobrindo o viewBox inteiro: em
+            `objectBoundingBox` a máscara mediria a caixa do "30" e cortaria a ponta do
+            algarismo que passa dela. */}
+        <mask id="selo-anos-vao" maskUnits="userSpaceOnUse" x="0" y="0" width="300" height="300">
+          <rect x="0" y="0" width="300" height="300" fill="#fff" />
+          <path
+            d={SELO_TRACO_ANOS}
+            fill="#000"
+            stroke="#000"
+            strokeWidth={SELO_VAO}
+            strokeLinejoin="round"
+          />
+        </mask>
+      </defs>
+      <g mask="url(#selo-anos-vao)">
+        <path d={SELO_TRACO_30} fill="currentColor" />
+      </g>
+      <path d={SELO_TRACO_ANOS} fill="currentColor" />
+      <path d={SELO_TRACO_ROTULO} fill="currentColor" />
+      <rect
+        x={SELO_FIO.x}
+        y={SELO_FIO.y}
+        width={SELO_FIO.largura}
+        height={SELO_FIO.altura}
+        fill="currentColor"
       />
-      <ellipse cx="236" cy="89" rx="78" ry="79" stroke="currentColor" strokeWidth="21" />
-
-      {/* "anos" encaixado embaixo e à direita do zero, encostando na borda externa dele
-          (324,5) e sem cruzar o traço. Medido contra 250 (a versão reprovada, dentro do
-          anel), 296 e 310: nas três a palavra se funde com o fio em alguma altura. */}
-      <text
-        x="326"
-        y="150"
-        fill="currentColor"
-        style={{ fontFamily: '"Qwitcher Grypen", cursive', fontWeight: 700, fontSize: 132 }}
-      >
-        {selo.palavra}
-      </text>
-
-      {/* "de experiência", centrado no eixo do lockup inteiro (258, meio de 33,5..482,5, e
-          não no 236 do zero): o "30 anos" é assimétrico, então centrar pelo zero jogaria
-          a linha visivelmente para a esquerda.
-
-          96px e não 64: a pedido ("aumentar o 'de experiencia' e deixar visivel muito
-          bem").
-
-          ⚠️ A BASE EM 241 SAIU DE MEDIÇÃO DE TINTA, não da caixa do texto, e a diferença
-          entre as duas é de quase 30 unidades. A caixa dizia 4 de vão e a peça lia
-          AFASTADA — ele pediu "deixar o de experiencia mais proximo do 30 anos". O topo
-          da caixa são o "d" e o circunflexo, que são altos e ESTREITOS; a folga que se
-          vê é a menor distância entre a tinta de cima e a de baixo, coluna a coluna.
-          Medida por rasterização: a coluna mais apertada é x=105, onde o "d" de "de"
-          passa debaixo do bojo inferior do "3". A 271 ali havia 47,5 unidades de vazio,
-          e é isso que fazia as duas linhas lerem como dois objetos. Renderizado a 271,
-          259, 249, 241 e 233 → 47,5 / 35,5 / 25,5 / 17,5 / 9,5 unidades. Ficou 241: as
-          duas linhas viram uma peça só e ainda sobram ~9px no computador e ~7px no
-          celular. A 233 o "d" chega perto demais do "3" para o tamanho em que isto
-          renderiza.
-
-          ⚠️ Ao mexer neste número, REMEDIR por tinta e refazer a altura do viewBox —
-          medir pela caixa do `<text>` erra por quase 30 unidades, que foi o que
-          aconteceu aqui. */}
-      <text
-        x="258"
-        y="241"
-        textAnchor="middle"
-        fill="currentColor"
-        style={{ fontFamily: '"Qwitcher Grypen", cursive', fontWeight: 700, fontSize: 96 }}
-      >
-        {selo.complemento}
-      </text>
     </svg>
   );
 }

@@ -297,11 +297,12 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          cima, então um valor fixo faz a proporção variar com a tela. Medido antes de
          amarrar: 0,40 da logo em 1440 mas 0,49 em 1024, ou seja o selo crescia em
          relação à marca justo onde a tela aperta.
-         62% da largura da marca nas duas faixas. O lockup é 1,45:1 e não
-         circular como o selo que ele substituiu, então precisa de mais largura para o
-         "de experiência" continuar legível: um pouco menor embaixo porque ali as peças
-         empilham e cada pixel de altura disputa com o palco. */
-      className="w-[min(48vw,11rem)] text-ink-foreground md:w-[min(18.6vw,14.9rem)]"
+         METADE da largura da marca desde o lettering fino de 09/10 (era 62% no
+         lettering grosso): celular `min(39vw,9rem)`, ou seja 0,5 × `min(78vw,18rem)`;
+         de `md` para cima o teto de 12rem dá 0,50 exato no desktop, e os 17vw seguram
+         o rótulo legível no tablet (0,57 da marca em 768 e 1024). Medido: versal do
+         "DE EXPERIÊNCIA" com 12,1px em 1440 e 9,1px em 390. */
+      className="w-[min(39vw,9rem)] text-ink-foreground md:w-[min(17vw,12rem)]"
     />
   ) : null;
 
@@ -332,7 +333,14 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
          A proporção vem do ARQUIVO e não cravada aqui: é a lição de 12/08, quando uma
          proporção fixa recortou 78% de uma foto panorâmica, e de 13/08, quando o
          arquivo do hero mudou e a medida cravada passou a recortar. */
-      className="h-auto w-[min(72vw,17rem)] rounded-xl object-contain shadow-[0_24px_64px_rgba(0,0,0,0.5)] md:w-[min(24vw,19rem)] md:rounded-2xl"
+      /* ⚠️ O TERCEIRO TERMO DO CELULAR (`75svh − 315px`) só morde em telefone BAIXO, e
+         é o que tira a assinatura de cima do "ROLE PARA VER" (defeito aberto desde
+         08/10). A conta: no celular, o que não é foto soma ~338px (logo, selo, nome e
+         vãos) e a área útil é a tela menos o `pb-18` do palco e ~28px de respiro, então
+         a foto cabe com largura ≤ 0,75 × (tela − 458). Em 390x844 isso dá 303px e a
+         foto segue em 272px, INTACTA; em 390x740 cai para 225, em 375x667 para 170 e
+         em 320x700 para 195. Só onde não cabe. */
+      className="h-auto w-[min(72vw,17rem,calc(75svh_-_330px))] rounded-xl object-contain shadow-[0_24px_64px_rgba(0,0,0,0.5)] md:w-[min(24vw,19rem)] md:rounded-2xl"
       style={{ aspectRatio: `${retrato.largura} / ${retrato.altura}` }}
     />
   ) : null;
@@ -377,8 +385,14 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
      retrato, e como o grupo é centrado aumentá-lo SOBE a marca e desce a foto meio vão
      cada. Em linha, de `md` para cima, esse mesmo vão é HORIZONTAL e não teria efeito
      nenhum sobre a altura. */
+  /* ⚠️ O `gap-14` do celular é pedido de 15/09 e FICA em telefone de altura normal.
+     Só em telefone BAIXO (≤ 760px) ele cai para 36px, porque ali o grupo não cabe
+     acima da pista de rolagem. Media query ÚNICA, largura e altura juntas: um
+     variante de altura sozinho venceria o `md:gap-12` num notebook baixo, e a
+     ordem em que o Tailwind v4 emite variante arbitrário contra breakpoint nomeado
+     já enganou uma vez (30/09). */
   const composicao = (
-    <div className="flex flex-col items-center gap-14 md:flex-row md:gap-12">
+    <div className="flex flex-col items-center gap-14 md:flex-row md:gap-12 [@media(max-width:767px)_and_(max-height:760px)]:gap-9">
       {/* COLUNA DA MARCA: logo em cima, selo embaixo. É o espelho da coluna do retrato,
           que tem a foto em cima e a assinatura embaixo. O `gap` aqui é menor que o das
           duas colunas entre si porque estas duas peças formam UM bloco. */}
@@ -427,7 +441,12 @@ export function AberturaPortal({ data }: { data: AberturaContent }) {
           saída que sobrava o vão. */}
       <div
         ref={palcoRef}
-        className="relative flex h-svh items-center justify-center overflow-hidden px-6 text-center"
+        /* `pb-18` SÓ NO CELULAR: lá o grupo empilhado ocupa quase a tela inteira, e
+           centrado no palco todo ele descia até a pista "ROLE PARA VER" (a assinatura
+           cruzava 14px em 390x844 e 41px em 320x700). Com o respiro de 4,5rem embaixo,
+           ele centra na área ACIMA da pista. De `md` para cima as colunas ficam lado a
+           lado, sobra altura, e o centro volta a ser o da tela. */
+        className="relative flex h-svh items-center justify-center overflow-hidden px-6 pb-18 text-center md:pb-0"
       >
         <div ref={marcaRef} className="will-change-transform">
           {composicao}

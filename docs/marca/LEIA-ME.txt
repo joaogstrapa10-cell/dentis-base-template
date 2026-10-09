@@ -1,3 +1,18 @@
+⚠️ ATUALIZADO EM 09/10: O SELO DO SITE MUDOU. Ele escolheu o "lettering fino" (o "30"
+fino em Cormorant Garamond, o "anos" na Qwitcher da assinatura e "DE EXPERIÊNCIA" em
+Ubuntu 300 sob um fio). Os arquivos do selo ATUAL são:
+
+  selo-30-anos-lettering-fino-claro.svg   arte #F7F9F9, para fundo escuro  <- o principal
+  selo-30-anos-lettering-fino-escuro.svg  arte #101515, para fundo claro
+
+Tudo em contorno, nada depende de fonte instalada. viewBox 7.28 72.6 258.77 179.51
+(proporção 1,44). O vão do "0" em volta do "anos" é uma <mask>: no Figma ela entra como
+máscara; se atrapalhar, apagar a máscara e cortar o "0" à mão.
+Os contornos do componente (src/components/seloAnosTracado.ts) saem destes arquivos.
+
+Os três arquivos ABAIXO são do selo ANTERIOR (lettering grosso de 08/10) e ficam só
+como histórico; scripts/gerar-selo-svg.py gera ESSE selo antigo, não o atual.
+
 SELO "30 ANOS DE EXPERIÊNCIA" — SVG para o Figma
 ================================================
 
